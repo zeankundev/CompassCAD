@@ -12,7 +12,7 @@ const PlantATree = () => {
 	shape.addComponent(new Line(-5,-5,5,5));
 	shape.addComponent(new Line(-5,5,5,-5));
 	//s.addComponent(new Line(400,0,0,400));
-	shape.addComponent(new Label(50,40,"A"));
+	shape.addComponent(new Label(50,40,"TREE"));
 	
 	return shape;
 }

@@ -4,8 +4,8 @@ const appLogo = path.join(__dirname, '/build/icons/512x512.png')
 
 const init = () => {
     const window = new BrowserWindow({
-        width: 1024,
-        height: 600,
+        width: 1200,
+        height: 768,
         icon: appLogo,
         frame: false,
         autoHideMenuBar: true,

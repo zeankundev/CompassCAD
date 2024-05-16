@@ -33,18 +33,18 @@
             </div>
             <div class="container">
                 <div class="quick-tool">
-                    <button title="Navigate (q)"><img src="../../assets/icons/navigate.svg"></button>
-                    <button title="Move Object (e)"><img src="../../assets/icons/move.svg"></button>
-                    <button title="Delete Object (t)"><img src="../../assets/icons/delete.svg"></button>
-                    <button title="Add Point (a)"><img src="../../assets/icons/point.svg"></button>
-                    <button title="Add Line (s)"><img src="../../assets/icons/line.svg"></button>
-                    <button title="Add Circle (d)"><img src="../../assets/icons/circle.svg"></button>
-                    <button title="Add Arc (f)"><img src="../../assets/icons/arc.svg"></button>
-                    <button title="Add Rectangle (g)"><img src="../../assets/icons/rectangle.svg"></button>
-                    <button title="Add Text (h)"><img src="../../assets/icons/text.svg"></button>
-                    <button title="Add Vertical Barrel (j)"><img src="../../assets/icons/vertical-barrel.svg"></button>
-                    <button title="Add Tree (k)"><img src="../../assets/icons/tree.svg"></button>
-                    <button title="Measure (z)"><img src="../../assets/icons/measure.svg"></button>
+                    <button title="Navigate (q)" id="navigate"><img src="../../assets/icons/navigate.svg"></button>
+                    <button title="Move Object (e)" id="move-obj"><img src="../../assets/icons/move.svg"></button>
+                    <button title="Delete Object (t)" id="del-obj"><img src="../../assets/icons/delete.svg"></button>
+                    <button title="Add Point (a)" id="add-point"><img src="../../assets/icons/point.svg"></button>
+                    <button title="Add Line (s)" id="add-line"><img src="../../assets/icons/line.svg"></button>
+                    <button title="Add Circle (d)" id="add-circle"><img src="../../assets/icons/circle.svg"></button>
+                    <button title="Add Arc (f)" id="add-arc"><img src="../../assets/icons/arc.svg"></button>
+                    <button title="Add Rectangle (g)" id="add-rect"><img src="../../assets/icons/rectangle.svg"></button>
+                    <button title="Add Text (h)" id="add-label"><img src="../../assets/icons/text.svg"></button>
+                    <button title="Add Vertical Barrel (j)" id="add-barrel"><img src="../../assets/icons/vertical-barrel.svg"></button>
+                    <button title="Add Tree (k)" id="add-tree"><img src="../../assets/icons/tree.svg"></button>
+                    <button title="Measure (z)" id="ruler"><img src="../../assets/icons/measure.svg"></button>
                 </div>
                 <div class="canvas-container">
                     <canvas id="canvas" width="1280" height="612" oncontextmenu="return false"></canvas>
@@ -65,9 +65,96 @@
         <script>
             $(document).ready(() => {
                 const renderer = new GraphicDisplay('canvas', 1280, 612)
+                const keyBindings = {
+                    'q': 'navigate',
+                    'Escape': 'navigate',
+                    'e': 'move-obj',
+                    't': 'del-obj',
+                    'a': 'add-point',
+                    's': 'add-line',
+                    'd': 'add-circle',
+                    'f': 'add-arc',
+                    'g': 'add-rect',
+                    'h': 'add-label',
+                    'j': 'add-barrel',
+                    'k': 'add-tree',
+                    'z': 'ruler'
+                };
                 renderer.unitMeasure = 'm'
                 renderer.unitConversionFactor = 1/100
                 renderer.showOrigin = false
+                document.getElementById('navigate').onclick = () => {
+                    console.log('Navigate button clicked');
+                    renderer.setMode(renderer.MODES.NAVIGATE)
+                };
+
+                document.getElementById('move-obj').onclick = () => {
+                    console.log('Move Object button clicked');
+                    renderer.setMode(renderer.MODES.MOVE)
+                };
+
+                document.getElementById('del-obj').onclick = () => {
+                    console.log('Delete Object button clicked');
+                    renderer.setMode(renderer.MODES.DELETE)
+                };
+
+                document.getElementById('add-point').onclick = () => {
+                    console.log('Add Point button clicked');
+                    renderer.setMode(renderer.MODES.ADDPOINT)
+                };
+
+                document.getElementById('add-line').onclick = () => {
+                    console.log('Add Line button clicked');
+                    renderer.setMode(renderer.MODES.ADDLINE)
+                };
+
+                document.getElementById('add-circle').onclick = () => {
+                    console.log('Add Circle button clicked');
+                    renderer.setMode(renderer.MODES.ADDCIRCLE)
+                };
+
+                document.getElementById('add-arc').onclick = () => {
+                    console.log('Add Arc button clicked');
+                    renderer.setMode(renderer.MODES.ADDARC)
+                };
+
+                document.getElementById('add-rect').onclick = () => {
+                    console.log('Add Rectangle button clicked');
+                    renderer.setMode(renderer.MODES.ADDRECTANGLE)
+                };
+
+                document.getElementById('add-label').onclick = () => {
+                    console.log('Add Text button clicked');
+                    renderer.setMode(renderer.MODES.ADDLABEL)
+                };
+
+                document.getElementById('add-barrel').onclick = () => {
+                    console.log('Add Vertical Barrel button clicked');
+                    renderer.setModeShape(CreateVerticalBarrel)
+                };
+
+                document.getElementById('add-tree').onclick = () => {
+                    console.log('Add Tree button clicked');
+                    renderer.setModeShape(PlantATree)
+                };
+
+                document.getElementById('ruler').onclick = () => {
+                    console.log('Measure button clicked');
+                    renderer.setMode(renderer.MODES.ADDMEASURE)
+                };
+
+                document.addEventListener('keydown', (event) => {
+                    console.log('Key down')
+                    const elementId = keyBindings[event.key];
+                    if (elementId) {
+                        const element = document.getElementById(elementId);
+                        if (element) {
+                            console.log(`Key "${event.key}" pressed, emulating click on ${elementId}`);
+                            element.click();
+                        }
+                    }
+                });
+
                 initCAD(renderer)
             })
         </script>
