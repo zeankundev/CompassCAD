@@ -47,7 +47,7 @@
                     <button title="Measure (z)" id="ruler"><img src="../../assets/icons/measure.svg"></button>
                 </div>
                 <div class="canvas-container">
-                    <canvas id="canvas" width="1280" height="612" oncontextmenu="return false"></canvas>
+                    <canvas id="canvas" width="800" height="600" oncontextmenu="return false"></canvas>
                 </div>
             </div>
             <footer class="status-bar" id="status">
@@ -64,7 +64,7 @@
         <script>
             $(document).ready(() => {
                 
-                const renderer = new GraphicDisplay('canvas', 1280, 612)
+                const renderer = new GraphicDisplay('canvas', 800,600)
                 const resizeWin = () => {
                     var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 8
                     renderer.displayHeight = window.innerHeight - resultedHeight

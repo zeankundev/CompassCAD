@@ -4,12 +4,12 @@ const appLogo = path.join(__dirname, '/build/icons/512x512.png')
 
 const init = () => {
     const window = new BrowserWindow({
-        width: 1200,
-        height: 768,
+        width: 1024,
+        height: 600,
         icon: appLogo,
         frame: false,
         autoHideMenuBar: true,
-        title: 'Sunset Logic Simulator',
+        title: 'CompassCAD',
         webPreferences: {
             nodeIntegration: true,
             contextIsolation: false

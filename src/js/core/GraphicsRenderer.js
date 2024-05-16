@@ -967,7 +967,7 @@ GraphicDisplay.prototype.setToolTip = function(text) {
 GraphicDisplay.prototype.getToolTip = function(e) {
 	var text = this.tooltip;
 	
-	text += " | (" + this.getCursorXLocal() + "," + this.getCursorYLocal() + ")";
+	text = `${text} (mousedx=${this.getCursorXLocal()};mousedy=${this.getCursorYLocal()})`;
 	
 	return text;
 };
