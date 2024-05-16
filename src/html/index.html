@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CompassCAD</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/index.css">
+        <link rel="stylesheet" href="../styles/theme.css">
+        <script src="../js/jquery-min.js"></script>
+    </head>
+    <body>
+        <header class="menubar">
+            <div class="menubar-branding">
+                <img src="../../build/icons/512x512.png" width="20" alt="Sunset Logo">
+            </div>
+            <div class="menubar-centered">
+                <small>New Design 1 - CompassCAD</small>
+            </div>
+            <div class="window-actions">
+                <button onclick="redirectToSomewhere(`https://afsc.org/news/6-ways-you-can-support-palestinians-gaza`)" title="Consider supporting Palestine"><img src="../../assets/icons/supportive.svg"></button>
+                <button id="minimize" title="Minimize"><img src="../../assets/icons/minimize.svg"></button>
+                <button id="maximize" title="Maximize"><img src="../../assets/icons/maximize.svg"></button>
+                <button id="close" title="Close"><img src="../../assets/icons/close.svg"></button>
+            </div>
+        </header>
+        <div class="main-content">
+            <div class="toolbar">
+                <button title="New Design (ctrl+n)"><img src="../../assets/icons/newLogic.svg"></button>
+                <button title="Open Design (ctrl+o)"><img src="../../assets/icons/openLogic.svg"></button>
+                <button title="Save Design (ctrl+s)"><img src="../../assets/icons/saveLogic.svg"></button>
+                <div class="division-line"></div>
+                <button title="Undo (ctrl+z)"><img src="../../assets/icons/undo.svg"></button>
+                <button title="Redo (ctrl+y)"><img src="../../assets/icons/redo.svg"></button>
+            </div>
+            <div class="container">
+                <div class="quick-tool">
+                    <button title="Navigate (q)"><img src="../../assets/icons/navigate.svg"></button>
+                    <button title="Move Object (e)"><img src="../../assets/icons/move.svg"></button>
+                    <button title="Delete Object (t)"><img src="../../assets/icons/delete.svg"></button>
+                    <button title="Add Point (a)"><img src="../../assets/icons/point.svg"></button>
+                    <button title="Add Line (s)"><img src="../../assets/icons/line.svg"></button>
+                    <button title="Add Circle (d)"><img src="../../assets/icons/circle.svg"></button>
+                    <button title="Add Arc (f)"><img src="../../assets/icons/arc.svg"></button>
+                    <button title="Add Rectangle (g)"><img src="../../assets/icons/rectangle.svg"></button>
+                    <button title="Add Text (h)"><img src="../../assets/icons/text.svg"></button>
+                    <button title="Add Vertical Barrel (j)"><img src="../../assets/icons/vertical-barrel.svg"></button>
+                    <button title="Add Tree (k)"><img src="../../assets/icons/tree.svg"></button>
+                    <button title="Measure (z)"><img src="../../assets/icons/measure.svg"></button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="canvas" width="1280" height="612" oncontextmenu="return false"></canvas>
+                </div>
+                <div class="properties-selector">&nbsp;&nbsp;&nbsp;&nbsp;</div>
+            </div>
+            <footer class="status-bar">
+                <p id="status-stuff">Welcome to CompassCAD</p>
+            </footer>
+        </div>
+        <script src="../js/WindowHandling.js"></script>
+        <script src="../js/LinkToShell.js"></script>
+        <script src="../js/core/ComponentHandler.js"></script>
+        <script src="../js/core/MiscellaneousShapes.js"></script>
+        <script src="../js/core/LogicDisplay.js"></script>
+        <script src="../js/core/InputHandler.js"></script>
+        <script src="../js/core/GraphicsRenderer.js"></script>
+        <script>
+            $(document).ready(() => {
+                const renderer = new GraphicDisplay('canvas', 1280, 612)
+                renderer.unitMeasure = 'm'
+                renderer.unitConversionFactor = 1/100
+                renderer.showOrigin = false
+                initCAD(renderer)
+            })
+        </script>
+    </body>
+</html>
