@@ -8,7 +8,7 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
-        <header class="menubar">
+        <header class="menubar" id="menubar">
             <div class="menubar-branding">
                 <img src="../../build/icons/512x512.png" width="20" alt="Sunset Logo">
             </div>
@@ -23,7 +23,7 @@
             </div>
         </header>
         <div class="main-content">
-            <div class="toolbar">
+            <div class="toolbar" id="toolbar">
                 <button title="New Design (ctrl+n)"><img src="../../assets/icons/newLogic.svg"></button>
                 <button title="Open Design (ctrl+o)"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)"><img src="../../assets/icons/saveLogic.svg"></button>
@@ -32,7 +32,7 @@
                 <button title="Redo (ctrl+y)"><img src="../../assets/icons/redo.svg"></button>
             </div>
             <div class="container">
-                <div class="quick-tool">
+                <div class="quick-tool" id="quick-tool">
                     <button title="Navigate (q)" id="navigate"><img src="../../assets/icons/navigate.svg"></button>
                     <button title="Move Object (e)" id="move-obj"><img src="../../assets/icons/move.svg"></button>
                     <button title="Delete Object (t)" id="del-obj"><img src="../../assets/icons/delete.svg"></button>
@@ -49,9 +49,8 @@
                 <div class="canvas-container">
                     <canvas id="canvas" width="1280" height="612" oncontextmenu="return false"></canvas>
                 </div>
-                <div class="properties-selector">&nbsp;&nbsp;&nbsp;&nbsp;</div>
             </div>
-            <footer class="status-bar">
+            <footer class="status-bar" id="status">
                 <p id="status-stuff">Welcome to CompassCAD</p>
             </footer>
         </div>
@@ -64,7 +63,15 @@
         <script src="../js/core/GraphicsRenderer.js"></script>
         <script>
             $(document).ready(() => {
+                
                 const renderer = new GraphicDisplay('canvas', 1280, 612)
+                const resizeWin = () => {
+                    var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 8
+                    renderer.displayHeight = window.innerHeight - resultedHeight
+                    renderer.displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth
+                    document.getElementById('canvas').width = window.innerWidth - document.getElementById('quick-tool').offsetWidth
+                    document.getElementById('canvas').height = window.innerHeight - resultedHeight
+                }
                 const keyBindings = {
                     'q': 'navigate',
                     'Escape': 'navigate',
@@ -80,6 +87,8 @@
                     'k': 'add-tree',
                     'z': 'ruler'
                 };
+                resizeWin()
+                window.onresize = resizeWin
                 renderer.unitMeasure = 'm'
                 renderer.unitConversionFactor = 1/100
                 renderer.showOrigin = false
