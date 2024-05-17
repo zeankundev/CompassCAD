@@ -1,7 +1,6 @@
 const $ = require('jquery')
 const diag = require('@electron/remote').dialog
 const fs = require('fs')
-const prompt = require('electron-prompt')
 function GraphicDisplay(displayName, width, height) {
 	// Enumerate all available modes
 	this.MODES = {
