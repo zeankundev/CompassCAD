@@ -184,4 +184,5 @@ small {
     padding: 5px;
     background-color: var(--secondary);
     font-size: 9pt;
+    user-select: none;
 }

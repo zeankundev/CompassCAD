@@ -45,7 +45,7 @@ function GraphicDisplay(displayName, width, height) {
 			null, null);  // x3, y3
 	
 	// Temporary or selected color
-	this.selectedColor = "#c0c";
+	this.selectedColor = "#0080ff";
 	this.selectedRadius = "2";
 	
 	this.logicDisplay;
@@ -156,7 +156,7 @@ GraphicDisplay.prototype.clearGrid = function(e) {
 	
 	this.context.translate(this.displayWidth/2, this.displayHeight/2);
 	this.context.strokeStyle = "#666";
-	this.context.lineWidth = 0.2;
+	this.context.lineWidth = 0.15;
 };
 
 GraphicDisplay.prototype.drawAllComponents = function(components, moveByX, moveByY) {

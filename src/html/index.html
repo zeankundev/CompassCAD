@@ -24,7 +24,7 @@
         </header>
         <div class="main-content">
             <div class="toolbar" id="toolbar">
-                <button title="New Design (ctrl+n)"><img src="../../assets/icons/newLogic.svg"></button>
+                <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
                 <button title="Open Design (ctrl+o)"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)"><img src="../../assets/icons/saveLogic.svg"></button>
                 <div class="division-line"></div>
@@ -151,6 +151,12 @@
                     console.log('Measure button clicked');
                     renderer.setMode(renderer.MODES.ADDMEASURE)
                 };
+                document.getElementById('new-design').onclick = () => {
+                    if (confirm('Are you sure? You are going to lose your design!') == true)
+                        renderer.init()
+                    else
+                        return
+                }
 
                 document.addEventListener('keydown', (event) => {
                     console.log('Key down')
