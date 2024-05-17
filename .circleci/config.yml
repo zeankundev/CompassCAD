@@ -1,0 +1,36 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/repo
+    docker:
+      - image: cimg/node:20.4.0
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install yarn
+          command: sudo npm i -g yarn
+      - run:
+          name: Install dependencies
+          command: yarn
+      - run:
+          name: Install dpkg and fakeroot
+          command: |
+            sudo apt-get update -y
+            sudo dpkg --add-architecture i386 && sudo apt-get update -y
+            sudo apt-get install -y dpkg fakeroot wine32 wine64 rpm
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: Generate Builds
+          command: yarn run instant-build
+          
+      - run:
+          name: Delete foreign artifacts
+          command: cd dist && rm -rf win-unpacked && rm -rf linux-unpacked && cd ..
+
+      - store_artifacts:
+          path: ~/repo/dist

@@ -15,6 +15,41 @@
     "@electron/remote": "^2.0.9",
     "jquery": "^3.7.1"
   },
+  "build": {
+    "appId": "dev.zeankun.compasscad",
+    "productName": "CompassCAD",
+    "copyright": "Copyright © 2024 zeankun.dev",
+    "icon": "build/icons/512x512.png",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "publisherName": "zeankun.dev"
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage",
+        "snap",
+        "rpm"
+      ],
+      "maintainer": "zeankun.dev",
+      "category": "Graphics",
+      "icon": "build/icons/512x512.png"
+    },
+    "mac": {
+      "target": [
+        "zip",
+        "tar.gz"
+      ],
+      "category": "public.app-category.graphics-design",
+      "icon": "build/icons/512x512.png"
+    }
+  },
   "devDependencies": {
     "electron": "^30.0.2",
     "electron-builder": "^24.6.3",
