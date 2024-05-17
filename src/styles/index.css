@@ -186,3 +186,38 @@ small {
     font-size: 9pt;
     user-select: none;
 }
+.prompt {
+    position: absolute;
+    top: 45%;
+    left: 35%;
+    width: 25%;
+    background-color: var(--primary);
+    padding: 10px;
+}
+
+.prompt input[type=text] {
+    -webkit-appearance: none;
+    background-color: var(--secondary);
+    border: none;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 10px;
+    color: var(--text);
+    width: 90%;
+    outline: none;
+}
+.prompt-answer {
+    text-align: right;
+    margin-top: 10px;
+}
+.prompt button {
+    -webkit-appearance: none;
+    color: var(--text);
+    border: none;
+    background-color: var(--secondary);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    padding: 10px;
+    cursor: pointer;
+}
+.hidden {
+    display: none;
+}

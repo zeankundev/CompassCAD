@@ -1,4 +1,7 @@
 const $ = require('jquery')
+const diag = require('@electron/remote').dialog
+const fs = require('fs')
+const prompt = require('electron-prompt')
 function GraphicDisplay(displayName, width, height) {
 	// Enumerate all available modes
 	this.MODES = {
@@ -765,15 +768,19 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.temporaryPoints[1] = this.getCursorYLocal();
 				}
 			} else if ( action == this.MOUSEACTION.DOWN ) {
-				var text = prompt("Label:");
-				if ( text.length > 0 ) {
-					this.logicDisplay.addComponent(new Label(
-							this.temporaryPoints[0],
-							this.temporaryPoints[1],
-							text));
-					this.saveState()
-					this.execute()
-				}
+				callPrompt('Enter text')
+				.then(text => {
+					if ( text.length > 0 ) {
+						this.logicDisplay.addComponent(new Label(
+								this.temporaryPoints[0],
+								this.temporaryPoints[1],
+								text));
+						this.saveState()
+						this.execute()
+						this.setMode(this.MODES.NAVIGATE)
+					}
+				})
+				.catch(e => {})
 			}
 			this.tooltip = "Add label (press esc to cancel)";
 			break;
@@ -1082,6 +1089,39 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
 GraphicDisplay.prototype.createNew = function() {
 	this.logicDisplay.components = []
 	this.execute
+}
+GraphicDisplay.prototype.openDesign = function() {
+	diag.showOpenDialog({
+		title: 'Open CompassCAD file',
+		properties: ['openFile'],
+		filters: [
+			{name: 'CompassCAD File', extensions: ['ccad']}
+		]
+	}).then(res => {
+		console.log(res)
+		fs.promises.readFile(res.filePaths[0], 'utf-8')
+		.then(resp => JSON.parse(resp))
+		.then(data => {
+			console.log(data)
+			this.logicDisplay.components = [];
+			this.logicDisplay.importJSON(data, this.logicDisplay.components)
+		})
+		.catch(error => {
+			console.error('Error reading or parsing the file:', error);
+		});
+		}).catch(e => {
+			alert('A Problem Occured! \n'+e)
+		})
+}
+GraphicDisplay.prototype.saveDesign = function() {
+	diag.showSaveDialog({
+		title: 'Save CompassCAD file',
+		filters: [
+			{name: 'CompassCAD File', extensions: ['ccad']}
+		]
+	}).then(data => {
+		fs.writeFileSync(data.filePath, JSON.stringify(this.logicDisplay.components))
+	})
 }
 
 /*

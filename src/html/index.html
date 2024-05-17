@@ -8,6 +8,16 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
+        <div class="prompt hidden" id="prompt-container">
+            <h3 id="prompt-message">Enter Prompt</h3>
+            <br>
+            <input type="text" id="prompt-input" placeholder="Please enter text">
+            <br>
+            <div class="prompt-answer">
+                <button id="prompt-ok">OK</button>
+                <button id="prompt-cancel">Cancel</button>
+            </div>
+        </div>
         <header class="menubar" id="menubar">
             <div class="menubar-branding">
                 <img src="../../build/icons/512x512.png" width="20" alt="Sunset Logo">
@@ -25,7 +35,7 @@
         <div class="main-content">
             <div class="toolbar" id="toolbar">
                 <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
-                <button title="Open Design (ctrl+o)"><img src="../../assets/icons/openLogic.svg"></button>
+                <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
                 <div class="division-line"></div>
                 <button title="Undo (ctrl+z, very buggy)" id="undo"><img src="../../assets/icons/undo.svg"></button>
@@ -61,6 +71,7 @@
         <script src="../js/core/LogicDisplay.js"></script>
         <script src="../js/core/InputHandler.js"></script>
         <script src="../js/core/GraphicsRenderer.js"></script>
+        <script src="../js/Utils.js"></script>
         <script>
             $(document).ready(() => {
                 
@@ -157,8 +168,11 @@
                     else
                         return
                 }
+                document.getElementById('open-design').onclick = () => {
+                    renderer.openDesign()
+                }
                 document.getElementById('save-design').onclick = () => {
-                    renderer.saveComponent()
+                    renderer.saveDesign()
                 }
 
                 document.addEventListener('keydown', (event) => {
