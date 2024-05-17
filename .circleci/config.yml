@@ -24,6 +24,16 @@ jobs:
       - run:
           name: Generate Builds
           command: yarn run instant-build
+
+      - run:
+          name: Create git tag
+          command: |
+            if [ "$(git tag -l "v$(jq -r '.version' package.json)")" = "" ]; then
+              git config --global user.email "zeanfender11@gmail.com"
+              git config --global user.name "zeankun.dev"
+              git tag "v$(jq -r '.version' package.json)"
+              git push origin "v$(jq -r '.version' package.json)"
+            fi
           
       - run:
           name: Delete foreign artifacts

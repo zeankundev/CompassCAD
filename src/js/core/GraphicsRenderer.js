@@ -100,6 +100,7 @@ function GraphicDisplay(displayName, width, height) {
 	
 	this.tooltipDefault = "CompassCAD"
 	this.tooltip = this.tooltipDefault;
+	this.filePath = ''
 	
 	this.keyboard = null;
 	this.mouse = null;
@@ -498,6 +499,7 @@ GraphicDisplay.prototype.drawShape = function(shape) {
 
 GraphicDisplay.prototype.drawToolTip = function(e) {
 	$('#status-stuff')[0].innerText = this.getToolTip()
+	console.log(this.getToolTip())
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
@@ -836,7 +838,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Move (press esc to cancel)";
+			this.tooltip = "Move (select a node point to move, esc to cancel)";
 			break;
 		case this.MODES.EDIT:
 			// TODO: In the next release
@@ -857,7 +859,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.saveState()
 				this.execute()
 			}
-			this.tooltip = "Delete (press esc to cancel)";
+			this.tooltip = "Delete (click a node point to delete, esc to cancel)";
 			break;
 		default:
 			this.tooltip = this.tooltipDefault;
@@ -865,23 +867,46 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 };
 GraphicDisplay.prototype.undo = function() {
     if (this.undoStack.length > 0) {
+        // Remove the last state from the undoStack and push it to the redoStack
         const state = this.undoStack.pop();
-		console.log(state)
-        this.redoStack.push(JSON.stringify(this.logicDisplay.components));
-        this.logicDisplay.components = JSON.parse(state);
-		console.log(this.redoStack)
+        this.redoStack.push(state);
+
+        // Get the new last state from the undoStack (if any) to apply to the logicDisplay
+        const lastState = this.undoStack.length > 0 ? this.undoStack[this.undoStack.length - 1] : null;
+
+        if (lastState) {
+            this.logicDisplay.components = []
+            this.logicDisplay.importJSON(JSON.parse(lastState), this.logicDisplay.components);
+        } else
+			return
+
         this.execute(); // Re-render the canvas
     }
 };
 
+
+
 GraphicDisplay.prototype.redo = function() {
     if (this.redoStack.length > 0) {
-        const state = this.redoStack.pop();
+        // Move the current state to the undoStack
         this.undoStack.push(JSON.stringify(this.logicDisplay.components));
-        this.logicDisplay.components = JSON.parse(state);
+
+        // Get the last state from the redoStack
+        const state = this.redoStack.pop();
+        console.log('upcoming state');
+        console.log(state); // Log the state (optional)
+        console.log('parsed state');
+        console.log(JSON.parse(state)); // Log the parsed state (optional)
+
+        // Clear the current components
+        this.logicDisplay.components = [];
+
+        // Update the display with the next state
+        this.logicDisplay.importJSON(JSON.parse(state), this.logicDisplay.components);
         this.execute(); // Re-render the canvas
     }
 };
+
 
 GraphicDisplay.prototype.moveComponent = function(index, x, y) {
 	if (index != null) {
@@ -1087,6 +1112,11 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
 
 GraphicDisplay.prototype.createNew = function() {
 	this.logicDisplay.components = []
+	this.filePath = ''
+	document.title = `New Design 1 - CompassCAD`
+	$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
+	this.undoStack = []
+	this.redoStack = []
 	this.execute
 }
 GraphicDisplay.prototype.openDesign = function() {
@@ -1097,6 +1127,8 @@ GraphicDisplay.prototype.openDesign = function() {
 			{name: 'CompassCAD File', extensions: ['ccad']}
 		]
 	}).then(res => {
+		document.title = `${res.filePaths[0]} - CompassCAD`
+		$('#titlething')[0].innerText = `${res.filePaths[0]} - CompassCAD`
 		console.log(res)
 		fs.promises.readFile(res.filePaths[0], 'utf-8')
 		.then(resp => JSON.parse(resp))
@@ -1104,6 +1136,7 @@ GraphicDisplay.prototype.openDesign = function() {
 			console.log(data)
 			this.logicDisplay.components = [];
 			this.logicDisplay.importJSON(data, this.logicDisplay.components)
+			this.filePath = res.filePaths[0]
 		})
 		.catch(error => {
 			console.error('Error reading or parsing the file:', error);
@@ -1113,15 +1146,36 @@ GraphicDisplay.prototype.openDesign = function() {
 		})
 }
 GraphicDisplay.prototype.saveDesign = function() {
-	diag.showSaveDialog({
-		title: 'Save CompassCAD file',
-		filters: [
-			{name: 'CompassCAD File', extensions: ['ccad']}
-		]
-	}).then(data => {
-		fs.writeFileSync(data.filePath, JSON.stringify(this.logicDisplay.components))
-	})
-}
+    // Check if the file path is defined and if the project is not read-only
+    if (this.filePath != '') {
+		console.log('written to '+this.filePath)
+		this.setToolTip('Save success')
+        // Directly write to the known file path
+        fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
+
+    } else {
+		console.log('prompted!')
+        // Prompt the user to choose a save location
+        diag.showSaveDialog({
+            title: 'Save CompassCAD file',
+            filters: [
+                { name: 'CompassCAD File', extensions: ['ccad'] }
+            ]
+        }).then(data => {
+            if (!data.canceled) {
+                // Save the chosen file path
+                this.filePath = data.filePath;
+                // Write to the chosen file path
+                fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
+				this.setToolTip('Save success')
+				document.title = `${data.filePath[0]} - CompassCAD`
+				$('#titlething')[0].innerText = `${data.filePath[0]} - CompassCAD`
+            }
+        }).catch(err => {
+            console.error('Error during save:', err);
+        });
+    }
+};
 
 /*
  * Helper function used to initialize the

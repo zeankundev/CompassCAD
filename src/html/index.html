@@ -23,7 +23,7 @@
                 <img src="../../assets/logos/512x512.png" width="20" alt="Sunset Logo">
             </div>
             <div class="menubar-centered">
-                <small>New Design 1 - CompassCAD</small>
+                <small id="titlething">New Design 1 - CompassCAD</small>
             </div>
             <div class="window-actions">
                 <button onclick="redirectToSomewhere(`https://afsc.org/news/6-ways-you-can-support-palestinians-gaza`)" title="Consider supporting Palestine"><img src="../../assets/icons/supportive.svg"></button>
@@ -38,8 +38,8 @@
                 <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
                 <div class="division-line"></div>
-                <button title="Undo (ctrl+z, very buggy)" id="undo"><img src="../../assets/icons/undo.svg"></button>
-                <button title="Redo (ctrl+y, very buggy)" id="redo"><img src="../../assets/icons/redo.svg"></button>
+                <button title="Undo (ctrl+z)" id="undo"><img src="../../assets/icons/undo.svg"></button>
+                <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
             </div>
             <div class="container">
                 <div class="quick-tool" id="quick-tool">
@@ -167,6 +167,12 @@
                         renderer.createNew()
                     else
                         return
+                }
+                document.getElementById('undo').onclick = () => {
+                    renderer.undo()
+                }
+                document.getElementById('redo').onclick = () => {
+                    renderer.redo()
                 }
                 document.getElementById('open-design').onclick = () => {
                     renderer.openDesign()
