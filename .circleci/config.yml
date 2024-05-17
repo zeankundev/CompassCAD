@@ -9,8 +9,8 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
-          name: Install yarn
-          command: sudo npm i -g yarn
+          name: Install dependencies
+          command: yarn
       - run:
           name: Install dpkg and fakeroot
           command: |
