@@ -22,10 +22,6 @@ jobs:
           paths:
             - ./node_modules
       - run:
-          name: Generate Builds
-          command: yarn run instant-build
-
-      - run:
           name: Create git tag
           command: |
             if [ "$(git tag -l "$(jq -r '.version' package.json)")" = "" ]; then
@@ -34,6 +30,9 @@ jobs:
               git tag "$(jq -r '.version' package.json)"
               git push origin "$(jq -r '.version' package.json)"
             fi
+      - run:
+          name: Generate Builds
+          command: yarn run instant-build
           
       - run:
           name: Delete foreign artifacts
