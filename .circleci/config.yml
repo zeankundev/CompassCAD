@@ -28,11 +28,11 @@ jobs:
       - run:
           name: Create git tag
           command: |
-            if [ "$(git tag -l "v$(jq -r '.version' package.json)")" = "" ]; then
+            if [ "$(git tag -l "$(jq -r '.version' package.json)")" = "" ]; then
               git config --global user.email "zeanfender11@gmail.com"
               git config --global user.name "zeankun.dev"
-              git tag "v$(jq -r '.version' package.json)"
-              git push origin "v$(jq -r '.version' package.json)"
+              git tag "$(jq -r '.version' package.json)"
+              git push origin "$(jq -r '.version' package.json)"
             fi
           
       - run:
