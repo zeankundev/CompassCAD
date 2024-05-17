@@ -12,9 +12,6 @@ jobs:
           name: Install yarn
           command: sudo npm i -g yarn
       - run:
-          name: Install dependencies
-          command: yarn
-      - run:
           name: Install dpkg and fakeroot
           command: |
             sudo apt-get update -y
