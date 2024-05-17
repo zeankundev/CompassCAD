@@ -28,8 +28,8 @@
                 <button title="Open Design (ctrl+o)"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
                 <div class="division-line"></div>
-                <button title="Undo (ctrl+z)"><img src="../../assets/icons/undo.svg"></button>
-                <button title="Redo (ctrl+y)"><img src="../../assets/icons/redo.svg"></button>
+                <button title="Undo (ctrl+z, very buggy)" id="undo"><img src="../../assets/icons/undo.svg"></button>
+                <button title="Redo (ctrl+y, very buggy)" id="redo"><img src="../../assets/icons/redo.svg"></button>
             </div>
             <div class="container">
                 <div class="quick-tool" id="quick-tool">
@@ -66,7 +66,7 @@
                 
                 const renderer = new GraphicDisplay('canvas', 800,600)
                 const resizeWin = () => {
-                    var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 8
+                    var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 10
                     renderer.displayHeight = window.innerHeight - resultedHeight
                     renderer.displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth
                     document.getElementById('canvas').width = window.innerWidth - document.getElementById('quick-tool').offsetWidth
@@ -153,7 +153,7 @@
                 };
                 document.getElementById('new-design').onclick = () => {
                     if (confirm('Are you sure? You are going to lose your design!') == true)
-                        renderer.init()
+                        renderer.createNew()
                     else
                         return
                 }

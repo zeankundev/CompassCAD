@@ -51,6 +51,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.logicDisplay;
 	
 	this.counter = 0;
+	this.undoStack = []
+	this.redoStack = []
 	
 	this.displayWidth = width;
 	this.displayHeight = height;
@@ -140,7 +142,6 @@ GraphicDisplay.prototype.execute = function(e) {
 	
 	// Draw all components
 	this.drawAllComponents(this.logicDisplay.components, 0, 0);
-	console.log(this.logicDisplay.components)
 	
 	// Draw temporary component
 	if ( this.temporaryComponentType != null )
@@ -148,6 +149,16 @@ GraphicDisplay.prototype.execute = function(e) {
 	
 	// Draw to tooltip
 	this.drawToolTip();
+};
+
+GraphicDisplay.prototype.saveState = function() {
+    this.undoStack.push(JSON.stringify(this.logicDisplay.components));
+	console.log(this.undoStack)
+    if (this.undoStack.length > 50) { // Limit the undo stack size to 50
+        this.undoStack.shift();
+    }
+    // Clear the redo stack when a new action is performed
+    this.redoStack = [];
 };
 
 GraphicDisplay.prototype.clearGrid = function(e) {
@@ -578,6 +589,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.logicDisplay.addComponent(new Point(
 						this.temporaryPoints[0],
 						this.temporaryPoints[1]));
+				this.saveState()
+				this.execute()
 			}
 			this.tooltip = "Add point (press esc to cancel)";
 			break;
@@ -609,6 +622,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					
 					this.temporaryPoints[0] = this.temporaryPoints[2];
 					this.temporaryPoints[1] = this.temporaryPoints[3];
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add line (press esc to cancel)";
@@ -636,6 +651,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add circle (press esc to cancel)";
@@ -674,6 +691,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[3],
 							this.temporaryPoints[4],
 							this.temporaryPoints[5]));
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add arc (press esc to cancel)";
@@ -701,6 +720,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add rectangle (press esc to cancel)";
@@ -728,6 +749,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add measure (press esc to cancel)";
@@ -748,6 +771,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[0],
 							this.temporaryPoints[1],
 							text));
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Add label (press esc to cancel)";
@@ -764,6 +789,8 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			} else if (action == this.MOUSEACTION.DOWN) {
 				this.logicDisplay.addComponent(this.temporaryShape);
 				this.resetMode()
+				this.saveState()
+				this.execute()
 			}
 			break;
 		case this.MODES.NAVIGATE:
@@ -791,12 +818,16 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.selectedComponent,
 							this.getCursorXLocal(),
 							this.getCursorYLocal());
+					this.saveState()
+					this.execute()
 				}
 			} else if ( action == this.MOUSEACTION.DOWN ) {
 				if ( this.selectedComponent == null ) {
 					this.selectComponent(this.temporarySelectedComponent);
 				} else {
 					this.unselectComponent();
+					this.saveState()
+					this.execute()
 				}
 			}
 			this.tooltip = "Move (press esc to cancel)";
@@ -814,15 +845,36 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.getCursorYLocal());
 				}
 			} else if ( action == this.MOUSEACTION.DOWN ) {
-				if ( this.temporarySelectedComponent != null && confirm("Delete this component?") ) {
+				if ( this.temporarySelectedComponent != null ) {
 					this.logicDisplay.components[this.temporarySelectedComponent].setActive(false);
 				}
+				this.saveState()
+				this.execute()
 			}
 			this.tooltip = "Delete (press esc to cancel)";
 			break;
 		default:
 			this.tooltip = this.tooltipDefault;
 	}
+};
+GraphicDisplay.prototype.undo = function() {
+    if (this.undoStack.length > 0) {
+        const state = this.undoStack.pop();
+		console.log(state)
+        this.redoStack.push(JSON.stringify(this.logicDisplay.components));
+        this.logicDisplay.components = JSON.parse(state);
+		console.log(this.redoStack)
+        this.execute(); // Re-render the canvas
+    }
+};
+
+GraphicDisplay.prototype.redo = function() {
+    if (this.redoStack.length > 0) {
+        const state = this.redoStack.pop();
+        this.undoStack.push(JSON.stringify(this.logicDisplay.components));
+        this.logicDisplay.components = JSON.parse(state);
+        this.execute(); // Re-render the canvas
+    }
 };
 
 GraphicDisplay.prototype.moveComponent = function(index, x, y) {
@@ -926,7 +978,7 @@ GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	console.log(newZoom)
 	
 	// Zoom interval control
-	if ( newZoom == 0.2 || newZoom == 4 )
+	if ( newZoom <= 0.2 || newZoom >= 4 )
 		return;
 	
 	this.zoom = newZoom;
@@ -1027,6 +1079,11 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
 	return theta;
 };
 
+GraphicDisplay.prototype.createNew = function() {
+	this.logicDisplay.components = []
+	this.execute
+}
+
 /*
  * Helper function used to initialize the
  * graphic environment and behaviour (mainly input events)
@@ -1079,11 +1136,10 @@ var initCAD = function(gd) {
 	gd.cvn.on('wheel', (event) => {
 		let zoomFactor = 1
         if (event.originalEvent.deltaY < 0) {
-            zoomFactor *= 1.06; // Zoom in
+            gd.zoomIn()
         } else {
-            zoomFactor *= 0.96; // Zoom out
+            gd.zoomOut()
         }
-        gd.setZoom(zoomFactor);
         console.log(`Zoom factor: ${zoomFactor}`);
         event.preventDefault();
     });
