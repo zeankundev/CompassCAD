@@ -576,13 +576,11 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.logicDisplay.addComponent(new Point(
 						this.temporaryPoints[0],
 						this.temporaryPoints[1]));
-				this.resetMode();
 			}
 			this.tooltip = "Add point (press esc to cancel)";
 			break;
 		case this.MODES.ADDLINE:
 			if (e.which == 3)
-				this.resetMode();
 			
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
@@ -636,7 +634,6 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
-					this.resetMode();
 				}
 			}
 			this.tooltip = "Add circle (press esc to cancel)";
@@ -675,7 +672,6 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[3],
 							this.temporaryPoints[4],
 							this.temporaryPoints[5]));
-					this.resetMode();
 				}
 			}
 			this.tooltip = "Add arc (press esc to cancel)";
@@ -703,7 +699,6 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
-					this.resetMode();
 				}
 			}
 			this.tooltip = "Add rectangle (press esc to cancel)";
@@ -731,7 +726,6 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[1],
 							this.temporaryPoints[2],
 							this.temporaryPoints[3]));
-					this.resetMode();
 				}
 			}
 			this.tooltip = "Add measure (press esc to cancel)";
@@ -752,7 +746,6 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 							this.temporaryPoints[0],
 							this.temporaryPoints[1],
 							text));
-					this.resetMode();
 				}
 			}
 			this.tooltip = "Add label (press esc to cancel)";
@@ -768,7 +761,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
 				this.logicDisplay.addComponent(this.temporaryShape);
-				this.resetMode();
+				this.resetMode()
 			}
 			break;
 		case this.MODES.NAVIGATE:
@@ -1012,7 +1005,7 @@ GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
  * Return the angle in radiants
  */
 GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
-	var PI = 3.14159265359;
+	var PI = Math.PI;
 	var theta = Math.atan((y2 - y1) / (x2 - y2)) * (PI/180);
 	
 	if (x2 < x1)

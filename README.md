@@ -29,6 +29,7 @@ cd sunset && yarn
 You're good to go! Now type `yarn start` to start
 
 # Licenses and acknowledgements
-- [WebCAD5](https://github.com/hacklabcz/WebCAD5) (without this project, I would be stuck to my IGCSE-level)
+- [WebCAD5](https://github.com/hacklabcz/WebCAD5) (without this project, I would be stuck to my IGCSE-level mathematics level)
+- [QroCAD](https://github.com/Qrodex/QroCAD) (the first iteration, but still maintained to this very day)
 - [HugeIcons](https://hugeicons.com/) (its beautiful af)
 - Licensed under MIT license.
