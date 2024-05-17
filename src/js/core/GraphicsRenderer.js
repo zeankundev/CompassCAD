@@ -407,7 +407,7 @@ GraphicDisplay.prototype.drawMeasure = function(x1, y1, x2, y2, color, radius) {
 	this.drawLine(x1, y1, x2, y2, color, radius);
 	
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px monospace";
+	this.context.font = (this.fontSize * localZoom) + "px Consolas, monospace";
 	this.context.fillText(
 			distance.toFixed(2) + "" + this.unitMeasure,
 			(this.cOutX + x2 - 120) * this.zoom,
@@ -427,7 +427,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	}
 	
 	this.context.fillStyle = color;
-	this.context.font =  (this.fontSize * localZoom) + "px monospace";
+	this.context.font =  (this.fontSize * localZoom) + "px Consolas, monospace";
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
