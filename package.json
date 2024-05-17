@@ -5,6 +5,7 @@
   "main": "entry.js",
   "author": "zeankun.dev",
   "license": "MIT",
+  "homepage": "https://zeankundev.github.io/CompassCAD",
   "scripts": {
     "start": "electron .",
     "start:no-sandbox": "electron . --no-sandbox",
