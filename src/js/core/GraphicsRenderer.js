@@ -60,7 +60,7 @@ function GraphicDisplay(displayName, width, height) {
 	// Camera
 	this.camX = 0;
 	this.camY = 0;
-	this.zoom = 0.5;
+	this.zoom = 1;
 	this.zoomin = 2;
 	this.zoomout = 0.5;
 	this.camMoving = false;
@@ -107,6 +107,7 @@ GraphicDisplay.prototype.init = function(e) {
 	 */ 
 	this.logicDisplay = new LogicDisplay();
 	this.logicDisplay.init();
+	this.zoom = 1;
 	
 	/*
 	 * INITIALIZE INPUT HANDLER 
@@ -117,6 +118,7 @@ GraphicDisplay.prototype.init = function(e) {
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor','crosshair');
 	this.context = this.cvn[0].getContext('2d');
+	this.execute()
 };
 
 GraphicDisplay.prototype.execute = function(e) {
@@ -921,9 +923,10 @@ GraphicDisplay.prototype.resetMode = function(e) {
 
 GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	var newZoom = this.zoom * zoomFactor; 
+	console.log(newZoom)
 	
 	// Zoom interval control
-	if ( newZoom == 0.125 || newZoom == 4 )
+	if ( newZoom == 0.2 || newZoom == 4 )
 		return;
 	
 	this.zoom = newZoom;
@@ -1000,6 +1003,10 @@ GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
 	return null;
 };
 
+GraphicDisplay.prototype.saveComponent = function() {
+	console.warn(this.logicDisplay.exportJSON())
+}
+
 //TODO: Move in Utils.
 /**
  * Return the angle in radiants
@@ -1072,6 +1079,17 @@ var initCAD = function(gd) {
 		gd.mouse.onMouseUp(e);
 		gd.performAction(e, gd.MOUSEACTION.UP);
 	});
+	gd.cvn.on('wheel', (event) => {
+		let zoomFactor = 1
+        if (event.originalEvent.deltaY < 0) {
+            zoomFactor *= 1.06; // Zoom in
+        } else {
+            zoomFactor *= 0.96; // Zoom out
+        }
+        gd.setZoom(zoomFactor);
+        console.log(`Zoom factor: ${zoomFactor}`);
+        event.preventDefault();
+    });
 	
 	// Start CAD
 	setInterval(function(e) {
