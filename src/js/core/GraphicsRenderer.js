@@ -114,6 +114,7 @@ GraphicDisplay.prototype.init = function(e) {
 	this.logicDisplay = new LogicDisplay();
 	this.logicDisplay.init();
 	this.zoom = 1;
+	this.temporaryObjectArray = []
 	
 	/*
 	 * INITIALIZE INPUT HANDLER 
@@ -153,6 +154,7 @@ GraphicDisplay.prototype.execute = function(e) {
 	
 	// Draw to tooltip
 	this.drawToolTip();
+	console.log(`isChanged: ${this.isChanged()}`)
 };
 
 GraphicDisplay.prototype.saveState = function() {
@@ -1117,6 +1119,7 @@ GraphicDisplay.prototype.createNew = function() {
 	$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
 	this.undoStack = []
 	this.redoStack = []
+	this.temporaryObjectArray = []
 	this.execute
 }
 GraphicDisplay.prototype.openDesign = function() {
@@ -1152,6 +1155,9 @@ GraphicDisplay.prototype.openDesign = function() {
 		$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
 	})
 }
+GraphicDisplay.prototype.isChanged = function() {
+	return this.temporaryObjectArray.length != this.logicDisplay.components.length
+}
 GraphicDisplay.prototype.saveDesign = function() {
     // Check if the file path is defined and if the project is not read-only
     if (this.filePath != '') {
@@ -1174,7 +1180,7 @@ GraphicDisplay.prototype.saveDesign = function() {
                 this.filePath = data.filePath;
                 // Write to the chosen file path
                 fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
-                this.isDesignChanged = false; // Reset the flag indicating changes
+				this.temporaryObjectArray = this.logicDisplay.components
                 this.setToolTip('Save success');
                 document.title = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
                 $('#titlething')[0].innerText = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
@@ -1201,6 +1207,7 @@ GraphicDisplay.prototype.saveDesignAs = function() {
             // Write to the chosen file path
             fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 			this.setToolTip('Save success')
+			this.temporaryObjectArray = this.logicDisplay.components
 			document.title = `${data.filePath[0]} - CompassCAD`
 			$('#titlething')[0].innerText = `${data.filePath[0]} - CompassCAD`
         }
