@@ -1,6 +1,6 @@
 {
   "name": "compasscad",
-  "version": "0.9.9",
+  "version": "1.0.0",
   "description": "very good CAD software",
   "main": "entry.js",
   "author": "zeankun.dev",

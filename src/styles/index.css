@@ -218,6 +218,14 @@ small {
     padding: 10px;
     cursor: pointer;
 }
+.modal {
+    position: absolute;
+    top: 45%;
+    left: 35%;
+    width: 25%;
+    background-color: var(--primary);
+    padding: 10px;
+}
 .hidden {
     display: none;
 }

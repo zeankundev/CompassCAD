@@ -8,6 +8,12 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
+        <div class="modal hidden">
+            <h3>Settings</h3>
+            <br>
+            <label>Undo stack size</label>
+            <input type="number" value="25">
+        </div>
         <div class="prompt hidden" id="prompt-container">
             <h3 id="prompt-message">Enter Prompt</h3>
             <br>
@@ -37,6 +43,7 @@
                 <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
                 <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
                 <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
+                <button title="Save Design as (ctrl+alt+s)" id="save-design-as"><img src="../../assets/icons/saveas.svg"></button>
                 <div class="division-line"></div>
                 <button title="Undo (ctrl+z)" id="undo"><img src="../../assets/icons/undo.svg"></button>
                 <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
@@ -71,6 +78,7 @@
         <script src="../js/core/LogicDisplay.js"></script>
         <script src="../js/core/InputHandler.js"></script>
         <script src="../js/core/GraphicsRenderer.js"></script>
+        <script src="../js/ConfigToPass.js"></script>
         <script src="../js/Utils.js"></script>
         <script>
             $(document).ready(() => {
@@ -179,6 +187,9 @@
                 }
                 document.getElementById('save-design').onclick = () => {
                     renderer.saveDesign()
+                }
+                document.getElementById('save-design-as').onclick = () => {
+                    renderer.saveDesignAs()
                 }
 
                 document.addEventListener('keydown', (event) => {

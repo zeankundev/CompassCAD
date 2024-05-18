@@ -55,6 +55,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.counter = 0;
 	this.undoStack = []
 	this.redoStack = []
+	this.temporaryObjectArray = []
 	
 	this.displayWidth = width;
 	this.displayHeight = height;
@@ -499,7 +500,6 @@ GraphicDisplay.prototype.drawShape = function(shape) {
 
 GraphicDisplay.prototype.drawToolTip = function(e) {
 	$('#status-stuff')[0].innerText = this.getToolTip()
-	console.log(this.getToolTip())
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
@@ -1127,8 +1127,8 @@ GraphicDisplay.prototype.openDesign = function() {
 			{name: 'CompassCAD File', extensions: ['ccad']}
 		]
 	}).then(res => {
-		document.title = `${res.filePaths[0]} - CompassCAD`
-		$('#titlething')[0].innerText = `${res.filePaths[0]} - CompassCAD`
+		document.title = `${res.filePaths[0].replace(/\\/g, '/')} - CompassCAD`
+		$('#titlething')[0].innerText = `${res.filePaths[0].replace(/\\/g, '/')} - CompassCAD`
 		console.log(res)
 		fs.promises.readFile(res.filePaths[0], 'utf-8')
 		.then(resp => JSON.parse(resp))
@@ -1137,27 +1137,34 @@ GraphicDisplay.prototype.openDesign = function() {
 			this.logicDisplay.components = [];
 			this.logicDisplay.importJSON(data, this.logicDisplay.components)
 			this.filePath = res.filePaths[0]
+			this.temporaryObjectArray = data
 		})
 		.catch(error => {
 			console.error('Error reading or parsing the file:', error);
+			alert('Invalid CompassCAD design! \nPlease recheck your CompassCAD design contents!\nIf it is not helpful, you can search it up or ask in the forums about the error')
+			this.filePath = ''
+			document.title = `New Design 1 - CompassCAD`
+			$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
 		});
-		}).catch(e => {
-			alert('A Problem Occured! \n'+e)
-		})
+	}).catch(e => {
+		this.filePath = ''
+		document.title = `New Design 1 - CompassCAD`
+		$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
+	})
 }
 GraphicDisplay.prototype.saveDesign = function() {
     // Check if the file path is defined and if the project is not read-only
     if (this.filePath != '') {
-		console.log('written to '+this.filePath)
-		this.setToolTip('Save success')
+        console.log('written to ' + this.filePath);
+        this.setToolTip('Save success');
         // Directly write to the known file path
         fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
-
     } else {
-		console.log('prompted!')
+        console.log('prompted!');
         // Prompt the user to choose a save location
         diag.showSaveDialog({
             title: 'Save CompassCAD file',
+            defaultPath: 'New Design 1.ccad',
             filters: [
                 { name: 'CompassCAD File', extensions: ['ccad'] }
             ]
@@ -1167,9 +1174,10 @@ GraphicDisplay.prototype.saveDesign = function() {
                 this.filePath = data.filePath;
                 // Write to the chosen file path
                 fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
-				this.setToolTip('Save success')
-				document.title = `${data.filePath[0]} - CompassCAD`
-				$('#titlething')[0].innerText = `${data.filePath[0]} - CompassCAD`
+                this.isDesignChanged = false; // Reset the flag indicating changes
+                this.setToolTip('Save success');
+                document.title = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
+                $('#titlething')[0].innerText = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
             }
         }).catch(err => {
             console.error('Error during save:', err);
@@ -1177,6 +1185,29 @@ GraphicDisplay.prototype.saveDesign = function() {
     }
 };
 
+GraphicDisplay.prototype.saveDesignAs = function() {
+	console.log('user wants to save as!!')
+    // Prompt the user to choose a save location
+    diag.showSaveDialog({
+        title: 'Save CompassCAD file',
+		defaultPath: 'Another Design.ccad',
+        filters: [
+            { name: 'CompassCAD File', extensions: ['ccad'], }
+        ]
+    }).then(data => {
+        if (!data.canceled) {
+            // Save the chosen file path
+            this.filePath = data.filePath;
+            // Write to the chosen file path
+            fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
+			this.setToolTip('Save success')
+			document.title = `${data.filePath[0]} - CompassCAD`
+			$('#titlething')[0].innerText = `${data.filePath[0]} - CompassCAD`
+        }
+    }).catch(err => {
+        console.error('Error during save:', err);
+    });
+}
 /*
  * Helper function used to initialize the
  * graphic environment and behaviour (mainly input events)

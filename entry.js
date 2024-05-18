@@ -1,5 +1,6 @@
 const { BrowserWindow, app } = require('electron')
 const path = require('path')
+const fs = require('fs')
 const appLogo = path.join(__dirname, '/build/icons/512x512.png')
 
 const init = () => {
@@ -19,6 +20,9 @@ const init = () => {
     require('@electron/remote/main').enable(window.webContents)
     window.loadFile('src/html/index.html')
     window.setMenuBarVisibility(false)
+    if (!fs.existsSync(app.getPath('userData') + '/.compasscfg')) {
+        fs.writeFileSync(app.getPath('userData') + '/.compasscfg', '{"undoStackSize":50,"redoStackSize":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100}', { encoding: 'utf8' });
+    }
 }
 app.on('ready', () => {
     console.log('App Ready')
