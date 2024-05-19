@@ -3,7 +3,13 @@
 # CompassCAD
 very good CAD software. plan out buildings, and show it off to your boss.
 
-# Installation
+# Official download links
+There are a few mirrors which allows you to download CompassCAD. Please download from the official mirrors to avoid getting mislead!
+- [Official Github mirror link](https://github.com/zeankundev/CompassCAD/releases/latest)
+- [Softpedia](https://www.softpedia.com/get/Science-CAD/CompassCAD.shtml) (windows only, and yes this is official)
+- [CompassCAD Sourceforge page](https://sourceforge.net/projects/compasscad/)
+
+# Installation (for amateurs)
 To install, you need:
 - node v20+
 - yarn
