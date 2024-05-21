@@ -1183,8 +1183,9 @@ GraphicDisplay.prototype.saveDesign = function() {
                 fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 				this.temporaryObjectArray = this.logicDisplay.components
                 this.setToolTip('Save success');
-                document.title = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
-                $('#titlething')[0].innerText = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`;
+                document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
+                $('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
+		console.log(`file is ${data.filePath[0].replace(/\\/g, '/')}, actual datapath is ${data.filePath}`)
             }
         }).catch(err => {
             console.error('Error during save:', err);
@@ -1209,8 +1210,8 @@ GraphicDisplay.prototype.saveDesignAs = function() {
             fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 			this.setToolTip('Save success')
 			this.temporaryObjectArray = this.logicDisplay.components
-			document.title = `${data.filePath[0]} - CompassCAD`
-			$('#titlething')[0].innerText = `${data.filePath[0]} - CompassCAD`
+			document.title = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`
+			$('#titlething')[0].innerText = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`
         }
     }).catch(err => {
         console.error('Error during save:', err);
