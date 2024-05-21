@@ -1185,7 +1185,7 @@ GraphicDisplay.prototype.saveDesign = function() {
                 this.setToolTip('Save success');
                 document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
                 $('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
-		console.log(`file is ${data.filePath[0].replace(/\\/g, '/')}, actual datapath is ${data.filePath}`)
+				console.log(`file is ${data.filePath[0].replace(/\\/g, '/')}, actual datapath is ${data.filePath}`)
             }
         }).catch(err => {
             console.error('Error during save:', err);
