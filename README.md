@@ -7,6 +7,9 @@ very good CAD software. plan out buildings, and show it off to your boss.
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/compasscad)
 
+# Stay up to date
+- [Official CompassCAD X (formerly Twitter) blog](https://x.com/CompassCAD)
+
 # Official download links
 There are a few mirrors which allows you to download CompassCAD. Please download from the official mirrors to avoid getting mislead!
 - [Official Github mirror link](https://github.com/zeankundev/CompassCAD/releases/latest)
