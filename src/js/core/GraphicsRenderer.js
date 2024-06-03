@@ -584,7 +584,7 @@ GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
 GraphicDisplay.prototype.performAction = function(e, action) {
 	switch(this.mode) {
 		case this.MODES.ADDPOINT:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -603,7 +603,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 		case this.MODES.ADDLINE:
 			if (e.which == 3)
 			
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -635,7 +635,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add line (press esc to cancel)";
 			break;
 		case this.MODES.ADDCIRCLE:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -664,7 +664,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add circle (press esc to cancel)";
 			break;
 		case this.MODES.ADDARC:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -704,7 +704,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add arc (press esc to cancel)";
 			break;
 		case this.MODES.ADDRECTANGLE:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -733,7 +733,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add rectangle (press esc to cancel)";
 			break;
 		case this.MODES.ADDMEASURE:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -762,7 +762,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add measure (press esc to cancel)";
 			break;
 		case this.MODES.ADDLABEL:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -788,7 +788,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			this.tooltip = "Add label (press esc to cancel)";
 			break;
 		case this.MODES.ADDSHAPE:
-			this.cvn.css('cursor', 'default');
+			this.cvn.css('cursor', 'crosshair');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.SHAPE;
@@ -804,7 +804,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 			}
 			break;
 		case this.MODES.NAVIGATE:
-			this.cvn.css('cursor', 'move');
+			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.DOWN) {
 				this.camMoving = true; 
 				this.xCNaught = this.getCursorXLocal();
@@ -1247,6 +1247,25 @@ var initCAD = function(gd) {
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.LESSTHAN, function(e){
 		gd.zoomOut();
 	});
+
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.N, function(e){
+		if (confirm('Are you sure? You are going to lose your design!') == true)
+			renderer.createNew()
+		else
+			return
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.Z, function(e){
+		gd.undo()
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.Y, function(e){
+		gd.redo()
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.O, function(e){
+		gd.openDesign()
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.S, function(e){
+		gd.saveDesign()
+	}, {ctrl: true});
 	
 	// Bind mouse events
 	gd.cvn.mousemove(function(e) {
