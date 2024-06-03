@@ -1240,11 +1240,11 @@ var initCAD = function(gd) {
 	
 	// Adding keyboard events 
 	
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.N, function(e){
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.GREATERTHAN, function(e){
 		gd.zoomIn();
 	});
 	
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.M, function(e){
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.LESSTHAN, function(e){
 		gd.zoomOut();
 	});
 	
