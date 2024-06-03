@@ -155,7 +155,6 @@ GraphicDisplay.prototype.execute = function(e) {
 	
 	// Draw to tooltip
 	this.drawToolTip();
-	console.log(`isChanged: ${this.isChanged()}`)
 };
 
 GraphicDisplay.prototype.saveState = function() {
@@ -1226,11 +1225,17 @@ var initCAD = function(gd) {
 	
 	// Bind keyboard events
 	$(document).keyup(function(e) {
-		gd.keyboard.onKeyUp(e);
+		if (document.querySelector("modal:not(.hidden)") == null)
+			gd.keyboard.onKeyUp(e);
+		else
+			return
 	});
 	
 	$(document).keydown(function(e) {
-		gd.keyboard.onKeyDown(e);
+		if (document.querySelector("modal:not(.hidden)") == null)
+			gd.keyboard.onKeyDown(e);
+		else
+			return
 	});
 	
 	// Adding keyboard events 
