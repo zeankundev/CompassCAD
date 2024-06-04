@@ -80,9 +80,10 @@
         <script src="../js/core/GraphicsRenderer.js"></script>
         <script src="../js/ConfigToPass.js"></script>
         <script src="../js/Utils.js"></script>
+        <script src="../js/LocalizationHandler.js"></script>
         <script>
             $(document).ready(() => {
-                
+                const loc = new Localizator()
                 const renderer = new GraphicDisplay('canvas', 800,600)
                 const resizeWin = () => {
                     var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 10
@@ -205,6 +206,7 @@
                 });
 
                 initCAD(renderer)
+                
             })
         </script>
     </body>

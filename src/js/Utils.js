@@ -48,3 +48,15 @@ function callPrompt(message) {
         promptCancel.addEventListener('click', onCancel);
     });
 }
+function applyStringOnHTML(key, affected, type, additionalString) {
+    const loc = new Localizator()
+    if (type === 'html'){
+        affected.innerHTML = loc.getLocalizedString(key) + additionalString
+        console.log('HTML affected')
+    } else if (type === 'title') {
+        affected.title = loc.getLocalizedString(key) + additionalString
+        console.log('Title affected')
+    } else {
+        throw new Error('Unknown type')
+    }
+}
