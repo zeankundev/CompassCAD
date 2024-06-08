@@ -106,6 +106,7 @@ function GraphicDisplay(displayName, width, height) {
 	
 	this.keyboard = null;
 	this.mouse = null;
+	this.config = null;
 }
 
 GraphicDisplay.prototype.init = function(e) {
@@ -122,11 +123,13 @@ GraphicDisplay.prototype.init = function(e) {
 	 */
 	this.keyboard = new KeyboardHandler();
 	this.mouse = new MouseHandler();
+	this.config = new ConfigHandler();
 	
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor','crosshair');
 	this.context = this.cvn[0].getContext('2d');
 	this.execute()
+	this.fontSize = this.config.getValueKey("fontSize");
 };
 
 GraphicDisplay.prototype.execute = function(e) {

@@ -8,12 +8,12 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
-        <div class="modal hidden">
+        <modal class="modal hidden">
             <h3>Settings</h3>
             <br>
             <label>Undo stack size</label>
             <input type="number" value="25">
-        </div>
+        </modal>
         <modal class="prompt hidden" id="prompt-container">
             <h3 id="prompt-message">Enter Prompt</h3>
             <br>
@@ -80,10 +80,8 @@
         <script src="../js/core/GraphicsRenderer.js"></script>
         <script src="../js/ConfigToPass.js"></script>
         <script src="../js/Utils.js"></script>
-        <script src="../js/LocalizationHandler.js"></script>
         <script>
             $(document).ready(async() => {
-                const loc = await new Localizator()
                 const renderer = new GraphicDisplay('canvas', 800,600)
                 const resizeWin = () => {
                     var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 10
