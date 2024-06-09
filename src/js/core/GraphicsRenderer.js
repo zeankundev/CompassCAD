@@ -778,7 +778,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.temporaryPoints[1] = this.getCursorYLocal();
 				}
 			} else if ( action == this.MOUSEACTION.DOWN ) {
-				callPrompt('Enter text')
+				callPrompt(await this.getLocal('enterText'))
 				.then(text => {
 					if ( text.length > 0 ) {
 						this.logicDisplay.addComponent(new Label(
