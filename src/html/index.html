@@ -80,6 +80,7 @@
         <script src="../js/core/GraphicsRenderer.js"></script>
         <script src="../js/ConfigToPass.js"></script>
         <script src="../js/Utils.js"></script>
+        <script src="../js/LocalizationHandler.js"></script>
         <script>
             $(document).ready(async() => {
                 const renderer = new GraphicDisplay('canvas', 800,600)
@@ -204,6 +205,34 @@
                 });
 
                 initCAD(renderer)
+                // Apply translations to header elements
+                applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
+                // Apply translations to window action buttons
+                applyStringOnHTML('considerSupporting', document.querySelector('.window-actions button[onclick^="redirectToSomewhere"]'), 'title', '');
+                applyStringOnHTML('minimize', document.getElementById('minimize'), 'title', '');
+                applyStringOnHTML('maximize', document.getElementById('maximize'), 'title', '');
+                applyStringOnHTML('close', document.getElementById('close'), 'title', '');
+                // Apply translations to toolbar buttons
+                applyStringOnHTML('createNew', document.getElementById('new-design'), 'title', '');
+                applyStringOnHTML('openDesign', document.getElementById('open-design'), 'title', '');
+                applyStringOnHTML('saveDesign', document.getElementById('save-design'), 'title', '');
+                applyStringOnHTML('saveDesignAs', document.getElementById('save-design-as'), 'title', '');
+                applyStringOnHTML('undo', document.getElementById('undo'), 'title', '');
+                applyStringOnHTML('redo', document.getElementById('redo'), 'title', '');
+                applyStringOnHTML('navigateToolbar', document.getElementById('navigate'), 'title', '');
+                applyStringOnHTML('moveToolbar', document.getElementById('move-obj'), 'title', '');
+                applyStringOnHTML('deleteToolbar', document.getElementById('del-obj'), 'title', '');
+                applyStringOnHTML('addPointToolbar', document.getElementById('add-point'), 'title', '');
+                applyStringOnHTML('addLineToolbar', document.getElementById('add-line'), 'title', '');
+                applyStringOnHTML('addCircleToolbar', document.getElementById('add-circle'), 'title', '');
+                applyStringOnHTML('addArcToolbar', document.getElementById('add-arc'), 'title', '');
+                applyStringOnHTML('addRectangleToolbar', document.getElementById('add-rect'), 'title', '');
+                applyStringOnHTML('addLabelToolbar', document.getElementById('add-label'), 'title', '');
+                applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
+                applyStringOnHTML('addTreeToolbar', document.getElementById('add-tree'), 'title', '');
+                applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
+                // Apply translations to footer
+                applyStringOnHTML('enterText', document.getElementById('status-stuff'), 'html', '');
             })
         </script>
     </body>

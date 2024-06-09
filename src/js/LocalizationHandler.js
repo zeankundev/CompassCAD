@@ -39,17 +39,14 @@ function Localizator() {
         enterText: "Enter text",
         cancel: "Cancel"
     };
-
-    this.loadLanguage();
 }
 
-Localizator.prototype.loadLanguage = function() {
+Localizator.prototype.loadLanguage = async function() {
     const configHandler = new ConfigHandler();
+    var lang = await configHandler.getValueKey('lang'); // Wait for the language value
+    console.log(lang);
     
-    configHandler.loadConfig().then(() => {
-        const lang = configHandler.getValueKey('lang');
-        return fetch(`../translations/${lang}.json`);
-    })
+    await fetch(`../translations/${lang}.json`)
     .then(resp => {
         if (!resp.ok) {
             throw new Error('Failed to fetch language file');
@@ -67,13 +64,23 @@ Localizator.prototype.loadLanguage = function() {
     });
 };
 
-Localizator.prototype.getLocalizedString = function(key) {
-    if (this.currentLanguageJSON && key in this.currentLanguageJSON) {
-        return this.currentLanguageJSON[key];
+Localizator.prototype.getLocalizedString = async function(key) {
+    if (!this.currentLanguageJSON) {
+        await this.loadLanguage(); // Ensure language is loaded only once
+    }
+    if (this.currentLanguageJSON != null) {
+        if (this.currentLanguageJSON && Object.keys(this.currentLanguageJSON).includes(key)) {
+            console.log(`does it exist? (lang): ${Object.keys(this.currentLanguageJSON).includes(key) ? 'yes' : 'no'}, value: ${this.currentLanguageJSON[key]}`)
+            return this.currentLanguageJSON[key];
+        } else {
+            console.warn(`String ${key} not found, falling back to English`);
+            return this.defaultKey[key] || key; // Return the key itself if no fallback available
+        }
     } else {
-        console.warn(`String ${key} not found, falling back to English`);
-        return this.defaultKey[key] || key; // Return the key itself if no fallback available
+        console.error("LANGUAGE NOT AVAILABLE");
+        return this.defaultKey[key] || key;
     }
 };
 
+module.exports = Localizator;
 module.exports = Localizator;
