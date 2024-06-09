@@ -110,7 +110,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.translator = null;
 }
 
-GraphicDisplay.prototype.init = function(e) {
+GraphicDisplay.prototype.init = async function(e) {
 	/*
 	 * INITIALIZE THE LOGIC
 	 */ 
@@ -131,7 +131,7 @@ GraphicDisplay.prototype.init = function(e) {
 	this.cvn.css('cursor','crosshair');
 	this.context = this.cvn[0].getContext('2d');
 	this.execute()
-	this.fontSize = this.config.getValueKey("fontSize");
+	this.fontSize = await this.config.getValueKey("fontSize");
 };
 GraphicDisplay.prototype.getLocal = async function(key) {
     return await this.translator.getLocalizedString(key);
