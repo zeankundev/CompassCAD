@@ -107,6 +107,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.keyboard = null;
 	this.mouse = null;
 	this.config = null;
+	this.translator = null;
 }
 
 GraphicDisplay.prototype.init = function(e) {
@@ -124,6 +125,7 @@ GraphicDisplay.prototype.init = function(e) {
 	this.keyboard = new KeyboardHandler();
 	this.mouse = new MouseHandler();
 	this.config = new ConfigHandler();
+	this.translator = new Localizator();
 	
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor','crosshair');
@@ -131,7 +133,9 @@ GraphicDisplay.prototype.init = function(e) {
 	this.execute()
 	this.fontSize = this.config.getValueKey("fontSize");
 };
-
+GraphicDisplay.prototype.getLocal = async function(key) {
+    return await this.translator.getLocalizedString(key);
+}
 GraphicDisplay.prototype.execute = function(e) {
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
@@ -584,7 +588,7 @@ GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
  * @param e
  * @param action
  */
-GraphicDisplay.prototype.performAction = function(e, action) {
+GraphicDisplay.prototype.performAction = async function(e, action) {
 	switch(this.mode) {
 		case this.MODES.ADDPOINT:
 			this.cvn.css('cursor', 'crosshair');
@@ -601,7 +605,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.saveState()
 				this.execute()
 			}
-			this.tooltip = "Add point (press esc to cancel)";
+			this.tooltip = await this.getLocal('addPoint');
 			break;
 		case this.MODES.ADDLINE:
 			if (e.which == 3)
@@ -635,7 +639,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Add line (press esc to cancel)";
+			this.tooltip = await this.getLocal('addLine');
 			break;
 		case this.MODES.ADDCIRCLE:
 			this.cvn.css('cursor', 'crosshair');
@@ -664,7 +668,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Add circle (press esc to cancel)";
+			this.tooltip = await this.getLocal('addCircle');
 			break;
 		case this.MODES.ADDARC:
 			this.cvn.css('cursor', 'crosshair');
@@ -704,7 +708,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Add arc (press esc to cancel)";
+			this.tooltip = await this.getLocal('addArc');
 			break;
 		case this.MODES.ADDRECTANGLE:
 			this.cvn.css('cursor', 'crosshair');
@@ -733,7 +737,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Add rectangle (press esc to cancel)";
+			this.tooltip = await this.getLocal('addRectangle');
 			break;
 		case this.MODES.ADDMEASURE:
 			this.cvn.css('cursor', 'crosshair');
@@ -762,7 +766,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Add measure (press esc to cancel)";
+			this.tooltip = await this.getLocal('addMeasure');
 			break;
 		case this.MODES.ADDLABEL:
 			this.cvn.css('cursor', 'crosshair');
@@ -788,7 +792,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				})
 				.catch(e => {})
 			}
-			this.tooltip = "Add label (press esc to cancel)";
+			this.tooltip = await this.getLocal('addLabel');
 			break;
 		case this.MODES.ADDSHAPE:
 			this.cvn.css('cursor', 'crosshair');
@@ -817,7 +821,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.camX += this.getCursorXLocal() - this.xCNaught;
 				this.camY += this.getCursorYLocal() - this.yCNaught;
 			}
-			this.tooltip = "Navigate";
+			this.tooltip = await this.getLocal('navigate');
 			break;
 		case this.MODES.MOVE:
 			this.cvn.css('cursor', 'default');
@@ -843,7 +847,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = "Move (select a node point to move, esc to cancel)";
+			this.tooltip = await this.getLocal('move');
 			break;
 		case this.MODES.EDIT:
 			// TODO: In the next release
@@ -864,7 +868,7 @@ GraphicDisplay.prototype.performAction = function(e, action) {
 				this.saveState()
 				this.execute()
 			}
-			this.tooltip = "Delete (click a node point to delete, esc to cancel)";
+			this.tooltip = await this.getLocal('delete');
 			break;
 		default:
 			this.tooltip = this.tooltipDefault;
