@@ -60,3 +60,7 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
         throw new Error('Unknown type');
     }
 }
+function openSettings() {
+    document.getElementById('set-modal').classList.remove('hidden')
+}
+document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}

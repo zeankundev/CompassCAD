@@ -2,6 +2,11 @@ const $ = require('jquery')
 const diag = require('@electron/remote').dialog
 const fs = require('fs');
 const { BrowserWindow } = require('@electron/remote');
+let lastTime = performance.now();
+        let frameCount = 0;
+        let fps = 0;
+        let fpsWarningThreshold = 20;
+        let warningDisplayed = false;
 function GraphicDisplay(displayName, width, height) {
 	// Enumerate all available modes
 	this.MODES = {
@@ -1054,7 +1059,7 @@ GraphicDisplay.prototype.setToolTip = function(text) {
 
 GraphicDisplay.prototype.getToolTip = function(e) {
 	var text = this.tooltip;
-	return text;
+	return text + ` (${fps} FPS)`;
 };
 
 //TODO: Move in Utils.
@@ -1310,6 +1315,19 @@ var initCAD = function(gd) {
 	
 	// Start CAD
 	setInterval(function(e) {
+	    const currentTime = performance.now();
+        frameCount++;
+        if (currentTime - lastTime >= 1000) {
+            fps = frameCount;
+            frameCount = 0;
+            lastTime = currentTime;
+            if (fps < fpsWarningThreshold && !warningDisplayed) {
+                console.warn('FPS dropped below 20!');
+                document.getElementById('fps-warner').style.display = 'inline-flex'
+            } else if (fps >= fpsWarningThreshold) {
+                document.getElementById('fps-warner').style.display = 'none'
+            }
+        }
 		gd.execute();
-	}, 1);
+	}, 0);
 };

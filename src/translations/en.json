@@ -35,6 +35,13 @@
     "addTree": "Add Tree (press esc to cancel)",
     "addMeasure": "Measure (press esc to cancel)",
     "enterText": "Enter text",
-    "cancel": "Cancel"
-    
+    "cancel": "Cancel",
+    "fpsWarning": "Your computer is going below the optimal FPS!",
+    "undoStackText": "Undo stack size",
+    "redoStackText": "Redo stack size",
+    "fontSizeText": "Font Size (px)",
+    "gridSpacingText": "Grid Spacing (1/?)",
+    "languageText": "Language",
+    "settings": "Settings",
+    "configSaved": "Config saved! Restart to apply"
 }

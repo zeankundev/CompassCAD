@@ -35,5 +35,13 @@
     "addTree": "Boom Toevoegen (druk op esc om te annuleren)",
     "addMeasure": "Meten (druk op esc om te annuleren)",
     "enterText": "Voer tekst in",
-    "cancel": "Annuleren"
+    "cancel": "Annuleren",
+    "fpsWarning": "Uw computer gaat onder de optimale FPS!",
+    "undoStackText": "Ongedaan maken stapelgrootte",
+    "redoStackText": "Opnieuw stapelgrootte",
+    "fontSizeText": "Lettergrootte (px)",
+    "gridSpacingText": "Rasterafstand (1/?)",
+    "languageText": "Taal",
+    "settings": "Instellingen",
+    "configSaved": "Configuratie opgeslagen! Herstart om toe te passen"
 }

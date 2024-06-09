@@ -8,12 +8,33 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
-        <modal class="modal hidden">
-            <h3>Settings</h3>
+        <modal class="modal hidden" id="set-modal">
+            <h3 id="settings-text">Settings</h3>
             <br>
-            <label>Undo stack size</label>
-            <input type="number" value="25">
-        </modal>
+            <label id="undo-stack-text">Undo stack size</label>&nbsp;
+            <input type="number" id="undo-stack" value="50">
+            <br><br>
+            <label id="redo-stack-text">Redo stack size</label>&nbsp;
+            <input type="number" id="redo-stack" value="50">
+            <br><br>
+            <label id="font-size-text">Font Size (px)</label>&nbsp;
+            <input type="number" id="font-size" value="24">
+            <br><br>
+            <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
+            <input type="number" id="grid-spacing" value="100">
+            <br><br>
+            <label id="language-text">Language</label>&nbsp;
+            <select id="language">
+                <option value="en">English</option>
+                <option value="nl">Nederlands</option>
+                <option value="ge">ქართული ენა</option>
+                <option value="id">Bahasa Indonesia</option>
+            </select>
+            <br><br>
+            <button id="prompt-close">Close</button>
+            <br><br>
+            <div id="config-saved"><img src="../../assets/icons/complete.svg">&nbsp;<span id="config-text">Config saved! Restart to apply</span></div>
+        </modal></span>
         <modal class="prompt hidden" id="prompt-container">
             <h3 id="prompt-message">Enter Prompt</h3>
             <br>
@@ -32,6 +53,7 @@
                 <small id="titlething">New Design 1 - CompassCAD</small>
             </div>
             <div class="window-actions">
+                <button id="fps-warner" style="display:none;width:350px" title="Your computer is going below the optimal FPS!"><img src="../../assets/icons/warn.svg">&nbsp;&nbsp;<p id="fps-warner-inner"></p></button>
                 <button onclick="redirectToSomewhere(`https://afsc.org/news/6-ways-you-can-support-palestinians-gaza`)" title="Consider supporting Palestine"><img src="../../assets/icons/supportive.svg"></button>
                 <button id="minimize" title="Minimize"><img src="../../assets/icons/minimize.svg"></button>
                 <button id="maximize" title="Maximize"><img src="../../assets/icons/maximize.svg"></button>
@@ -47,6 +69,8 @@
                 <div class="division-line"></div>
                 <button title="Undo (ctrl+z)" id="undo"><img src="../../assets/icons/undo.svg"></button>
                 <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
+                <div class="division-line"></div>
+                <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>
             </div>
             <div class="container">
                 <div class="quick-tool" id="quick-tool">
@@ -83,7 +107,33 @@
         <script src="../js/LocalizationHandler.js"></script>
         <script>
             $(document).ready(async() => {
+                const config = new ConfigHandler()
                 const renderer = new GraphicDisplay('canvas', 800,600)
+                document.getElementById('undo-stack').value = await config.getValueKey('undoStackSize')
+                document.getElementById('redo-stack').value = await config.getValueKey('redoStackSize')
+                document.getElementById('font-size').value = await config.getValueKey('fontSize')
+                document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
+                document.getElementById('language').value = await config.getValueKey('lang')
+                document.getElementById('undo-stack').onchange = () => {
+                    config.saveKey('undoStackSize', document.getElementById('undo-stack').value);
+                };
+
+                document.getElementById('redo-stack').onchange = () => {
+                    config.saveKey('redoStackSize', document.getElementById('redo-stack').value);
+                };
+
+                document.getElementById('font-size').onchange = () => {
+                    config.saveKey('fontSize', document.getElementById('font-size').value);
+                };
+
+                document.getElementById('grid-spacing').onchange = () => {
+                    config.saveKey('gridSpacing', document.getElementById('grid-spacing').value);
+                };
+
+                document.getElementById('language').onchange = () => {
+                    config.saveKey('lang', document.getElementById('language').value);
+                };
+
                 const resizeWin = () => {
                     var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 10
                     renderer.displayHeight = window.innerHeight - resultedHeight
@@ -208,6 +258,8 @@
                 // Apply translations to header elements
                 applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
                 // Apply translations to window action buttons
+                applyStringOnHTML('fpsWarning', document.getElementById('fps-warner'), 'title', '');
+                applyStringOnHTML('fpsWarning', document.getElementById('fps-warner-inner'), 'html', '');
                 applyStringOnHTML('considerSupporting', document.querySelector('.window-actions button[onclick^="redirectToSomewhere"]'), 'title', '');
                 applyStringOnHTML('minimize', document.getElementById('minimize'), 'title', '');
                 applyStringOnHTML('maximize', document.getElementById('maximize'), 'title', '');
@@ -231,8 +283,15 @@
                 applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
                 applyStringOnHTML('addTreeToolbar', document.getElementById('add-tree'), 'title', '');
                 applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
-                // Apply translations to footer
                 applyStringOnHTML('enterText', document.getElementById('status-stuff'), 'html', '');
+                applyStringOnHTML('undoStackText', document.getElementById('undo-stack-text'), 'html', '');
+                applyStringOnHTML('redoStackText', document.getElementById('redo-stack-text'), 'html', '');
+                applyStringOnHTML('fontSizeText', document.getElementById('font-size-text'), 'html', '');
+                applyStringOnHTML('gridSpacingText', document.getElementById('grid-spacing-text'), 'html', '');
+                applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');
+                applyStringOnHTML('settings', document.getElementById('settings-text'), 'html', '');
+                applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
+                applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
             })
         </script>
     </body>

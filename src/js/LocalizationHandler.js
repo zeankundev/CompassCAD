@@ -70,7 +70,6 @@ Localizator.prototype.getLocalizedString = async function(key) {
     }
     if (this.currentLanguageJSON != null) {
         if (this.currentLanguageJSON && Object.keys(this.currentLanguageJSON).includes(key)) {
-            console.log(`does it exist? (lang): ${Object.keys(this.currentLanguageJSON).includes(key) ? 'yes' : 'no'}, value: ${this.currentLanguageJSON[key]}`)
             return this.currentLanguageJSON[key];
         } else {
             console.warn(`String ${key} not found, falling back to English`);

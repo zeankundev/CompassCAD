@@ -6,7 +6,7 @@
     "saveDesignAs": "Simpan Desain sebagai (ctrl+alt+s)",
     "undo": "Urungkan (ctrl+z)",
     "redo": "Ulangi (ctrl+y)",
-    "considerSupporting": "Dukung Palestina",
+    "considerSupporting": "Pertimbangkan mendukung Palestina",
     "minimize": "Kecilkan",
     "maximize": "Besarkan",
     "close": "Tutup",
@@ -24,7 +24,7 @@
     "addMeasureToolbar": "Ukur (z)",
     "navigate": "Navigasi",
     "move": "Pindah (pilih titik simpul untuk dipindahkan, tekan esc untuk batal)",
-    "delete": "Hapus (tekan titik simpul untuk menghapus, tekan esc untuk batal)",
+    "delete": "Hapus (klik titik simpul untuk menghapus, tekan esc untuk batal)",
     "addPoint": "Tambahkan Titik (tekan esc untuk batal)",
     "addLine": "Tambahkan Garis (tekan esc untuk batal)",
     "addCircle": "Tambahkan Lingkaran (tekan esc untuk batal)",
@@ -35,5 +35,13 @@
     "addTree": "Tambahkan Pohon (tekan esc untuk batal)",
     "addMeasure": "Ukur (tekan esc untuk batal)",
     "enterText": "Masukkan teks",
-    "cancel": "Batal"
+    "cancel": "Batal",
+    "fpsWarning": "Komputer Anda berjalan di bawah FPS optimal!",
+    "undoStackText": "Ukuran tumpukan pengurungan",
+    "redoStackText": "Ukuran tumpukan pengulangan",
+    "fontSizeText": "Ukuran Font (px)",
+    "gridSpacingText": "Jarak Grid (1/?)",
+    "languageText": "Bahasa",
+    "settings": "Pengaturan",
+    "configSaved": "Konfigurasi disimpan! Mulai ulang untuk menerapkan"
 }
