@@ -45,4 +45,4 @@ You're good to go! Now type `yarn start` to start
 - [WebCAD5](https://github.com/hacklabcz/WebCAD5) (without this project, I would be stuck to my IGCSE-level mathematics level)
 - [QroCAD](https://github.com/Qrodex/QroCAD) (the first iteration, but still maintained to this very day)
 - [HugeIcons](https://hugeicons.com/) (its beautiful af)
-- Licensed under MIT license.
+- Licensed under UFOL (Unified, Free and Open License) 2.0. © 2024 Lookeeloo Ltd.

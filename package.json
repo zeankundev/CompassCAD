@@ -4,7 +4,7 @@
   "description": "very good CAD software",
   "main": "entry.js",
   "author": "zeankun.dev",
-  "license": "MIT",
+  "license": "UFOL-2.0",
   "homepage": "https://zeankundev.github.io/CompassCAD",
   "scripts": {
     "start": "electron .",
