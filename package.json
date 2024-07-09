@@ -43,7 +43,6 @@
       "icon": "./build/icons/512x512.png"
     },
     "snap": {
-    	"confinement": "classic",
     	"allowNativeWayland": true
     },
     "mac": {

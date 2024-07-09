@@ -218,6 +218,16 @@ small {
     padding: 10px;
     cursor: pointer;
 }
+@keyframes popup {
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 .modal {
     position: absolute;
     top: 25%;
@@ -225,6 +235,7 @@ small {
     width: 25%;
     background-color: var(--primary);
     padding: 10px;
+    animation: popup 0.5 ease;
 }
 .modal input[type=number], .modal input[type=text], .modal select {
     -webkit-appearance: none;

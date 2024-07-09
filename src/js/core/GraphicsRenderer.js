@@ -74,6 +74,9 @@ function GraphicDisplay(displayName, width, height) {
 	this.zoom = 1;
 	this.zoomin = 2;
 	this.zoomout = 0.5;
+	this.currentZoom = 1; // Add this to your initialization
+    this.targetZoom = 1;  // Add this to your initialization
+    this.zoomSpeed = 0.1; // Adjust the speed of the zoom transition
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -138,13 +141,26 @@ GraphicDisplay.prototype.init = async function(e) {
 	this.execute()
 	this.fontSize = await this.config.getValueKey("fontSize");
 };
+GraphicDisplay.prototype.lerp = function(start, end, time) {
+    return start + (end - start) * time;
+}
+GraphicDisplay.prototype.snapToGrid = function(x, y) {
+    // Snap the given coordinates to the nearest grid point
+    let gridSize = this.gridSize * this.zoom;
+    let snappedX = Math.round(x / gridSize) * gridSize;
+    let snappedY = Math.round(y / gridSize) * gridSize;
+    return { x: snappedX, y: snappedY };
+    console.log({ x: snappedX, y: snappedY })
+};
+
 GraphicDisplay.prototype.getLocal = async function(key) {
     return await this.translator.getLocalizedString(key);
 }
 GraphicDisplay.prototype.execute = function(e) {
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
-	
+	this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
+	this.zoom = this.currentZoom;
 	this.updateCamera();
 	
 	this.clearGrid();
@@ -979,15 +995,12 @@ GraphicDisplay.prototype.unselectComponent = function(e) {
 	}
 };
 
-GraphicDisplay.prototype.updateCamera = function(e) {
-	this.cOutX = this.camX;
-	this.cOutY = this.camY;
-	
-	if (this.camMoving) {
-		this.cOutX += this.getCursorXLocal() - this.xCNaught;
-		this.cOutY += this.getCursorYLocal() - this.yCNaught;
-	}
+GraphicDisplay.prototype.updateCamera = function() {
+    // Ensure camera position and zoom are correctly set
+    this.cameraX = this.cOutX - (this.offsetX * this.zoom);
+    this.cameraY = this.cOutY - (this.offsetY * this.zoom);
 };
+
 
 /**
  * This method is used to set CAD in SHAPE mode
@@ -1026,7 +1039,7 @@ GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	if ( newZoom <= 0.2 || newZoom >= 4 )
 		return;
 	
-	this.zoom = newZoom;
+	this.targetZoom = newZoom;
 };
 
 GraphicDisplay.prototype.zoomIn = function(e) {
