@@ -73,7 +73,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.camY = 0;
 	this.zoom = 1;
 	this.zoomin = 2;
-	this.zoomout = 0.5;
+	this.zoomout = 0.7;
 	this.currentZoom = 1; // Add this to your initialization
     this.targetZoom = 1;  // Add this to your initialization
     this.zoomSpeed = 0.1; // Adjust the speed of the zoom transition
@@ -1037,10 +1037,9 @@ GraphicDisplay.prototype.resetMode = function(e) {
 
 GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	var newZoom = this.zoom * zoomFactor; 
-	console.log(newZoom)
 	
 	// Zoom interval control
-	if ( newZoom <= 0.2 || newZoom >= 4 )
+	if ( newZoom == 0.125 || newZoom == 4 )
 		return;
 	
 	this.targetZoom = newZoom;
@@ -1348,3 +1347,4 @@ var initCAD = function(gd) {
 		gd.execute();
 	}, 0);
 };
+

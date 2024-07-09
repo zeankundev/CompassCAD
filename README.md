@@ -41,22 +41,6 @@ cd sunset && yarn
 
 You're good to go! Now type `yarn start` to start
 
-## Installation steps for users below Windows 10 (e.g. Windows 7) [EXPERIMENTAL]
-- Install any version of node (v20+).
-
-On `package.json`, change the Electron version to 22.3.7.
-```
-"electron": "^22.3.7"
-```
-
-Resolve any dependencies.
-
-```
-yarn
-```
-
-You're good to go! Enjoy. If there are issues, don't hesitate to [file a report here.](https://github.com/zeankundev/CompassCAD/issues)
-
 # Licenses and acknowledgements
 - [WebCAD5](https://github.com/hacklabcz/WebCAD5) (without this project, I would be stuck to my IGCSE-level mathematics level)
 - [QroCAD](https://github.com/Qrodex/QroCAD) (the first iteration, but still maintained to this very day)
