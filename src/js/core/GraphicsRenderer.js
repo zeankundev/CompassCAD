@@ -996,9 +996,13 @@ GraphicDisplay.prototype.unselectComponent = function(e) {
 };
 
 GraphicDisplay.prototype.updateCamera = function() {
-    // Ensure camera position and zoom are correctly set
-    this.cameraX = this.cOutX - (this.offsetX * this.zoom);
-    this.cameraY = this.cOutY - (this.offsetY * this.zoom);
+    this.cOutX = this.camX;
+	this.cOutY = this.camY;
+
+	if (this.camMoving) {
+		this.cOutX += this.getCursorXLocal() - this.xCNaught;
+		this.cOutY += this.getCursorYLocal() - this.yCNaught;
+	}
 };
 
 
