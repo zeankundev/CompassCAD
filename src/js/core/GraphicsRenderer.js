@@ -73,10 +73,10 @@ function GraphicDisplay(displayName, width, height) {
 	this.camY = 0;
 	this.zoom = 1;
 	this.zoomin = 2;
-	this.zoomout = 0.7;
+	this.zoomout = 0.5;
 	this.currentZoom = 1; // Add this to your initialization
     this.targetZoom = 1;  // Add this to your initialization
-    this.zoomSpeed = 0.1; // Adjust the speed of the zoom transition
+    this.zoomSpeed = 0.05; // Adjust the speed of the zoom transition
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -144,15 +144,6 @@ GraphicDisplay.prototype.init = async function(e) {
 GraphicDisplay.prototype.lerp = function(start, end, time) {
     return start + (end - start) * time;
 }
-GraphicDisplay.prototype.snapToGrid = function(x, y) {
-    // Snap the given coordinates to the nearest grid point
-    let gridSize = this.gridSize * this.zoom;
-    let snappedX = Math.round(x / gridSize) * gridSize;
-    let snappedY = Math.round(y / gridSize) * gridSize;
-    return { x: snappedX, y: snappedY };
-    console.log({ x: snappedX, y: snappedY })
-};
-
 GraphicDisplay.prototype.getLocal = async function(key) {
     return await this.translator.getLocalizedString(key);
 }
@@ -574,33 +565,35 @@ GraphicDisplay.prototype.drawRules = function(e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
-	var naught = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth/2;
-	
-	for (var i = 0; i < 1 + this.displayWidth / this.gridSpacing / this.zoom; i++){
-		this.context.beginPath();
-		this.context.moveTo(naught, -this.displayHeight);
-		this.context.lineTo(naught, this.displayHeight);
-		this.context.closePath();
-		this.context.stroke();
-		
-		naught += this.gridSpacing * this.zoom;
-	}
-	
-	// TODO this is a weird solution. Generalize it for all zoom factor
-	if ( this.zoom == 2 )
-		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2 + this.gridSpacing/2 * this.zoom;
-	else
-		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2;
-	
-	for (var i = 1 + this.displayHeight / this.gridSpacing / this.zoom; i >= 0; i--){
-		this.context.beginPath();
-		this.context.moveTo(-this.displayWidth, naught);
-		this.context.lineTo(this.displayWidth, naught);
-		this.context.closePath();
-		this.context.stroke();
-		
-		naught += this.gridSpacing * this.zoom;
-	}
+    const gridSpacing = this.gridSpacing * this.zoom;
+    const width = this.displayWidth;
+    const height = this.displayHeight;
+
+    let startX = Math.floor((camXoff - width / 2) / gridSpacing) * gridSpacing;
+    let startY = Math.floor((camYoff - height / 2) / gridSpacing) * gridSpacing;
+
+    this.context.beginPath();
+    this.context.lineWidth = 0.15;
+    this.context.strokeStyle = "#666";
+
+    for (let x = startX; x < camXoff + width / 2; x += gridSpacing) {
+        this.context.moveTo(x, camYoff - height / 2);
+        this.context.lineTo(x, camYoff + height / 2);
+    }
+
+    for (let y = startY; y < camYoff + height / 2; y += gridSpacing) {
+        this.context.moveTo(camXoff - width / 2, y);
+        this.context.lineTo(camXoff + width / 2, y);
+    }
+
+    this.context.stroke();
+};
+
+GraphicDisplay.prototype.snapToGrid = function(x, y) {
+    const gridSize = this.gridSpacing * this.zoom;
+    const snappedX = Math.round(x / gridSize) * gridSize;
+    const snappedY = Math.round(y / gridSize) * gridSize;
+    return { x: snappedX, y: snappedY };
 };
 
 /**
@@ -1037,9 +1030,10 @@ GraphicDisplay.prototype.resetMode = function(e) {
 
 GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	var newZoom = this.zoom * zoomFactor; 
+	console.log(newZoom)
 	
 	// Zoom interval control
-	if ( newZoom == 0.125 || newZoom == 4 )
+	if ( newZoom <= 0.2 || newZoom >= 4 )
 		return;
 	
 	this.targetZoom = newZoom;
