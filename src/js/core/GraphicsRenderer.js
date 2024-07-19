@@ -565,28 +565,33 @@ GraphicDisplay.prototype.drawRules = function(e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
-    const gridSpacing = this.gridSpacing * this.zoom;
-    const width = this.displayWidth;
-    const height = this.displayHeight;
+	var naught = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth/2;
 
-    let startX = Math.floor((camXoff - width / 2) / gridSpacing) * gridSpacing;
-    let startY = Math.floor((camYoff - height / 2) / gridSpacing) * gridSpacing;
+	for (var i = 0; i < 1 + this.displayWidth / this.gridSpacing / this.zoom; i++){
+		this.context.beginPath();
+		this.context.moveTo(naught, -this.displayHeight);
+		this.context.lineTo(naught, this.displayHeight);
+		this.context.closePath();
+		this.context.stroke();
 
-    this.context.beginPath();
-    this.context.lineWidth = 0.15;
-    this.context.strokeStyle = "#666";
+		naught += this.gridSpacing * this.zoom;
+	}
 
-    for (let x = startX; x < camXoff + width / 2; x += gridSpacing) {
-        this.context.moveTo(x, camYoff - height / 2);
-        this.context.lineTo(x, camYoff + height / 2);
-    }
+	// TODO this is a weird solution. Generalize it for all zoom factor
+	if ( this.zoom == 2 )
+		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2 + this.gridSpacing/2 * this.zoom;
+	else
+		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2 + this.gridSpacing/2 * this.zoom;
 
-    for (let y = startY; y < camYoff + height / 2; y += gridSpacing) {
-        this.context.moveTo(camXoff - width / 2, y);
-        this.context.lineTo(camXoff + width / 2, y);
-    }
+	for (var i = 1 + this.displayHeight / this.gridSpacing / this.zoom; i >= 0; i--){
+		this.context.beginPath();
+		this.context.moveTo(-this.displayWidth, naught);
+		this.context.lineTo(this.displayWidth, naught);
+		this.context.closePath();
+		this.context.stroke();
 
-    this.context.stroke();
+		naught += this.gridSpacing * this.zoom;
+	}
 };
 
 GraphicDisplay.prototype.snapToGrid = function(x, y) {
