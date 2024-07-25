@@ -1,8 +1,11 @@
 const CreateVerticalBarrel = () => {
     const shape = new Shape()
-    shape.addComponent(new Rectangle(0,0,100,100));
-	shape.addComponent(new Circle(50,50,50,100));
-	shape.addComponent(new Label(50,100,"V.B."));
+    shape.addComponent(new Line(0,0,0,100));
+	shape.addComponent(new Line(0,0,25,50));
+	shape.addComponent(new Line(0,0,-25,50));
+	shape.addComponent(new Line(-25,50,0,50))
+	shape.addComponent(new Line(25,50,0,50));
+	shape.addComponent(new Label(0,0,'North'));
     return shape
 }
 

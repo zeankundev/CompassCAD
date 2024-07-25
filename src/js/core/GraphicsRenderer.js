@@ -72,8 +72,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.camX = 0;
 	this.camY = 0;
 	this.zoom = 1;
-	this.zoomin = 2;
-	this.zoomout = 0.5;
+	this.zoomin = 1.2;
+	this.zoomout = 0.8;
 	this.currentZoom = 1; // Add this to your initialization
     this.targetZoom = 1;  // Add this to your initialization
     this.zoomSpeed = 0.05; // Adjust the speed of the zoom transition
@@ -125,6 +125,7 @@ GraphicDisplay.prototype.init = async function(e) {
 	this.logicDisplay = new LogicDisplay();
 	this.logicDisplay.init();
 	this.zoom = 1;
+	document.getElementById('zoom-level').innerText = '1x'
 	this.temporaryObjectArray = []
 	
 	/*
@@ -193,7 +194,7 @@ GraphicDisplay.prototype.clearGrid = function(e) {
 	this.context.save();
 	
 	this.context.translate(this.displayWidth/2, this.displayHeight/2);
-	this.context.strokeStyle = "#666";
+	this.context.strokeStyle = "#e9e9e9";
 	this.context.lineWidth = 0.15;
 };
 
@@ -441,7 +442,7 @@ GraphicDisplay.prototype.drawMeasure = function(x1, y1, x2, y2, color, radius) {
 		localZoom = 0.5;
 		localDiff = 20;
 	}
-	
+
 	this.drawLine(x1, y1, x2, y2, color, radius);
 	
 	this.context.fillStyle = color;
@@ -565,34 +566,28 @@ GraphicDisplay.prototype.drawRules = function(e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
-	var naught = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth/2;
+    // Calculate the starting offset for the grid
+    var xStart = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth / 2;
+    var yStart = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight / 2;
 
-	for (var i = 0; i < 1 + this.displayWidth / this.gridSpacing / this.zoom; i++){
-		this.context.beginPath();
-		this.context.moveTo(naught, -this.displayHeight);
-		this.context.lineTo(naught, this.displayHeight);
-		this.context.closePath();
-		this.context.stroke();
+    // Calculate the number of circles to draw along the width and height
+    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / this.zoom) + 1;
+    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / this.zoom) + 1;
 
-		naught += this.gridSpacing * this.zoom;
-	}
-
-	// TODO this is a weird solution. Generalize it for all zoom factor
-	if ( this.zoom == 2 )
-		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2 + this.gridSpacing/2 * this.zoom;
-	else
-		naught = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight/2 + this.gridSpacing/2 * this.zoom;
-
-	for (var i = 1 + this.displayHeight / this.gridSpacing / this.zoom; i >= 0; i--){
-		this.context.beginPath();
-		this.context.moveTo(-this.displayWidth, naught);
-		this.context.lineTo(this.displayWidth, naught);
-		this.context.closePath();
-		this.context.stroke();
-
-		naught += this.gridSpacing * this.zoom;
-	}
+    // Loop to draw the circles
+    for (var i = 0; i < numCirclesX; i++) {
+        for (var j = 0; j < numCirclesY; j++) {
+            var x = xStart + i * this.gridSpacing * this.zoom;
+            var y = yStart + j * this.gridSpacing * this.zoom;
+            
+            this.context.beginPath();
+            this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
+            this.context.closePath();
+            this.context.stroke();
+        }
+    }
 };
+
 
 GraphicDisplay.prototype.snapToGrid = function(x, y) {
     const gridSize = this.gridSpacing * this.zoom;
@@ -1042,6 +1037,7 @@ GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 		return;
 	
 	this.targetZoom = newZoom;
+	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`
 };
 
 GraphicDisplay.prototype.zoomIn = function(e) {
@@ -1329,7 +1325,7 @@ var initCAD = function(gd) {
     });
 	
 	// Start CAD
-	setInterval(function(e) {
+	function repeatInstance(e) {
 	    const currentTime = performance.now();
         frameCount++;
         if (currentTime - lastTime >= 1000) {
@@ -1344,6 +1340,7 @@ var initCAD = function(gd) {
             }
         }
 		gd.execute();
-	}, 0);
+	};
+	setInterval(repeatInstance, 0)
 };
 

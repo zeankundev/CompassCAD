@@ -122,7 +122,7 @@ Rectangle.prototype.constructor = Rectangle;
 * @param y2
 */
 function Measure(x1, y1, x2, y2) {
-Line.call(this, x1, y1, x2, y2);
+    Line.call(this, x1, y1, x2, y2);
 
 this.type = COMPONENT_TYPES.MEASURE;
 this.color = "#ff3";
