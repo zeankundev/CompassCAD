@@ -10,6 +10,17 @@ very good CAD software. plan out buildings, and show it off to your boss.
 # Stay up to date
 - [Official CompassCAD X (formerly Twitter) blog](https://x.com/CompassCAD)
 
+# System requirements
+- Windows 10 22H2, macOS El Capitan, Ubuntu 20.04 or up (use electron v22.3.27 to run CompassCAD on Windows 7 (SP1 needed))
+- Intel Core(R) Solo U1300 (32bit), Intel Core(R) 2 Duo E7500 or better (CPUs from 2010 or later may guarrantee >100FPS)
+- 1GB RAM (2GB for >100FPS)
+- 90MB of free space
+- 1280x720 or higher
+
+## Tested on:
+- Fujitsu Lifebook P1610 Windows 10 (10-20 FPS, barely usable) 
+- Lenovo ThinkPad T430 (350-600 FPS, highly usable)
+
 # Official download links
 There are a few mirrors which allows you to download CompassCAD. Please download from the official mirrors to avoid getting mislead!
 - [Official Github mirror link](https://github.com/zeankundev/CompassCAD/releases/latest)
