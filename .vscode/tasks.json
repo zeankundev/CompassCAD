@@ -1,0 +1,7 @@
+{
+    "version": "2.0.0",
+    "tasks": [{
+        "label": "start-nosb",
+        "command": "yarn start",
+    }]
+}
