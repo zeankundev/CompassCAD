@@ -1033,7 +1033,7 @@ GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	console.log(newZoom)
 	
 	// Zoom interval control
-	if ( newZoom <= 0.2 || newZoom >= 4 )
+	if ( newZoom <= 0.4 || newZoom >= 4 )
 		return;
 	
 	this.targetZoom = newZoom;
