@@ -8,20 +8,29 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
+        <command-pallete>
+            <input type="text" placeholder="Start CompassCAD action">
+            <div class="pallete-actions" id="pallete-actions">
+                <div class="option" id="new-project">New Design</div>
+                <div class="option" id="new-project">Open Design</div>
+                <div class="option" id="new-project">Save Design</div>
+                <div class="option" id="new-project">Save Design as</div>
+            </div>
+        </command-pallete>
         <modal class="modal hidden" id="set-modal">
             <h3 id="settings-text">Settings</h3>
             <br>
             <label id="undo-stack-text">Undo stack size</label>&nbsp;
             <input type="number" id="undo-stack" value="50">
             <br><br>
-            <label id="redo-stack-text">Redo stack size</label>&nbsp;
-            <input type="number" id="redo-stack" value="50">
-            <br><br>
             <label id="font-size-text">Font Size (px)</label>&nbsp;
             <input type="number" id="font-size" value="24">
             <br><br>
             <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
             <input type="number" id="grid-spacing" value="100">
+            <br><br>
+            <label id="disable-lerp-text">Disable zoom smoothing (lerp)</label>&nbsp;
+            <input type="checkbox" id="disable-lerp">
             <br><br>
             <label id="language-text">Language</label>&nbsp;
             <select id="language">
@@ -113,16 +122,12 @@
                 const config = new ConfigHandler()
                 const renderer = new GraphicDisplay('canvas', 800,600)
                 document.getElementById('undo-stack').value = await config.getValueKey('undoStackSize')
-                document.getElementById('redo-stack').value = await config.getValueKey('redoStackSize')
                 document.getElementById('font-size').value = await config.getValueKey('fontSize')
                 document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
+                document.getElementById('disable-lerp').checked = await config.getValueKey('disableLerp')
                 document.getElementById('language').value = await config.getValueKey('lang')
                 document.getElementById('undo-stack').onchange = () => {
                     config.saveKey('undoStackSize', document.getElementById('undo-stack').value);
-                };
-
-                document.getElementById('redo-stack').onchange = () => {
-                    config.saveKey('redoStackSize', document.getElementById('redo-stack').value);
                 };
 
                 document.getElementById('font-size').onchange = () => {
@@ -131,6 +136,9 @@
 
                 document.getElementById('grid-spacing').onchange = () => {
                     config.saveKey('gridSpacing', document.getElementById('grid-spacing').value);
+                };
+                document.getElementById('disable-lerp').onchange = () => {
+                    config.saveKey('disableLerp', document.getElementById('disable-lerp').checked);
                 };
 
                 document.getElementById('language').onchange = () => {
@@ -288,7 +296,6 @@
                 applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
                 applyStringOnHTML('enterText', document.getElementById('status-stuff'), 'html', '');
                 applyStringOnHTML('undoStackText', document.getElementById('undo-stack-text'), 'html', '');
-                applyStringOnHTML('redoStackText', document.getElementById('redo-stack-text'), 'html', '');
                 applyStringOnHTML('fontSizeText', document.getElementById('font-size-text'), 'html', '');
                 applyStringOnHTML('gridSpacingText', document.getElementById('grid-spacing-text'), 'html', '');
                 applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');

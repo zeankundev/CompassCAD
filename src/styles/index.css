@@ -258,3 +258,38 @@ p {
 #config-saved {
     display: none;
 }
+
+command-pallete {
+    position: absolute;
+    margin-top: 5%;
+    flex-direction: column;
+    display: flex;
+    width: 25%;
+    margin-left: 35%;
+    background-color: var(--secondary);
+    padding: 5px;
+}
+command-pallete input[type=text] {
+    -webkit-appearance: none;
+    border: none;
+    font-size: 12pt;
+    display: none;
+    flex: 1;
+    padding: 5px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--tertiary);
+    color: var(--text);
+    outline: none;
+}
+.pallete-actions {
+    overflow-y: scroll;
+    max-height: 10%;
+}
+.option {
+    margin-top: 5px;
+    padding: 5px;
+    user-select: none;
+}
+.option:hover {
+    background-color: var(--tertiary);
+}
