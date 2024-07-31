@@ -12,6 +12,46 @@ LogicDisplay.prototype.init = function() {
 LogicDisplay.prototype.addComponent = function(component) {
 	this.components.push(component);
 };
+LogicDisplay.prototype.customSyntax = function (command) {
+    if (!command.startsWith('\\')) {
+        return command;
+    }
+
+    let result = [...this.components] // make a copy of the data to manipulate
+    
+    const commands = command.split(';');
+    
+    commands.forEach(cmd => {
+        const [action, param] = cmd.split('=');
+        if (action.startsWith('\\')) {
+            const parts = action.slice(1).split('.');
+            let index = parseInt(parts[0], 10);
+            let property = parts[1];
+
+            if (!isNaN(index) && index < result.length) {
+                if (param !== undefined && property) {
+                    // Handle property assignment, e.g. \0.name.replaceTo="Hans"
+                    let [prop, method] = property.split('.');
+
+                    if (method === "replaceTo") {
+                        let value = param.replace(/\"/g, ""); // remove the quotes
+                        result[index][prop] = value;
+                    }
+                } else if (property) {
+                    // Handle property access, e.g. \0.name
+                    result = result[index][property];
+                }
+            }
+        } else if (action.startsWith('\\name.find')) {
+            // Handle search functionality
+            let searchValue = param.replace(/\"/g, ""); // remove the quotes
+            result = result.filter(obj => obj.name === searchValue);
+        }
+    });
+    
+    return JSON.stringify(result);
+	console.log(result)
+}
 
 LogicDisplay.prototype.jettIsMyWaifu = function() {
 	this.components.push(new Point(-100, -100));

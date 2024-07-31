@@ -479,7 +479,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
 	var tmpText = "";
-	var arrText = text.split(" ");
+	var arrText = this.logicDisplay.customSyntax(text).split(" ");
 	
 	for (var i = 0; i < arrText.length; i++) {
 		tmpLength += arrText[i].length + 1;
@@ -1139,7 +1139,7 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
 		if (y2 < y1)
 			theta = (PI/2)*3;
 	}
-	
+	console.log(theta);
 	return theta;
 };
 
