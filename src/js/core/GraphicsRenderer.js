@@ -1131,7 +1131,7 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
     var theta = Math.atan2(dy, dx); // atan2 returns the angle in radians between -PI and PI
 
     // Scale the angle to the desired range (-6 to 6)
-    var scaledAngle = theta * (6 / PI);
+    var scaledAngle = theta * (3.2 / PI);
 
     console.log(scaledAngle);
     return scaledAngle;
