@@ -1125,22 +1125,16 @@ GraphicDisplay.prototype.saveComponent = function() {
  * Return the angle in radiants
  */
 GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
-	var PI = Math.PI;
-	var theta = Math.atan((y2 - y1) / (x2 - y2)) * (PI/180);
-	
-	if (x2 < x1)
-		theta -= PI;
-	else if (y2 > y1)
-		theta -= PI*2;
-	
-	if (x2 == x1) {
-		theta = PI/2;
-		
-		if (y2 < y1)
-			theta = (PI/2)*3;
-	}
-	console.log(theta);
-	return theta;
+    var PI = Math.PI;
+    var dx = x2 - x1;
+    var dy = y2 - y1;
+    var theta = Math.atan2(dy, dx); // atan2 returns the angle in radians between -PI and PI
+
+    // Scale the angle to the desired range (-6 to 6)
+    var scaledAngle = theta * (6 / PI);
+
+    console.log(scaledAngle);
+    return scaledAngle;
 };
 
 GraphicDisplay.prototype.createNew = function() {
