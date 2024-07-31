@@ -103,6 +103,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.snapTolerance = 10;
 	
 	this.fontSize = 24;
+
+	this.maximumStack = 50;
 	
 	this.displayName = displayName;
 	this.cvn = 0; // Canvas HTML element
@@ -140,7 +142,9 @@ GraphicDisplay.prototype.init = async function(e) {
 	this.cvn.css('cursor','crosshair');
 	this.context = this.cvn[0].getContext('2d');
 	this.execute()
+	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");
+	this.maximumStack = await this.config.getValueKey("maximumStack");
 };
 GraphicDisplay.prototype.lerp = function(start, end, time) {
     return start + (end - start) * time;
@@ -148,10 +152,14 @@ GraphicDisplay.prototype.lerp = function(start, end, time) {
 GraphicDisplay.prototype.getLocal = async function(key) {
     return await this.translator.getLocalizedString(key);
 }
-GraphicDisplay.prototype.execute = function(e) {
+GraphicDisplay.prototype.execute = async function(e) {
+	const disableLerp = await this.config.getValueKey("disableLerp")
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
-	this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
+	if (disableLerp != true)
+		this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
+	else 
+		this.currentZoom = this.targetZoom;
 	this.zoom = this.currentZoom;
 	this.updateCamera();
 	
@@ -180,7 +188,7 @@ GraphicDisplay.prototype.execute = function(e) {
 GraphicDisplay.prototype.saveState = function() {
     this.undoStack.push(JSON.stringify(this.logicDisplay.components));
 	console.log(this.undoStack)
-    if (this.undoStack.length > 50) { // Limit the undo stack size to 50
+    if (this.undoStack.length > this.maximumStack) { // Limit the undo stack size to 50
         this.undoStack.shift();
     }
     // Clear the redo stack when a new action is performed
