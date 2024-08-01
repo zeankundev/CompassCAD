@@ -17,12 +17,13 @@ LogicDisplay.prototype.customSyntax = function (command) {
         return command;
     }
 
-    let result = [...this.components] // make a copy of the data to manipulate
-    
+    let result = [...this.components]; // make a copy of the data to manipulate
+	console.log(...this.components)
     const commands = command.split(';');
-    
+
     commands.forEach(cmd => {
         const [action, param] = cmd.split('=');
+
         if (action.startsWith('\\')) {
             const parts = action.slice(1).split('.');
             let index = parseInt(parts[0], 10);
@@ -42,16 +43,52 @@ LogicDisplay.prototype.customSyntax = function (command) {
                     result = result[index][property];
                 }
             }
-        } else if (action.startsWith('\\name.find')) {
-            // Handle search functionality
-            let searchValue = param.replace(/\"/g, ""); // remove the quotes
-            result = result.filter(obj => obj.name === searchValue);
+        } else {
+            // Handle arithmetic operations
+            const match = action.match(/\\(\d+)\.(\w+)([\+\-\*\/])(\d+)\.(\w+)/);
+            if (match) {
+                const index1 = parseInt(match[1], 10);
+                const prop1 = match[2];
+                const operator = match[3];
+                const index2 = parseInt(match[4], 10);
+                const prop2 = match[5];
+
+                if (!isNaN(index1) && index1 < result.length && !isNaN(index2) && index2 < result.length) {
+                    const value1 = parseFloat(result[index1][prop1]);
+                    const value2 = parseFloat(result[index2][prop2]);
+
+                    if (!isNaN(value1) && !isNaN(value2)) {
+                        switch (operator) {
+                            case '+':
+                                result = value1 + value2;
+                                break;
+                            case '-':
+                                result = value1 - value2;
+                                break;
+                            case '*':
+                                result = value1 * value2;
+                                break;
+                            case '/':
+                                result = value1 / value2;
+                                break;
+                        }
+                    }
+                }
+            } else if (action.startsWith('\\type.find')) {
+                // Handle search functionality
+                let searchValue = param.replace(/\"/g, ""); // remove the quotes
+                result = result.filter(obj => obj.type === searchValue);
+            }
         }
     });
-    
+
+	if (result == undefined) {
+		result = 'ERR5 (undefined result)'
+	}
+
+    console.log(result);
     return JSON.stringify(result);
-	console.log(result)
-}
+};
 
 LogicDisplay.prototype.jettIsMyWaifu = function() {
 	this.components.push(new Point(-100, -100));
