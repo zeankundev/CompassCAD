@@ -18,7 +18,6 @@ LogicDisplay.prototype.customSyntax = function (command) {
     }
 
     let result = [...this.components]; // make a copy of the data to manipulate
-	console.log(...this.components)
     const commands = command.split(';');
 
     commands.forEach(cmd => {
@@ -86,7 +85,6 @@ LogicDisplay.prototype.customSyntax = function (command) {
 		result = 'ERR5 (undefined result)'
 	}
 
-    console.log(result);
     return JSON.stringify(result);
 };
 
