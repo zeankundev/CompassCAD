@@ -127,7 +127,7 @@ GraphicDisplay.prototype.init = async function(e) {
 	this.logicDisplay = new LogicDisplay();
 	this.logicDisplay.init();
 	this.zoom = 1;
-	document.getElementById('zoom-level').innerText = '1x'
+	document.getElementById('zoom-level').innerText = '1.000x'
 	this.temporaryObjectArray = []
 	
 	/*
