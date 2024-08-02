@@ -2,13 +2,13 @@ let renderer;
 $(document).ready(async() => {
     const config = new ConfigHandler()
     renderer = new GraphicDisplay('canvas', 800,600)
-    document.getElementById('undo-stack').value = await config.getValueKey('undoStackSize')
+    document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
     document.getElementById('disable-lerp').checked = await config.getValueKey('disableLerp')
     document.getElementById('language').value = await config.getValueKey('lang')
     document.getElementById('undo-stack').onchange = () => {
-        config.saveKey('undoStackSize', document.getElementById('undo-stack').value);
+        config.saveKey('maximumStack', document.getElementById('undo-stack').value);
     };
 
     document.getElementById('font-size').onchange = () => {
