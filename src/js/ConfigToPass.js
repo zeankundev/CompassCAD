@@ -14,8 +14,10 @@ ConfigHandler.prototype.loadConfig = async function() {
         })
         .catch(err => {
             console.error("Error loading configuration:", err);
+            alert('Your CompassCAD config file is missing.\nReopen CompassCAD without restarting the instance.\nError Code: E3')
             // If there's an error loading the configuration, fallback to defaults
             this.configuration = { ...this.defaults };
+            require('@electron/remote').BrowserWindow.getFocusedWindow().close()
         });
 }
 
