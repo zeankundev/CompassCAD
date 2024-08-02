@@ -1104,6 +1104,7 @@ GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
 				break;
 			case COMPONENT_TYPES.LINE:
 			case COMPONENT_TYPES.CIRCLE:
+			case COMPONENT_TYPES.ARC:
 			case COMPONENT_TYPES.RECTANGLE:
 			case COMPONENT_TYPES.MEASURE:
 				var delta = this.getDistance(x ,y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
