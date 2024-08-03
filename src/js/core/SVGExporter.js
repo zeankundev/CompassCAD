@@ -1,18 +1,80 @@
 const canvas2svg = require('canvas-to-svg')
 
 function SVGExporter() {
-    this.c2s = new canvas2svg(renderer.displayWidth, renderer.displayHeight)
+    this.c2s = new canvas2svg(1920, 1080)
     // hijack the renderer's logic display so we can get that shit there
     this.logicDisplay = renderer.logicDisplay
+    console.log(`renderer coutx: ${renderer.cOutX},renderer couty: ${renderer.cOutY}`)
 }
 
+SVGExporter.prototype.calculateOrigin = function(components) {
+    var minX = Infinity;
+    var maxY = -Infinity;
+
+    for (var i = 0; i < components.length; i++) {
+        var component = components[i];
+        if (!component.isActive()) continue;
+
+        switch (component.type) {
+            case COMPONENT_TYPES.POINT:
+                minX = Math.min(minX, component.x);
+                maxY = Math.max(maxY, component.y);
+                break;
+            case COMPONENT_TYPES.LINE:
+                minX = Math.min(minX, Math.min(component.x1, component.x2));
+                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                break;
+            case COMPONENT_TYPES.CIRCLE:
+                minX = Math.min(minX, component.x1);
+                maxY = Math.max(maxY, component.y1);
+                break;
+            case COMPONENT_TYPES.RECTANGLE:
+                minX = Math.min(minX, Math.min(component.x1, component.x2));
+                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                break;
+            case COMPONENT_TYPES.MEASURE:
+                minX = Math.min(minX, Math.min(component.x1, component.x2));
+                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                break;
+            case COMPONENT_TYPES.LABEL:
+                minX = Math.min(minX, component.x);
+                maxY = Math.max(maxY, component.y);
+                break;
+            case COMPONENT_TYPES.ARC:
+                minX = Math.min(minX, Math.min(component.x1, Math.min(component.x2, component.x3)));
+                maxY = Math.max(maxY, Math.max(component.y1, Math.max(component.y2, component.y3)));
+                break;
+        }
+    }
+    console.log({x: minX, y: maxY})
+    return { x: minX, y: maxY };
+};
+
 SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY) {
-	for (var i = 0; i < components.length; i++) {
-		if ( !components[i].isActive() )
-			continue;
-		
-		this.drawComponent(components[i], Math.min(1, (moveByX * 30)), Math.min(1, (moveByY * 30)));
+    var origin = this.calculateOrigin(components);
+	var refinedX = 0;
+	var refinedY = 0;
+
+	if (origin.x < -500) {
+		refinedX = origin.x / 12
+	} else if (origin.x < -300) {
+		refinedX = origin.x / 7
+	} else {
+		refinedX = origin.x / 2
 	}
+	if (origin.y > 800) {
+		refinedY = origin.y / 4
+	} else if (origin.y > 300) {
+		refinedY = origin.y / 3.5
+	} else {
+		refinedY = origin.y / 2.8
+	}
+
+    for (var i = 0; i < components.length; i++) {
+        if (!components[i].isActive()) continue;
+
+        this.drawComponent(components[i], Math.abs(refinedX) * moveByX, Math.abs(refinedY) * moveByY);
+    }
 };
 SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 	switch (component.type) {
@@ -78,9 +140,6 @@ SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.color,
 					component.radius);
 			break;
-		case COMPONENT_TYPES.SHAPE:
-			this.drawShapeSvg(component);
-			break;
 	} 
 };
 SVGExporter.prototype.drawPointSvg = function(x, y, color, radius) {
@@ -89,8 +148,8 @@ SVGExporter.prototype.drawPointSvg = function(x, y, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x + renderer.cOutX) * renderer.zoom, 
-		    (y + renderer.cOutY) * renderer.zoom, 
+			(x + renderer.cOutX * 20) * 1, 
+		    (y + renderer.cOutY * 20) * 1, 
 		    2, 0, 3.14159*2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
@@ -102,11 +161,11 @@ SVGExporter.prototype.drawLineSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.moveTo(
-			(x1 + renderer.cOutX) * renderer.zoom,
-			(y1 + renderer.cOutY) * renderer.zoom);
+			(x1 + renderer.cOutX) * 1,
+			(y1 + renderer.cOutY) * 1);
 	this.c2s.lineTo(
-			(x2 + renderer.cOutX) * renderer.zoom,
-			(y2 + renderer.cOutY) * renderer.zoom);
+			(x2 + renderer.cOutX) * 1,
+			(y2 + renderer.cOutY) * 1);
 	this.c2s.closePath();
 	this.c2s.stroke();
 	
@@ -120,9 +179,9 @@ SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x1 + renderer.cOutX) * renderer.zoom, 
-		    (y1 + renderer.cOutY) * renderer.zoom, 
-		    renderer.getDistance(x1, y1, x2, y2) * renderer.zoom,
+			(x1 + renderer.cOutX) * 1, 
+		    (y1 + renderer.cOutY) * 1, 
+		    renderer.getDistance(x1, y1, x2, y2) * 1,
 		    0, 3.14159*2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
@@ -140,10 +199,10 @@ SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius)
 SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	var distance = renderer.getDistance(x1, y1, x2, y2) * renderer.unitFactor * renderer.unitConversionFactor;
 	
-	var localZoom = renderer.zoom;
+	var localZoom = 1;
 	var localDiff = 0;
 	
-	if ( renderer.zoom <= 0.25 ) {
+	if ( 1 <= 0.25 ) {
 		localZoom = 0.5;
 		localDiff = 20;
 	}
@@ -154,17 +213,17 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.font = (renderer.fontSize * localZoom) + "px Consolas, monospace";
 	this.c2s.fillText(
 			distance.toFixed(2) + "" + renderer.unitMeasure,
-			(renderer.cOutX + x2 - 120) * renderer.zoom,
-			(renderer.cOutY + y2 + 30 + localDiff) * renderer.zoom);
+			(renderer.cOutX + x2 - 120) * 1,
+			(renderer.cOutY + y2 + 30 + localDiff) * 1);
 };
 
 SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	this.drawPointSvg(x, y, '#0ff', 2);
 	
-	var localZoom = renderer.zoom;
+	var localZoom = 1;
 	var localDiff = 0;
 	
-	if ( renderer.zoom <= 0.25 ) {
+	if ( 1 <= 0.25 ) {
 		localZoom = 0.5;
 		localDiff = 20;
 		y += localDiff;
@@ -185,8 +244,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 		if ( tmpLength > maxLength ) {
 			this.c2s.fillText(
 					tmpText,
-					(renderer.cOutX + x - 150) * renderer.zoom,
-					(renderer.cOutY + y + 30) * renderer.zoom);
+					(renderer.cOutX + x - 150) * 1,
+					(renderer.cOutY + y + 30) * 1);
 			y += 25 + localDiff;
 			tmpLength = 0;
 			tmpText = "";
@@ -196,22 +255,22 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	// Print the remainig text
 	this.c2s.fillText(
 			tmpText,
-			(renderer.cOutX + x - 150) * renderer.zoom,
-			(renderer.cOutY + y + 30) * renderer.zoom);
+			(renderer.cOutX + x - 150) * 1,
+			(renderer.cOutY + y + 30) * 1);
 };
 
 SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radius) {
-	var firstAngle = this.getAngle(x1, y1, x2, y2);
-	var secondAngle = this.getAngle(x1, y1, x3, y3);
+	var firstAngle = renderer.getAngle(x1, y1, x2, y2);
+	var secondAngle = renderer.getAngle(x1, y1, x3, y3);
 	
 	this.c2s.lineWidth = radius;
 	this.c2s.fillStyle = "#000000";
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x1 + renderer.cOutX) * renderer.zoom, 
-		    (y1 + renderer.cOutY) * renderer.zoom, 
-		    this.getDistance(x1, y1, x2, y2) * renderer.zoom,
+			(x1 + renderer.cOutX) * 1, 
+		    (y1 + renderer.cOutY) * 1, 
+		    renderer.getDistance(x1, y1, x2, y2) * 1,
 		    firstAngle, secondAngle, false);
 	this.c2s.stroke();
 	
@@ -219,14 +278,9 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 	this.drawPointSvg(x2, y2, color, radius);
 	this.drawPointSvg(x3, y3, color, radius);
 };
-
-SVGExporter.prototype.drawShapeSvg = function(shape) {
-	this.drawAllComponents(shape.components, shape.x, shape.y);
-	this.drawPointSvg(shape.x, shape.y, shape.color, shape.radius);
-};
 SVGExporter.prototype.exportSVG = function() {
     // will return the SVG
-    this.drawAllComponents(renderer.logicDisplay.components, 0, 0);
+    this.drawAllComponents(renderer.logicDisplay.components, 15, 5);
     // test first
     console.log(this.c2s.getSerializedSvg(true))
 }

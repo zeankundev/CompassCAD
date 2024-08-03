@@ -1134,7 +1134,6 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
     // Scale the angle to the desired range (-6 to 6)
     var scaledAngle = theta * (3.15 / PI);
 
-    console.log(scaledAngle);
     return scaledAngle;
 };
 
