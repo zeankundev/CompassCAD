@@ -4,6 +4,7 @@
     "openDesign": "Buka Desain (ctrl+o)",
     "saveDesign": "Simpan Desain (ctrl+s)",
     "saveDesignAs": "Simpan Desain sebagai (ctrl+alt+s)",
+    "exportDesign": "Ekspor Desain sebagai SVG (ctrl+e)",
     "undo": "Urungkan (ctrl+z)",
     "redo": "Ulangi (ctrl+y)",
     "considerSupporting": "Pertimbangkan mendukung Palestina",

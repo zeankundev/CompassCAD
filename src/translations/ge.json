@@ -4,6 +4,7 @@
     "openDesign": "დიზაინის გახსნა (ctrl+o)",
     "saveDesign": "დიზაინის შენახვა (ctrl+s)",
     "saveDesignAs": "დიზაინის შენახვა როგორც (ctrl+alt+s)",
+    "exportDesign": "დიზაინის ექსპორტი SVG სახით (ctrl+e)",
     "undo": "გაუქმება (ctrl+z)",
     "redo": "გადატვირთვა (ctrl+y)",
     "considerSupporting": "მოიფიქრეთ პალესტინის მხარდაჭერა",

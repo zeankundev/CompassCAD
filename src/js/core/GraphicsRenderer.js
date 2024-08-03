@@ -1241,6 +1241,25 @@ GraphicDisplay.prototype.saveDesignAs = function() {
         console.error('Error during save:', err);
     });
 }
+GraphicDisplay.prototype.exportDesign = function() {
+	console.log('user wants to export!!')
+    // Prompt the user to choose a save location
+    diag.showSaveDialog({
+        title: 'Export Design',
+		defaultPath: 'Design 1.svg',
+        filters: [
+            { name: 'Scalable Vector Graphics', extensions: ['svg'], }
+        ]
+    }).then(data => {
+        if (!data.canceled) {
+			const exporter = new SVGExporter()
+            fs.writeFileSync(this.filePath, JSON.stringify(exporter.exportSVG()));
+			this.setToolTip('Export success')
+        }
+    }).catch(err => {
+        console.error('Error during save:', err);
+    });
+}
 /*
  * Helper function used to initialize the
  * graphic environment and behaviour (mainly input events)
@@ -1290,6 +1309,10 @@ var initCAD = function(gd) {
 	}, {ctrl: true});
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.S, function(e){
 		gd.saveDesign()
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.E, function(e){
+		gd.exportDesign()
+		gd.setMode(gd.MODES.NAVIGATE)
 	}, {ctrl: true});
 	
 	// Bind mouse events

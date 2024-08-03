@@ -133,6 +133,9 @@ $(document).ready(async() => {
     document.getElementById('save-design-as').onclick = () => {
         renderer.saveDesignAs()
     }
+    document.getElementById('export-design').onclick = () => {
+        renderer.exportDesign()
+    }
 
     document.addEventListener('keydown', (event) => {
         console.log('Key down')
@@ -161,6 +164,7 @@ $(document).ready(async() => {
     applyStringOnHTML('openDesign', document.getElementById('open-design'), 'title', '');
     applyStringOnHTML('saveDesign', document.getElementById('save-design'), 'title', '');
     applyStringOnHTML('saveDesignAs', document.getElementById('save-design-as'), 'title', '');
+    applyStringOnHTML('exportDesign', document.getElementById('export-design'), 'title', '');
     applyStringOnHTML('undo', document.getElementById('undo'), 'title', '');
     applyStringOnHTML('redo', document.getElementById('redo'), 'title', '');
     applyStringOnHTML('navigateToolbar', document.getElementById('navigate'), 'title', '');

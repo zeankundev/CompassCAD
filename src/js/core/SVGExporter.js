@@ -284,5 +284,5 @@ SVGExporter.prototype.exportSVG = function() {
     // will return the SVG
     this.drawAllComponents(renderer.logicDisplay.components, 15, 5);
     // test first
-    console.log(this.c2s.getSerializedSvg(true))
+    return this.c2s.getSerializedSvg(true)
 }

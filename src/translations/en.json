@@ -4,6 +4,7 @@
     "openDesign": "Open Design (ctrl+o)",
     "saveDesign": "Save Design (ctrl+s)",
     "saveDesignAs": "Save Design as (ctrl+alt+s)",
+    "exportDesign": "Export Design as SVG (ctrl+e)",
     "undo": "Undo (ctrl+z)",
     "redo": "Redo (ctrl+y)",
     "considerSupporting": "Consider supporting Palestine",

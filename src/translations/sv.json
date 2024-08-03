@@ -4,6 +4,7 @@
     "openDesign": "Öppna Design (ctrl+o)",
     "saveDesign": "Spara Design (ctrl+s)",
     "saveDesignAs": "Spara Design som (ctrl+alt+s)",
+    "exportDesign": "Exportera design som SVG (ctrl+e)",
     "undo": "Ångra (ctrl+z)",
     "redo": "Gör om (ctrl+y)",
     "considerSupporting": "Överväg att stödja Palestina",
