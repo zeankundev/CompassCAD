@@ -459,6 +459,11 @@ cacheable-request@^7.0.2:
     normalize-url "^6.0.1"
     responselike "^2.0.0"
 
+canvas-to-svg@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/canvas-to-svg/-/canvas-to-svg-1.0.3.tgz#91ac34c1b84d5ee59ea098865a7abe07d9ae2bfe"
+  integrity sha512-qWQKPW0lRkOCClRmKtTzC5dNLtdOCzEOPYWASvW9ggkq4cRYL0o8RnC4fPc4tNE5WGm5YzJTGFztFG0JuCGXcQ==
+
 chalk@^4.0.2, chalk@^4.1.0, chalk@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/chalk/-/chalk-4.1.2.tgz#aac4e2b7734a740867aeb16bf02aad556a1e7a01"

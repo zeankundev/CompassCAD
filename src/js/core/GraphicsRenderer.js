@@ -533,7 +533,7 @@ GraphicDisplay.prototype.drawToolTip = function(e) {
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
-	this.context.lineWidth = 0.5;
+	this.context.lineWidth = 0;
 	this.context.strokeStyle = "#fff";
 	
 	this.context.beginPath();
