@@ -1253,7 +1253,7 @@ GraphicDisplay.prototype.exportDesign = function() {
     }).then(data => {
         if (!data.canceled) {
 			const exporter = new SVGExporter()
-            fs.writeFileSync(this.filePath, JSON.stringify(exporter.exportSVG()));
+            fs.writeFileSync(data.filePath, exporter.exportSVG());
 			this.setToolTip('Export success')
         }
     }).catch(err => {
