@@ -1,5 +1,5 @@
 const canvas2svg = require('canvas-to-svg')
-
+  
 function SVGExporter() {
     this.c2s = new canvas2svg(1920, 1080)
     // hijack the renderer's logic display so we can get that shit there
@@ -44,6 +44,10 @@ SVGExporter.prototype.calculateOrigin = function(components) {
                 minX = Math.min(minX, Math.min(component.x1, Math.min(component.x2, component.x3)));
                 maxY = Math.max(maxY, Math.max(component.y1, Math.max(component.y2, component.y3)));
                 break;
+			case COMPONENT_TYPES.SHAPE:
+				minX = Math.min(minX, component.x);
+                maxY = Math.max(maxY, component.y);
+                break;
         }
     }
     console.log({x: minX, y: maxY})
@@ -71,7 +75,6 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
 	} else {
 		refinedY = origin.y / 1.9
 	}
-
     for (var i = 0; i < components.length; i++) {
         if (!components[i].isActive()) continue;
 
@@ -142,6 +145,14 @@ SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.color,
 					component.radius);
 			break;
+		case COMPONENT_TYPES.SHAPE:
+			this.drawLabelSvg(
+				component.x + moveByX,
+				component.y + moveByY,
+				'Shape',
+				component.color,
+				component.radius);
+			break;
 	} 
 };
 SVGExporter.prototype.drawPointSvg = function(x, y, color, radius) {
@@ -150,8 +161,8 @@ SVGExporter.prototype.drawPointSvg = function(x, y, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x + renderer.cOutX * 20) * 1, 
-		    (y + renderer.cOutY * 20) * 1, 
+			x, 
+		    y, 
 		    2, 0, 3.14159*2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
@@ -163,11 +174,11 @@ SVGExporter.prototype.drawLineSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.moveTo(
-			(x1 + renderer.cOutX) * 1,
-			(y1 + renderer.cOutY) * 1);
+			x1,
+			y1 );
 	this.c2s.lineTo(
-			(x2 + renderer.cOutX) * 1,
-			(y2 + renderer.cOutY) * 1);
+			x2,
+			y2);
 	this.c2s.closePath();
 	this.c2s.stroke();
 	
@@ -181,8 +192,8 @@ SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x1 + renderer.cOutX) * 1, 
-		    (y1 + renderer.cOutY) * 1, 
+			x1, 
+		    y1, 
 		    renderer.getDistance(x1, y1, x2, y2) * 1,
 		    0, 3.14159*2, false);
 	this.c2s.closePath();
@@ -215,8 +226,8 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.font = (renderer.fontSize * localZoom) + "px Consolas, monospace";
 	this.c2s.fillText(
 			distance.toFixed(2) + "" + renderer.unitMeasure,
-			(renderer.cOutX + x2 - 120) * 1,
-			(renderer.cOutY + y2 + 30 + localDiff) * 1);
+			(x2 - 120) * 1,
+			(y2 + 30 + localDiff) * 1);
 };
 
 SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
@@ -246,8 +257,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 		if ( tmpLength > maxLength ) {
 			this.c2s.fillText(
 					tmpText,
-					(renderer.cOutX + x - 150) * 1,
-					(renderer.cOutY + y + 30) * 1);
+					(x - 150) * 1,
+					(y + 30) * 1);
 			y += 25 + localDiff;
 			tmpLength = 0;
 			tmpText = "";
@@ -257,8 +268,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	// Print the remainig text
 	this.c2s.fillText(
 			tmpText,
-			(renderer.cOutX + x - 150) * 1,
-			(renderer.cOutY + y + 30) * 1);
+			(x - 150) * 1,
+			(y + 30) * 1);
 };
 
 SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radius) {
@@ -270,8 +281,8 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
 	this.c2s.arc(
-			(x1 + renderer.cOutX) * 1, 
-		    (y1 + renderer.cOutY) * 1, 
+			x1, 
+		    y1, 
 		    renderer.getDistance(x1, y1, x2, y2) * 1,
 		    firstAngle, secondAngle, false);
 	this.c2s.stroke();
@@ -284,5 +295,6 @@ SVGExporter.prototype.exportSVG = function() {
     // will return the SVG
     this.drawAllComponents(renderer.logicDisplay.components, 15, 5);
     // test first
+	console.log(this.c2s.getSerializedSvg(true))
     return this.c2s.getSerializedSvg(true)
 }
