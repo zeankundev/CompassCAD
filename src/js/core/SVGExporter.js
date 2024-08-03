@@ -56,18 +56,20 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
 	var refinedY = 0;
 
 	if (origin.x < -500) {
-		refinedX = origin.x / 12
+		refinedX = origin.x / 13
 	} else if (origin.x < -300) {
 		refinedX = origin.x / 7
 	} else {
 		refinedX = origin.x / 2
 	}
 	if (origin.y > 800) {
-		refinedY = origin.y / 4
-	} else if (origin.y > 300) {
-		refinedY = origin.y / 3.5
+		refinedY = origin.y / 11
+	} else if (origin.y > 400) {
+		refinedY = origin.y / 4.5
+	} else if (origin.y > 250) {
+		refinedY = origin.y / 3
 	} else {
-		refinedY = origin.y / 2.8
+		refinedY = origin.y / 1.9
 	}
 
     for (var i = 0; i < components.length; i++) {
