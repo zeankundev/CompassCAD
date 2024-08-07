@@ -387,7 +387,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function(e) {
 };
 
 GraphicDisplay.prototype.drawPoint = function(x, y, color, radius) {
-	this.context.lineWidth = radius;
+	this.context.lineWidth = 3;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
@@ -533,7 +533,7 @@ GraphicDisplay.prototype.drawToolTip = function(e) {
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
-	this.context.lineWidth = 0;
+	this.context.lineWidth = 1;
 	this.context.strokeStyle = "#fff";
 	
 	this.context.beginPath();
