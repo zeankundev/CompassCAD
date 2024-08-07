@@ -27,12 +27,26 @@ $(document).ready(async() => {
     };
 
     const resizeWin = () => {
-        var resultedHeight = document.getElementById('menubar').offsetHeight + document.getElementById('toolbar').offsetHeight + document.getElementById('status').offsetHeight + 10
-        renderer.displayHeight = window.innerHeight - resultedHeight
-        renderer.displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth
-        document.getElementById('canvas').width = window.innerWidth - document.getElementById('quick-tool').offsetWidth
-        document.getElementById('canvas').height = window.innerHeight - resultedHeight
-    }
+        // Calculate the height of menubar, toolbar, and status bar
+        var resultedHeight = document.getElementById('menubar').offsetHeight + 
+                             document.getElementById('toolbar').offsetHeight + 
+                             document.getElementById('status').offsetHeight;
+        
+        // Set the renderer's display dimensions
+        renderer.displayHeight = window.innerHeight - resultedHeight;
+        renderer.displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
+        
+        // Set the canvas dimensions
+        document.getElementById('canvas').width = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
+        document.getElementById('canvas').height = window.innerHeight - resultedHeight;
+    
+        // Resize the bounding rectangle if needed
+        const boundingRect = document.getElementById('bounding-rect');
+        if (boundingRect) {
+            boundingRect.style.width = `${document.getElementById('canvas').width}px`;
+            boundingRect.style.height = `${document.getElementById('canvas').height}px`;
+        }
+    };
     const keyBindings = {
         'q': 'navigate',
         'Escape': 'navigate',
