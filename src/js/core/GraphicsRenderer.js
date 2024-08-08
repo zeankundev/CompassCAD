@@ -102,7 +102,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.snap = true;
 	this.snapTolerance = 10;
 	
-	this.fontSize = 24;
+	this.fontSize = 18;
 
 	this.maximumStack = 50;
 	
