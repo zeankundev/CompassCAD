@@ -1,3 +1,7 @@
+@font-face {
+    font-family: 'newstroke';
+    src: url('../../assets/newstroke.ttf');
+}
 * {
     margin: 0;
 }

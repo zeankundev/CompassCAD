@@ -454,7 +454,7 @@ GraphicDisplay.prototype.drawMeasure = function(x1, y1, x2, y2, color, radius) {
 	this.drawLine(x1, y1, x2, y2, color, radius);
 	
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px Consolas, monospace";
+	this.context.font = (this.fontSize * localZoom) + "px newstroke";
 	this.context.fillText(
 			distance.toFixed(2) + "" + this.unitMeasure,
 			(this.cOutX + x2 - 120) * this.zoom,
@@ -474,7 +474,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	}
 	
 	this.context.fillStyle = color;
-	this.context.font =  (this.fontSize * localZoom) + "px Consolas, monospace";
+	this.context.font =  (this.fontSize * localZoom) + "px newstroke";
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
@@ -1169,7 +1169,7 @@ GraphicDisplay.prototype.openDesign = function() {
 		})
 		.catch(error => {
 			console.error('Error reading or parsing the file:', error);
-			alert('Invalid CompassCAD design! \nPlease recheck your CompassCAD design contents!\nIf it is not helpful, you can search it up or ask in the forums about the error')
+			diag.showErrorBox('Failed to open CompassCAD file. Please recheck!', 'Invalid CompassCAD design (possibly unnested arrays) \nTry adding [] onto the file and reopen.\nIf this is another issue, you might need to recheck the design data\nIf neither works out, this means your file is maybe corrupt or have some abnormal strings in it. Please recheck.')
 			this.filePath = ''
 			document.title = `New Design 1 - CompassCAD`
 			$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
@@ -1255,6 +1255,7 @@ GraphicDisplay.prototype.exportDesign = function() {
 			const exporter = new SVGExporter()
             fs.writeFileSync(data.filePath, exporter.exportSVG());
 			this.setToolTip('Export success')
+			alert('CompassCAD has successfully exported your file into SVG. Please check and examine.')
         }
     }).catch(err => {
         console.error('Error during save:', err);

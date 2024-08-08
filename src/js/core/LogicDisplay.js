@@ -43,7 +43,7 @@ LogicDisplay.prototype.customSyntax = function (command) {
                 }
             }
         } else {
-            // Handle arithmetic operations
+            console.log('arithmetic detected')
             const match = action.match(/\\(\d+)\.(\w+)([\+\-\*\/])(\d+)\.(\w+)/);
             if (match) {
                 const index1 = parseInt(match[1], 10);
@@ -55,6 +55,7 @@ LogicDisplay.prototype.customSyntax = function (command) {
                 if (!isNaN(index1) && index1 < result.length && !isNaN(index2) && index2 < result.length) {
                     const value1 = parseFloat(result[index1][prop1]);
                     const value2 = parseFloat(result[index2][prop2]);
+					console.log(`1:${value1};2:${value2}`)
 
                     if (!isNaN(value1) && !isNaN(value2)) {
                         switch (operator) {
@@ -73,7 +74,7 @@ LogicDisplay.prototype.customSyntax = function (command) {
                         }
                     }
                 }
-            } else if (action.startsWith('\\type.find')) {
+            } else if (action.startsWith('\\obj.find')) {
                 // Handle search functionality
                 let searchValue = param.replace(/\"/g, ""); // remove the quotes
                 result = result.filter(obj => obj.type === searchValue);
