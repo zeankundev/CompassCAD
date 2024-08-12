@@ -11,6 +11,8 @@ function callPrompt(message) {
 
         // Show the prompt
         promptContainer.classList.remove('hidden');
+        promptInput.focus();  // Focus on the input field
+
         function disableKeypress(e) {
             if (promptContainer.classList.contains('hidden') || document.activeElement === promptInput) {
                 return;
@@ -20,7 +22,7 @@ function callPrompt(message) {
         }
 
         window.addEventListener('keydown', disableKeypress);
-        document.getElementById('canvas').addEventListener('keydown', disableKeypress)
+        document.getElementById('canvas').addEventListener('keydown', disableKeypress);
 
         // Handler for OK button
         function onOk() {
@@ -35,10 +37,18 @@ function callPrompt(message) {
             reject(console.log('User cancelled the prompt'));
         }
 
+        // Handler for Enter key
+        function onEnterKey(e) {
+            if (e.key === 'Enter') {
+                onOk();
+            }
+        }
+
         // Cleanup function to remove event listeners and hide the prompt
         function cleanup() {
             promptOk.removeEventListener('click', onOk);
             promptCancel.removeEventListener('click', onCancel);
+            window.removeEventListener('keydown', onEnterKey);
             promptContainer.classList.add('hidden');
             promptInput.value = ''; // Clear the input field
         }
@@ -46,6 +56,7 @@ function callPrompt(message) {
         // Add event listeners
         promptOk.addEventListener('click', onOk);
         promptCancel.addEventListener('click', onCancel);
+        window.addEventListener('keydown', onEnterKey);  // Listen for Enter key
     });
 }
 async function applyStringOnHTML(key, affected, type, additionalString) {
