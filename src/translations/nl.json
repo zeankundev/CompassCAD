@@ -44,5 +44,6 @@
     "gridSpacingText": "Rasterafstand (1/?)",
     "languageText": "Taal",
     "settings": "Instellingen",
-    "configSaved": "Configuratie opgeslagen! Herstart om toe te passen"
+    "configSaved": "Configuratie opgeslagen! Herstart om toe te passen",
+    "help": "Hulp"
 }

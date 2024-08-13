@@ -44,5 +44,6 @@
     "gridSpacingText": "Jarak Grid (1/?)",
     "languageText": "Bahasa",
     "settings": "Pengaturan",
-    "configSaved": "Konfigurasi disimpan! Mulai ulang untuk menerapkan"
+    "configSaved": "Konfigurasi disimpan! Mulai ulang untuk menerapkan",
+    "help": "Bantuan"
 }

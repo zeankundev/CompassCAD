@@ -44,5 +44,6 @@
     "gridSpacingText": "Rutnätavstånd (1/?)",
     "languageText": "Språk",
     "settings": "Inställningar",
-    "configSaved": "Konfiguration sparad! Starta om för att tillämpa"
+    "configSaved": "Konfiguration sparad! Starta om för att tillämpa",
+    "help": "Hjälp"
 }

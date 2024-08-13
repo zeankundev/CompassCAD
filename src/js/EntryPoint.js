@@ -200,5 +200,6 @@ $(document).ready(async() => {
     applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('settings-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
+    applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
 })

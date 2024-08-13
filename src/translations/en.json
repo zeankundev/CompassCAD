@@ -44,5 +44,6 @@
     "gridSpacingText": "Grid Spacing (1/?)",
     "languageText": "Language",
     "settings": "Settings",
-    "configSaved": "Config saved! Restart to apply"
+    "configSaved": "Config saved! Restart to apply",
+    "help": "Help"
 }
