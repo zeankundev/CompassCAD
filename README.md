@@ -1,5 +1,6 @@
 <img src="assets/logos/a-long.svg" width="700" alt="a wordic logo">
 
+**Ay, you want a tutorial on how to use CompassCAD? Go to [this Notion page](https://zeankundev.notion.site/b015debb301d4ca69a1971c235f5d462)!**
 # CompassCAD
 very good CAD software. plan out buildings, and show it off to your boss.
 
