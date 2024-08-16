@@ -297,3 +297,6 @@ command-pallete input[type=text] {
 .option:hover {
     background-color: var(--tertiary);
 }
+.menubar-text {
+    user-select: none;
+}

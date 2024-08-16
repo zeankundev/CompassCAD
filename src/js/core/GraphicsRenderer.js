@@ -1057,11 +1057,11 @@ GraphicDisplay.prototype.zoomOut = function(e) {
 };
 
 GraphicDisplay.prototype.getCursorXLocal = function(e) {
-	return (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth/2)/this.zoom - this.camX;
+	return Math.floor(this.mouse.cursorXGlobal - this.offsetX - this.displayWidth/2)/this.zoom - this.camX;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function(e) {
-	return (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight/2)/this.zoom - this.camY;
+	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight/2)/this.zoom - this.camY;
 };
 
 GraphicDisplay.prototype.getCursorXInFrame = function(e) {
@@ -1078,7 +1078,7 @@ GraphicDisplay.prototype.setToolTip = function(text) {
 
 GraphicDisplay.prototype.getToolTip = function(e) {
 	var text = this.tooltip;
-	return text + ` (${fps} FPS)`;
+	return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
 };
 
 //TODO: Move in Utils.
