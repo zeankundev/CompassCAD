@@ -488,8 +488,8 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 		if ( tmpLength > maxLength ) {
 			this.context.fillText(
 					tmpText,
-					(this.cOutX + x - 150) * this.zoom,
-					(this.cOutY + y + 30) * this.zoom);
+					(this.cOutX + x - 5) * this.zoom,
+					(this.cOutY + y) * this.zoom);
 			y += 25 + localDiff;
 			tmpLength = 0;
 			tmpText = "";
@@ -499,8 +499,8 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	// Print the remainig text
 	this.context.fillText(
 			tmpText,
-			(this.cOutX + x - 150) * this.zoom,
-			(this.cOutY + y + 30) * this.zoom);
+			(this.cOutX + x - 5) * this.zoom,
+			(this.cOutY + y) * this.zoom);
 };
 
 GraphicDisplay.prototype.drawArc = function(x1, y1, x2, y2, x3, y3, color, radius) {
