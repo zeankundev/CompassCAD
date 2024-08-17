@@ -1,0 +1,56 @@
+@font-face {
+    font-family: 'Circular';
+    font-weight: 200;
+    src: url('./CircularStd-Light.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 400;
+    src: url('./CircularStd-Book.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 500;
+    src: url('./CircularStd-Medium.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 700;
+    src: url('./CircularStd-Bold.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 800;
+    src: url('./CircularStd-Black.otf');
+}
+
+@font-face {
+    font-family: 'Circular';
+    font-weight: 200;
+    font-style: italic;
+    src: url('./CircularStd-LightItalic.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 400;
+    font-style: italic;
+    src: url('./CircularStd-BookItalic.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 500;
+    font-style: italic;
+    src: url('./CircularStd-MediumItalic.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 700;
+    font-style: italic;
+    src: url('./CircularStd-BoldItalic.otf');
+}
+@font-face {
+    font-family: 'Circular';
+    font-weight: 800;
+    font-style: italic;
+    src: url('./CircularStd-BlackItalic.otf');
+}

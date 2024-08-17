@@ -1,0 +1,91 @@
+/*:root {
+    --primary: #1d1d1d;
+    --secondary: #2e2e2e;
+    --tertiary: #3f3f3f;
+    --disabled-secondary: #242424;
+    --text: #efefef;
+    --theme: #00A3FF;
+    --main-font: 'Segoe UI Variable Display', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; 
+}*/
+@font-face {
+    font-family: 'real-newstroke';
+    src: url('../assets/newstroke.ttf');
+}
+body {
+    overflow-y: hidden;
+}
+.menubar {
+    padding: 10px;
+    display: flex;
+}
+.menubar-interaction {
+    padding: 10px;
+    display: flex;
+    user-select: none;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+.menubar-interaction:hover {
+    background-color: var(--secondary);
+    max-width: fit-content;
+    max-height: fit-content;
+}
+.working-area {
+    display: flex;
+    flex: 1;
+    min-height: fit-content;
+}
+.toolbar {
+    padding: 5px;
+    background-color: var(--secondary);
+    max-width: fit-content;
+    flex: 1;
+}
+.canvas-container {
+    max-width: fit-content;
+}
+.canvas-container canvas {
+    flex: 1;
+}
+.menubar {
+    display: flex;
+    align-items: center;
+}
+.menubar-interaction img {
+    width: 24px;
+}
+.toolbar-tool img {
+    width: 18px;
+}
+.toolbar-tool {
+    padding: 5px;
+    display: flex;
+    margin-bottom: 10px;
+}
+.toolbar-tool:hover {
+    background-color: var(--tertiary);
+}
+.tooltip-renderer {
+    position: absolute;
+    user-select: none;
+    bottom: 0;
+    font-size: 9pt;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.button-user-interaction {
+    margin-top: 0;
+    display: flex;
+    margin-right: 0;
+}
+.button-user-interaction p {
+    font-size: 9pt;
+    font-weight: 400;
+}
+.nested-shit {
+    display: inline-block;
+}
+.right-wing {
+    margin-left: auto;
+    order: 2;
+}

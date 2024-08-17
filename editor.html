@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>CompassCAD Online Editor</title>
+        <link rel="stylesheet" href="./styles/index.css">
+        <link rel="stylesheet" href="./styles/editor.css">
+        <link rel="stylesheet" href="./assets/circular/circular.css">
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+    </head>
+    <body>
+        <div class="menubar" id="menubar">
+            <div class="menubar-interaction" onclick="window.history.back()"><img src="./assets/editor/back.svg"></div>
+            <div class="menubar-interaction"><img src="./assets/editor/newLogic.svg"></div>
+            <div class="menubar-interaction"><img src="./assets/editor/openLogic.svg"></div>
+            <div class="menubar-interaction"><img src="./assets/editor/saveLogic.svg"></div>
+            <div class="menubar-interaction"><img src="./assets/editor/export.svg"></div>
+            <div class="right-wing">
+                <div class="button-user-interaction" id="download-button" onclick="downloadLatestRelease()">
+                    <img src="./assets/images/download.svg">
+                    &nbsp;
+                    <div class="nested-shit">
+                        Download CompassCAD
+                        <br>
+                        <p>for a better experience, online or offline!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="working-area">
+            <div class="toolbar" id="toolbar">
+                <div class="toolbar-tool" title="Navigate (q)" id="navigate"><img src="./assets/editor/navigate.svg"></div>
+                <div class="toolbar-tool" title="Move (e)" id="move-obj"><img src="./assets/editor/move.svg"></div>
+                <div class="toolbar-tool" title="Delete (t)" id="del-obj"><img src="./assets/editor/delete.svg"></div>
+                <div class="toolbar-tool" title="Add point (a)" id="add-point"><img src="./assets/editor/point.svg"></div>
+                <div class="toolbar-tool" title="Add line (s)" id="add-line"><img src="./assets/editor/line.svg"></div>
+                <div class="toolbar-tool" title="Add circle (d)" id="add-circle"><img src="./assets/editor/circle.svg"></div>
+                <div class="toolbar-tool" title="Add arc (f)" id="add-arc"><img src="./assets/editor/arc.svg"></div>
+                <div class="toolbar-tool" title="Add rectangle (g)" id="add-rect"><img src="./assets/editor/rectangle.svg"></div>
+                <div class="toolbar-tool" title="Add label (h)" id="add-label"><img src="./assets/editor/text.svg"></div>
+                <div class="toolbar-tool" title="Add north reference designator (j)" id="add-barrel"><img src="./assets/editor/vertical-barrel.svg"></div>
+                <div class="toolbar-tool" title="Add tree (k)" id="add-tree"><img src="./assets/editor/tree.svg"></div>
+                <div class="toolbar-tool" title="Measure (z)" id="ruler"><img src="./assets/editor/measure.svg"></div>
+            </div>
+            <div class="canvas-container">
+                <span class="tooltip-renderer" id="tooltip"></span>
+                <canvas id="working-canvas" width="800" height="600" oncontextmenu="javascript: return false"></canvas>
+            </div>
+        </div>
+        <script src="./scripts/editor/entry.js"></script>
+        <script src="./scripts/downloadPortal.js"></script>
+        <script src="./scripts/engine/ComponentHandler.js"></script>
+        <script src="./scripts/engine/GraphicsRenderer.js"></script>
+        <script src="./scripts/engine/InputHandler.js"></script>
+        <script src="./scripts/engine/LogicDisplay.js"></script>
+        <script src="./scripts/engine/MiscellaneousShapes.js"></script>
+        <script src="./scripts/engine/SVGExporter.js"></script>
+        <script src="./scripts/deps/c2s.js"></script>
+    </body>
+</html>
