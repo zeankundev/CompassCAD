@@ -14,18 +14,18 @@ var COMPONENT_TYPES = {
 * all other concrete item classes
 */
 function Component() {
-this.active = true;
-this.type = 0; 
-this.color = "#fff";
-this.radius = 1;
+    this.active = true;
+    this.type = 0; 
+    this.color = "#fff";
+    this.radius = 1;
 }
 
 Component.prototype.setActive = function(active) {
-this.active = active;
+    this.active = active;
 };
 
 Component.prototype.isActive = function() {
-return this.active;
+    return this.active;
 };
 
 /**
@@ -35,17 +35,17 @@ return this.active;
 * @param y
 */
 function Point(x, y) {
-Component.call(this);
+    Component.call(this);
 
-this.radius = 5;
-this.type = COMPONENT_TYPES.POINT;
-this.x = 0;
-this.y = 0;
+    this.radius = 5;
+    this.type = COMPONENT_TYPES.POINT;
+    this.x = 0;
+    this.y = 0;
 
-if ( x != undefined && y != undefined) {
-    this.x = x;
-    this.y = y;
-}
+    if ( x != undefined && y != undefined) {
+        this.x = x;
+        this.y = y;
+    }
 }
 Point.prototype = new Component();
 Point.prototype.constructor = Point;
@@ -59,24 +59,24 @@ Point.prototype.constructor = Point;
 * @param y2
 */
 function Line(x1, y1, x2, y2) {
-Component.call(this);
+    Component.call(this);
 
-this.type = COMPONENT_TYPES.LINE;
-this.x1 = 0;
-this.y1 = 0;
-this.x2 = 0;
-this.y2 = 0;
+    this.type = COMPONENT_TYPES.LINE;
+    this.x1 = 0;
+    this.y1 = 0;
+    this.x2 = 0;
+    this.y2 = 0;
 
-if ( x1 != undefined
-    && y1 != undefined
-    && x2 != undefined
-    && y2 != undefined)
-{
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-}
+    if ( x1 != undefined
+        && y1 != undefined
+        && x2 != undefined
+        && y2 != undefined)
+    {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
 }
 Line.prototype = new Component();
 Line.prototype.constructor = Line;
@@ -90,9 +90,9 @@ Line.prototype.constructor = Line;
 * @param y2
 */
 function Circle(x1, y1, x2, y2) {
-Line.call(this, x1, y1, x2, y2);
+    Line.call(this, x1, y1, x2, y2);
 
-this.type = COMPONENT_TYPES.CIRCLE;
+    this.type = COMPONENT_TYPES.CIRCLE;
 }
 Circle.prototype = new Line();
 Circle.prototype.constructor = Circle;
@@ -106,9 +106,9 @@ Circle.prototype.constructor = Circle;
 * @param y2
 */
 function Rectangle(x1, y1, x2, y2) {
-Line.call(this, x1, y1, x2, y2);
+    Line.call(this, x1, y1, x2, y2);
 
-this.type = COMPONENT_TYPES.RECTANGLE;
+    this.type = COMPONENT_TYPES.RECTANGLE;
 }
 Rectangle.prototype = new Line();
 Rectangle.prototype.constructor = Rectangle;
@@ -124,8 +124,8 @@ Rectangle.prototype.constructor = Rectangle;
 function Measure(x1, y1, x2, y2) {
     Line.call(this, x1, y1, x2, y2);
 
-this.type = COMPONENT_TYPES.MEASURE;
-this.color = "#ff3";
+    this.type = COMPONENT_TYPES.MEASURE;
+    this.color = "#ff3";
 }
 Measure.prototype = new Line();
 Measure.prototype.constructor = Measure;
@@ -138,11 +138,11 @@ Measure.prototype.constructor = Measure;
 * @param text
 */
 function Label(x, y, text) {
-Point.call(this, x, y);
+    Point.call(this, x, y);
 
-this.type = COMPONENT_TYPES.LABEL;
-this.color = "#eee";
-this.text = text;
+    this.type = COMPONENT_TYPES.LABEL;
+    this.color = "#eee";
+    this.text = text;
 }
 Label.prototype = new Point();
 Label.prototype.constructor = Label;
@@ -158,30 +158,30 @@ Label.prototype.constructor = Label;
 * @param y3
 */
 function Arc(x1, y1, x2, y2, x3, y3) {
-Component.call(this);
+    Component.call(this);
 
-this.type = COMPONENT_TYPES.ARC;
-this.x1 = 0;
-this.y1 = 0;
-this.x2 = 0;
-this.y2 = 0;
-this.x3 = 0;
-this.y3 = 0;
+    this.type = COMPONENT_TYPES.ARC;
+    this.x1 = 0;
+    this.y1 = 0;
+    this.x2 = 0;
+    this.y2 = 0;
+    this.x3 = 0;
+    this.y3 = 0;
 
-if ( x1 != undefined
-    && y1 != undefined
-    && x2 != undefined
-    && y2 != undefined
-    && x3 != undefined
-    && y3 != undefined)
-{
-    this.x1 = x1;
-    this.y1 = y1;
-    this.x2 = x2;
-    this.y2 = y2;
-    this.x3 = x3;
-    this.y3 = y3;
-}
+    if ( x1 != undefined
+        && y1 != undefined
+        && x2 != undefined
+        && y2 != undefined
+        && x3 != undefined
+        && y3 != undefined)
+    {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+        this.x3 = x3;
+        this.y3 = y3;
+    }
 }
 Arc.prototype = new Component();
 Arc.prototype.constructor = Arc;
@@ -193,18 +193,18 @@ Arc.prototype.constructor = Arc;
 * @param y
 */
 function Shape(x, y) {
-Component.call(this);
+    Component.call(this);
 
-this.type = COMPONENT_TYPES.SHAPE;
-this.x = 0;
-this.y = 0;
-this.color = "#f0f";
-this.components = new Array();
+    this.type = COMPONENT_TYPES.SHAPE;
+    this.x = 0;
+    this.y = 0;
+    this.color = "#f0f";
+    this.components = new Array();
 
-if ( x != undefined && y != undefined) {
-    this.x = x;
-    this.y = y;
-}
+    if ( x != undefined && y != undefined) {
+        this.x = x;
+        this.y = y;
+    }
 }
 Shape.prototype = new Component();
 Shape.prototype.constructor = Shape;
@@ -214,5 +214,5 @@ Shape.prototype.constructor = Shape;
 * @param component
 */
 Shape.prototype.addComponent = function(component) {
-this.components.push(component);
+    this.components.push(component);
 };
