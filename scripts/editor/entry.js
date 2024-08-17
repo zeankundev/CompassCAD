@@ -33,7 +33,7 @@ const exportToSvg = () => {
     downloader.click();
 }
 const saveLocally = () => {
-    const blob = new Blob([renderer.logicDisplay.components], {type: 'text/plain'})
+    const blob = new Blob([JSON.stringify(renderer.logicDisplay.components)], {type: 'text/plain'})
     const downloader = document.createElement('a')
     downloader.download = `${document.getElementById('filename').value}.ccad`
     downloader.href = window.URL.createObjectURL(blob);
