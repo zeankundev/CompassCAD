@@ -98,4 +98,36 @@ $(document).ready(async () => {
         }
     });
     initCAD(renderer)
+    // Adding keyboard events 
+	
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.GREATERTHAN, function(e){
+		renderer.zoomIn();
+	});
+	
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.LESSTHAN, function(e){
+		renderer.zoomOut();
+	});
+
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.N, function(e){
+		if (confirm('Are you sure? You are going to lose your design!') == true)
+			renderer.createNew()
+		else
+			return
+	}, {ctrl: true});
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Z, function(e){
+		renderer.undo()
+	}, {ctrl: true});
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Y, function(e){
+		renderer.redo()
+	}, {ctrl: true});
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.O, function(e){
+		renderer.openDesign()
+	}, {ctrl: true});
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.S, function(e){
+		renderer.saveDesign()
+	}, {ctrl: true});
+	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.E, function(e){
+		renderer.exportDesign()
+		renderer.setMode(renderer.MODES.NAVIGATE)
+	}, {ctrl: true});
 })

@@ -1157,39 +1157,6 @@ var initCAD = function(gd) {
 			return
 	});
 	
-	// Adding keyboard events 
-	
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.GREATERTHAN, function(e){
-		gd.zoomIn();
-	});
-	
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.LESSTHAN, function(e){
-		gd.zoomOut();
-	});
-
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.N, function(e){
-		if (confirm('Are you sure? You are going to lose your design!') == true)
-			renderer.createNew()
-		else
-			return
-	}, {ctrl: true});
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.Z, function(e){
-		gd.undo()
-	}, {ctrl: true});
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.Y, function(e){
-		gd.redo()
-	}, {ctrl: true});
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.O, function(e){
-		gd.openDesign()
-	}, {ctrl: true});
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.S, function(e){
-		gd.saveDesign()
-	}, {ctrl: true});
-	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.E, function(e){
-		gd.exportDesign()
-		gd.setMode(gd.MODES.NAVIGATE)
-	}, {ctrl: true});
-	
 	// Bind mouse events
 	gd.cvn.mousemove(function(e) {
 		gd.mouse.onMouseMove(e);
