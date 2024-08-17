@@ -509,10 +509,6 @@ GraphicDisplay.prototype.drawShape = function(shape) {
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
 
-GraphicDisplay.prototype.drawToolTip = function(e) {
-	document.getElementById('tooltip').innerText = `${this.getToolTip()}`
-};
-
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
 	this.context.lineWidth = 1;
 	this.context.strokeStyle = "#fff";

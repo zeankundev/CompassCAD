@@ -23,6 +23,7 @@ const openDesign = () => {
         };
     };
 };
+setInterval(() => {document.getElementById('tooltip').innerText = renderer.getToolTip()},1)
 const exportToSvg = () => {
     const exporter = new SVGExporter();
     let content = exporter.exportSVG();
