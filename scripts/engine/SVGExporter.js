@@ -1,5 +1,5 @@
 function SVGExporter() {
-    this.c2s = new canvas2svg(1920, 1080)
+    this.c2s = new C2S(1920, 1080)
     // hijack the renderer's logic display so we can get that shit there
     this.logicDisplay = renderer.logicDisplay
     console.log(`renderer coutx: ${renderer.cOutX},renderer couty: ${renderer.cOutY}`)
@@ -255,8 +255,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 		if ( tmpLength > maxLength ) {
 			this.c2s.fillText(
 					tmpText,
-					(x - 150) * 1,
-					(y + 30) * 1);
+					x + 5,
+					y);
 			y += 25 + localDiff;
 			tmpLength = 0;
 			tmpText = "";
@@ -266,8 +266,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	// Print the remainig text
 	this.c2s.fillText(
 			tmpText,
-			(x - 150) * 1,
-			(y + 30) * 1);
+			x + 5,
+			y);
 };
 
 SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radius) {

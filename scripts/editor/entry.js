@@ -1,4 +1,45 @@
 let renderer;
+const newDesign = () => {
+    renderer.createNew()
+    document.getElementById('filename').value = 'New Design 1'
+}
+const openDesign = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.click();
+    fileInput.onchange = (e) => {
+        let file = e.target.files[0];
+        document.getElementById('filename').value = file.name.replace(/\.[^/.]+$/, "")
+        console.log(file.name)
+        const reader = new FileReader();
+        reader.readAsText(file, 'UTF-8');
+        reader.onload = (e) => {
+            try {
+                const jsonData = JSON.parse(e.target.result);
+                renderer.logicDisplay.importJSON(jsonData, renderer.logicDisplay.components)
+            } catch (error) {
+                console.error('Error parsing JSON:', error);
+            }
+        };
+    };
+};
+const exportToSvg = () => {
+    const exporter = new SVGExporter();
+    let content = exporter.exportSVG();
+    const blob = new Blob([content], {type: 'text/plain'})
+    const downloader = document.createElement('a')
+    downloader.download = `${document.getElementById('filename').value}.svg`
+    downloader.href = window.URL.createObjectURL(blob);
+    downloader.click();
+}
+const saveLocally = () => {
+    const blob = new Blob([renderer.logicDisplay.components], {type: 'text/plain'})
+    const downloader = document.createElement('a')
+    downloader.download = `${document.getElementById('filename').value}.ccad`
+    downloader.href = window.URL.createObjectURL(blob);
+    downloader.click();
+}
+
 $(document).ready(async () => {
     renderer = new GraphicDisplay('working-canvas', 800, 600)
     const resizeWin = () => {     
@@ -12,6 +53,21 @@ $(document).ready(async () => {
     };
     resizeWin()
     window.onresize = resizeWin
+    document.getElementById('new').onclick = () => {
+        newDesign()
+    };
+    document.getElementById('open').onclick = () => {
+        openDesign()
+    };
+    document.getElementById('save').onclick = () => {
+        saveLocally()
+    };
+    document.getElementById('undo').onclick = () => {
+        renderer.undo()
+    };
+    document.getElementById('redo').onclick = () => {
+        renderer.redo()
+    };
     document.getElementById('navigate').onclick = () => {
         console.log('Navigate button clicked');
         renderer.setMode(renderer.MODES.NAVIGATE)
@@ -107,13 +163,6 @@ $(document).ready(async () => {
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.LESSTHAN, function(e){
 		renderer.zoomOut();
 	});
-
-	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.N, function(e){
-		if (confirm('Are you sure? You are going to lose your design!') == true)
-			renderer.createNew()
-		else
-			return
-	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Z, function(e){
 		renderer.undo()
 	}, {ctrl: true});

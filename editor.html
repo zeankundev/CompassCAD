@@ -11,10 +11,13 @@
     <body>
         <div class="menubar" id="menubar">
             <div class="menubar-interaction" onclick="window.history.back()"><img src="./assets/editor/back.svg"></div>
-            <div class="menubar-interaction"><img src="./assets/editor/newLogic.svg"></div>
-            <div class="menubar-interaction"><img src="./assets/editor/openLogic.svg"></div>
-            <div class="menubar-interaction"><img src="./assets/editor/saveLogic.svg"></div>
-            <div class="menubar-interaction"><img src="./assets/editor/export.svg"></div>
+            <input type="text" class="top-text-input" id="filename" value="New Design 1" placeholder="Filename">
+            <div class="menubar-interaction" id="new"><img src="./assets/editor/newLogic.svg"></div>
+            <div class="menubar-interaction" id="open"><img src="./assets/editor/openLogic.svg"></div>
+            <div class="menubar-interaction" id="save"><img src="./assets/editor/saveLogic.svg"></div>
+            <div class="menubar-interaction" id="export"><img src="./assets/editor/export.svg"></div>
+            <div class="menubar-interaction" id="undo"><img src="./assets/editor/undo.svg"></div>
+            <div class="menubar-interaction" id="redo"><img src="./assets/editor/redo.svg"></div>
             <div class="right-wing">
                 <div class="button-user-interaction" id="download-button" onclick="downloadLatestRelease()">
                     <img src="./assets/images/download.svg">

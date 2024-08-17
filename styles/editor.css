@@ -56,6 +56,7 @@ body {
 }
 .toolbar-tool img {
     width: 18px;
+    user-select: none;
 }
 .toolbar-tool {
     padding: 5px;
@@ -88,4 +89,20 @@ body {
 .right-wing {
     margin-left: auto;
     order: 2;
+}
+.top-text-input {
+    -webkit-appearance: none;
+    border: none;
+    background-color: var(--primary);
+    color: var(--text);
+    font-weight: 800;
+    outline: none;
+    font-size: 18pt;
+    font-family: 'Circular', sans-serif;
+    padding: 10px;
+    border-radius: 10px;
+}
+.top-text-input:hover {
+    background-color: var(--secondary);
+    transition: all 0.2s ease;
 }

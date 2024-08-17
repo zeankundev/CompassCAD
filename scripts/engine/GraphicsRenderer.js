@@ -781,7 +781,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.temporaryPoints[1] = this.getCursorYLocal();
 				}
 			} else if ( action == this.MOUSEACTION.DOWN ) {
-				let text = prompt('e')
+				let text = prompt('Add text...')
 				if ( text.length > 0 ) {
 					this.logicDisplay.addComponent(new Label(
 							this.temporaryPoints[0],
@@ -1115,25 +1115,10 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
 
 GraphicDisplay.prototype.createNew = function() {
 	this.logicDisplay.components = []
-	this.filePath = ''
-	document.title = `New Design 1 - CompassCAD`
-	$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
 	this.undoStack = []
 	this.redoStack = []
 	this.temporaryObjectArray = []
 	this.execute
-}
-GraphicDisplay.prototype.openDesign = function() {
-}
-GraphicDisplay.prototype.saveDesign = function() {
-
-};
-
-GraphicDisplay.prototype.saveDesignAs = function() {
-	
-}
-GraphicDisplay.prototype.exportDesign = function() {
-	
 }
 /*
  * Helper function used to initialize the
