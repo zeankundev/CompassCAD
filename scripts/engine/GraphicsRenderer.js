@@ -162,8 +162,6 @@ GraphicDisplay.prototype.execute = async function(e) {
 	if ( this.temporaryComponentType != null )
 		this.drawTemporaryComponent();
 	
-	// Draw to tooltip
-	this.drawToolTip();
 };
 
 GraphicDisplay.prototype.saveState = function() {

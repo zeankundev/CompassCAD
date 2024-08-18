@@ -19,11 +19,12 @@ const openDesign = () => {
                 renderer.logicDisplay.importJSON(jsonData, renderer.logicDisplay.components)
             } catch (error) {
                 console.error('Error parsing JSON:', error);
+                document.getElementById('filename').value = 'New Design 1'
+                callToast('Failed to load file. Double check your file and<br>make sure that it is not corrupted.', 'failure')
             }
         };
     };
 };
-setInterval(() => {document.getElementById('tooltip').innerText = renderer.getToolTip()},1)
 const exportToSvg = () => {
     const exporter = new SVGExporter();
     let content = exporter.exportSVG();
@@ -32,6 +33,7 @@ const exportToSvg = () => {
     downloader.download = `${document.getElementById('filename').value}.svg`
     downloader.href = window.URL.createObjectURL(blob);
     downloader.click();
+    callToast('SVG successfully <br>exported. Please check and examine', 'success')
 }
 const saveLocally = () => {
     const blob = new Blob([JSON.stringify(renderer.logicDisplay.components)], {type: 'text/plain'})
@@ -62,6 +64,9 @@ $(document).ready(async () => {
     };
     document.getElementById('save').onclick = () => {
         saveLocally()
+    };
+    document.getElementById('export').onclick = () => {
+        exportToSvg()
     };
     document.getElementById('undo').onclick = () => {
         renderer.undo()
@@ -155,6 +160,7 @@ $(document).ready(async () => {
         }
     });
     initCAD(renderer)
+    setInterval(() => {document.getElementById('tooltip').innerText = renderer.getToolTip()},1)
     // Adding keyboard events 
 	
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.GREATERTHAN, function(e){
