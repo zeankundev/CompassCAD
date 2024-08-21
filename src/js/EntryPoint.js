@@ -1,3 +1,4 @@
+const { ipcRenderer } = require('electron')
 let renderer;
 $(document).ready(async() => {
     const config = new ConfigHandler()

@@ -1,4 +1,4 @@
-const { BrowserWindow, app } = require('electron')
+const { BrowserWindow, app, ipcMain } = require('electron')
 const path = require('path')
 const fs = require('fs')
 const appLogo = path.join(__dirname, '/build/icons/512x512.png')
