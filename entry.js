@@ -23,6 +23,9 @@ const init = () => {
     if (!fs.existsSync(app.getPath('userData') + '/.compasscfg')) {
         fs.writeFileSync(app.getPath('userData') + '/.compasscfg', '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"lang":"en"}', { encoding: 'utf8' });
     }
+    ipcMain.on('ragequit', (e) => {
+        app.quit()
+    })
 }
 app.on('ready', () => {
     console.log('App Ready')
