@@ -7,8 +7,8 @@
   "license": "UFOL-2.0",
   "homepage": "https://zeankundev.github.io/CompassCAD",
   "scripts": {
-    "start": "electron .",
-    "start:no-sandbox": "electron . --no-sandbox",
+    "start": "set NODE_ENV=development && electron .",
+    "start:no-sandbox": "set NODE_ENV=development && electron . --no-sandbox",
     "instant-build": "electron-builder && electron-builder --win"
   },
   "private": false,
@@ -58,6 +58,7 @@
   "devDependencies": {
     "electron": "^31.4.0",
     "electron-builder": "^24.6.3",
+    "electron-is-dev": "^3.0.1",
     "electron-reloader": "^1.2.3"
   }
 }

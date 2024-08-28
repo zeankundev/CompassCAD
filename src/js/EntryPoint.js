@@ -203,4 +203,44 @@ $(document).ready(async() => {
     applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
     applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
+    window.onbeforeunload = (e) => {
+        // Check if components is not null and is not empty
+        if (renderer.logicDisplay.components && renderer.logicDisplay.components.length > 0) {
+            console.log('Not null nor empty');
+            
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+            const backupPath = path.join(remApp.getPath('userData'), `/backups/backup-${year}-${month}-${day}-${hours}-${minutes}-${seconds}.bkp`);
+    
+            try {
+                fs.writeFileSync(backupPath, JSON.stringify(renderer.logicDisplay.components));
+                console.log('Backup saved successfully.');
+            } catch (err) {
+                console.error('Error saving backup:', err);
+            }
+    
+            // After saving, allow the app to quit
+            if (process.env.NODE_ENV == 'development') {
+                console.log('Devmode')
+                window.location.reload()
+            } else {
+                //remApp.quit()
+            }
+        } else {
+            console.log('No components to save, quitting.');
+            if (process.env.NODE_ENV == 'development') {
+                console.log('Devmode')
+                window.location.reload()
+            } else {
+                //remApp.quit()
+            }
+        }
+    };
+    
 })
