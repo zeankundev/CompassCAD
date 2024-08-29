@@ -2,6 +2,7 @@
     "newDesign": "Nieuw Ontwerp 1",
     "createNew": "Nieuw Ontwerp (ctrl+n)",
     "openDesign": "Ontwerp Openen (ctrl+o)",
+    "openBackups": "Backups Openen",
     "saveDesign": "Ontwerp Opslaan (ctrl+s)",
     "saveDesignAs": "Ontwerp Opslaan Als (ctrl+alt+s)",
     "exportDesign": "Ontwerp exporteren als SVG (ctrl+e)",

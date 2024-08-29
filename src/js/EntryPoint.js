@@ -177,6 +177,7 @@ $(document).ready(async() => {
     // Apply translations to toolbar buttons
     applyStringOnHTML('createNew', document.getElementById('new-design'), 'title', '');
     applyStringOnHTML('openDesign', document.getElementById('open-design'), 'title', '');
+    applyStringOnHTML('openBackups', document.getElementById('open-backups'), 'title', '');
     applyStringOnHTML('saveDesign', document.getElementById('save-design'), 'title', '');
     applyStringOnHTML('saveDesignAs', document.getElementById('save-design-as'), 'title', '');
     applyStringOnHTML('exportDesign', document.getElementById('export-design'), 'title', '');

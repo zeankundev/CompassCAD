@@ -4,6 +4,7 @@ function Localizator() {
         newDesign: "New Design 1",
         createNew: "New Design (ctrl+n)",
         openDesign: "Open Design (ctrl+o)",
+        openBackups: "Open Backups",
         saveDesign: "Save Design (ctrl+s)",
         saveDesignAs: "Save Design as (ctrl+alt+s)",
         undo: "Undo (ctrl+z)",
