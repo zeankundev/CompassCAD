@@ -146,7 +146,7 @@ const getBackups = () => {
                     console.log(data)
                     renderer.logicDisplay.components = []
                     renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components)
-                    $('#titlething')[0].innerText = `${$('#titlething')[0].innerText} (Backed Up)`
+                    applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' (Backed Up) - CompassCAD');
                 })
                 document.getElementById('backups-close').click()
             }
