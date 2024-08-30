@@ -28,8 +28,7 @@
     "win": {
       "icon": "build/icons/icon.ico",
       "target": [
-        "nsis",
-        "portable"
+        "nsis"
       ],
       "publisherName": "zeankun.dev"
     },
