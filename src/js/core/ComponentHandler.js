@@ -17,7 +17,7 @@ function Component() {
     this.active = true;
     this.type = 0; 
     this.color = "#fff";
-    this.radius = 1;
+    this.radius = 2;
 }
 
 Component.prototype.setActive = function(active) {

@@ -300,3 +300,28 @@ command-pallete input[type=text] {
 .menubar-text {
     user-select: none;
 }
+#backups-modal {
+    height: 50%;
+}
+.backup-lister {
+    height: 80%;
+    margin-top: 10px;
+    overflow-y: scroll;
+}
+.backup-list {
+    display: flex;
+    padding: 10px;
+    cursor: pointer;
+}
+.backup-list:hover {
+    background-color: var(--secondary);
+}
+.lister-leftcomp {
+    display: inline-flex;
+}
+.lister-rightcomp {
+    display: flex;
+    user-select: none;
+    margin-left: 10px;
+    flex-direction: column;
+}

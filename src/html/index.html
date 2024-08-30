@@ -44,7 +44,13 @@
             <button id="prompt-close">Close</button>
             <br><br>
             <div id="config-saved"><img src="../../assets/icons/complete.svg">&nbsp;<span id="config-text">Config saved! Restart to apply</span></div>
-        </modal></span>
+        </modal>
+        <modal class="modal hidden" id="backups-modal">
+            <h3 id="backups-headtext">Recover or open backups</h3>
+            <div id="backup-lister" class="backup-lister"></div>
+            <button id="backups-clear">Clear ALL backups</button>
+            <button id="backups-close">Close</button>
+        </modal>
         <modal class="prompt hidden" id="prompt-container">
             <h3 id="prompt-message">Enter Prompt</h3>
             <br>
@@ -74,7 +80,7 @@
             <div class="toolbar" id="toolbar">
                 <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
                 <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
-                <button title="Open Backups" id="open-backups"><img src="../../assets/icons/openbackup.svg"></button>
+                <button title="Open Backups" id="open-backups" onclick="openBackupRecovery()"><img src="../../assets/icons/openbackup.svg"></button>
                 <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
                 <button title="Save Design as (ctrl+alt+s)" id="save-design-as"><img src="../../assets/icons/saveas.svg"></button>
                 <button title="Export Design as SVG (ctrl+e)" id="export-design"><img src="../../assets/icons/export.svg"></button>

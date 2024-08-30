@@ -74,4 +74,92 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
 function openSettings() {
     document.getElementById('set-modal').classList.remove('hidden')
 }
+
+function openBackupRecovery() {
+    document.getElementById('backups-modal').classList.remove('hidden')
+    getBackups()
+}
+
 document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}
+document.getElementById('backups-close').onclick = () => {document.getElementById('backups-modal').classList.add('hidden')}
+function parseBackupString(input) {
+    const regex = /backup-(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})/;
+    const match = input.match(regex);
+  
+    if (!match) {
+      throw new Error("Input string format is incorrect");
+    }
+  
+    const [_, year, month, day, hour, minute, second] = match;
+  
+    const result = {
+      date: `${year}-${month}-${day}`,
+      time: `${hour}:${minute}:${second}`,
+    };
+  
+    return result;
+  }
+  async function clearBackups() {
+    try {
+      // Read all files in the directory
+      const files = await fs.promises.readdir(path.join(remApp.getPath('userData'), 'backups'));
+  
+      // Loop through each file and delete it
+      for (const file of files) {
+        const filePath = path.join(path.join(remApp.getPath('userData'), 'backups'), file);
+        const stats = await fs.promises.lstat(filePath);
+  
+        // Ensure it is a file before deletion
+        if (stats.isFile()) {
+          await fs.promises.unlink(filePath);
+          console.log(`Deleted: ${filePath}`);
+        }
+      }
+  
+      console.log('All files deleted successfully.');
+    } catch (error) {
+      console.error('Error deleting files:', error);
+    }
+  }
+const backupSelector = document.getElementById('backup-lister')
+const getBackups = () => {
+    const backups = fs.readdirSync(path.join(remApp.getPath('userData'), 'backups'))
+    backupSelector.innerHTML = ''
+    if (backups.length > 0) {
+        backups.forEach(data => {
+            const backupElement = document.createElement('div')
+            const parsed = parseBackupString(data)
+            backupElement.className = 'backup-list'
+            backupElement.innerHTML = `
+            <div class="lister-leftcomp">
+                <img src="../../assets/icons/openbackup.svg" width="32">
+            </div>
+            <div class="lister-rightcomp">
+                <h4>Backup at ${parsed.date}</h4>
+                <span>${parsed.time}</span>
+            </div>
+            `
+            backupElement.ondblclick = () => {
+                fs.promises.readFile(path.join(remApp.getPath('userData'), 'backups', data), 'utf-8')
+                .then(resp => JSON.parse(resp))
+                .then(data => {
+                    console.log(data)
+                    renderer.logicDisplay.components = []
+                    renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components)
+                    $('#titlething')[0].innerText = `${$('#titlething')[0].innerText} (Backed Up)`
+                })
+                document.getElementById('backups-close').click()
+            }
+            backupSelector.appendChild(backupElement)
+        })
+    } else {
+        backupSelector.innerHTML = 'No backups detected.'
+    }
+}
+document.getElementById('backups-clear').onclick = async () => {
+    const sureToErase = confirm('Are you sure you want to erase your backups?\nTHIS ACT IS IRREVERSIBLE! SAVE ANY BACKED UP WORK BEFORE DOING THIS')
+    if (sureToErase == true) {
+        clearBackups()
+        backupSelector.innerHTML = 'No backups detected.'
+    }
+}

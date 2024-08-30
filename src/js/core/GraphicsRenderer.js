@@ -100,7 +100,7 @@ function GraphicDisplay(displayName, width, height) {
 	
 	// Snapping setting
 	this.snap = true;
-	this.snapTolerance = 10;
+	this.snapTolerance = 20;
 	
 	this.fontSize = 18;
 
