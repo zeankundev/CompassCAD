@@ -257,8 +257,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 		if ( tmpLength > maxLength ) {
 			this.c2s.fillText(
 					tmpText,
-					(x - 150) * 1,
-					(y + 30) * 1);
+					(x + 10),
+					y);
 			y += 25 + localDiff;
 			tmpLength = 0;
 			tmpText = "";
@@ -268,8 +268,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	// Print the remainig text
 	this.c2s.fillText(
 			tmpText,
-			(x - 150) * 1,
-			(y + 30) * 1);
+			(x + 10),
+			y);
 };
 
 SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radius) {
