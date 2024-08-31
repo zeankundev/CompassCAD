@@ -216,19 +216,52 @@ SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius)
 };
 
 SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
-	var distance = renderer.getDistance(x1, y1, x2, y2) * renderer.unitFactor * renderer.unitConversionFactor;
-	
-	var localZoom = 1;
-	var localDiff = 0;
-	
-	if ( 1 <= 0.25 ) {
-		localZoom = 0.5;
-		localDiff = 20;
-	}
+	// Calculate the distance between the two points
+    var distance = renderer.getDistance(x1, y1, x2, y2) * renderer.unitFactor * renderer.unitConversionFactor;
 
-	this.drawLineSvg(x1, y1, x2, y2, color, radius);
-	
-	this.c2s.fillStyle = "#000000";
+    // Calculate the angle of the line in radians
+    var angle = Math.atan2(y2 - y1, x2 - x1);
+
+    // Adjust zoom levels
+    var localDiff = 0;
+	var localZoom = 1;
+
+    if (1 <= 0.25) {
+        localZoom = 0.5;
+        localDiff = 20;
+    }
+
+    // Draw the main line
+    this.drawLineSvg(x1, y1, x2, y2, color, radius);
+
+    // Length and offset for the arrowhead lines
+    var arrowLength = 30;
+    var arrowOffset = 15;
+
+    // Calculate positions of the arrowhead lines at the start point (x1, y1)
+    var arrowX1 = x1 + arrowLength * Math.cos(angle);
+    var arrowY1 = y1 + arrowLength * Math.sin(angle);
+    var offsetX1 = arrowOffset * Math.cos(angle + Math.PI / 2);
+    var offsetY1 = arrowOffset * Math.sin(angle + Math.PI / 2);
+
+    // Draw the rotated arrowhead at the start point
+    this.drawLineSvg(x1, y1, arrowX1 + offsetX1, arrowY1 + offsetY1, color, radius);
+    this.drawLineSvg(x1, y1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
+    this.drawLineSvg(arrowX1 + offsetX1, arrowY1 + offsetY1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
+
+    // Calculate positions of the arrowhead lines at the end point (x2, y2)
+    var arrowX2 = x2 - arrowLength * Math.cos(angle);
+    var arrowY2 = y2 - arrowLength * Math.sin(angle);
+    var offsetX2 = arrowOffset * Math.cos(angle + Math.PI / 2);
+    var offsetY2 = arrowOffset * Math.sin(angle + Math.PI / 2);
+
+    // Draw the rotated arrowhead at the end point
+    this.drawLineSvg(x2, y2, arrowX2 + offsetX2, arrowY2 + offsetY2, color, radius);
+    this.drawLineSvg(x2, y2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
+    this.drawLineSvg(arrowX2 + offsetX2, arrowY2 + offsetY2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
+
+    // Draw the distance label
+    this.c2s.fillStyle = "#000000";
 	this.c2s.font = (renderer.fontSize * localZoom) + "px Consolas, monospace";
 	this.c2s.fillText(
 			distance.toFixed(2) + "" + renderer.unitMeasure,
