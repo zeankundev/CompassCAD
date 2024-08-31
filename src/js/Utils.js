@@ -123,7 +123,7 @@ function parseBackupString(input) {
   }
 const backupSelector = document.getElementById('backup-lister')
 const getBackups = () => {
-    const backups = fs.readdirSync(path.join(remApp.getPath('userData'), 'backups'))
+    const backups = fs.readdirSync(path.join(remApp.getPath('userData'), 'backups')).reverse()
     backupSelector.innerHTML = ''
     if (backups.length > 0) {
         backups.forEach(data => {
