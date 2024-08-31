@@ -1259,6 +1259,7 @@ GraphicDisplay.prototype.exportDesign = function() {
         }
     }).catch(err => {
         console.error('Error during save:', err);
+		alert('An error occured during the save. Please try again.')
     });
 }
 /*
