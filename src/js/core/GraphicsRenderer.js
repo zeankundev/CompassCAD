@@ -1286,7 +1286,7 @@ GraphicDisplay.prototype.exportDesign = function() {
         ]
     }).then(data => {
         if (!data.canceled) {
-			const exporter = new SVGExporter()
+			const exporter = new SVGExporter(this)
             fs.writeFileSync(data.filePath, exporter.exportSVG());
 			this.setToolTip('Export success')
 			alert('CompassCAD has successfully exported your file into SVG. Please check and examine.')

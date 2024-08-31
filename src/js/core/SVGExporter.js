@@ -1,10 +1,11 @@
 const canvas2svg = require('canvas-to-svg')
   
-function SVGExporter() {
+function SVGExporter(renderComp) {
     this.c2s = new canvas2svg(1920, 1080)
-    // hijack the renderer's logic display so we can get that shit there
-    this.logicDisplay = renderer.logicDisplay
-    console.log(`renderer coutx: ${renderer.cOutX},renderer couty: ${renderer.cOutY}`)
+	this.rendererComponent = renderComp
+    // hijack the rendererComponent's logic display so we can get that shit there
+    this.logicDisplay = this.rendererComponent.logicDisplay
+    console.log(`rendererComponent coutx: ${this.rendererComponent.cOutX},rendererComponent couty: ${this.rendererComponent.cOutY}`)
 }
 
 SVGExporter.prototype.calculateOrigin = function(components) {
@@ -200,7 +201,7 @@ SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.arc(
 			x1, 
 		    y1, 
-		    renderer.getDistance(x1, y1, x2, y2) * 1,
+		    this.rendererComponent.getDistance(x1, y1, x2, y2) * 1,
 		    0, 3.14159*2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
@@ -217,7 +218,7 @@ SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius)
 
 SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	// Calculate the distance between the two points
-    var distance = renderer.getDistance(x1, y1, x2, y2) * renderer.unitFactor * renderer.unitConversionFactor;
+    var distance = this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * this.rendererComponent.unitConversionFactor;
 
     // Calculate the angle of the line in radians
     var angle = Math.atan2(y2 - y1, x2 - x1);
@@ -262,9 +263,9 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 
     // Draw the distance label
     this.c2s.fillStyle = "#000000";
-	this.c2s.font = (renderer.fontSize * localZoom) + "px Consolas, monospace";
+	this.c2s.font = (this.rendererComponent.fontSize * localZoom) + "px Consolas, monospace";
 	this.c2s.fillText(
-			distance.toFixed(2) + "" + renderer.unitMeasure,
+			distance.toFixed(2) + "" + this.rendererComponent.unitMeasure,
 			(x2 - 120) * 1,
 			(y2 + 30 + localDiff) * 1);
 };
@@ -282,12 +283,12 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	}
 	
 	this.c2s.fillStyle = "#000000";
-	this.c2s.font =  (renderer.fontSize * localZoom) + "px Consolas, monospace";
+	this.c2s.font =  (this.rendererComponent.fontSize * localZoom) + "px Consolas, monospace";
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
 	var tmpText = "";
-	var arrText = renderer.logicDisplay.customSyntax(text).split(" ");
+	var arrText = this.rendererComponent.logicDisplay.customSyntax(text).split(" ");
 	
 	for (var i = 0; i < arrText.length; i++) {
 		tmpLength += arrText[i].length + 1;
@@ -312,8 +313,8 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 };
 
 SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radius) {
-	var firstAngle = renderer.getAngle(x1, y1, x2, y2);
-	var secondAngle = renderer.getAngle(x1, y1, x3, y3);
+	var firstAngle = this.rendererComponent.getAngle(x1, y1, x2, y2);
+	var secondAngle = this.rendererComponent.getAngle(x1, y1, x3, y3);
 	
 	this.c2s.lineWidth = radius;
 	this.c2s.fillStyle = "#000000";
@@ -322,7 +323,7 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 	this.c2s.arc(
 			x1, 
 		    y1, 
-		    renderer.getDistance(x1, y1, x2, y2) * 1,
+		    this.rendererComponent.getDistance(x1, y1, x2, y2) * 1,
 		    firstAngle, secondAngle, false);
 	this.c2s.stroke();
 	
@@ -332,7 +333,7 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 };
 SVGExporter.prototype.exportSVG = function() {
     // will return the SVG
-    this.drawAllComponents(renderer.logicDisplay.components, 15, 5);
+    this.drawAllComponents(this.rendererComponent.logicDisplay.components, 15, 5);
     // test first
 	console.log(this.c2s.getSerializedSvg(true))
     return this.c2s.getSerializedSvg(true)
