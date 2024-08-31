@@ -63,7 +63,13 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
 		refinedX = origin.x / 13
 	} else if (origin.x < -300) {
 		refinedX = origin.x / 7
-	} else {
+	} else if (origin.x < 0) {
+		refinedX = origin.x / 2
+	} else if (origin.x > 0) {
+		refinedX = origin.x / 100
+	} else if (origin.x > 300) {
+		refinedX = origin.x / 80
+	} else if (origin.x > 500) {
 		refinedX = origin.x / 2
 	}
 	if (origin.y > 800) {
