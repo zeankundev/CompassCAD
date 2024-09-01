@@ -31,7 +31,7 @@ $(document).ready(async() => {
         // Calculate the height of menubar, toolbar, and status bar
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 
-                             document.getElementById('status').offsetHeight + 27;
+                             document.getElementById('status').offsetHeight + 9.1;
         
         // Set the renderer's display dimensions
         renderer.displayHeight = window.innerHeight - resultedHeight;
