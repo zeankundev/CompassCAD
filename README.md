@@ -5,7 +5,7 @@
 very good CAD software. plan out buildings, and show it off to your boss.
 
 > [!WARNING]
-> Snap-based CompassCAD will be discontinued due to an issue on WSL intterupting the distribution of CompassCAD snap files. Please proceed with downloadingonly either `*.appimage`, `*.deb` or `*.rpm` distribution files.
+> Snap-based CompassCAD will be discontinued due to an issue on WSL intterupting the distribution of CompassCAD snap files. Please proceed with downloading only either `*.appimage`, `*.deb` or `*.rpm` distribution files.
 
 [![compasscad](https://snapcraft.io/compasscad/badge.svg)](https://snapcraft.io/compasscad)
 
