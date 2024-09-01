@@ -7,19 +7,22 @@ function ConfigHandler() {
 }
 
 ConfigHandler.prototype.loadConfig = async function() {
-    await fs.promises.readFile(path.join(remApp.getPath('userData'), '.compasscfg'), 'utf-8')
-        .then(resp => JSON.parse(resp))
-        .then(data => {
-            this.configuration = data;
-        })
-        .catch(err => {
+    const configPath = path.join(remApp.getPath('userData'), '.compasscfg');
+    try {
+        const resp = await fs.promises.readFile(configPath, 'utf-8');
+        this.configuration = JSON.parse(resp);
+    } catch (err) {
+        if (err instanceof SyntaxError) {
+            console.error("JSON parsing error:", err.message);
+        } else {
             console.error("Error loading configuration:", err);
-            alert('Your CompassCAD config file is missing.\nReopen CompassCAD without restarting the instance.\nStack trace: ' + err)
-            // If there's an error loading the configuration, fallback to defaults
-            this.configuration = { ...this.defaults };
-            require('@electron/remote').BrowserWindow.getFocusedWindow().close()
-        });
-}
+            alert('Your CompassCAD config file is missing or unreadable.\nReopen CompassCAD without restarting the instance.\nStack trace: ' + err);
+        }
+        // Fallback to defaults on error
+        this.configuration = { ...this.defaults };
+    }
+};
+
 
 ConfigHandler.prototype.saveConfig = async function() {
     const configPath = path.join(remApp.getPath('userData'), '.compasscfg');

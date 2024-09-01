@@ -21,7 +21,7 @@ const init = () => {
     window.loadFile('src/html/index.html')
     window.setMenuBarVisibility(false)
     if (!fs.existsSync(app.getPath('userData') + '/.compasscfg')) {
-        fs.writeFileSync(app.getPath('userData') + '/.compasscfg', '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"lang":"en"}', { encoding: 'utf8' });
+        fs.writeFileSync(app.getPath('userData') + '/.compasscfg', '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"lang":"en"}', { encoding: 'utf-8' });
     }
     if (!fs.existsSync(app.getPath('userData') + '/backups')) {
         fs.mkdirSync(app.getPath('userData') + '/backups');
