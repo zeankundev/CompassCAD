@@ -124,9 +124,11 @@ function parseBackupString(input) {
 const backupSelector = document.getElementById('backup-lister')
 const getBackups = () => {
     const backups = fs.readdirSync(path.join(remApp.getPath('userData'), 'backups')).reverse()
+    let backupSizeInBytes = 0
     backupSelector.innerHTML = ''
     if (backups.length > 0) {
         backups.forEach(data => {
+            backupSizeInBytes = backupSizeInBytes + fs.statSync(path.join(remApp.getPath('userData'), 'backups', data)).size
             const backupElement = document.createElement('div')
             const parsed = parseBackupString(data)
             backupElement.className = 'backup-list'
@@ -152,8 +154,10 @@ const getBackups = () => {
             }
             backupSelector.appendChild(backupElement)
         })
+        document.getElementById('backup-size').innerText = `Total backup folder size: ${(backupSizeInBytes / 1024).toFixed(1)} KB`
     } else {
         backupSelector.innerHTML = 'No backups detected.'
+        backupSizeInBytes = 0
     }
 }
 document.getElementById('backups-clear').onclick = async () => {

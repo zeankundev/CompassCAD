@@ -301,7 +301,7 @@ command-pallete input[type=text] {
     user-select: none;
 }
 #backups-modal {
-    height: 50%;
+    height: 65%;
 }
 .backup-lister {
     height: 80%;
