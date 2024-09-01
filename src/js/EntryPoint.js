@@ -31,7 +31,7 @@ $(document).ready(async() => {
         // Calculate the height of menubar, toolbar, and status bar
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 
-                             document.getElementById('status').offsetHeight + 9.1;
+                             document.getElementById('status').offsetHeight + 27;
         
         // Set the renderer's display dimensions
         renderer.displayHeight = window.innerHeight - resultedHeight;
@@ -195,13 +195,13 @@ $(document).ready(async() => {
     applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
     applyStringOnHTML('addTreeToolbar', document.getElementById('add-tree'), 'title', '');
     applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
-    applyStringOnHTML('enterText', document.getElementById('status-stuff'), 'html', '');
     applyStringOnHTML('undoStackText', document.getElementById('undo-stack-text'), 'html', '');
     applyStringOnHTML('fontSizeText', document.getElementById('font-size-text'), 'html', '');
     applyStringOnHTML('gridSpacingText', document.getElementById('grid-spacing-text'), 'html', '');
     applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('settings-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
+    applyStringOnHTML('backupsTitle', document.getElementById('backups-headtext'), 'html', '')
     applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
     window.onbeforeunload = (e) => {

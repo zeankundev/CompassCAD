@@ -122,7 +122,8 @@ function parseBackupString(input) {
     }
   }
 const backupSelector = document.getElementById('backup-lister')
-const getBackups = () => {
+const getBackups = async () => {
+    const loc = new Localizator()
     const backups = fs.readdirSync(path.join(remApp.getPath('userData'), 'backups')).reverse()
     let backupSizeInBytes = 0
     backupSelector.innerHTML = ''
@@ -154,7 +155,7 @@ const getBackups = () => {
             }
             backupSelector.appendChild(backupElement)
         })
-        document.getElementById('backup-size').innerText = `Total backup folder size: ${(backupSizeInBytes / 1024).toFixed(1)} KB`
+        document.getElementById('backup-size').innerText = `${await loc.getLocalizedString('totalBackupSize')} ${(backupSizeInBytes / 1024).toFixed(1)} KB`
     } else {
         backupSelector.innerHTML = 'No backups detected.'
         backupSizeInBytes = 0
