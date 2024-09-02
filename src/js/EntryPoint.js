@@ -1,8 +1,10 @@
-const { ipcRenderer } = require('electron')
 let renderer;
+let isReady = false
 $(document).ready(async() => {
     const config = new ConfigHandler()
     renderer = new GraphicDisplay('canvas', 800,600)
+    renderer.logicDisplay = renderer.logicDisplay || {};
+    renderer.logicDisplay.components = renderer.logicDisplay.components || [];
     document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
@@ -165,6 +167,7 @@ $(document).ready(async() => {
     });
 
     initCAD(renderer)
+    isReady = true
     // Apply translations to header elements
     applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
     // Apply translations to window action buttons

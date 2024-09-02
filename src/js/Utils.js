@@ -1,3 +1,4 @@
+const { ipcRenderer } = require('electron')
 function callPrompt(message) {
     return new Promise((resolve, reject) => {
         const promptContainer = document.getElementById('prompt-container');
@@ -168,3 +169,28 @@ document.getElementById('backups-clear').onclick = async () => {
         backupSelector.innerHTML = 'No backups detected.'
     }
 }
+ipcRenderer.on('file-path', (event, filePath) => {
+    if (isReady == true) {
+        console.log(`Received file path in renderer: ${filePath}`);
+        document.title = `${filePath.replace(/\\/g, '/')} - CompassCAD`
+        $('#titlething')[0].innerText = `${filePath.replace(/\\/g, '/')} - CompassCAD`
+        fs.promises.readFile(filePath, 'utf-8')
+        .then(resp => JSON.parse(resp))
+        .then(data => {
+            console.log(data)
+            renderer.logicDisplay.components = [];
+            renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components)
+            renderer.filePath = filePath
+            renderer.temporaryObjectArray = data
+        })
+        .catch(error => {
+            console.error('Error reading or parsing the file:', error);
+            diag.showErrorBox('Failed to open CompassCAD file. Please recheck!', 'Invalid CompassCAD design (possibly unnested arrays) \nTry adding [] onto the file and reopen.\nIf this is another issue, you might need to recheck the design data\nIf neither works out, this means your file is maybe corrupt or have some abnormal strings in it. Please recheck.')
+            renderer.filePath = ''
+            document.title = `New Design 1 - CompassCAD`
+            $('#titlething')[0].innerText = `New Design 1 - CompassCAD`
+        });
+    } else {
+        return;
+    }
+});
