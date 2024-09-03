@@ -33,7 +33,7 @@
     margin: 0;
 }
 body {
-    font-family: 'Circular', sans-serif;
+    font-family: 'Circular', system-ui;
     background-color: var(--primary);
     color: var(--text);
     overflow-x: hidden;
