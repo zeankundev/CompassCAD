@@ -172,8 +172,8 @@ document.getElementById('backups-clear').onclick = async () => {
 ipcRenderer.on('file-path', (event, filePath) => {
     if (isReady == true) {
         console.log(`Received file path in renderer: ${filePath}`);
-        document.title = `${filePath.replace(/\\/g, '/')} - CompassCAD`
-        $('#titlething')[0].innerText = `${filePath.replace(/\\/g, '/')} - CompassCAD`
+        document.title = `${filePath.replace(/\\\\|\\|\/\//g, '/')} - CompassCAD`
+        $('#titlething')[0].innerText = `${filePath.replace(/\\\\|\\|\/\//g, '/')} - CompassCAD`
         fs.promises.readFile(filePath, 'utf-8')
         .then(resp => JSON.parse(resp))
         .then(data => {
