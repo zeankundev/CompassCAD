@@ -50,7 +50,7 @@ const init = () => {
       setTimeout(() => {
         console.log(`Sending valid file path to renderer: ${mostValidFilePath}`);
         window.webContents.send('file-path', mostValidFilePath);
-      }, 250)
+      }, 500)
     });
   }
 
