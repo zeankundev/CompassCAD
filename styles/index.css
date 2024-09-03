@@ -41,6 +41,60 @@ body {
 h1 {
     font-weight: 800;
 }
+.next-inherited-from-image {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+.next-inherited-from-image img {
+    width: 45%;
+    border-radius: 20px;
+    display: inline-flex;
+}
+.next-inherited-from-image .content {
+    width: 45%;
+    border-radius: 20px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 40px;
+}
+.next-inherited-from-image .content span {
+    margin-top: 10px;
+}
+.in-comparison-with {
+    text-align: center;
+}
+.comparison-table {
+    display: flex;
+    justify-content: center;
+    margin-left: 12%;
+}
+.comparison-element {
+    display: inline-block;
+    margin-right: 10%;
+}
+.comparison-element span , .comparison-element span h2 {
+    display: inline;
+    font-size: 15pt;
+}
+.comparison-element span h2 {
+    font-size: 22pt;
+    font-weight: 800;
+}
+.ending-part {
+    text-align: center;
+}
+footer {
+    padding: 20px;
+    background-color: var(--secondary);
+    display: flex;
+    align-items: center;
+}
+footer img {
+    order: 2;
+    margin-left: auto;
+}
 header {
     padding: 15px;
     position: fixed;
@@ -67,6 +121,9 @@ header.scrolled::before {
 }
 .top-part-with-bg h1 {
     font-size: 36pt;
+}
+.main-body-content {
+    padding: 20px;
 }
 .button-user-interaction {
     background-color: var(--theme);

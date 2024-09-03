@@ -66,16 +66,16 @@ async function downloadLatestRelease() {
 if (!window.location.href.includes('editor.html')) {
     switch (detectOS()) {
         case 'windows':
-            document.getElementById('download-button').innerHTML = `<img src="./assets/images/download.svg">&nbsp;Download for Windows`
+            document.getElementById('download-button').innerHTML = `<span class="material-symbols-outlined" translate="no">download</span>&nbsp;Download for Windows`
             break
         case 'mac':
-            document.getElementById('download-button').innerHTML = `<img src="./assets/images/download.svg">&nbsp;Download for Mac`
+            document.getElementById('download-button').innerHTML = `<span class="material-symbols-outlined" translate="no">download</span>&nbsp;Download for Mac`
             break
         case 'linux':
-            document.getElementById('download-button').innerHTML = `<img src="./assets/images/download.svg">&nbsp;Download for Linux`
+            document.getElementById('download-button').innerHTML = `<span class="material-symbols-outlined" translate="no">download</span>&nbsp;Download for Linux`
             break
         default:
-            document.getElementById('download-button').innerHTML = `<img src="./assets/images/download.svg">&nbsp;nah men u aint getting this`
+            document.getElementById('download-button').innerHTML = `<span class="material-symbols-outlined" translate="no">download</span>&nbsp;nah men u aint getting this`
             break
     }
 }
