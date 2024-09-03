@@ -25,6 +25,16 @@
     "directories": {
       "output": "dist"
     },
+    "fileAssociations": [
+      {
+        "ext": "ccad",
+        "name": "CompassCAD drawing file",
+        "icon": "build/icons/ccad.ico"
+      }
+    ],
+    "nsis": {
+      "perMachine": true
+    },
     "win": {
       "icon": "build/icons/icon.ico",
       "target": [
