@@ -585,20 +585,20 @@ GraphicDisplay.prototype.drawRules = function(e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
-    // Calculate the starting offset for the grid
+    // Adjust the starting offset to account for zoom properly
     var xStart = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth / 2;
     var yStart = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight / 2;
 
     // Calculate the number of circles to draw along the width and height
-    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / this.zoom) + 1;
-    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / this.zoom) + 1;
+    var numCirclesX = Math.ceil(this.displayWidth / (this.gridSpacing * this.zoom)) + 2;
+    var numCirclesY = Math.ceil(this.displayHeight / (this.gridSpacing * this.zoom)) + 2;
 
     // Loop to draw the circles
     for (var i = 0; i < numCirclesX; i++) {
         for (var j = 0; j < numCirclesY; j++) {
             var x = xStart + i * this.gridSpacing * this.zoom;
             var y = yStart + j * this.gridSpacing * this.zoom;
-            
+
             this.context.beginPath();
             this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
             this.context.closePath();
@@ -606,6 +606,7 @@ GraphicDisplay.prototype.drawGrid = function(camXoff, camYoff) {
         }
     }
 };
+
 
 
 GraphicDisplay.prototype.snapToGrid = function(x, y) {
