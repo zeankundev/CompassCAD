@@ -32,8 +32,7 @@ $(document).ready(async() => {
     const resizeWin = () => {
         // Calculate the height of menubar, toolbar, and status bar
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
-                             document.getElementById('toolbar').offsetHeight + 
-                             document.getElementById('status').offsetHeight + 9.1;
+                             document.getElementById('toolbar').offsetHeight + 10;
         
         // Set the renderer's display dimensions
         renderer.displayHeight = window.innerHeight - resultedHeight;

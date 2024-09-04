@@ -563,7 +563,16 @@ GraphicDisplay.prototype.drawShape = function(shape) {
 };
 
 GraphicDisplay.prototype.drawToolTip = function(e) {
-	$('#status-stuff')[0].innerText = this.getToolTip()
+	/*
+	this.context.fillStyle = "#202020";
+	this.context.fillRect(-this.displayWidth/2, this.displayHeight/2 - 20, this.displayWidth, 20);
+	this.context.strokeStyle = "black";
+	this.context.lineWidth = 1;
+	this.context.strokeRect(-this.displayWidth/2 + 1, this.displayHeight/2 - 21, this.displayWidth-2, 20);
+	*/
+	this.context.fillStyle = "#fff";
+	this.context.font = "13px 'Segoe UI Variable Display', system-ui";
+	this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 10, this.displayHeight / 2 - 10);
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
