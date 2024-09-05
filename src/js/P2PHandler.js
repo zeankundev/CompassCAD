@@ -20,6 +20,7 @@ const join = () => {
                     autoConnect.on('open', () => {
                         console.log('autoconnect opened')
                         autoConnect.on('data', (data) => {
+                            console.log(data)
                             renderer.updateEditor(data)
                         })
                         connection = autoConnect

@@ -1241,19 +1241,11 @@ GraphicDisplay.prototype.updateEditor = function(array) {
     }
 }
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
-	if (this.isChanged()) {
-		console.log(peerChange)
-		if (!peerChange) {
-			console.log('its changed')
-			this.saveState()
-			this.redoStack = []
-			sendCurrentEditorState()
-		} else {
-			console.log('not changed at all')
-			this.saveState()
-			this.redoStack = []
-			peerChange = false
-		}
+	if (this.isChanged() == true) {
+		console.log('its changed')
+		this.saveState()
+		this.redoStack = []
+		sendCurrentEditorState()
 	}
 }
 GraphicDisplay.prototype.saveDesign = function() {
