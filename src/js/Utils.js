@@ -92,7 +92,7 @@ document.getElementById('p2p-connect').onclick = () => {
     const forbiddenRegEx = /^[A-Za-z0-9-]+$/
 
     const result = forbiddenRegEx.test(document.getElementById('p2p-code-input').value)
-    if (result != false) {
+    if (result != false || result != '') {
         joinSession(document.getElementById('p2p-code-input').value)
         document.getElementById('peer-connected').style.display = 'block'
         setTimeout(() => {
