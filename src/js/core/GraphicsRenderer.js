@@ -189,7 +189,6 @@ GraphicDisplay.prototype.execute = async function(e) {
 GraphicDisplay.prototype.saveState = function() {
     this.undoStack.push(JSON.stringify(this.logicDisplay.components));
 	this.lastArray = [...this.logicDisplay.components]
-	console.log(this.undoStack)
     if (this.undoStack.length > this.maximumStack) { // Limit the undo stack size to 50
         this.undoStack.shift();
     }
@@ -1230,25 +1229,33 @@ GraphicDisplay.prototype.openDesign = function() {
 GraphicDisplay.prototype.isChanged = function() {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
-GraphicDisplay.prototype.updateEditor = function(array) {
-    let backup = JSON.stringify(this.logicDisplay.components)
-    this.logicDisplay.components = []
-    peerChange = true
+GraphicDisplay.prototype.updateEditor = function (array) {
+    let backup = JSON.stringify(this.logicDisplay.components);
+    console.log('called to update');
+    this.logicDisplay.components = [];
+    peerChange = true; // Set peerChange to true as an indication of peer update.
+
     try {
-        this.logicDisplay.importJSON(JSON.parse(array), this.logicDisplay.components)
+        this.logicDisplay.importJSON(JSON.parse(array), this.logicDisplay.components);
+        // Reset peerChange to false after successfully handling the peer data.
+        peerChange = false;
     } catch (e) {
-        this.logicDisplay.importJSON(JSON.parse(backup), this.logicDisplay.components)
-        throw new Error(e)
+        // On error, revert changes and reset peerChange accordingly.
+        this.logicDisplay.importJSON(JSON.parse(backup), this.logicDisplay.components);
+        peerChange = false; // Ensure peerChange is reset even in error cases.
+        throw new Error(e);
     }
-}
+};
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged()) {
-
+		console.log(peerChange)
 		if (!peerChange) {
+			console.log('its changed')
 			this.saveState()
 			this.redoStack = []
 			sendCurrentEditorState()
 		} else {
+			console.log('not changed at all')
 			this.saveState()
 			this.redoStack = []
 			peerChange = false

@@ -44,7 +44,8 @@ const joinSession = (id) => {
 }
 const sendCurrentEditorState = () => {
     if (connection && connection.open) {
-        console.log('sent packet buffer')
-        connection.send(JSON.stringify(renderer.logicDisplay.components))
+        console.log('sent packet buffer');
+        connection.send(JSON.stringify(renderer.logicDisplay.components));
+        peerChange = false; // Reset peerChange after sending the current state.
     }
-}
+};
