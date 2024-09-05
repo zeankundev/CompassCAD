@@ -63,6 +63,21 @@
                 <button id="prompt-cancel">Cancel</button>
             </div>
         </modal>
+        <modal class="prompt hidden" id="p2p-initializer">
+            <h3 id="p2p-head">Host or join a multi-edit session</h3>
+            <p>Your Session ID:</p>
+            <b title="Click to copy" id="session-id">session id</b>
+            <br>
+            <br>
+            <h3>Connect to an existing session</h3>
+            <input type="text" id="p2p-code-input" placeholder="Input session code">
+            <br>
+            <div class="prompt-answer">
+                <button id="p2p-connect">Connect</button>
+                <button id="p2p-close">Close</button>
+            </div>
+            <div id="peer-connected"><img src="../../assets/icons/complete.svg">&nbsp;<span id="peer-success-text">You are now connected. Have fun!</span></div>
+        </modal>
         <header class="menubar" id="menubar">
             <div class="menubar-branding">
                 <img src="../../assets/logos/512x512.png" width="20" alt="Sunset Logo">
@@ -92,6 +107,7 @@
                 <div class="division-line"></div>
                 &nbsp;
                 <span class="menubar-text" style="margin-left: 20px;" id="zoom-level"></span>
+                <button title="Host or join a multi-edit session" id="join-remote" onclick="openMultiEditor()"><img src="../../assets/icons/remoteconnect.svg"></button>
                 <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>
                 <button title="Help" id="help" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki`)"><img src="../../assets/icons/help.svg"></button>
             </div>
@@ -124,6 +140,7 @@
         <script src="../js/core/GraphicsRenderer.js"></script>
         <script src="../js/ConfigToPass.js"></script>
         <script src="../js/Utils.js"></script>
+        <script src="../js/P2PHandler.js"></script>
         <script src="../js/LocalizationHandler.js"></script>
         <script src="../js/EntryPoint.js"></script>
         <script src="../js/core/SVGExporter.js"></script>

@@ -15,7 +15,8 @@
   "dependencies": {
     "@electron/remote": "^2.0.9",
     "canvas-to-svg": "^1.0.3",
-    "jquery": "^3.7.1"
+    "jquery": "^3.7.1",
+    "peerjs": "^1.5.4"
   },
   "build": {
     "appId": "dev.zeankun.compasscad",

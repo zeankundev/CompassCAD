@@ -80,9 +80,29 @@ function openBackupRecovery() {
     document.getElementById('backups-modal').classList.remove('hidden')
     getBackups()
 }
+function openMultiEditor() {
+    document.getElementById('peer-connected').style.display = 'none'
+    document.getElementById('p2p-initializer').classList.remove('hidden')
+}
 
 document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}
 document.getElementById('backups-close').onclick = () => {document.getElementById('backups-modal').classList.add('hidden')}
+document.getElementById('p2p-close').onclick = () => {document.getElementById('p2p-initializer').classList.add('hidden')}
+document.getElementById('p2p-connect').onclick = () => {
+    const forbiddenRegEx = /^[A-Za-z0-9-]+$/
+
+    const result = forbiddenRegEx.test(document.getElementById('p2p-code-input').value)
+    if (result != false) {
+        joinSession(document.getElementById('p2p-code-input').value)
+        document.getElementById('peer-connected').style.display = 'block'
+        setTimeout(() => {
+            document.getElementById('peer-connected').style.display = 'none'
+        }, 2000)
+    } else {
+        alert('Invalid code detected. Try again.')
+    }
+    
+}
 function parseBackupString(input) {
     const regex = /backup-(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})/;
     const match = input.match(regex);

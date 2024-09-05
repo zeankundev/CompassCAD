@@ -62,6 +62,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.undoStack = []
 	this.redoStack = []
 	this.temporaryObjectArray = []
+	this.lastArray = [];
 	
 	this.displayWidth = width;
 	this.displayHeight = height;
@@ -187,6 +188,7 @@ GraphicDisplay.prototype.execute = async function(e) {
 
 GraphicDisplay.prototype.saveState = function() {
     this.undoStack.push(JSON.stringify(this.logicDisplay.components));
+	this.lastArray = [...this.logicDisplay.components]
 	console.log(this.undoStack)
     if (this.undoStack.length > this.maximumStack) { // Limit the undo stack size to 50
         this.undoStack.shift();
@@ -657,6 +659,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 	switch(this.mode) {
 		case this.MODES.ADDPOINT:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addPoint');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -670,12 +673,12 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 				this.saveState()
 				this.execute()
 			}
-			this.tooltip = await this.getLocal('addPoint');
 			break;
 		case this.MODES.ADDLINE:
 			if (e.which == 3)
 			
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addLine');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -704,10 +707,10 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = await this.getLocal('addLine');
 			break;
 		case this.MODES.ADDCIRCLE:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addCircle');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -733,10 +736,10 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = await this.getLocal('addCircle');
 			break;
 		case this.MODES.ADDARC:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addArc');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -773,10 +776,10 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = await this.getLocal('addArc');
 			break;
 		case this.MODES.ADDRECTANGLE:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addRectangle');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -802,10 +805,10 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = await this.getLocal('addRectangle');
 			break;
 		case this.MODES.ADDMEASURE:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addMeasure');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -831,10 +834,10 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.execute()
 				}
 			}
-			this.tooltip = await this.getLocal('addMeasure');
 			break;
 		case this.MODES.ADDLABEL:
 			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addLabel');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -857,7 +860,6 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 				})
 				.catch(e => {})
 			}
-			this.tooltip = await this.getLocal('addLabel');
 			break;
 		case this.MODES.ADDSHAPE:
 			this.cvn.css('cursor', 'crosshair');
@@ -877,6 +879,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 			break;
 		case this.MODES.NAVIGATE:
 			this.cvn.css('cursor', 'default');
+			this.tooltip = await this.getLocal('navigate');
 			if (action == this.MOUSEACTION.DOWN) {
 				this.camMoving = true; 
 				this.xCNaught = this.getCursorXLocal();
@@ -886,7 +889,6 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 				this.camX += this.getCursorXLocal() - this.xCNaught;
 				this.camY += this.getCursorYLocal() - this.yCNaught;
 			}
-			this.tooltip = await this.getLocal('navigate');
 			break;
 		case this.MODES.MOVE:
 			this.cvn.css('cursor', 'default');
@@ -907,6 +909,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 				if ( this.selectedComponent == null ) {
 					this.selectComponent(this.temporarySelectedComponent);
 				} else {
+					sendCurrentEditorState()
 					this.unselectComponent();
 					this.saveState()
 					this.execute()
@@ -930,6 +933,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 				if ( this.temporarySelectedComponent != null ) {
 					this.logicDisplay.components[this.temporarySelectedComponent].setActive(false);
 				}
+				sendCurrentEditorState()
 				this.saveState()
 				this.execute()
 			}
@@ -1226,6 +1230,31 @@ GraphicDisplay.prototype.openDesign = function() {
 GraphicDisplay.prototype.isChanged = function() {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
+GraphicDisplay.prototype.updateEditor = function(array) {
+    let backup = JSON.stringify(this.logicDisplay.components)
+    this.logicDisplay.components = []
+    peerChange = true
+    try {
+        this.logicDisplay.importJSON(JSON.parse(array), this.logicDisplay.components)
+    } catch (e) {
+        this.logicDisplay.importJSON(JSON.parse(backup), this.logicDisplay.components)
+        throw new Error(e)
+    }
+}
+GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
+	if (this.isChanged()) {
+
+		if (!peerChange) {
+			this.saveState()
+			this.redoStack = []
+			sendCurrentEditorState()
+		} else {
+			this.saveState()
+			this.redoStack = []
+			peerChange = false
+		}
+	}
+}
 GraphicDisplay.prototype.saveDesign = function() {
     // Check if the file path is defined and if the project is not read-only
     if (this.filePath != '') {
@@ -1412,5 +1441,8 @@ var initCAD = function(gd) {
 		gd.execute();
 	};
 	setInterval(repeatInstance, 0)
+	setInterval(() => {
+		gd.checkForAnyPeerChanges()
+	}, 500)
 };
 
