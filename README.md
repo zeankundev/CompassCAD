@@ -13,6 +13,7 @@ very good CAD software. plan out buildings, and show it off to your boss.
 
 # Stay up to date
 - [Official CompassCAD X (formerly Twitter) blog](https://x.com/CompassCAD)
+- [Official CompassCAD Discord Server](https://discord.gg/Qvw9afNs3e)
 
 # System requirements
 - Windows 10 22H2, macOS El Capitan, Ubuntu 20.04 or up (use electron v22.3.27 to run CompassCAD on Windows 7 (SP1 needed))
