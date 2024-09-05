@@ -1229,23 +1229,17 @@ GraphicDisplay.prototype.openDesign = function() {
 GraphicDisplay.prototype.isChanged = function() {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
-GraphicDisplay.prototype.updateEditor = function (array) {
-    let backup = JSON.stringify(this.logicDisplay.components);
-    console.log('called to update');
-    this.logicDisplay.components = [];
-    peerChange = true; // Set peerChange to true as an indication of peer update.
-
+GraphicDisplay.prototype.updateEditor = function(array) {
+    let backup = JSON.stringify(this.logicDisplay.components)
+    this.logicDisplay.components = []
+    peerChange = true
     try {
-        this.logicDisplay.importJSON(JSON.parse(array), this.logicDisplay.components);
-        // Reset peerChange to false after successfully handling the peer data.
-        peerChange = false;
+        this.logicDisplay.importJSON(JSON.parse(array), this.logicDisplay.components)
     } catch (e) {
-        // On error, revert changes and reset peerChange accordingly.
-        this.logicDisplay.importJSON(JSON.parse(backup), this.logicDisplay.components);
-        peerChange = false; // Ensure peerChange is reset even in error cases.
-        throw new Error(e);
+        this.logicDisplay.importJSON(JSON.parse(backup), this.logicDisplay.components)
+        throw new Error(e)
     }
-};
+}
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged()) {
 		console.log(peerChange)
