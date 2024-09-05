@@ -203,6 +203,11 @@ $(document).ready(async() => {
     applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('settings-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
+    applyStringOnHTML('hostOrJoinP2P', document.getElementById('join-remote'), 'title', '');
+    applyStringOnHTML('hostOrJoinP2P', document.getElementById('p2p-head'), 'html', '');
+    applyStringOnHTML('yourSessionId', document.getElementById('your-id'), 'html', '');
+    applyStringOnHTML('connectToAnotherP2P', document.getElementById('connect-another-client-head'), 'html', '');
+    applyStringOnHTML('connectedToP2P', document.getElementById('peer-success-text'), 'html', '');
     applyStringOnHTML('backupsTitle', document.getElementById('backups-headtext'), 'html', '')
     applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
