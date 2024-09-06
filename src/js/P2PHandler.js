@@ -2,6 +2,7 @@ const { Peer } = require('peerjs')
 let peer;
 let connection;
 let peerChange = false
+var doupdatestack = true
 const join = () => {
     peer = new Peer()
     peer.on('open', (id) => {
@@ -21,11 +22,13 @@ const join = () => {
                         console.log('autoconnect opened')
                         autoConnect.on('data', (data) => {
                             console.log(data)
+                            doupdatestack = false
                             renderer.updateEditor(data)
                         })
                         connection = autoConnect
                     })
                 } else {
+                    doupdatestack = false
                     renderer.updateEditor(data)
                 }
             })

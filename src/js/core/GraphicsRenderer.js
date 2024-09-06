@@ -1242,10 +1242,16 @@ GraphicDisplay.prototype.updateEditor = function(array) {
 }
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged() == true) {
-		console.log('its changed')
-		this.saveState()
-		this.redoStack = []
-		sendCurrentEditorState()
+		if (doupdatestack) {
+			console.log('its changed')
+			this.saveState()
+			this.redoStack = []
+			sendCurrentEditorState()
+		} else {
+			console.log('its changed')
+			this.saveState()
+			this.redoStack = []
+		}
 	}
 }
 GraphicDisplay.prototype.saveDesign = function() {
