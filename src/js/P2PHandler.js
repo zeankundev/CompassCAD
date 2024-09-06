@@ -3,6 +3,7 @@ let peer;
 let connection;
 let peerChange = false
 var doupdatestack = true
+
 const join = () => {
     peer = new Peer()
     peer.on('open', (id) => {
@@ -42,6 +43,7 @@ const joinSession = (id) => {
     connection.on('open', () => {
         connection.send({type: 'handshake', peerId: peer.id})
         connection.on('data', (data) => {
+            doupdatestack = false
             updateEditor(data)
         })
     })
