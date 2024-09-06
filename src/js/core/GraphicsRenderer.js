@@ -1442,6 +1442,6 @@ var initCAD = function (gd) {
 	setInterval(repeatInstance, 0)
 	setInterval(() => {
 		gd.checkForAnyPeerChanges()
-	}, 300)
+	}, 250)
 };
 
