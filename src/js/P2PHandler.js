@@ -12,7 +12,12 @@ const join = () => {
     peer.on('connection', (c) => {
         connection = c;
         console.log('connected')
+        document.getElementById('peer-connected').style.display = 'block'
+        setTimeout(() => {
+            document.getElementById('peer-connected').style.display = 'none'
+        }, 2000)
         connection.on('open', () => {
+            callToast('A new participant has joined!')
             console.log('socket opened')
             connection.on('data', (data) => {
                 console.log('got data')
@@ -38,6 +43,7 @@ const join = () => {
 }
 join()
 const joinSession = (id) => {
+    console.log('asking to join session')
     if (connection && connection.open) return;
     connection = peer.connect(id)
     connection.on('open', () => {
@@ -46,6 +52,15 @@ const joinSession = (id) => {
             doupdatestack = false
             updateEditor(data)
         })
+    })
+    connection.on('error', (e) => {
+        diag.showErrorBox(
+            `Failed to connect to peer`, 
+            `CompassCAD failed to connect to your multi-edit session. Try:\n
+            - asking the host to retry their instance\n
+            - checking your internet connection\n
+            - double-checking the session ID that was given`)
+        throw new Error(e)
     })
 }
 const sendCurrentEditorState = () => {

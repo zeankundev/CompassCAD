@@ -8,7 +8,7 @@
         <script src="../js/jquery-min.js"></script>
     </head>
     <body>
-        <command-pallete>
+        <command-pallete class="hidden">
             <input type="text" placeholder="Start CompassCAD action">
             <div class="pallete-actions" id="pallete-actions">
                 <div class="option" id="new-project">New Design</div>
@@ -17,6 +17,9 @@
                 <div class="option" id="new-project">Save Design as</div>
             </div>
         </command-pallete>
+        <div class="toast hide" id="toast">
+            <span id="toast-text">This is a toast</span>
+        </div>
         <modal class="modal hidden" id="set-modal">
             <h3 id="settings-text">Settings</h3>
             <br>

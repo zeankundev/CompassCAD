@@ -85,6 +85,14 @@ function openMultiEditor() {
     document.getElementById('p2p-initializer').classList.remove('hidden')
 }
 
+function callToast(text) {
+    document.getElementById('toast-text').innerHTML = text
+    document.getElementById('toast').style.display = 'block'
+    setTimeout(() => {
+        document.getElementById('toast').style.display = 'none'
+    }, 3000)
+}
+
 document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}
 document.getElementById('backups-close').onclick = () => {document.getElementById('backups-modal').classList.add('hidden')}
 document.getElementById('p2p-close').onclick = () => {document.getElementById('p2p-initializer').classList.add('hidden')}
@@ -94,10 +102,6 @@ document.getElementById('p2p-connect').onclick = () => {
     const result = forbiddenRegEx.test(document.getElementById('p2p-code-input').value)
     if (result != false || result != '') {
         joinSession(document.getElementById('p2p-code-input').value)
-        document.getElementById('peer-connected').style.display = 'block'
-        setTimeout(() => {
-            document.getElementById('peer-connected').style.display = 'none'
-        }, 2000)
     } else {
         alert('Invalid code detected. Try again.')
     }

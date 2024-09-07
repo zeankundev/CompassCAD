@@ -5,6 +5,13 @@
 * {
     margin: 0;
 }
+@keyframes toast {
+    0% {
+        transform: translateY(500px);
+    } 100% {
+        transform: translateY(0px);
+    }
+}
 body {
     background-color: var(--primary);
     font-family: var(--main-font);
@@ -267,7 +274,7 @@ command-pallete {
     position: absolute;
     margin-top: 5%;
     flex-direction: column;
-    display: none;
+    display: block;
     width: 25%;
     margin-left: 35%;
     background-color: var(--secondary);
@@ -280,6 +287,7 @@ command-pallete input[type=text] {
     display: flex;
     flex: 1;
     padding: 5px;
+    width: 97%;
     font-family: var(--main-font);
     background-color: var(--tertiary);
     color: var(--text);
@@ -324,4 +332,17 @@ command-pallete input[type=text] {
     user-select: none;
     margin-left: 10px;
     flex-direction: column;
+}
+.toast {
+    position: absolute;
+    bottom: 0;
+    /*make sure it goes in the middle of the page but the padding must not do anything to affect*/
+    right: 0;
+    display: none;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    background-color: var(--secondary);
+    animation: toast 1s ease forwards;
 }
