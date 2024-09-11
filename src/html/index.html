@@ -111,7 +111,7 @@
                 <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
                 <div class="division-line"></div>
                 &nbsp;
-                <span class="menubar-text" style="margin-left: 20px;" id="zoom-level"></span>
+                <span class="menubar-text" style="margin-left: 20px;" id="zoom-level" onclick="const requiredZoomFactor = 1 / renderer.zoom;renderer.setZoom(requiredZoomFactor);"></span>
                 <button title="Host or join a multi-edit session" id="join-remote" onclick="openMultiEditor()"><img src="../../assets/icons/remoteconnect.svg"></button>
                 <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>
                 <button title="Join CompassCAD Discord Server" onclick="redirectToSomewhere(`https://discord.gg/Qvw9afNs3e`)"><img src="../../assets/icons/discord.svg"></button>

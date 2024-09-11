@@ -495,7 +495,7 @@ GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) 
 
 	// Draw the distance label
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px newstroke";
+	this.context.font = (this.fontSize * localZoom) + "px newstroke, monospace";
 	this.context.fillText(
 		distance.toFixed(2) + "" + this.unitMeasure,
 		(this.cOutX + x2 - 150) * this.zoom,
@@ -516,7 +516,7 @@ GraphicDisplay.prototype.drawLabel = function (x, y, text, color, radius) {
 	}
 
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px newstroke";
+	this.context.font = (this.fontSize * localZoom) + "px newstroke, monospace";
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
