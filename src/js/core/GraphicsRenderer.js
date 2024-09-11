@@ -468,7 +468,7 @@ GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) 
 	this.drawLine(x1, y1, x2, y2, color, radius);
 
 	// Length and offset for the arrowhead lines
-	var arrowLength = 30;
+	var arrowLength = 25;
 	var arrowOffset = 15;
 
 	// Calculate positions of the arrowhead lines at the start point (x1, y1)
