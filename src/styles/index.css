@@ -7,9 +7,16 @@
 }
 @keyframes toast {
     0% {
-        transform: translateY(500px);
+        transform: translateY(200px);
     } 100% {
         transform: translateY(0px);
+    }
+}
+@keyframes toast-cancel {
+    0% {
+        transform: translateY(0px);
+    } 100% {
+        transform: translateY(200px);
     }
 }
 body {
@@ -344,5 +351,5 @@ command-pallete input[type=text] {
     margin-bottom: 20px;
     margin-right: 20px;
     background-color: var(--secondary);
-    animation: toast 1s ease forwards;
+    animation: toast 1s ease;
 }
