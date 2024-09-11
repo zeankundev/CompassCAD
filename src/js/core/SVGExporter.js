@@ -61,7 +61,7 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
 	var refinedY = 0;
 
 	if (origin.x < -500) {
-		refinedX = origin.x / 13
+		refinedX = origin.x / 14
 	} else if (origin.x < -300) {
 		refinedX = origin.x / 7
 	} else if (origin.x < 0) {
@@ -82,6 +82,9 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
 	} else {
 		refinedY = origin.y / 1.9
 	}
+	console.log(`refined x:${refinedX}, refined y:${refinedY}`)
+	console.log(`abs refined x:${Math.abs(refinedX)}, abs refined y:${Math.abs(refinedY)}`)
+	console.log(`final x:${Math.abs(refinedX) * moveByX}, final y:${Math.abs(refinedY) * moveByY}`)
     for (var i = 0; i < components.length; i++) {
         if (!components[i].isActive()) continue;
 
