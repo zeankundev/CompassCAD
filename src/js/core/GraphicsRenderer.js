@@ -626,8 +626,8 @@ GraphicDisplay.prototype.drawRules = function (e) {
 
 GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
     // Calculate the starting offset for the grid, taking into account the zoom level
-    var xStart = (camXoff % (this.gridSpacing * this.zoom)) - (this.displayWidth / 2);
-    var yStart = (camYoff % (this.gridSpacing * this.zoom)) - (this.displayHeight / 2);
+    var xStart = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth / 2;
+	var yStart = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight / 2;
 
     // Calculate the number of circles to draw along the width and height
     var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / this.zoom) + 1;
