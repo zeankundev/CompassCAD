@@ -48,6 +48,7 @@ small {
 }
 .window-actions button {
     -webkit-appearance: none;
+    appearance: none;
     border: none;
     padding: 5px;
     justify-content: center;
@@ -75,6 +76,7 @@ small {
 }
 .toolbar button {
     -webkit-appearance: none;
+    appearance: none;
     border: none;
     padding: 8px;
     border-radius: 10px;
@@ -115,6 +117,7 @@ small {
 }
 .quick-tool button {
     -webkit-appearance: none;
+    appearance: none;
     justify-content: center;
     flex-direction: column;
     align-items: center;
@@ -155,6 +158,7 @@ small {
 .tool-switch {
     font-family: var(--main-font);
     -webkit-appearance: none;
+    appearance: none;
     border: none;
     background-color: var(--tertiary);
     color: var(--text);
@@ -168,6 +172,7 @@ small {
 }
 .text-input-generic {
     -webkit-appearance: none;
+    appearance: none;
     font-family: var(--main-font);
     border: none;
     margin-bottom: 5px;
@@ -182,6 +187,7 @@ small {
 }
 .submit-form {
     -webkit-appearance: none;
+    appearance: none;
     font-family: var(--main-font);
     border: none;
     justify-content: center;
@@ -216,6 +222,7 @@ small {
 
 .prompt input[type=text] {
     -webkit-appearance: none;
+    appearance: none;
     background-color: var(--secondary);
     border: none;
     font-family: var(--main-font);
@@ -230,6 +237,7 @@ small {
 }
 .prompt button, .modal button {
     -webkit-appearance: none;
+    appearance: none;
     color: var(--text);
     border: none;
     background-color: var(--secondary);
@@ -258,6 +266,7 @@ small {
 }
 .modal input[type=number], .modal input[type=text], .modal select {
     -webkit-appearance: none;
+    appearance: none;
     background-color: var(--secondary);
     border: none;
     font-family: var(--main-font);
@@ -289,6 +298,7 @@ command-pallete {
 }
 command-pallete input[type=text] {
     -webkit-appearance: none;
+    appearance: none;
     border: none;
     font-size: 12pt;
     display: flex;
