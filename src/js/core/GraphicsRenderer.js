@@ -1326,11 +1326,11 @@ GraphicDisplay.prototype.exportDesign = function () {
 			const exporter = new SVGExporter(this)
 			fs.writeFileSync(data.filePath, exporter.exportSVG());
 			this.setToolTip('Export success')
-			alert('CompassCAD has successfully exported your file into SVG. Please check and examine.')
+			callToast('CompassCAD has successfully exported your file into SVG. Please check and examine.')
 		}
 	}).catch(err => {
 		console.error('Error during save:', err);
-		alert('An error occured during the save. Please try again.')
+		callToast('An error occured during the save. Please try again.')
 	});
 }
 /*
