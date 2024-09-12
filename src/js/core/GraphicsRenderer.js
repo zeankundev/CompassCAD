@@ -187,21 +187,33 @@ GraphicDisplay.prototype.execute = async function (e) {
 };
 
 GraphicDisplay.prototype.saveState = function () {
-	this.undoStack.push(JSON.stringify(this.logicDisplay.components));
-	this.lastArray = [...this.logicDisplay.components]
-	if (this.undoStack.length > this.maximumStack) { // Limit the undo stack size to 50
+	let hasChanged = false;
+	for (let i = 0; i < this.logicDisplay.components.length; i++) {
+	  if (JSON.stringify(this.logicDisplay.components[i]) !== JSON.stringify(this.lastArray[i])) {
+		hasChanged = true;
+		break;
+	  }
+	}
+  
+	if (hasChanged) {
+	  this.undoStack.push(JSON.stringify(this.logicDisplay.components));
+	  this.lastArray = [...this.logicDisplay.components];
+	  if (this.undoStack.length > this.maximumStack) {
 		this.undoStack.shift();
+	  }
+  
+	  console.log(this.undoStack);
+  
+	  if (doupdatestack) {
+		sendCurrentEditorState();
+	  } else {
+		doupdatestack = true;
+	  }
+  
+	  // Clear the redo stack when a new action is performed
+	  this.redoStack = [];
 	}
-
-	if (doupdatestack) {
-		sendCurrentEditorState()
-	} else {
-		doupdatestack = true
-	}
-
-	// Clear the redo stack when a new action is performed
-	this.redoStack = [];
-};
+  };
 
 GraphicDisplay.prototype.clearGrid = function (e) {
 	this.context.restore();
@@ -954,7 +966,6 @@ GraphicDisplay.prototype.undo = function () {
 		// Remove the last state from the undoStack and push it to the redoStack
 		const state = this.undoStack.pop();
 		this.redoStack.push(state);
-
 		// Get the new last state from the undoStack (if any) to apply to the logicDisplay
 		const lastState = this.undoStack.length > 0 ? this.undoStack[this.undoStack.length - 1] : null;
 
@@ -1250,8 +1261,11 @@ GraphicDisplay.prototype.updateEditor = function (array) {
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged() == true) {
 		console.log('its changed')
-		this.saveState()
-		this.redoStack = []
+		if (this.logicDisplay.components.length == this.undoStack.length) {
+			console.log('undostack match, blocking')
+		} else {
+			this.saveState()
+		}
 	}
 }
 GraphicDisplay.prototype.saveDesign = function () {
