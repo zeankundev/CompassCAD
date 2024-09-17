@@ -11,6 +11,8 @@ very good CAD software. plan out buildings, and show it off to your boss.
 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/compasscad)
 
+<a href="https://www.producthunt.com/posts/compasscad?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-compasscad" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=486001&theme=neutral" alt="CompassCAD - the&#0032;best&#0032;CAD&#0032;software&#0032;yet&#0032;known&#0032;to&#0032;mankind | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+
 # Stay up to date
 - [Official CompassCAD X (formerly Twitter) blog](https://x.com/CompassCAD)
 - [Official CompassCAD Discord Server](https://discord.gg/Qvw9afNs3e)
