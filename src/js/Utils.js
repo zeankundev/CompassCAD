@@ -73,17 +73,40 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
     }
 }
 function openSettings() {
-    document.getElementById('set-modal').classList.remove('hidden')
+    const setModal = document.getElementById('set-modal');
+    const peerConnected = document.getElementById('peer-connected');
+
+    if (setModal.classList.contains('hidden')) {
+        peerConnected.style.display = 'none';
+        setModal.classList.remove('hidden');
+    } else {
+        peerConnected.style.display = 'block';
+        setModal.classList.add('hidden');
+    }
 }
 
 function openBackupRecovery() {
-    document.getElementById('backups-modal').classList.remove('hidden')
-    getBackups()
+    const backupsModal = document.getElementById('backups-modal');
+    backupsModal.classList.toggle('hidden');
+
+    if (!backupsModal.classList.contains('hidden')) {
+        getBackups();
+    }
 }
+
 function openMultiEditor() {
-    document.getElementById('peer-connected').style.display = 'none'
-    document.getElementById('p2p-initializer').classList.remove('hidden')
+    const peerConnected = document.getElementById('peer-connected');
+    const p2pInitializer = document.getElementById('p2p-initializer');
+
+    if (p2pInitializer.classList.contains('hidden')) {
+        peerConnected.style.display = 'none';
+        p2pInitializer.classList.remove('hidden');
+    } else {
+        peerConnected.style.display = 'block';
+        p2pInitializer.classList.add('hidden');
+    }
 }
+
 
 function callToast(text) {
     document.getElementById('toast').style.animation = 'toast 1s ease'
