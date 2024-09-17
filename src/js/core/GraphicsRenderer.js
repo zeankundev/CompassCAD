@@ -302,6 +302,13 @@ GraphicDisplay.prototype.drawComponent = function (component, moveByX, moveByY) 
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(component);
 			break;
+		/*case COMPONENT_TYPES.PICTURE:
+			this.drawPicture(
+				component.x + moveByX,
+				component.y + moveByY,
+				component.basedURL
+			);
+			break;*/
 	}
 };
 
@@ -403,6 +410,11 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(this.temporaryShape);
 			break;
+		/*case COMPONENT_TYPES.PICTURE:
+			this.drawPicture(
+				this.temporaryPoints[0],
+				this.temporaryPoints[1]);
+			break;*/
 	}
 };
 
@@ -580,6 +592,25 @@ GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radi
 GraphicDisplay.prototype.drawShape = function (shape) {
 	this.drawAllComponents(shape.components, shape.x, shape.y);
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
+};
+GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
+	const img = new Image();
+	img.crossOrigin = 'anonymous'; // allow CORS for HTTPS images
+  
+	img.onload = () => {
+	  this.context.drawImage(img, (x + this.cOutX) * this.zoom,
+		(y + this.cOutY) * this.zoom);
+	};
+  
+	if (basedURL.startsWith('data:image')) {
+	  // base64 URL, set it directly as the image source
+	  img.src = basedURL;
+	} else if (basedURL.startsWith('https')) {
+	  // HTTPS link, set it as the image source
+	  img.src = basedURL;
+	} else {
+	  console.error('Invalid image URL:', basedURL);
+	}
 };
 
 GraphicDisplay.prototype.drawToolTip = function (e) {
