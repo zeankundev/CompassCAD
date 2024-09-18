@@ -18,6 +18,7 @@ function GraphicDisplay(displayName, width, height) {
 		ADDMEASURE: 6,
 		ADDLABEL: 7,
 		ADDSHAPE: 8,
+		ADDPICTURE: 9,
 		DELETE: 20,
 		TRIM: 21,
 		NAVIGATE: 22,
@@ -648,6 +649,7 @@ GraphicDisplay.prototype.drawRules = function (e) {
 
 	if (this.gridPointer) {
 		this.context.lineWidth = 0.2;
+		this.context.globalCompositeOperation='source-atop';
 		this.context.strokeStyle = "#ccc";
 
 		this.context.beginPath();
@@ -923,6 +925,32 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				this.resetMode()
 				this.saveState()
 				this.execute()
+			}
+			break;
+		case this.MODES.ADDPICTURE:
+			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addPicture');
+			if (action == this.MOUSEACTION.MOVE) {
+				if (this.temporaryComponentType == null) {
+					this.temporaryComponentType = COMPONENT_TYPES.POINT;
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
+					this.temporaryPoints[0] = this.getCursorXLocal();
+					this.temporaryPoints[1] = this.getCursorYLocal();
+				}
+			} else if (action == this.MOUSEACTION.DOWN) {
+				callPrompt('Enter valid image URL')
+					.then(url => {
+						if (url.length > 0) {
+							this.logicDisplay.addComponent(new Picture(
+								this.temporaryPoints[0],
+								this.temporaryPoints[1],
+								url));
+							this.saveState()
+							this.execute()
+							this.setMode(this.MODES.NAVIGATE)
+						}
+					})
+					.catch(e => { })
 			}
 			break;
 		case this.MODES.NAVIGATE:

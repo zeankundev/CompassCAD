@@ -62,6 +62,7 @@ $(document).ready(async() => {
         'h': 'add-label',
         'j': 'add-barrel',
         'k': 'add-tree',
+        'l': 'add-picture',
         'z': 'ruler'
     };
     resizeWin()
@@ -112,6 +113,11 @@ $(document).ready(async() => {
     document.getElementById('add-label').onclick = () => {
         console.log('Add Text button clicked');
         renderer.setMode(renderer.MODES.ADDLABEL)
+    };
+
+    document.getElementById('add-picture').onclick = () => {
+        console.log('Add Picture button clicked');
+        renderer.setMode(renderer.MODES.ADDPICTURE)
     };
 
     document.getElementById('add-barrel').onclick = () => {
@@ -194,6 +200,7 @@ $(document).ready(async() => {
     applyStringOnHTML('addArcToolbar', document.getElementById('add-arc'), 'title', '');
     applyStringOnHTML('addRectangleToolbar', document.getElementById('add-rect'), 'title', '');
     applyStringOnHTML('addLabelToolbar', document.getElementById('add-label'), 'title', '');
+    applyStringOnHTML('addPictureToolbar', document.getElementById('add-picture'), 'title', '');
     applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
     applyStringOnHTML('addTreeToolbar', document.getElementById('add-tree'), 'title', '');
     applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
