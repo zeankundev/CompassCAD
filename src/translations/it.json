@@ -30,6 +30,8 @@
     "addBarrelToolbar": "Aggiungi riferimento nord (j)",
     "addTreeToolbar": "Aggiungi albero (k)",
     "addMeasureToolbar": "Misura (z)",
+    "addPictureToolbar": "Aggiungi immagine (l)",
+    "addPicture": "Aggiungi immagine (premi esc per annullare)",
     "navigate": "Naviga",
     "move": "Sposta (seleziona un punto di nodo per spostare, esc per annullare)",
     "delete": "Elimina (clicca su un punto di nodo per eliminare, esc per annullare)",

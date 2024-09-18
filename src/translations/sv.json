@@ -31,6 +31,8 @@
     "addTreeToolbar": "Lägg till Träd (k)",
     "addMeasureToolbar": "Mät (z)",
     "navigate": "Navigera",
+    "addPictureToolbar": "Lägg till bild (l)",
+    "addPicture": "Lägg till bild (tryck esc för att avbryta)",
     "move": "Flytta (välj en nodpunkt för att flytta, esc för att avbryta)",
     "delete": "Radera (klicka på en nodpunkt för att radera, esc för att avbryta)",
     "addPoint": "Lägg till Punkt (tryck esc för att avbryta)",

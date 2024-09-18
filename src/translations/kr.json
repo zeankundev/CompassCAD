@@ -31,6 +31,8 @@
     "addTreeToolbar": "나무 추가 (k)",
     "addMeasureToolbar": "측정 (z)",
     "navigate": "이동",
+    "addPictureToolbar": "사진 추가 (l)",
+    "addPicture": "사진 추가 (esc로 취소)",
     "move": "이동 (이동할 노드 점을 선택하고, esc로 취소)",
     "delete": "삭제 (삭제할 노드 점을 클릭하고, esc로 취소)",
     "addPoint": "점 추가 (esc로 취소)",

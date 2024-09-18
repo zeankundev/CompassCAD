@@ -30,6 +30,8 @@
     "addBarrelToolbar": "Tambahkan Referensi Utara (j)",
     "addTreeToolbar": "Tambahkan Pohon (k)",
     "addMeasureToolbar": "Ukur (z)",
+    "addPictureToolbar": "Tambahkan Gambar (l)",
+    "addPicture": "Tambahkan Gambar (tekan esc untuk membatalkan)",
     "navigate": "Navigasi",
     "move": "Pindahkan (pilih titik node untuk memindahkan, esc untuk membatalkan)",
     "delete": "Hapus (klik titik node untuk menghapus, esc untuk membatalkan)",

@@ -32,6 +32,8 @@
     "addMeasureToolbar": "Mesurer (z)",
     "navigate": "Naviguer",
     "move": "Déplacer (sélectionnez un point de nœud pour déplacer, esc pour annuler)",
+    "addPictureToolbar": "Ajouter une image (l)",
+    "addPicture": "Ajouter une image (appuyez sur esc pour annuler)",
     "delete": "Supprimer (cliquez sur un point de nœud pour supprimer, esc pour annuler)",
     "addPoint": "Ajouter un point (appuyez sur esc pour annuler)",
     "addLine": "Ajouter une ligne (appuyez sur esc pour annuler)",
