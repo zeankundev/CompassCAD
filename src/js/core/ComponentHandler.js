@@ -210,7 +210,7 @@ function Shape(x, y) {
 Shape.prototype = new Component();
 Shape.prototype.constructor = Shape;
 
-/*function Picture(x, y, basedURL) {
+function Picture(x, y, basedURL) {
     Component.call(this)
     
     this.type = COMPONENT_TYPES.PICTURE;
@@ -223,8 +223,8 @@ Shape.prototype.constructor = Shape;
         this.pictureSource = basedURL
     }
 }
-Picture.prototype = new Picture();
-Picture.prototype.constructor = Picture;*/
+Picture.prototype = new Component();
+Picture.prototype.constructor = Picture;
 
 /**
 * Add a component to a shape

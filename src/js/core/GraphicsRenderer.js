@@ -302,13 +302,13 @@ GraphicDisplay.prototype.drawComponent = function (component, moveByX, moveByY) 
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(component);
 			break;
-		/*case COMPONENT_TYPES.PICTURE:
+		case COMPONENT_TYPES.PICTURE:
 			this.drawPicture(
 				component.x + moveByX,
 				component.y + moveByY,
-				component.basedURL
+				component.pictureSource
 			);
-			break;*/
+			break;
 	}
 };
 
@@ -410,11 +410,13 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(this.temporaryShape);
 			break;
-		/*case COMPONENT_TYPES.PICTURE:
-			this.drawPicture(
+		case COMPONENT_TYPES.PICTURE:
+			this.drawPoint(
 				this.temporaryPoints[0],
-				this.temporaryPoints[1]);
-			break;*/
+				this.temporaryPoints[1],
+				this.selectedColor,
+				this.selectedRadius);
+			break;
 	}
 };
 
@@ -594,24 +596,21 @@ GraphicDisplay.prototype.drawShape = function (shape) {
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
 GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
+	this.drawPoint(x, y, '#0ff', 2);
+
+	// Create a new image object without caching or onload
 	const img = new Image();
-	img.crossOrigin = 'anonymous'; // allow CORS for HTTPS images
-  
-	img.onload = () => {
-	  this.context.drawImage(img, (x + this.cOutX) * this.zoom,
-		(y + this.cOutY) * this.zoom);
-	};
-  
-	if (basedURL.startsWith('data:image')) {
-	  // base64 URL, set it directly as the image source
-	  img.src = basedURL;
-	} else if (basedURL.startsWith('https')) {
-	  // HTTPS link, set it as the image source
-	  img.src = basedURL;
-	} else {
-	  console.error('Invalid image URL:', basedURL);
-	}
+	img.crossOrigin = 'anonymous'; // Allow CORS for HTTPS images
+	img.src = basedURL;
+
+	// Try to draw the image immediately based on zoom level
+	const width = img.naturalWidth * this.zoom || 100; // Fallback width if image hasn't loaded
+	const height = img.naturalHeight * this.zoom || 100; // Fallback height if image hasn't loaded
+
+	// Draw the image at the specified coordinates, adjusting for zoom
+	this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
 };
+
 
 GraphicDisplay.prototype.drawToolTip = function (e) {
 	/*
@@ -1039,6 +1038,7 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 		switch (this.logicDisplay.components[index].type) {
 			case COMPONENT_TYPES.POINT:
 			case COMPONENT_TYPES.LABEL:
+			case COMPONENT_TYPES.PICTURE:
 			case COMPONENT_TYPES.SHAPE:
 				var dx = x - this.logicDisplay.components[index].x;
 				var dy = y - this.logicDisplay.components[index].y;
@@ -1192,6 +1192,7 @@ GraphicDisplay.prototype.findIntersectionWith = function (x, y) {
 		switch (this.logicDisplay.components[i].type) {
 			case COMPONENT_TYPES.POINT:
 			case COMPONENT_TYPES.LABEL:
+			case COMPONENT_TYPES.PICTURE:
 			case COMPONENT_TYPES.SHAPE:
 				var delta = this.getDistance(x, y, this.logicDisplay.components[i].x, this.logicDisplay.components[i].y);
 				if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
