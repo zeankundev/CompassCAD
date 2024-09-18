@@ -597,26 +597,25 @@ GraphicDisplay.prototype.drawShape = function (shape) {
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
 GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
-	this.drawPoint(x, y, '#0ff', 2);
+    this.drawPoint(x, y, '#0ff', 2);
 
-	// Create a new image object without caching or onload
-	const img = new Image();
-	img.crossOrigin = 'anonymous'; // Allow CORS for HTTPS images
-	console.log(basedURL)
-	if (basedURL !== undefined || basedURL !== null || basedURL !== "" || basedURL !== " ") {
-		img.src = basedURL;
-	} else {
-		console.log('image is null, reverting back to default')
-		img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAABEhJREFUaAXtWWHR6yoQvU5QgAIUoGAVoAAFqwAFKEABClAQBShAAW8mZ2aHSdM23NKv75tbfnSAbJJzlt3D0vxRv7z9+eX41ZfAp1fwuwLfFXjRA98Quu/AWmvfW631vtWrV964Al8ClxbnXSsQQkD89N5bayGES3Dmjd5CIMYo6KWTUpqH9/yO9QS89wL60CGi54gmLdYTyDkL7hhjSkmG71iE9QRKKYIY3pRhKWXSv8/N1xM4uPwwfI5o0mI9ASISlx86vyMHlFKjhgqHNynp+hXQWiulvPeyE7fWmHkyNK6aryfAzDlnY4xSSmstnZzzOxZhPQFxvGiOCOu2bVcde9luMYExg0X1RyFanseLCZxiHVnFGC8795LhYgISP4czQGsNctRaQ5ZfQnfBaCWBsQqS+AGGUVjXRtFKApKsvXeIj3hwjCJJbrn6SmcZAWOM7FmnajPWSAujaBmBMX6897dOZWZhuHBfW0Zg2zbBd4gfkNFai8HCKFpGQHQm53zrfsxIFLXW7tnMzi8jAAGttZ66H7CstTA7TZJZ6LBfRiDn/Bg93meMqbX+H0MohPDA96N3jTELq7plKzBC/Mn+l8BPevvsXf/SCpRSUKJZax/ISK3VOXfmrLfMTawA9lHaW+8dcPTeRmjee5EjqXmkg3PmaD/2R7Nx/kF/jkApBQ4GAWbGBjzKYu+diFJKuFT31ntnZmwCrbVaq9Yat2NrM8bI06YqpTkCzrnWGioC1DbM7Jwb62chUEqx1vbevfcpJZz0xR6XZIhiNoQQY5wqNOYIEJEUlSBARHi3HFOEABIGwxBCKQX/teBwQ0T4uwVHBfCJezschh7Ej1IzH7oBRSmFFVBKpZRqra21sbZ5TKC1hnMzEYEJIs0Yg6dt2/agHLwlM7ECRIQkM8aIv51z3vsx+WBmrUUqY2iMsdYqpZxzkAGtdUrJ7633jifcPu0W8WFmgsDhzteHIYS2t6msPbz3kwQOUP5u+C8RiDFCyw+uwgl43ArE4PRwfGopt8x2JlYAaJg57M05h9TEd6QQAlIQ+Q0b/FprQwje+xCC3K61ds5prb33zOy9l/yeSokJAsyMfQDvY2ZrLRHFGAUcbLTWIQRrrfcet6CDSYg9PJ1zdnvjvUGgROKurMYEASKCFNq9aa1FMbGdQSUhiLAxxog+4q92WEqxhHCSSazJKMpPOUwQePqsvzCYwnr6/J8g8DrKU+iYnCAgOy4Ajb9KKeQDHjpeOmyuBzKovYkI328gDA/g3l6aIAANQdYyc0oJfdEW0R/UmDFG51xKCcqD4gL1ZowRxkIApyXJpVug92bmCDjnoIwQDWaGBEGXhACUMYQgGoXyCeqEJwCQiA8micg5B6m4h/gwP0FAay0qBEmRX6WUCA4zSwjhvCZDMZNAGr8CYlKecwB6bzhB4N4jPjv/JfBZ/0+dyD4N9fz93xA698vPzf4HXIw/vhzonIwAAAAASUVORK5CYII='
-	}
-	// Try to draw the image immediately based on zoom level
-	const width = img.naturalWidth * this.zoom || 100; // Fallback width if image hasn't loaded
-	const height = img.naturalHeight * this.zoom || 100; // Fallback height if image hasn't loaded
+    // Fallback image URL
+    const fallbackURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAABEhJREFUaAXtWWHR6yoQvU5QgAIUoGAVoAAFqwAFKEABClAQBShAAW8mZ2aHSdM23NKv75tbfnSAbJJzlt3D0vxRv7z9+eX41ZfAp1fwuwLfFXjRA98Quu/AWmvfW631vtWrV964Al8ClxbnXSsQQkD89N5bayGES3Dmjd5CIMYo6KWTUpqH9/yO9QS89wL60CGi54gmLdYTyDkL7hhjSkmG71iE9QRKKYIY3pRhKWXSv8/N1xM4uPwwfI5o0mI9ASISlx86vyMHlFKjhgqHNynp+hXQWiulvPeyE7fWmHkyNK6aryfAzDlnY4xSSmstnZzzOxZhPQFxvGiOCOu2bVcde9luMYExg0X1RyFanseLCZxiHVnFGC8795LhYgISP4czQGsNctRaQ5ZfQnfBaCWBsQqS+AGGUVjXRtFKApKsvXeIj3hwjCJJbrn6SmcZAWOM7FmnajPWSAujaBmBMX6897dOZWZhuHBfW0Zg2zbBd4gfkNFai8HCKFpGQHQm53zrfsxIFLXW7tnMzi8jAAGttZ66H7CstTA7TZJZ6LBfRiDn/Bg93meMqbX+H0MohPDA96N3jTELq7plKzBC/Mn+l8BPevvsXf/SCpRSUKJZax/ISK3VOXfmrLfMTawA9lHaW+8dcPTeRmjee5EjqXmkg3PmaD/2R7Nx/kF/jkApBQ4GAWbGBjzKYu+diFJKuFT31ntnZmwCrbVaq9Yat2NrM8bI06YqpTkCzrnWGioC1DbM7Jwb62chUEqx1vbevfcpJZz0xR6XZIhiNoQQY5wqNOYIEJEUlSBARHi3HFOEABIGwxBCKQX/teBwQ0T4uwVHBfCJezschh7Ej1IzH7oBRSmFFVBKpZRqra21sbZ5TKC1hnMzEYEJIs0Yg6dt2/agHLwlM7ECRIQkM8aIv51z3vsx+WBmrUUqY2iMsdYqpZxzkAGtdUrJ7633jifcPu0W8WFmgsDhzteHIYS2t6msPbz3kwQOUP5u+C8RiDFCyw+uwgl43ArE4PRwfGopt8x2JlYAaJg57M05h9TEd6QQAlIQ+Q0b/FprQwje+xCC3K61ds5prb33zOy9l/yeSokJAsyMfQDvY2ZrLRHFGAUcbLTWIQRrrfcet6CDSYg9PJ1zdnvjvUGgROKurMYEASKCFNq9aa1FMbGdQSUhiLAxxog+4q92WEqxhHCSSazJKMpPOUwQePqsvzCYwnr6/J8g8DrKU+iYnCAgOy4Ajb9KKeQDHjpeOmyuBzKovYkI328gDA/g3l6aIAANQdYyc0oJfdEW0R/UmDFG51xKCcqD4gL1ZowRxkIApyXJpVug92bmCDjnoIwQDWaGBEGXhACUMYQgGoXyCeqEJwCQiA8micg5B6m4h/gwP0FAay0qBEmRX6WUCA4zSwjhvCZDMZNAGr8CYlKecwB6bzhB4N4jPjv/JfBZ/0+dyD4N9fz93xA698vPzf4HXIw/vhzonIwAAAAASUVORK5CYII=';
 
-	// Draw the image at the specified coordinates, adjusting for zoom
-	this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
+    // Check if basedURL is invalid (empty, space, null, or undefined)
+    const imageURL = (!basedURL || basedURL.trim() === '') ? fallbackURL : basedURL;
+
+    // Create a new image object without caching or onload
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // Allow CORS for HTTPS images
+    img.src = imageURL;
+
+    // Wait for the image to load to get correct dimensions
+    const width = img.naturalWidth * this.zoom || 100; // Fallback width if image hasn't loaded
+    const height = img.naturalHeight * this.zoom || 100; // Fallback height if image hasn't loaded
+    // Draw the image at the specified coordinates, adjusting for zoom
+    this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
 };
-
 
 GraphicDisplay.prototype.drawToolTip = function (e) {
 	/*
