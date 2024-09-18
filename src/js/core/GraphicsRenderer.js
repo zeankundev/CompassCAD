@@ -174,8 +174,6 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.showOrigin)
 		this.drawOrigin(this.cOutX, this.cOutY);
 
-	this.drawRules();
-
 	// Draw all components
 	this.drawAllComponents(this.logicDisplay.components, 0, 0);
 
@@ -183,6 +181,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.temporaryComponentType != null)
 		this.drawTemporaryComponent();
 
+	this.drawRules();
 	// Draw to tooltip
 	this.drawToolTip();
 };
