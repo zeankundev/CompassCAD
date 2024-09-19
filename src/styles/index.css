@@ -212,13 +212,17 @@ small {
     user-select: none;
 }
 .prompt {
-    position: absolute;
-    top: 45%;
-    left: 35%;
-    width: 25%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%; /* Adjust width if necessary */
+    max-width: 80%; /* Limit width to prevent overflow */
     background-color: var(--primary);
     padding: 10px;
+    z-index: 1000; /* Ensure it stays on top */
 }
+
 
 .prompt input[type=text] {
     -webkit-appearance: none;
@@ -228,7 +232,7 @@ small {
     font-family: var(--main-font);
     padding: 10px;
     color: var(--text);
-    width: 90%;
+    width: 95%;
     outline: none;
 }
 .prompt-answer {
@@ -256,14 +260,17 @@ small {
     }
 }
 .modal {
-    position: absolute;
-    top: 25%;
-    left: 35%;
-    width: 25%;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto; /* Or set a specific percentage if needed */
+    max-width: 30%; /* Limit width so it doesn't go out of screen bounds */
     background-color: var(--primary);
     padding: 10px;
-    animation: popup 0.5 ease;
+    z-index: 1000; /* Ensure it appears on top */
 }
+
 .modal input[type=number], .modal input[type=text], .modal select {
     -webkit-appearance: none;
     appearance: none;
