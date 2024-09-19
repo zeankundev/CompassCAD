@@ -124,6 +124,7 @@ LogicDisplay.prototype.jettIsMyWaifu = function() {
 	this.components.push(new Circle(-500, 500, -500, 600));
 	
 	this.components.push(new Rectangle(200, 600, 500, 700));
+	this.components.push(new Picture(-350, 500, 'https://media.licdn.com/dms/image/v2/C560BAQErk8DLXtRHkw/company-logo_200_200/company-logo_200_200/0/1630639402699?e=2147483647&v=beta&t=qIkmQOdDWYelKIQkzGVkEWBM6frJwLB5KWBjcxUpOMY'))
 };
 
 LogicDisplay.prototype.exportJSON = function() {
@@ -186,6 +187,13 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 				var s = new Shape(arrJSON[i].x, arrJSON[i].y);
 				this.importJSON(arrJSON[i].components, s.components);
 				parent.push(s);
+				break;
+			case COMPONENT_TYPES.PICTURE:
+				parent.push(new Picture(
+					arrJSON[i].x,
+					arrJSON[i].y,
+					arrJSON[i].pictureSource
+				))
 				break;
 		}
 	}

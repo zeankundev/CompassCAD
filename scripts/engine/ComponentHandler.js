@@ -6,7 +6,8 @@ var COMPONENT_TYPES = {
     ARC : 5,
     MEASURE : 6,
     LABEL : 7,
-    SHAPE : 8 // TODO
+    SHAPE : 8, // TODO
+    PICTURE: 9
 };
 
 /**
@@ -208,6 +209,21 @@ function Shape(x, y) {
 }
 Shape.prototype = new Component();
 Shape.prototype.constructor = Shape;
+
+function Picture(x, y, basedURL) {
+    Component.call(this)
+    this.type = COMPONENT_TYPES.PICTURE
+    this.x = 0
+    this.y = 0
+    this.pictureSource = ''
+    if (x != undefined && y != undefined && basedURL != undefined) {
+        this.x = x
+        this.y = y
+        this.pictureSource = basedURL
+    }
+}
+Picture.prototype = new Component()
+Picture.prototype.constructor = Picture
 
 /**
 * Add a component to a shape

@@ -14,6 +14,7 @@ function GraphicDisplay(displayName, width, height) {
 			ADDMEASURE : 6,
 			ADDLABEL : 7,
 			ADDSHAPE : 8,
+			ADDPICTURE: 9,
 			DELETE : 20,
 			TRIM : 21,
 			NAVIGATE : 22,
@@ -153,14 +154,14 @@ GraphicDisplay.prototype.execute = async function(e) {
 	if (this.showOrigin)
 		this.drawOrigin(this.cOutX, this.cOutY);
 	
-	this.drawRules();
-	
 	// Draw all components
 	this.drawAllComponents(this.logicDisplay.components, 0, 0);
 	
 	// Draw temporary component
 	if ( this.temporaryComponentType != null )
 		this.drawTemporaryComponent();
+
+	this.drawRules();
 	
 };
 
@@ -260,6 +261,13 @@ GraphicDisplay.prototype.drawComponent = function(component, moveByX, moveByY) {
 			break;
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(component);
+			break;
+		case COMPONENT_TYPES.PICTURE:
+			this.drawPicture(
+				component.x + moveByX,
+				component.y + moveByY,
+				component.pictureSource
+			);
 			break;
 	} 
 };
@@ -361,6 +369,13 @@ GraphicDisplay.prototype.drawTemporaryComponent = function(e) {
 			break;
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(this.temporaryShape);
+			break;
+		case COMPONENT_TYPES.PICTURE:
+			this.drawPoint(
+				this.temporaryPoints[0],
+				this.temporaryPoints[1],
+				this.selectedColor,
+				this.selectedRadius);
 			break;
 	} 
 };
@@ -541,6 +556,27 @@ GraphicDisplay.prototype.drawArc = function(x1, y1, x2, y2, x3, y3, color, radiu
 GraphicDisplay.prototype.drawShape = function(shape) {
 	this.drawAllComponents(shape.components, shape.x, shape.y);
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
+};
+
+GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
+    this.drawPoint(x, y, '#0ff', 2);
+
+    // Fallback image URL
+    const fallbackURL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAABEhJREFUaAXtWWHR6yoQvU5QgAIUoGAVoAAFqwAFKEABClAQBShAAW8mZ2aHSdM23NKv75tbfnSAbJJzlt3D0vxRv7z9+eX41ZfAp1fwuwLfFXjRA98Quu/AWmvfW631vtWrV964Al8ClxbnXSsQQkD89N5bayGES3Dmjd5CIMYo6KWTUpqH9/yO9QS89wL60CGi54gmLdYTyDkL7hhjSkmG71iE9QRKKYIY3pRhKWXSv8/N1xM4uPwwfI5o0mI9ASISlx86vyMHlFKjhgqHNynp+hXQWiulvPeyE7fWmHkyNK6aryfAzDlnY4xSSmstnZzzOxZhPQFxvGiOCOu2bVcde9luMYExg0X1RyFanseLCZxiHVnFGC8795LhYgISP4czQGsNctRaQ5ZfQnfBaCWBsQqS+AGGUVjXRtFKApKsvXeIj3hwjCJJbrn6SmcZAWOM7FmnajPWSAujaBmBMX6897dOZWZhuHBfW0Zg2zbBd4gfkNFai8HCKFpGQHQm53zrfsxIFLXW7tnMzi8jAAGttZ66H7CstTA7TZJZ6LBfRiDn/Bg93meMqbX+H0MohPDA96N3jTELq7plKzBC/Mn+l8BPevvsXf/SCpRSUKJZax/ISK3VOXfmrLfMTawA9lHaW+8dcPTeRmjee5EjqXmkg3PmaD/2R7Nx/kF/jkApBQ4GAWbGBjzKYu+diFJKuFT31ntnZmwCrbVaq9Yat2NrM8bI06YqpTkCzrnWGioC1DbM7Jwb62chUEqx1vbevfcpJZz0xR6XZIhiNoQQY5wqNOYIEJEUlSBARHi3HFOEABIGwxBCKQX/teBwQ0T4uwVHBfCJezschh7Ej1IzH7oBRSmFFVBKpZRqra21sbZ5TKC1hnMzEYEJIs0Yg6dt2/agHLwlM7ECRIQkM8aIv51z3vsx+WBmrUUqY2iMsdYqpZxzkAGtdUrJ7633jifcPu0W8WFmgsDhzteHIYS2t6msPbz3kwQOUP5u+C8RiDFCyw+uwgl43ArE4PRwfGopt8x2JlYAaJg57M05h9TEd6QQAlIQ+Q0b/FprQwje+xCC3K61ds5prb33zOy9l/yeSokJAsyMfQDvY2ZrLRHFGAUcbLTWIQRrrfcet6CDSYg9PJ1zdnvjvUGgROKurMYEASKCFNq9aa1FMbGdQSUhiLAxxog+4q92WEqxhHCSSazJKMpPOUwQePqsvzCYwnr6/J8g8DrKU+iYnCAgOy4Ajb9KKeQDHjpeOmyuBzKovYkI328gDA/g3l6aIAANQdYyc0oJfdEW0R/UmDFG51xKCcqD4gL1ZowRxkIApyXJpVug92bmCDjnoIwQDWaGBEGXhACUMYQgGoXyCeqEJwCQiA8micg5B6m4h/gwP0FAay0qBEmRX6WUCA4zSwjhvCZDMZNAGr8CYlKecwB6bzhB4N4jPjv/JfBZ/0+dyD4N9fz93xA698vPzf4HXIw/vhzonIwAAAAASUVORK5CYII=';
+
+    // Check if basedURL is invalid (empty, space, null, or undefined)
+    const imageURL = (!basedURL || basedURL.trim() === '') ? fallbackURL : basedURL;
+
+    // Create a new image object without caching or onload
+    const img = new Image();
+    img.crossOrigin = 'anonymous'; // Allow CORS for HTTPS images
+    img.src = imageURL;
+
+    // Wait for the image to load to get correct dimensions
+    const width = img.naturalWidth * this.zoom || 100; // Fallback width if image hasn't loaded
+    const height = img.naturalHeight * this.zoom || 100; // Fallback height if image hasn't loaded
+    // Draw the image at the specified coordinates, adjusting for zoom
+    this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
 };
 
 GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
@@ -952,6 +988,7 @@ GraphicDisplay.prototype.moveComponent = function(index, x, y) {
 		switch ( this.logicDisplay.components[index].type ) {
 			case COMPONENT_TYPES.POINT:
 			case COMPONENT_TYPES.LABEL:
+			case COMPONENT_TYPES.PICTURE:
 			case COMPONENT_TYPES.SHAPE:
 				var dx = x - this.logicDisplay.components[index].x;
 				var dy = y - this.logicDisplay.components[index].y;
@@ -1104,6 +1141,7 @@ GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
 		switch (this.logicDisplay.components[i].type) {
 			case COMPONENT_TYPES.POINT:
 			case COMPONENT_TYPES.LABEL:	
+			case COMPONENT_TYPES.PICTURE:
 			case COMPONENT_TYPES.SHAPE:
 				var delta = this.getDistance(x, y, this.logicDisplay.components[i].x, this.logicDisplay.components[i].y); 
 				if ( delta >= 0 && delta <= this.snapTolerance / this.zoom )
