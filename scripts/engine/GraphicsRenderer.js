@@ -878,6 +878,29 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 			}
 			this.tooltip = "Add shape (press esc to cancel)"
 			break;
+		case this.MODES.ADDPICTURE:
+			this.cvn.css('cursor', 'crosshair');
+			if (action == this.MOUSEACTION.MOVE) {
+				if (this.temporaryComponentType == null) {
+					this.temporaryComponentType = COMPONENT_TYPES.POINT;
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
+					this.temporaryPoints[0] = this.getCursorXLocal();
+					this.temporaryPoints[1] = this.getCursorYLocal();
+				}
+			} else if ( action == this.MOUSEACTION.DOWN ) {
+				let text = prompt('Enter a valid Image URL')
+				if ( text.length > 0 ) {
+					this.logicDisplay.addComponent(new Picture(
+							this.temporaryPoints[0],
+							this.temporaryPoints[1],
+							text));
+					this.saveState()
+					this.execute()
+					this.setMode(this.MODES.NAVIGATE)
+				}
+			}
+			this.tooltip = "Add Picture (press esc to cancel)"
+			break
 		case this.MODES.NAVIGATE:
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.DOWN) {

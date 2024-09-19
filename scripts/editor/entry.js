@@ -118,6 +118,10 @@ $(document).ready(async () => {
         console.log('Add Text button clicked');
         renderer.setMode(renderer.MODES.ADDLABEL)
     };
+    document.getElementById('add-picture').onclick = () => {
+        console.log('Add Picture button clicked');
+        renderer.setMode(renderer.MODES.ADDPICTURE)
+    };
 
     document.getElementById('add-barrel').onclick = () => {
         console.log('Add Vertical Barrel button clicked');
@@ -146,6 +150,7 @@ $(document).ready(async () => {
         'h': 'add-label',
         'j': 'add-barrel',
         'k': 'add-tree',
+        'l': 'add-picture',
         'z': 'ruler'
     };
     document.addEventListener('keydown', (event) => {
