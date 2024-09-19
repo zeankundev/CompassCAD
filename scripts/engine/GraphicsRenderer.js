@@ -575,6 +575,10 @@ GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
     // Wait for the image to load to get correct dimensions
     const width = img.naturalWidth * this.zoom || 100; // Fallback width if image hasn't loaded
     const height = img.naturalHeight * this.zoom || 100; // Fallback height if image hasn't loaded
+
+	img.onerror = () => {
+		img.src = fallbackURL
+	}
     // Draw the image at the specified coordinates, adjusting for zoom
     this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
 };
