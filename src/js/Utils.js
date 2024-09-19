@@ -85,6 +85,19 @@ function openSettings() {
     }
 }
 
+function openEvalConsole() {
+    const evalModal = document.getElementById('eval-modal');
+    const error = document.getElementById('eval-error');
+
+    if (evalModal.classList.contains('hidden')) {
+        error.style.display = 'none';
+        evalModal.classList.remove('hidden');
+    } else {
+        error.style.display = 'block';
+        evalModal.classList.add('hidden');
+    }
+}
+
 function openBackupRecovery() {
     const backupsModal = document.getElementById('backups-modal');
     backupsModal.classList.toggle('hidden');
@@ -124,6 +137,19 @@ function callToast(text) {
 document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}
 document.getElementById('backups-close').onclick = () => {document.getElementById('backups-modal').classList.add('hidden')}
 document.getElementById('p2p-close').onclick = () => {document.getElementById('p2p-initializer').classList.add('hidden')}
+document.getElementById('eval-exit').onclick = () => {document.getElementById('eval-modal').classList.add('hidden')}
+document.getElementById('eval-run').onclick = () => {
+    const evalEditor = document.getElementById('eval-editor');
+    if (evalEditor.value.length > 0) {
+        try {
+            eval(evalEditor.value)
+            document.getElementById('eval-error').style.display = 'none'
+        } catch  (e) {
+            document.getElementById('eval-error').innerText = e
+            document.getElementById('eval-error').style.display = 'block'
+        }
+    }
+}
 document.getElementById('p2p-connect').onclick = () => {
     const forbiddenRegEx = /^[A-Za-z0-9-]+$/
 
