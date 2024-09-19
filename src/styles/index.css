@@ -30,8 +30,9 @@ body {
     overflow-y: hidden;
     overflow-x: hidden;
 }
-pre code {
+pre, code, kbd {
     font-family: 'jbmono', monospace !important;
+    font-size: 9pt;
 }
 small {
     font-size: 9pt;
