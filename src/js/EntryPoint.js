@@ -30,23 +30,41 @@ $(document).ready(async() => {
     };
 
     const resizeWin = () => {
+        // Get the device pixel ratio
+        const dpr = window.devicePixelRatio || 1;
+    
         // Calculate the height of menubar, toolbar, and status bar
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 10;
-        
-        // Set the renderer's display dimensions
-        renderer.displayHeight = window.innerHeight - resultedHeight;
-        renderer.displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
-        
-        // Set the canvas dimensions
-        document.getElementById('canvas').width = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
-        document.getElementById('canvas').height = window.innerHeight - resultedHeight;
+    
+        // Set the display dimensions of the canvas
+        const displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
+        const displayHeight = window.innerHeight - resultedHeight;
+    
+        // Set the renderer's display dimensions (scaled by the device pixel ratio)
+        renderer.displayWidth = displayWidth;
+        renderer.displayHeight = displayHeight;
+    
+        // Set the canvas dimensions (scaled for the higher DPI)
+        const canvas = document.getElementById('canvas');
+        canvas.width = displayWidth * dpr;
+        canvas.height = displayHeight * dpr;
+    
+        // Adjust the canvas style dimensions to match the display size
+        canvas.style.width = `${displayWidth}px`;
+        canvas.style.height = `${displayHeight}px`;
     
         // Resize the bounding rectangle if needed
         const boundingRect = document.getElementById('bounding-rect');
         if (boundingRect) {
-            boundingRect.style.width = `${document.getElementById('canvas').width}px`;
-            boundingRect.style.height = `${document.getElementById('canvas').height}px`;
+            boundingRect.style.width = `${displayWidth}px`;
+            boundingRect.style.height = `${displayHeight}px`;
+        }
+    
+        // Optionally: if using a rendering context (2D or WebGL), scale it to match the pixel ratio
+        const ctx = canvas.getContext('2d');  // or 'webgl', depending on what you're using
+        if (ctx) {
+            ctx.scale(dpr, dpr);  // Scale the context to account for the higher pixel density
         }
     };
     const keyBindings = {
