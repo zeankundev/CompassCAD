@@ -142,8 +142,9 @@ document.getElementById('eval-run').onclick = () => {
     const evalEditor = document.getElementById('eval-editor');
     if (evalEditor.value.length > 0) {
         try {
-            eval(evalEditor.value)
-            document.getElementById('eval-error').style.display = 'none'
+            const res = eval(evalEditor.value)
+            document.getElementById('eval-error').style.display = 'block'
+            document.getElementById('eval-error').innerText = res
         } catch  (e) {
             document.getElementById('eval-error').innerText = e
             document.getElementById('eval-error').style.display = 'block'

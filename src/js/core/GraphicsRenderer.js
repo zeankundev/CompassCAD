@@ -521,7 +521,7 @@ GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) 
 
 	// Draw the distance label
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px newstroke, monospace";
+	this.context.font = (this.fontSize * localZoom) + "px jbmono, Consolas, DejaVu Sans Mono, monospace";
 	this.context.fillText(
 		distance.toFixed(2) + "" + this.unitMeasure,
 		(this.cOutX + x2 - 150) * this.zoom,
@@ -542,7 +542,7 @@ GraphicDisplay.prototype.drawLabel = function (x, y, text, color, radius) {
 	}
 
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px newstroke, monospace";
+	this.context.font = (this.fontSize * localZoom) + "px jbmono, Consolas, DejaVu Sans Mono, monospace";
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
@@ -685,15 +685,15 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
         for (var j = 0; j < numCirclesY; j++) {
             var x = xStart + i * this.gridSpacing * this.zoom;
             var y = yStart + j * this.gridSpacing * this.zoom;
-
+			this.context.fillStyle = "#ccc"
             this.context.beginPath();
             this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
             this.context.closePath();
+			this.context.fill()
             this.context.stroke();
         }
     }
 };
-
 
 GraphicDisplay.prototype.snapToGrid = function (x, y) {
 	const gridSize = this.gridSpacing * this.zoom;
