@@ -81,9 +81,24 @@ SVGExporter.prototype.calculateDimensions = function(components) {
                 break;
             case COMPONENT_TYPES.LINE:
             case COMPONENT_TYPES.RECTANGLE:
+                minX = Math.min(minX, component.x1, component.x2);
+                maxX = Math.max(maxX, component.x1, component.x2);
+                minY = Math.min(minY, component.y1, component.y2);
+                maxY = Math.max(maxY, component.y1, component.y2);
+                break;
             case COMPONENT_TYPES.CIRCLE:
-            case COMPONENT_TYPES.MEASURE:
+                minX = Math.min(minX, component.x1 - component.radius); // Account for circle radius
+                maxX = Math.max(maxX, component.x1 + component.radius);
+                minY = Math.min(minY, component.y1 - component.radius);
+                maxY = Math.max(maxY, component.y1 + component.radius);
+                break;
             case COMPONENT_TYPES.ARC:
+                minX = Math.min(minX, component.x1, component.x2, component.x3);
+                maxX = Math.max(maxX, component.x1, component.x2, component.x3);
+                minY = Math.min(minY, component.y1, component.y2, component.y3);
+                maxY = Math.max(maxY, component.y1, component.y2, component.y3);
+                break;
+            case COMPONENT_TYPES.MEASURE:
                 minX = Math.min(minX, component.x1, component.x2);
                 maxX = Math.max(maxX, component.x1, component.x2);
                 minY = Math.min(minY, component.y1, component.y2);
@@ -101,6 +116,7 @@ SVGExporter.prototype.calculateDimensions = function(components) {
     // Return dimensions and the calculated origin point (minX, minY)
     return { width, height, origin: { x: minX, y: minY } };
 };
+
 SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY) {
     var dimensions = this.calculateDimensions(components);
     var width = dimensions.width;
@@ -108,7 +124,7 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
     var origin = dimensions.origin;
 
     // Adjust canvas size dynamically based on the design width and height + padding
-    var padding = 30;
+    var padding = 45;
     this.c2s = new canvas2svg(width + 2 * padding, height + 2 * padding);
 
     // Refine the origin and apply padding
@@ -126,6 +142,7 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
         this.drawComponent(components[i], refinedX + moveByX, refinedY + moveByY);
     }
 };
+
 SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 	switch (component.type) {
 		case COMPONENT_TYPES.POINT:
@@ -205,10 +222,11 @@ SVGExporter.prototype.drawPointSvg = function(x, y, color, radius) {
 	this.c2s.fillStyle = "#000000";
 	this.c2s.strokeStyle = "#000000";
 	this.c2s.beginPath();
+	console.log(`svg point x:${x}, svg point y:${y}`)
 	this.c2s.arc(
 			x, 
 		    y, 
-		    2, 0, 3.14159*2, false);
+		    2, 0, Math.PI * 2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
 };
