@@ -10,7 +10,7 @@ function SVGExporter(renderComp) {
 
 SVGExporter.prototype.calculateOrigin = function(components) {
     var minX = Infinity;
-    var maxY = -Infinity;
+    var minY = Infinity;
 
     for (var i = 0; i < components.length; i++) {
         var component = components[i];
@@ -19,76 +19,111 @@ SVGExporter.prototype.calculateOrigin = function(components) {
         switch (component.type) {
             case COMPONENT_TYPES.POINT:
                 minX = Math.min(minX, component.x);
-                maxY = Math.max(maxY, component.y);
+                minY = Math.min(minY, component.y);
                 break;
             case COMPONENT_TYPES.LINE:
-                minX = Math.min(minX, Math.min(component.x1, component.x2));
-                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                minX = Math.min(minX, component.x1, component.x2);
+                minY = Math.min(minY, component.y1, component.y2);
                 break;
             case COMPONENT_TYPES.CIRCLE:
                 minX = Math.min(minX, component.x1);
-                maxY = Math.max(maxY, component.y1);
+                minY = Math.min(minY, component.y1);
                 break;
             case COMPONENT_TYPES.RECTANGLE:
-                minX = Math.min(minX, Math.min(component.x1, component.x2));
-                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                minX = Math.min(minX, component.x1, component.x2);
+                minY = Math.min(minY, component.y1, component.y2);
                 break;
             case COMPONENT_TYPES.MEASURE:
-                minX = Math.min(minX, Math.min(component.x1, component.x2));
-                maxY = Math.max(maxY, Math.max(component.y1, component.y2));
+                minX = Math.min(minX, component.x1, component.x2);
+                minY = Math.min(minY, component.y1, component.y2);
                 break;
             case COMPONENT_TYPES.LABEL:
                 minX = Math.min(minX, component.x);
-                maxY = Math.max(maxY, component.y);
+                minY = Math.min(minY, component.y);
                 break;
             case COMPONENT_TYPES.ARC:
-                minX = Math.min(minX, Math.min(component.x1, Math.min(component.x2, component.x3)));
-                maxY = Math.max(maxY, Math.max(component.y1, Math.max(component.y2, component.y3)));
+                minX = Math.min(minX, component.x1, component.x2, component.x3);
+                minY = Math.min(minY, component.y1, component.y2, component.y3);
                 break;
-			case COMPONENT_TYPES.SHAPE:
-				minX = Math.min(minX, component.x);
-                maxY = Math.max(maxY, component.y);
+            case COMPONENT_TYPES.SHAPE:
+                minX = Math.min(minX, component.x);
+                minY = Math.min(minY, component.y);
                 break;
         }
     }
-    console.log({x: minX, y: maxY})
-    return { x: minX, y: maxY };
+
+    if (minX === Infinity || minY === Infinity) {
+        console.log("No active components found. Defaulting to (0, 0).");
+        return { x: 0, y: 0 };
+    }
+
+    console.log({x: minX, y: minY});
+    return { x: minX, y: minY };  // Return the lowest x and y as the origin
 };
+SVGExporter.prototype.calculateDimensions = function(components) {
+    var minX = Infinity;
+    var maxX = -Infinity;
+    var minY = Infinity;
+    var maxY = -Infinity;
 
+    for (var i = 0; i < components.length; i++) {
+        var component = components[i];
+        if (!component.isActive()) continue;
+
+        switch (component.type) {
+            case COMPONENT_TYPES.POINT:
+            case COMPONENT_TYPES.LABEL:
+            case COMPONENT_TYPES.SHAPE:
+                minX = Math.min(minX, component.x);
+                maxX = Math.max(maxX, component.x);
+                minY = Math.min(minY, component.y);
+                maxY = Math.max(maxY, component.y);
+                break;
+            case COMPONENT_TYPES.LINE:
+            case COMPONENT_TYPES.RECTANGLE:
+            case COMPONENT_TYPES.CIRCLE:
+            case COMPONENT_TYPES.MEASURE:
+            case COMPONENT_TYPES.ARC:
+                minX = Math.min(minX, component.x1, component.x2);
+                maxX = Math.max(maxX, component.x1, component.x2);
+                minY = Math.min(minY, component.y1, component.y2);
+                maxY = Math.max(maxY, component.y1, component.y2);
+                break;
+        }
+    }
+
+    // Calculate the width and height of the canvas
+    var width = maxX - minX;
+    var height = maxY - minY;
+
+    console.log({ minX, maxX, minY, maxY, width, height });
+
+    // Return dimensions and the calculated origin point (minX, minY)
+    return { width, height, origin: { x: minX, y: minY } };
+};
 SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY) {
-    var origin = this.calculateOrigin(components);
-	var refinedX = 0;
-	var refinedY = 0;
+    var dimensions = this.calculateDimensions(components);
+    var width = dimensions.width;
+    var height = dimensions.height;
+    var origin = dimensions.origin;
 
-	if (origin.x < -500) {
-		refinedX = origin.x / 14
-	} else if (origin.x < -300) {
-		refinedX = origin.x / 7
-	} else if (origin.x < 0) {
-		refinedX = origin.x / 2
-	} else if (origin.x > 0) {
-		refinedX = origin.x / 100
-	} else if (origin.x > 300) {
-		refinedX = origin.x / 80
-	} else if (origin.x > 500) {
-		refinedX = origin.x / 2
-	}
-	if (origin.y > 800) {
-		refinedY = origin.y / 11
-	} else if (origin.y > 400) {
-		refinedY = origin.y / 4.5
-	} else if (origin.y > 250) {
-		refinedY = origin.y / 3
-	} else {
-		refinedY = origin.y / 1.9
-	}
-	console.log(`refined x:${refinedX}, refined y:${refinedY}`)
-	console.log(`abs refined x:${Math.abs(refinedX)}, abs refined y:${Math.abs(refinedY)}`)
-	console.log(`final x:${Math.abs(refinedX) * moveByX}, final y:${Math.abs(refinedY) * moveByY}`)
+    // Adjust canvas size dynamically based on the design width and height + padding
+    var padding = 30;
+    this.c2s = new canvas2svg(width + 2 * padding, height + 2 * padding);
+
+    // Refine the origin and apply padding
+    var refinedX = -origin.x + padding;  // Shift origin to right with padding
+    var refinedY = -origin.y + padding;  // Shift origin down with padding
+
+    console.log(`Adjusted canvas size: ${width + 2 * padding}x${height + 2 * padding}`);
+    console.log(`Origin x:${origin.x}, origin y:${origin.y}`);
+    console.log(`Refined x: ${refinedX}, Refined y: ${refinedY}`);
+
     for (var i = 0; i < components.length; i++) {
         if (!components[i].isActive()) continue;
 
-        this.drawComponent(components[i], Math.abs(refinedX) * moveByX, Math.abs(refinedY) * moveByY);
+        // Apply the calculated offset and the moveByX/moveByY factors
+        this.drawComponent(components[i], refinedX + moveByX, refinedY + moveByY);
     }
 };
 SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
