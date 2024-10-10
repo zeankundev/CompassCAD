@@ -27,13 +27,17 @@ const openDesign = () => {
 };
 const exportToSvg = () => {
     const exporter = new SVGExporter(renderer);
-    let content = exporter.exportSVG();
-    const blob = new Blob([content], {type: 'text/plain'})
-    const downloader = document.createElement('a')
-    downloader.download = `${document.getElementById('filename').value}.svg`
-    downloader.href = window.URL.createObjectURL(blob);
-    downloader.click();
-    callToast('SVG successfully <br>exported. Please check and examine', 'success')
+    try {
+        let content = exporter.exportSVG();
+        const blob = new Blob([content], {type: 'text/plain'})
+        const downloader = document.createElement('a')
+        downloader.download = `${document.getElementById('filename').value}.svg`
+        downloader.href = window.URL.createObjectURL(blob);
+        downloader.click();
+        callToast('SVG successfully <br>exported. Please check and examine', 'success')
+    } catch {
+        callToast('An error occured during exporting. <br>Please check the console for more details', 'failure')
+    }
 }
 const saveLocally = () => {
     const blob = new Blob([JSON.stringify(renderer.logicDisplay.components)], {type: 'text/plain'})
