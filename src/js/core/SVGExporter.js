@@ -69,7 +69,14 @@ SVGExporter.prototype.calculateDimensions = function(components) {
     for (var i = 0; i < components.length; i++) {
         var component = components[i];
         if (!component.isActive()) continue;
-
+		if (component.type === COMPONENT_TYPES.SHAPE) {
+            for (var j = 0; j < component.components.length; j++) {
+                var shapeComponent = component.components[j];
+                shapeComponent.x += component.x;
+                shapeComponent.y += component.y;
+            }
+            this.calculateDimensions(component.components);
+        }
         switch (component.type) {
             case COMPONENT_TYPES.POINT:
             case COMPONENT_TYPES.LABEL:
@@ -143,6 +150,16 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
     }
 };
 
+SVGExporter.prototype.renderElementExclusiveForShape = function (components, offsetX, offsetY) {
+	console.log(components)
+	for (var i = 0; i < components.length; i++) {
+		if (!components[i].isActive())
+			continue;
+
+		this.drawComponent(components[i], offsetX, offsetY)
+	}
+}
+
 SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 	switch (component.type) {
 		case COMPONENT_TYPES.POINT:
@@ -208,12 +225,7 @@ SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.radius);
 			break;
 		case COMPONENT_TYPES.SHAPE:
-			this.drawLabelSvg(
-				component.x + moveByX,
-				component.y + moveByY,
-				'Shape',
-				component.color,
-				component.radius);
+			this.drawShapeSvg(component)
 			break;
 	} 
 };
@@ -387,7 +399,16 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 	this.drawPointSvg(x2, y2, color, radius);
 	this.drawPointSvg(x3, y3, color, radius);
 };
-SVGExporter.prototype.exportSVG = function() {
+SVGExporter.prototype.drawShapeSvg = function (shape) {
+    for (var i = 0; i < shape.components.length; i++) {
+        var component = shape.components[i];
+        component.x += shape.x;
+        component.y += shape.y;
+    }
+    this.renderElementExclusiveForShape(shape.components, shape.x, shape.y);
+    this.drawPointSvg(shape.x, shape.y, shape.color, shape.radius)
+}
+SVGExporter.prototype.exportSVG = function () {
     // will return the SVG
     this.drawAllComponents(this.rendererComponent.logicDisplay.components, 15, 5);
     // test first
