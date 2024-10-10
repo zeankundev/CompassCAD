@@ -45,14 +45,23 @@ const saveLocally = () => {
 
 $(document).ready(async () => {
     renderer = new GraphicDisplay('working-canvas', 800, 600)
-    const resizeWin = () => {     
+    const resizeWin = () => {
+        const devicePixelRatio = window.devicePixelRatio || 1
+        const displayHeight = window.innerHeight - document.getElementById('menubar').offsetHeight    
+        const displayWidth = window.innerWidth - document.getElementById('toolbar').offsetWidth 
         // Set the renderer's display dimensions
-        renderer.displayHeight = window.innerHeight - document.getElementById('menubar').offsetHeight;
-        renderer.displayWidth = window.innerWidth - document.getElementById('toolbar').offsetWidth;
+        renderer.displayHeight = displayHeight;
+        renderer.displayWidth = displayWidth;
         
         // Set the canvas dimensions
-        document.getElementById('working-canvas').width = window.innerWidth - document.getElementById('toolbar').offsetWidth;
-        document.getElementById('working-canvas').height = window.innerHeight - document.getElementById('menubar').offsetHeight;
+        document.getElementById('working-canvas').width = displayWidth * devicePixelRatio;
+        document.getElementById('working-canvas').height = displayHeight * devicePixelRatio;
+        document.getElementById('working-canvas').style.width = displayWidth + 'px'
+        document.getElementById('working-canvas').style.height = displayHeight + 'px'
+        const context = document.getElementById('working-canvas').getContext('2d')
+        if (context) {
+            context.scale(devicePixelRatio, devicePixelRatio)
+        }
     };
     resizeWin()
     window.onresize = resizeWin

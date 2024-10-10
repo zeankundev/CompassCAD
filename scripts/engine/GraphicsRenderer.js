@@ -139,6 +139,7 @@ GraphicDisplay.prototype.lerp = function(start, end, time) {
     return start + (end - start) * time;
 }
 GraphicDisplay.prototype.execute = async function(e) {
+	let deviceScale = window.devicePixelRatio || 1
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
 	this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
@@ -146,7 +147,6 @@ GraphicDisplay.prototype.execute = async function(e) {
 	this.updateCamera();
 	
 	this.clearGrid();
-	
 	// Draw basic grid
 	if (this.showGrid)
 		this.drawGrid(this.cOutX, this.cOutY);
