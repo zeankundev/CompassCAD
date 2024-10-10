@@ -26,7 +26,7 @@ const openDesign = () => {
     };
 };
 const exportToSvg = () => {
-    const exporter = new SVGExporter();
+    const exporter = new SVGExporter(renderer);
     let content = exporter.exportSVG();
     const blob = new Blob([content], {type: 'text/plain'})
     const downloader = document.createElement('a')

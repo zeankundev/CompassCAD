@@ -37,6 +37,8 @@ function GraphicDisplay(displayName, width, height) {
 	
 	this.previousColor = null;
 	this.previousRadius = null;
+
+	this.displayFont = 'Fira Mono'
 	
 	// The index of temporary selected component
 	this.temporarySelectedComponent = null;
@@ -73,7 +75,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.zoomout = 0.9;
 	this.currentZoom = 1; // Add this to your initialization
     this.targetZoom = 1;  // Add this to your initialization
-    this.zoomSpeed = 0.05; // Adjust the speed of the zoom transition
+    this.zoomSpeed = 0.2; // Adjust the speed of the zoom transition
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -482,7 +484,7 @@ GraphicDisplay.prototype.drawMeasure = function(x1, y1, x2, y2, color, radius) {
 	
 		// Draw the distance label
 		this.context.fillStyle = color;
-		this.context.font = (this.fontSize * localZoom) + "px newstroke, monospace";
+		this.context.font = (this.fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 		this.context.fillText(
 			distance.toFixed(2) + "" + this.unitMeasure,
 			(this.cOutX + x2 - 100) * this.zoom,
@@ -504,7 +506,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	}
 	
 	this.context.fillStyle = color;
-	this.context.font =  (this.fontSize * localZoom) + "px newstroke, monospace";
+	this.context.font =  (this.fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
