@@ -3,8 +3,8 @@
     src: url('../../assets/newstroke.ttf');
 }
 @font-face {
-    font-family: 'jbmono';
-    src: url('../../assets/fonts/jbmono.ttf');
+    font-family: 'firamono';
+    src: url('../../assets/fonts/firamonoreg.ttf');
 }
 * {
     margin: 0;
@@ -31,7 +31,7 @@ body {
     overflow-x: hidden;
 }
 pre, code, kbd {
-    font-family: 'jbmono', monospace !important;
+    font-family: 'firamono', monospace !important;
     font-size: 9pt;
 }
 small {
@@ -253,7 +253,7 @@ small {
     appearance: none;
     background-color: var(--secondary);
     border: none;
-    font-family: 'jbmono', monospace;
+    font-family: 'firamono', monospace;
     height: 200px;
     padding: 10px;
     color: var(--text);
