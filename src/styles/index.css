@@ -6,6 +6,10 @@
     font-family: 'firamono';
     src: url('../../assets/fonts/firamonoreg.ttf');
 }
+@font-face {
+    font-family: 'gsansmono';
+    src: url('../../assets/fonts/googlesansmono.ttf');
+}
 * {
     margin: 0;
 }
@@ -31,7 +35,7 @@ body {
     overflow-x: hidden;
 }
 pre, code, kbd {
-    font-family: 'firamono', monospace !important;
+    font-family: 'gsansmono', monospace !important;
     font-size: 9pt;
 }
 small {
@@ -253,7 +257,7 @@ small {
     appearance: none;
     background-color: var(--secondary);
     border: none;
-    font-family: 'firamono', monospace;
+    font-family: 'gsansmono', monospace;
     height: 200px;
     padding: 10px;
     color: var(--text);

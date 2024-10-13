@@ -3,7 +3,7 @@ const remApp = require('@electron/remote').app;
 
 function ConfigHandler() {
     this.configuration = null;
-    this.defaults = { maximumStack: 50, fontSize: 24, autosaveEvery: 60, enableAutosave: false, gridSpacing: 100, disableLerp: false, lang: "en" };
+    this.defaults = { maximumStack: 50, fontSize: 24, autosaveEvery: 60, enableAutosave: false, gridSpacing: 100, disableLerp: false, lang: "en", preferredFont: 'gsansmono' };
 }
 
 ConfigHandler.prototype.loadConfig = async function() {

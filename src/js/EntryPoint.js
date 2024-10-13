@@ -10,6 +10,7 @@ $(document).ready(async() => {
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
     document.getElementById('disable-lerp').checked = await config.getValueKey('disableLerp')
     document.getElementById('language').value = await config.getValueKey('lang')
+    document.getElementById('workspace-font').value = await config.getValueKey('preferredFont')
     document.getElementById('undo-stack').onchange = () => {
         config.saveKey('maximumStack', document.getElementById('undo-stack').value);
     };
@@ -24,6 +25,11 @@ $(document).ready(async() => {
     document.getElementById('disable-lerp').onchange = () => {
         config.saveKey('disableLerp', document.getElementById('disable-lerp').checked);
     };
+
+    document.getElementById('workspace-font').onchange = () => {
+        console.log('font changed');
+        config.saveKey('preferredFont', document.getElementById('workspace-font').value)
+    }
 
     document.getElementById('language').onchange = () => {
         config.saveKey('lang', document.getElementById('language').value);

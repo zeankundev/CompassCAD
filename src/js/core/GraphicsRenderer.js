@@ -33,6 +33,8 @@ function GraphicDisplay(displayName, width, height) {
 		UP: 2
 	};
 
+	this.preferredFont = 'gsansmono'
+
 	// Draw read only
 	this.readonly = false;
 
@@ -156,6 +158,7 @@ GraphicDisplay.prototype.getLocal = async function (key) {
 }
 GraphicDisplay.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp")
+	this.preferredFont = await this.config.getValueKey("preferredFont")
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
 	if (disableLerp != true)
@@ -474,7 +477,7 @@ GraphicDisplay.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius
 	this.drawLine(x1, y2, x1, y1, color, radius);
 };
 
-GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) {
+GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
 	// Calculate the distance between the two points
 	var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
 
@@ -521,7 +524,7 @@ GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) 
 
 	// Draw the distance label
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px firamono, Consolas, DejaVu Sans Mono, monospace";
+	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 	this.context.fillText(
 		distance.toFixed(2) + "" + this.unitMeasure,
 		(this.cOutX + x2 - 150) * this.zoom,
@@ -529,7 +532,7 @@ GraphicDisplay.prototype.drawMeasure = function (x1, y1, x2, y2, color, radius) 
 	);
 };
 
-GraphicDisplay.prototype.drawLabel = function (x, y, text, color, radius) {
+GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	var localZoom = this.zoom;
@@ -542,7 +545,7 @@ GraphicDisplay.prototype.drawLabel = function (x, y, text, color, radius) {
 	}
 
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + "px firamono, Consolas, DejaVu Sans Mono, monospace";
+	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
