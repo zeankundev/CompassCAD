@@ -218,6 +218,11 @@ GraphicDisplay.prototype.saveState = function () {
 	}
   };
 
+GraphicDisplay.prototype.returnLatexInstance = async function(latex) {
+	const MathJaxInstance = await MathJax;
+
+    return MathJaxInstance.tex2svg(latex, {display: true});
+}
 GraphicDisplay.prototype.clearGrid = function (e) {
 	this.context.restore();
 	this.context.fillStyle = "#202020";
@@ -533,46 +538,59 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
 };
 
 GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) {
-	this.drawPoint(x, y, '#0ff', 2);
+    this.drawPoint(x, y, '#0ff', 2);
 
-	var localZoom = this.zoom;
-	var localDiff = 0;
+    var localZoom = this.zoom;
+    var localDiff = 0;
 
-	if (this.zoom <= 0.25) {
-		localZoom = 0.5;
-		localDiff = 20;
-		y += localDiff;
-	}
+    if (this.zoom <= 0.25) {
+        localZoom = 0.5;
+        localDiff = 20;
+        y += localDiff;
+    }
 
-	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+    this.context.fillStyle = color;
+    this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
-	var maxLength = 24; // 24 Characters per row
-	var tmpLength = 0;
-	var tmpText = "";
-	var arrText = this.logicDisplay.customSyntax(text).split(" ");
+    // Check for LaTeX (\latex)
+    if (text.startsWith('\\latex')) {
+        console.log('LATEX DETECTED');
+        const latexText = text.slice(6).trim(); // Remove the \latex part
+        console.log(latexText);
 
-	for (var i = 0; i < arrText.length; i++) {
-		tmpLength += arrText[i].length + 1;
-		tmpText += " " + arrText[i];
+        // Render LaTeX using MathJax and get SVG
+        const renderedSVG = await this.returnLatexInstance(latexText);
 
-		if (tmpLength > maxLength) {
-			this.context.fillText(
-				tmpText,
-				(this.cOutX + x - 5) * this.zoom,
-				(this.cOutY + y) * this.zoom);
-			y += 25 + localDiff;
-			tmpLength = 0;
-			tmpText = "";
-		}
-	}
+        // Convert the SVG to a serialized string
+        const svgData = new XMLSerializer().serializeToString(renderedSVG);
+        const svgBase64 = 'data:image/svg+xml;base64,' + btoa(svgData);
+		console.log(svgBase64)
+        // Draw the rendered SVG using the drawPicture method
+        this.drawPicture(x, y, svgBase64);
+    } else {
+        // Normal text rendering
+        var maxLength = 24; // 24 Characters per row
+        var tmpLength = 0;
+        var tmpText = "";
+        var arrText = this.logicDisplay.customSyntax(text).split(" ");
 
-	// Print the remainig text
-	this.context.fillText(
-		tmpText,
-		(this.cOutX + x - 5) * this.zoom,
-		(this.cOutY + y) * this.zoom);
+        for (var i = 0; i < arrText.length; i++) {
+            tmpLength += arrText[i].length + 1;
+            tmpText += " " + arrText[i];
+
+            if (tmpLength > maxLength) {
+                this.context.fillText(
+                    tmpText,
+                    (this.cOutX + x - 5) * this.zoom,
+                    (this.cOutY + y) * this.zoom);
+                y += 25 + localDiff;
+                tmpLength = 0;
+                tmpText = "";
+            }
+        }
+    }
 };
+
 
 GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
