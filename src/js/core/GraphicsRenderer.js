@@ -538,38 +538,45 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
 };
 
 GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) {
-    this.drawPoint(x, y, '#0ff', 2);
+	this.drawPoint(x, y, '#0ff', 2);
 
-    var localZoom = this.zoom;
-    var localDiff = 0;
+	var localZoom = this.zoom;
+	var localDiff = 0;
 
-    if (this.zoom <= 0.25) {
-        localZoom = 0.5;
-        localDiff = 20;
-        y += localDiff;
-    }
+	if (this.zoom <= 0.25) {
+		localZoom = 0.5;
+		localDiff = 20;
+		y += localDiff;
+	}
 
-    this.context.fillStyle = color;
-    this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+	this.context.fillStyle = color;
+	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
-    // Normal text rendering
-    var maxLength = 24; // 24 Characters per row
-    var tmpLength = 0;
-    var tmpText = "";
-    var arrText = this.logicDisplay.customSyntax(text).split(" ");
-    for (var i = 0; i < arrText.length; i++) {
-        tmpLength += arrText[i].length + 1;
-        tmpText += " " + arrText[i];
-        if (tmpLength > maxLength) {
-            this.context.fillText(
-                tmpText,
-                (this.cOutX + x - 5) * this.zoom,
-                (this.cOutY + y) * this.zoom);
-            y += 25 + localDiff;
-            tmpLength = 0;
-            tmpText = "";
-        }
-    }
+	var maxLength = 24; // 24 Characters per row
+	var tmpLength = 0;
+	var tmpText = "";
+	var arrText = this.logicDisplay.customSyntax(text).split(" ");
+
+	for (var i = 0; i < arrText.length; i++) {
+		tmpLength += arrText[i].length + 1;
+		tmpText += " " + arrText[i];
+
+		if (tmpLength > maxLength) {
+			this.context.fillText(
+				tmpText,
+				(this.cOutX + x - 5) * this.zoom,
+				(this.cOutY + y) * this.zoom);
+			y += 25 + localDiff;
+			tmpLength = 0;
+			tmpText = "";
+		}
+	}
+
+	// Print the remainig text
+	this.context.fillText(
+		tmpText,
+		(this.cOutX + x - 5) * this.zoom,
+		(this.cOutY + y) * this.zoom);
 };
 
 
