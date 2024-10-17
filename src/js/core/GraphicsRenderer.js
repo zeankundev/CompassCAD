@@ -552,41 +552,22 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
     this.context.fillStyle = color;
     this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
-    // Check for LaTeX (\latex)
-    if (text.startsWith('\\latex')) {
-        console.log('LATEX DETECTED');
-        const latexText = text.slice(6).trim(); // Remove the \latex part
-        console.log(latexText);
-
-        // Render LaTeX using MathJax and get SVG
-        const renderedSVG = await this.returnLatexInstance(latexText);
-
-        // Convert the SVG to a serialized string
-        const svgData = new XMLSerializer().serializeToString(renderedSVG);
-        const svgBase64 = 'data:image/svg+xml;base64,' + btoa(svgData);
-		console.log(svgBase64)
-        // Draw the rendered SVG using the drawPicture method
-        this.drawPicture(x, y, svgBase64);
-    } else {
-        // Normal text rendering
-        var maxLength = 24; // 24 Characters per row
-        var tmpLength = 0;
-        var tmpText = "";
-        var arrText = this.logicDisplay.customSyntax(text).split(" ");
-
-        for (var i = 0; i < arrText.length; i++) {
-            tmpLength += arrText[i].length + 1;
-            tmpText += " " + arrText[i];
-
-            if (tmpLength > maxLength) {
-                this.context.fillText(
-                    tmpText,
-                    (this.cOutX + x - 5) * this.zoom,
-                    (this.cOutY + y) * this.zoom);
-                y += 25 + localDiff;
-                tmpLength = 0;
-                tmpText = "";
-            }
+    // Normal text rendering
+    var maxLength = 24; // 24 Characters per row
+    var tmpLength = 0;
+    var tmpText = "";
+    var arrText = this.logicDisplay.customSyntax(text).split(" ");
+    for (var i = 0; i < arrText.length; i++) {
+        tmpLength += arrText[i].length + 1;
+        tmpText += " " + arrText[i];
+        if (tmpLength > maxLength) {
+            this.context.fillText(
+                tmpText,
+                (this.cOutX + x - 5) * this.zoom,
+                (this.cOutY + y) * this.zoom);
+            y += 25 + localDiff;
+            tmpLength = 0;
+            tmpText = "";
         }
     }
 };
