@@ -555,7 +555,7 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
 	var tmpText = "";
-	var arrText = this.logicDisplay.customSyntax(text).split(" ");
+	var arrText = this.logicDisplay.customSyntax(text);
 
 	for (var i = 0; i < arrText.length; i++) {
 		tmpLength += arrText[i].length + 1;
