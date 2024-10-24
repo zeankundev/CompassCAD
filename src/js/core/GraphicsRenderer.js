@@ -555,7 +555,7 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
 	var tmpText = "";
-	var arrText = this.logicDisplay.customSyntax(text);
+	var arrText = this.logicDisplay.customSyntax(text).split(" ");
 
 	for (var i = 0; i < arrText.length; i++) {
 		tmpLength += arrText[i].length + 1;
@@ -578,7 +578,6 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
 		(this.cOutX + x - 5) * this.zoom,
 		(this.cOutY + y) * this.zoom);
 };
-
 
 GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
