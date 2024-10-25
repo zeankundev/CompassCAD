@@ -11,6 +11,15 @@
     font-family: 'newstroke';
     src: url('../assets/newstroke.ttf');
 }
+@keyframes pop {
+    from {
+        opacity: 0;
+        transform: scale(1.2);
+    } to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 body {
     overflow-y: hidden;
 }
@@ -105,4 +114,65 @@ body {
 .top-text-input:hover {
     background-color: var(--secondary);
     transition: all 0.2s ease;
+}
+.share-design {
+    padding: 10px;
+    border-radius: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%; /* Change right to left for horizontal centering */
+    transform: translate(-50%, -50%); /* Center the modal */
+    background-color: var(--secondary);
+    pointer-events: all;
+    width: 28%;
+}
+
+.blackout {
+    background-color: rgba(0, 0, 0, 0.5);
+    animation: pop 1s ease;
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 9999999999999999999;
+    height: 100vh;
+    pointer-events: stroke;
+}
+.link-output {
+    -webkit-appearance: none;
+    display: flex;
+    border: none;
+    margin-top: 5px;
+    padding: 5px;
+    width: 95%;
+    background-color: var(--tertiary);
+    border-radius: 13px;
+}
+.link-output input {
+    display: inline-block;
+    width: 97%;
+    margin-left: 10px;
+    -webkit-appearance: none;
+    background-color: var(--tertiary);
+    border: none;
+    font-family: 'Fira Mono', monospace;
+    color: var(--text);
+}
+.link-output .copy-link {
+    display: inline-flex;
+    background-color: #0091E2;
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.close-modal-generic {
+    background-color: #0091E2;
+    max-width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    user-select: none;
+    cursor: pointer;
 }

@@ -15,12 +15,26 @@
         <div class="menubar" id="menubar">
             <div class="menubar-interaction" onclick="window.history.back()"><img src="./assets/editor/back.svg"></div>
             <input type="text" class="top-text-input" id="filename" value="New Design 1" placeholder="Filename">
-            <div class="menubar-interaction" id="new"><img src="./assets/editor/newLogic.svg"></div>
-            <div class="menubar-interaction" id="open"><img src="./assets/editor/openLogic.svg"></div>
-            <div class="menubar-interaction" id="save"><img src="./assets/editor/saveLogic.svg"></div>
-            <div class="menubar-interaction" id="export"><img src="./assets/editor/export.svg"></div>
-            <div class="menubar-interaction" id="undo"><img src="./assets/editor/undo.svg"></div>
-            <div class="menubar-interaction" id="redo"><img src="./assets/editor/redo.svg"></div>
+            <div class="menubar-interaction" title="New Design" id="new"><img src="./assets/editor/newLogic.svg"></div>
+            <div class="menubar-interaction" title="Open Design" id="open"><img src="./assets/editor/openLogic.svg"></div>
+            <div class="menubar-interaction" title="Save Design" id="save"><img src="./assets/editor/saveLogic.svg"></div>
+            <div class="menubar-interaction" title="Export Design to SVG" id="export"><img src="./assets/editor/export.svg"></div>
+            <div class="menubar-interaction" title="Undo (ctrl+z)" id="undo"><img src="./assets/editor/undo.svg"></div>
+            <div class="menubar-interaction" title="Redo (ctrl+y)" id="redo"><img src="./assets/editor/redo.svg"></div>
+            <div class="menubar-interaction" title="Share design link" id="share"><img src="./assets/editor/share.svg"></div>
+        </div>
+        <div class="blackout" id="share-modal">
+            <div class="share-design">
+                <h2>Share your design</h2>
+                <div class="link-output">
+                    <input type="text" id="link-output" disabled value="">
+                    <div class="copy-link" id="copy-link">
+                        <img src="./assets/editor/copy.svg">
+                    </div>
+                </div>
+                <br>
+                <div class="close-modal-generic" id="close-share-modal">Close</div>
+            </div>
         </div>
         <div class="working-area">
             <div class="toolbar" id="toolbar">

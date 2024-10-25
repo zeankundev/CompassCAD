@@ -179,29 +179,65 @@ $(document).ready(async () => {
     });
     initCAD(renderer)
     setInterval(() => {document.getElementById('tooltip').innerText = renderer.getToolTip()},1)
+    const parser = new URLSearchParams(document.location.search)
+    const basedDesign = parser.get('data')
+    if (basedDesign != null || basedDesign != '' || basedDesign.length > 0) {
+        try {
+            renderer.logicDisplay.importJSON(JSON.parse(atob(basedDesign)), renderer.logicDisplay.components)
+            callToast('Your shared design has been successfully imported', 'success')
+        } catch (e) {
+            console.error(e)
+            callToast('An error occured while loading your shared design.<br>Check your data to ensure the data integrity is correct<br>as it should be.', 'failure')
+        }
+    }
     // Adding keyboard events 
 	
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.GREATERTHAN, function(e){
+        e.preventDefault()
 		renderer.zoomIn();
 	});
 	
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.LESSTHAN, function(e){
+        e.preventDefault()
 		renderer.zoomOut();
 	});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Z, function(e){
+        e.preventDefault()
 		renderer.undo()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Y, function(e){
+        e.preventDefault()
 		renderer.redo()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.O, function(e){
+        e.preventDefault()
 		renderer.openDesign()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.S, function(e){
+        e.preventDefault()
 		renderer.saveDesign()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.E, function(e){
+        e.preventDefault()
 		renderer.exportDesign()
 		renderer.setMode(renderer.MODES.NAVIGATE)
 	}, {ctrl: true});
+    document.getElementById('share').onclick = () => {
+        document.getElementById('share-modal').style.display = 'block'
+        document.getElementById('link-output').value = `${window.location.href}?data=${btoa(JSON.stringify(renderer.logicDisplay.components))}`
+        document.getElementById('link-output').title = document.getElementById('link-output').value
+    }
+    document.getElementById('copy-link').onclick = () => {
+        const link = document.getElementById('link-output')
+        link.select()
+        link.setSelectionRange(0, 9999999999999999999999999999999999999999999999)
+        navigator.clipboard.writeText(link.value)
+        callToast('Copied link to clipboard. You may now share<br>your designs to the world.', 'success')
+    }
+    document.getElementById('close-share-modal').onclick = () => {
+        document.getElementById('share-modal').style.display = 'none'
+    }
+    document.getElementById('share-modal').onclick = () => {
+        document.getElementById('close-share-modal').click()
+    }
 })
