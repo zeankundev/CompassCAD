@@ -193,32 +193,29 @@ $(document).ready(async () => {
     // Adding keyboard events 
 	
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.GREATERTHAN, function(e){
-        e.preventDefault()
 		renderer.zoomIn();
 	});
-	
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.LESSTHAN, function(e){
-        e.preventDefault()
 		renderer.zoomOut();
 	});
+    renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.EQUALS, function(e) {
+        const requiredZoomFactor = 1 / renderer.zoom;
+        console.log(requiredZoomFactor)
+        renderer.setZoom(requiredZoomFactor);
+    })
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Z, function(e){
-        e.preventDefault()
 		renderer.undo()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.Y, function(e){
-        e.preventDefault()
 		renderer.redo()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.O, function(e){
-        e.preventDefault()
 		renderer.openDesign()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.S, function(e){
-        e.preventDefault()
 		renderer.saveDesign()
 	}, {ctrl: true});
 	renderer.keyboard.addKeyEvent(true, renderer.keyboard.KEYS.E, function(e){
-        e.preventDefault()
 		renderer.exportDesign()
 		renderer.setMode(renderer.MODES.NAVIGATE)
 	}, {ctrl: true});

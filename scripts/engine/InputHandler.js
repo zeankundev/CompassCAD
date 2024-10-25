@@ -11,6 +11,7 @@ function KeyboardHandler() {
         CAPSLOCK: 20,
         ENTER: 13,
         SLASH: 220,
+        EQUALS: 187,
         FORWARDSLASH: 191,
         LESSTHAN: 188,
         GREATERTHAN: 190,
