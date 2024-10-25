@@ -181,7 +181,8 @@ $(document).ready(async () => {
     setInterval(() => {document.getElementById('tooltip').innerText = renderer.getToolTip()},1)
     const parser = new URLSearchParams(document.location.search)
     const basedDesign = parser.get('data')
-    if (basedDesign != null || basedDesign != '' || basedDesign.length > 0) {
+    console.log(basedDesign)
+    if (basedDesign != null && basedDesign != '' && basedDesign != ' ') {
         try {
             renderer.logicDisplay.importJSON(JSON.parse(atob(basedDesign)), renderer.logicDisplay.components)
             callToast('Your shared design has been successfully imported', 'success')
