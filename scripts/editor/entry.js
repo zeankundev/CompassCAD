@@ -237,7 +237,4 @@ $(document).ready(async () => {
     document.getElementById('close-share-modal').onclick = () => {
         document.getElementById('share-modal').style.display = 'none'
     }
-    document.getElementById('share-modal').onclick = () => {
-        document.getElementById('close-share-modal').click()
-    }
 })
