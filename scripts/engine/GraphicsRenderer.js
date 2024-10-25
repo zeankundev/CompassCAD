@@ -71,8 +71,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.camX = 0;
 	this.camY = 0;
 	this.zoom = 1;
-	this.zoomin = 1.5;
-	this.zoomout = 0.5;
+	this.zoomin = 3/2;
+	this.zoomout = 2/3;
 	this.currentZoom = 1; // Add this to your initialization
     this.targetZoom = 1;  // Add this to your initialization
     this.zoomSpeed = 0.05; // Adjust the speed of the zoom transition
