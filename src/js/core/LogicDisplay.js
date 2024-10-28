@@ -124,7 +124,7 @@ LogicDisplay.prototype.jettIsMyWaifu = function() {
 	this.components.push(new Circle(-500, 500, -500, 600));
 	
 	this.components.push(new Rectangle(200, 600, 500, 700));
-	this.components.push(new Picture(-350, 500, 'https://i1.sndcdn.com/artworks-5kuyDpLwsAHZGr0a-AGxR4w-t500x500.jpg'))
+	this.components.push(new Picture(-350, 500, 'https://pbs.twimg.com/media/GSfEQEfXkAAr82x.png'))
 };
 
 LogicDisplay.prototype.exportJSON = function() {

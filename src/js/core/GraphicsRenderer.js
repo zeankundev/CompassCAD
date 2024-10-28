@@ -76,8 +76,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.camX = 0;
 	this.camY = 0;
 	this.zoom = 1;
-	this.zoomin = 1.1;
-	this.zoomout = 0.9;
+	this.zoomin = 3/2;
+	this.zoomout = 2/3;
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.08; // Adjust the speed of the zoom transition
@@ -1176,7 +1176,7 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 	console.log(newZoom)
 
 	// Zoom interval control
-	if (newZoom <= 0.4 || newZoom >= 4)
+	if (newZoom <= 0.4 || newZoom >= 5)
 		return;
 
 	this.targetZoom = newZoom;
