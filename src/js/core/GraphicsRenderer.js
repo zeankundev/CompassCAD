@@ -579,7 +579,6 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
 		(this.cOutY + y) * this.zoom);
 };
 
-
 GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
