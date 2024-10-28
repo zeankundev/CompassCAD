@@ -1212,7 +1212,7 @@ GraphicDisplay.prototype.setToolTip = function (text) {
 
 GraphicDisplay.prototype.getToolTip = function (e) {
 	var text = this.tooltip;
-	return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
+	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${fps.toFixed(0)} FPS)`;
 };
 
 //TODO: Move in Utils.
@@ -1508,22 +1508,36 @@ var initCAD = function (gd) {
 	});
 
 	// Start CAD
-	function repeatInstance(e) {
-		const currentTime = performance.now();
-		frameCount++;
-		if (currentTime - lastTime >= 1000) {
-			fps = frameCount;
-			frameCount = 0;
-			lastTime = currentTime;
+	function repeatInstance() {
+		const currentTime = performance.now(); // Get current time
+		frameCount++; // Increment frame count
+	
+		// Calculate the elapsed time since the last frame
+		const elapsedTime = currentTime - lastTime;
+	
+		// Update FPS every millisecond
+		if (elapsedTime >= 1) { // Update every millisecond
+			fps = (frameCount / (elapsedTime / 1000)); // Calculate FPS
+			frameCount = 0; // Reset frame count
+			lastTime = currentTime; // Update lastTime
+	
+			// Display FPS with millisecond precision
+			console.log(`FPS: ${fps.toFixed(1)}`); // Log FPS
+	
+			// Check for FPS warning
 			if (fps < fpsWarningThreshold && !warningDisplayed) {
 				console.warn('FPS dropped below 20!');
-				document.getElementById('fps-warner').style.display = 'inline-flex'
+				document.getElementById('fps-warner').style.display = 'inline-flex';
+				warningDisplayed = true; // Set warning displayed to true
 			} else if (fps >= fpsWarningThreshold) {
-				document.getElementById('fps-warner').style.display = 'none'
+				document.getElementById('fps-warner').style.display = 'none';
+				warningDisplayed = false; // Reset warning displayed
 			}
 		}
-		gd.execute();
-	};
+	
+		// Call your rendering or execution function here
+		gd.execute(); // Example function call
+	}
 	setInterval(repeatInstance, 0)
 	setInterval(() => {
 		gd.checkForAnyPeerChanges()
