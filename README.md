@@ -17,6 +17,15 @@ very good CAD software. plan out buildings, and show it off to your boss.
 - [Official CompassCAD X (formerly Twitter) blog](https://x.com/CompassCAD)
 - [Official CompassCAD Discord Server](https://discord.gg/Qvw9afNs3e)
 
+# Features
+- Simple to use user interface (backed by community testing)
+- Tools and shortcuts are designed with [CTS](https://www.google.com/search?q=carpal+tunnel+syndrome) in mind
+- Seeps in less resource, CPU usage and less battery, so CompassCAD runs 87% faster than AutoCAD
+- Transparent community
+- Designed with less bloatware in mind and only integrating the core features
+- Works with Windows and Linux (macOS, BSD or any unofficially supported platforms must use the [web version](https://zeankundev.github.io/CompassCAD/editor.html))
+- Collaborate with up to 2 people (more member support will be added and fixed soon)
+
 # System requirements
 - Windows 10 22H2, macOS El Capitan, Ubuntu 20.04 or up (use electron v22.3.27 to run CompassCAD on Windows 7 (SP1 needed))
 - Intel Core(R) Solo U1300 (32bit), Intel Core(R) 2 Duo E7500 or better (CPUs from 2010 or later may guarrantee >100FPS)
