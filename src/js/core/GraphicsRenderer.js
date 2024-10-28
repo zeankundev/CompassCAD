@@ -653,17 +653,18 @@ GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
 };
 
 GraphicDisplay.prototype.drawToolTip = function (e) {
-	/*
-	this.context.fillStyle = "#202020";
-	this.context.fillRect(-this.displayWidth/2, this.displayHeight/2 - 20, this.displayWidth, 20);
-	this.context.strokeStyle = "black";
-	this.context.lineWidth = 1;
-	this.context.strokeRect(-this.displayWidth/2 + 1, this.displayHeight/2 - 21, this.displayWidth-2, 20);
-	*/
-	this.context.fillStyle = "#fff";
+    // Shadow effect (black text offset by 5px to the right and bottom)
+    this.context.fillStyle = "black"; // Set shadow color to black
 	this.context.font = "13px 'Segoe UI Variable Display', system-ui";
-	this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 10, this.displayHeight / 2 - 10);
+	this.context.fontStyle = 'bold'
+    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 11, this.displayHeight / 2 - 9); // Offset by 5px
+
+    // Tooltip text
+    this.context.fillStyle = "#fff"; // Set text color to white
+    this.context.font = "13px 'Segoe UI Variable Display', system-ui";
+    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 10, this.displayHeight / 2 - 10);
 };
+
 
 GraphicDisplay.prototype.drawOrigin = function (cx, cy) {
 	this.context.lineWidth = 1;
