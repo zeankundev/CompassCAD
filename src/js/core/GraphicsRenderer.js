@@ -1536,36 +1536,22 @@ var initCAD = function (gd) {
 	});
 
 	// Start CAD
-	function repeatInstance() {
-		const currentTime = performance.now(); // Get current time
-		frameCount++; // Increment frame count
-	
-		// Calculate the elapsed time since the last frame
-		const elapsedTime = currentTime - lastTime;
-	
-		// Update FPS every millisecond
-		if (elapsedTime >= 1) { // Update every millisecond
-			fps = (frameCount / (elapsedTime / 1000)); // Calculate FPS
-			frameCount = 0; // Reset frame count
-			lastTime = currentTime; // Update lastTime
-	
-			// Display FPS with millisecond precision
-			console.log(`FPS: ${fps.toFixed(1)}`); // Log FPS
-	
-			// Check for FPS warning
+	function repeatInstance(e) {
+		const currentTime = performance.now();
+		frameCount++;
+		if (currentTime - lastTime >= 1000) {
+			fps = frameCount;
+			frameCount = 0;
+			lastTime = currentTime;
 			if (fps < fpsWarningThreshold && !warningDisplayed) {
 				console.warn('FPS dropped below 20!');
-				document.getElementById('fps-warner').style.display = 'inline-flex';
-				warningDisplayed = true; // Set warning displayed to true
+				document.getElementById('fps-warner').style.display = 'inline-flex'
 			} else if (fps >= fpsWarningThreshold) {
-				document.getElementById('fps-warner').style.display = 'none';
-				warningDisplayed = false; // Reset warning displayed
+				document.getElementById('fps-warner').style.display = 'none'
 			}
 		}
-	
-		// Call your rendering or execution function here
-		gd.execute(); // Example function call
-	}
+		gd.execute();
+	};
 	setInterval(repeatInstance, 0)
 	setInterval(() => {
 		gd.checkForAnyPeerChanges()
