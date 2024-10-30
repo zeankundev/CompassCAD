@@ -512,12 +512,9 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
 
     // Minimum distance to display the full measure line and gap
     const minDistanceForFullArrow = defaultArrowLength * 2 / 100; // 0.5 meters
-	// Dynamically adjust arrow length if the distance is below twice the default arrow length (0.5 meters)
     if (distance < minDistanceForFullArrow) {
-        // Linearly scale arrow length as distance decreases from 0.5m to 0
         arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
     }
-    // Check if distance is below twice the default arrow length
     const isShortDistance = distance < minDistanceForFullArrow * 2;
 
     // Calculate the midpoint
@@ -525,57 +522,33 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     const midY = (y1 + y2) / 2;
 
     // If short distance, set text position to above the midpoint
-    const textOffsetY = isShortDistance ? (-10 / this.zoom) * this.zoom * localDiff - 15 : 0;
+    const textOffsetY = isShortDistance ? -30 / this.zoom : 0;
 
     // Draw line segments only if distance is above threshold
     if (!isShortDistance) {
-        // Calculate the padding for the gap based on zoom level
-        const basePadding = 20; // Base padding to ensure readability
-        const adaptivePadding = basePadding * this.zoom; // Scale padding based on zoom level
+        const basePadding = 20; 
+        const adaptivePadding = basePadding * this.zoom; 
         const labelGap = (textWidth + adaptivePadding) / this.zoom;
 
-        // Calculate the positions where the gap starts and ends
         const halfGapX = (labelGap / 2) * Math.cos(angle);
         const halfGapY = (labelGap / 2) * Math.sin(angle);
 
-        // Draw the line segments on either side of the gap
-        this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); // Left segment
-        this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius); // Right segment
+        this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); 
+        this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
     }
 
-    // Calculate positions of the arrowhead lines at the start point (x1, y1)
-    var arrowX1 = x1 + arrowLength * Math.cos(angle);
-    var arrowY1 = y1 + arrowLength * Math.sin(angle);
-    var offsetX1 = arrowOffset * Math.cos(angle + Math.PI / 2);
-    var offsetY1 = arrowOffset * Math.sin(angle + Math.PI / 2);
-
-    // Draw the rotated arrowhead at the start point
-    this.drawLine(x1, y1, arrowX1 + offsetX1, arrowY1 + offsetY1, color, radius);
-    this.drawLine(x1, y1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
-    this.drawLine(arrowX1 + offsetX1, arrowY1 + offsetY1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
-
-    // Calculate positions of the arrowhead lines at the end point (x2, y2)
-    var arrowX2 = x2 - arrowLength * Math.cos(angle);
-    var arrowY2 = y2 - arrowLength * Math.sin(angle);
-    var offsetX2 = arrowOffset * Math.cos(angle + Math.PI / 2);
-    var offsetY2 = arrowOffset * Math.sin(angle + Math.PI / 2);
-
-    // Draw the rotated arrowhead at the end point
-    this.drawLine(x2, y2, arrowX2 + offsetX2, arrowY2 + offsetY2, color, radius);
-    this.drawLine(x2, y2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
-    this.drawLine(arrowX2 + offsetX2, arrowY2 + offsetY2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
+    // Draw arrowheads
+    this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
+    this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
 
     // Save context to apply rotation for the label
     this.context.save();
-    this.context.translate(midX * this.zoom, (midY * this.zoom) - textOffsetY);
+    this.context.translate((midX * this.zoom) + this.cOutX * this.zoom, ((midY * this.zoom) - textOffsetY) + this.cOutY * this.zoom);
     this.context.rotate(angle);
 
     // Set text alignment to center
     this.context.textAlign = 'center';
-    if (isShortDistance)
-		this.context.textBaseline = 'top';
-	else
-		this.context.textBaseline = 'middle';
+    this.context.textBaseline = isShortDistance ? 'top' : 'middle';
     this.context.fillStyle = color;
     this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
@@ -584,6 +557,17 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
 
     // Restore the context to avoid affecting subsequent drawings
     this.context.restore();
+};
+
+GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
+    var arrowX = x + length * Math.cos(angle);
+    var arrowY = y + length * Math.sin(angle);
+    var offsetX = offset * Math.cos(angle + Math.PI / 2);
+    var offsetY = offset * Math.sin(angle + Math.PI / 2);
+
+    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius);
+    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius);
+    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
 };
 
 GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) {
