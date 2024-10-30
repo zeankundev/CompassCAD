@@ -659,10 +659,9 @@ GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
 
 GraphicDisplay.prototype.drawToolTip = function (e) {
     // Shadow effect (black text offset by 5px to the right and bottom)
-    this.context.fillStyle = "black"; // Set shadow color to black
-	this.context.font = "13px 'Segoe UI Variable Display', system-ui";
-	this.context.fontStyle = 'bold'
-    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 11, this.displayHeight / 2 - 9); // Offset by 5px
+	this.context.shadowColor = "black";
+	this.context.shadowOffsetX = 2;
+	this.context.shadowOffsetY = 2;
 
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
