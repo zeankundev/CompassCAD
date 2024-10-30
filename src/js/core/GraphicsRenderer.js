@@ -525,7 +525,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     const midY = (y1 + y2) / 2;
 
     // If short distance, set text position to above the midpoint
-    const textOffsetY = isShortDistance ? -30 / this.zoom : 0;
+    const textOffsetY = isShortDistance ? (-10 / this.zoom) * this.zoom * localDiff - 15 : 0;
 
     // Draw line segments only if distance is above threshold
     if (!isShortDistance) {
