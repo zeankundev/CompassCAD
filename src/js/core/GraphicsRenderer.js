@@ -522,7 +522,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     const midY = (y1 + y2) / 2;
 
     // If short distance, set text position to above the midpoint
-    const textOffsetY = isShortDistance ? -30 / this.zoom : 0;
+    const textOffsetY = isShortDistance ? (750 / 100) * this.zoom : 0;
 
     // Draw line segments only if distance is above threshold
     if (!isShortDistance) {
@@ -543,7 +543,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
 
     // Save context to apply rotation for the label
     this.context.save();
-    this.context.translate((midX * this.zoom) + this.cOutX * this.zoom, ((midY * this.zoom) - textOffsetY) + this.cOutY * this.zoom);
+    this.context.translate((midX * this.zoom) + this.cOutX * this.zoom, ((midY * this.zoom) + (textOffsetY * 2)) + this.cOutY * this.zoom);
     this.context.rotate(angle);
 
     // Set text alignment to center
