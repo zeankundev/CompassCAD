@@ -1,9 +1,9 @@
-function SVGExporter(rendererPointer) {
+function SVGExporter(renderComp) {
     this.c2s = new C2S(1920, 1080)
-	this.rendererComponent = rendererPointer
-    // hijack the renderer's logic display so we can get that shit there
-    this.logicDisplay = renderer.logicDisplay
-    console.log(`renderer coutx: ${renderer.cOutX},renderer couty: ${renderer.cOutY}`)
+	this.rendererComponent = renderComp
+    // hijack the rendererComponent's logic display so we can get that shit there
+    this.logicDisplay = this.rendererComponent.logicDisplay
+    console.log(`rendererComponent coutx: ${this.rendererComponent.cOutX},rendererComponent couty: ${this.rendererComponent.cOutY}`)
 }
 
 SVGExporter.prototype.calculateOrigin = function(components) {
@@ -147,6 +147,17 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
         this.drawComponent(components[i], refinedX + moveByX, refinedY + moveByY);
     }
 };
+
+SVGExporter.prototype.renderElementExclusiveForShape = function (components, offsetX, offsetY) {
+	console.log(components)
+	for (var i = 0; i < components.length; i++) {
+		if (!components[i].isActive())
+			continue;
+
+		this.drawComponent(components[i], offsetX, offsetY)
+	}
+}
+
 SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 	switch (component.type) {
 		case COMPONENT_TYPES.POINT:
@@ -212,12 +223,7 @@ SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.radius);
 			break;
 		case COMPONENT_TYPES.SHAPE:
-			this.drawLabelSvg(
-				component.x + moveByX,
-				component.y + moveByY,
-				'Shape',
-				component.color,
-				component.radius);
+			this.drawShapeSvg(component)
 			break;
 	} 
 };
@@ -249,8 +255,6 @@ SVGExporter.prototype.drawLineSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.closePath();
 	this.c2s.stroke();
 	
-	this.drawPointSvg(x1, y1, color, radius);
-	this.drawPointSvg(x2, y2, color, radius);
 };
 
 SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
@@ -278,56 +282,88 @@ SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius)
 
 SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	// Calculate the distance between the two points
-    var distance = this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * this.rendererComponent.unitConversionFactor;
+	var distance = this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * this.rendererComponent.unitConversionFactor;
 
-    // Calculate the angle of the line in radians
-    var angle = Math.atan2(y2 - y1, x2 - x1);
+	// Calculate the angle of the line in radians
+	var angle = Math.atan2(y2 - y1, x2 - x1);
 
-    // Adjust zoom levels
-    var localDiff = 0;
+	// Adjust zoom levels
 	var localZoom = 1;
+	var localDiff = 0;
+	if (localZoom <= 0.25) {
+		localZoom = 0.5;
+		localDiff = 20;
+	}
 
-    if (1 <= 0.25) {
-        localZoom = 0.5;
-        localDiff = 20;
-    }
+	// Format the distance text
+	const distanceText = distance.toFixed(2) + this.rendererComponent.unitMeasure;
 
-    // Draw the main line
-    this.drawLineSvg(x1, y1, x2, y2, color, radius);
-
-    // Length and offset for the arrowhead lines
-    var arrowLength = 30;
-    var arrowOffset = 15;
-
-    // Calculate positions of the arrowhead lines at the start point (x1, y1)
-    var arrowX1 = x1 + arrowLength * Math.cos(angle);
-    var arrowY1 = y1 + arrowLength * Math.sin(angle);
-    var offsetX1 = arrowOffset * Math.cos(angle + Math.PI / 2);
-    var offsetY1 = arrowOffset * Math.sin(angle + Math.PI / 2);
-
-    // Draw the rotated arrowhead at the start point
-    this.drawLineSvg(x1, y1, arrowX1 + offsetX1, arrowY1 + offsetY1, color, radius);
-    this.drawLineSvg(x1, y1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
-    this.drawLineSvg(arrowX1 + offsetX1, arrowY1 + offsetY1, arrowX1 - offsetX1, arrowY1 - offsetY1, color, radius);
-
-    // Calculate positions of the arrowhead lines at the end point (x2, y2)
-    var arrowX2 = x2 - arrowLength * Math.cos(angle);
-    var arrowY2 = y2 - arrowLength * Math.sin(angle);
-    var offsetX2 = arrowOffset * Math.cos(angle + Math.PI / 2);
-    var offsetY2 = arrowOffset * Math.sin(angle + Math.PI / 2);
-
-    // Draw the rotated arrowhead at the end point
-    this.drawLineSvg(x2, y2, arrowX2 + offsetX2, arrowY2 + offsetY2, color, radius);
-    this.drawLineSvg(x2, y2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
-    this.drawLineSvg(arrowX2 + offsetX2, arrowY2 + offsetY2, arrowX2 - offsetX2, arrowY2 - offsetY2, color, radius);
-
-    // Draw the distance label
-    this.c2s.fillStyle = "#000000";
+	// Measure text width for adaptive gap creation
+	this.c2s.save();
 	this.c2s.font = (this.rendererComponent.fontSize * localZoom) + "px Consolas, monospace";
-	this.c2s.fillText(
-			distance.toFixed(2) + "" + this.rendererComponent.unitMeasure,
-			(x2 - 120) * 1,
-			(y2 + 30 + localDiff) * 1);
+	const textWidth = this.c2s.measureText(distanceText).width;
+	this.c2s.restore();
+
+	// Default length and offset for the arrowhead lines
+	var defaultArrowLength = 25;
+	var arrowOffset = 5;
+	let arrowLength = defaultArrowLength;
+
+	// Minimum distance for displaying the full arrow
+	const minDistanceForFullArrow = defaultArrowLength * 2 / 100;
+	if (distance < minDistanceForFullArrow) {
+		arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
+	}
+	const isShortDistance = distance < minDistanceForFullArrow * 2;
+
+	// Calculate the midpoint for placing the label
+	const midX = (x1 + x2) / 2;
+	const midY = (y1 + y2) / 2;
+
+	// Offset text position above midpoint if distance is short
+	const textOffsetY = isShortDistance ? (-10 / this.rendererComponent.zoom) * this.rendererComponent.zoom * localDiff - 15 : 0;
+
+	// Draw line segments only if distance is above threshold
+	if (!isShortDistance) {
+		const basePadding = 20;
+		const adaptivePadding = basePadding * this.rendererComponent.zoom;
+		const labelGap = (textWidth + adaptivePadding) / this.rendererComponent.zoom;
+
+		// Calculate positions where the gap starts and ends
+		const halfGapX = (labelGap / 2) * Math.cos(angle);
+		const halfGapY = (labelGap / 2) * Math.sin(angle);
+
+		// Draw line segments on either side of the gap
+		this.drawLineSvg(x1, y1, midX - halfGapX, midY - halfGapY, color, radius);
+		this.drawLineSvg(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
+	}
+
+	// Draw the arrowheads at both ends
+	const drawArrowhead = (x, y, angle, length, offset) => {
+		const arrowX = x + length * Math.cos(angle);
+		const arrowY = y + length * Math.sin(angle);
+		const offsetX = offset * Math.cos(angle + Math.PI / 2);
+		const offsetY = offset * Math.sin(angle + Math.PI / 2);
+
+		this.drawLineSvg(x, y, arrowX + offsetX, arrowY + offsetY, color, radius);
+		this.drawLineSvg(x, y, arrowX - offsetX, arrowY - offsetY, color, radius);
+		this.drawLineSvg(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
+	};
+
+	// Draw the arrowheads at the start and end points
+	drawArrowhead(x1, y1, angle, arrowLength, arrowOffset);
+	drawArrowhead(x2, y2, angle + Math.PI, arrowLength, arrowOffset);
+
+	// Draw the distance label with rotation and alignment
+	this.c2s.save();
+	this.c2s.translate(midX * this.rendererComponent.zoom, (midY * this.rendererComponent.zoom) - textOffsetY);
+	this.c2s.rotate(angle);
+	this.c2s.textAlign = 'center';
+	this.c2s.textBaseline = isShortDistance ? 'top' : 'middle';
+	this.c2s.fillStyle = "#000000";
+	this.c2s.font = (this.rendererComponent.fontSize * localZoom) + "px Consolas, monospace";
+	this.c2s.fillText(distanceText, 0, localDiff);
+	this.c2s.restore();
 };
 
 SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
@@ -391,9 +427,18 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 	this.drawPointSvg(x2, y2, color, radius);
 	this.drawPointSvg(x3, y3, color, radius);
 };
-SVGExporter.prototype.exportSVG = function() {
+SVGExporter.prototype.drawShapeSvg = function (shape) {
+    for (var i = 0; i < shape.components.length; i++) {
+        var component = shape.components[i];
+        component.x += shape.x;
+        component.y += shape.y;
+    }
+    this.renderElementExclusiveForShape(shape.components, shape.x, shape.y);
+    this.drawPointSvg(shape.x, shape.y, shape.color, shape.radius)
+}
+SVGExporter.prototype.exportSVG = function () {
     // will return the SVG
-    this.drawAllComponents(renderer.logicDisplay.components, 15, 5);
+    this.drawAllComponents(this.rendererComponent.logicDisplay.components, 15, 5);
     // test first
 	console.log(this.c2s.getSerializedSvg(true))
     return this.c2s.getSerializedSvg(true)

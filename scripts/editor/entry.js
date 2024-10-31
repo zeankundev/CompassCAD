@@ -35,8 +35,9 @@ const exportToSvg = () => {
         downloader.href = window.URL.createObjectURL(blob);
         downloader.click();
         callToast('SVG successfully <br>exported. Please check and examine', 'success')
-    } catch {
+    } catch (e) {
         callToast('An error occured during exporting. <br>Please check the console for more details', 'failure')
+        console.error(e)
     }
 }
 const saveLocally = () => {
