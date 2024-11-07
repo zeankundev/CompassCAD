@@ -718,8 +718,8 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
     var xStart = (camXoff * this.gridSpacing * mildzoom) / 50;
     var yStart = (camYoff * this.gridSpacing * mildzoom) / 50;
     // Calculate the number of circles to draw along the width and height
-    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 1;
-    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 1;
+    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 99;
+    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 99;
 
     // Loop to draw the circles
     for (var i = 0; i < numCirclesX; i++) {
