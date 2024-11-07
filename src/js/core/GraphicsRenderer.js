@@ -713,29 +713,28 @@ GraphicDisplay.prototype.drawRules = function (e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
-    // Calculate the starting offset for the grid, taking into account the zoom level
-    var xStart = (camXoff % this.gridSpacing) * this.zoom - this.displayWidth / 2;
-	var yStart = (camYoff % this.gridSpacing) * this.zoom - this.displayHeight / 2;
-
+    var mildzoom = this.zoom / 2;
+    // Calculate the starting offset for the grid based on the camera offsets and zoom level
+    var xStart = (camXoff * this.gridSpacing * mildzoom) / 50;
+    var yStart = (camYoff * this.gridSpacing * mildzoom) / 50;
     // Calculate the number of circles to draw along the width and height
-    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / this.zoom) + 1;
-    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / this.zoom) + 1;
+    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 1;
+    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 1;
 
     // Loop to draw the circles
     for (var i = 0; i < numCirclesX; i++) {
         for (var j = 0; j < numCirclesY; j++) {
-            var x = xStart + i * this.gridSpacing * this.zoom;
-            var y = yStart + j * this.gridSpacing * this.zoom;
-			this.context.fillStyle = "#ccc"
+            var x = xStart + (i - Math.floor(numCirclesX / 2)) * this.gridSpacing * mildzoom;
+            var y = yStart + (j - Math.floor(numCirclesY / 2)) * this.gridSpacing * mildzoom;
+            this.context.fillStyle = "#ccc";
             this.context.beginPath();
             this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
             this.context.closePath();
-			this.context.fill()
+            this.context.fill();
             this.context.stroke();
         }
     }
 };
-
 GraphicDisplay.prototype.snapToGrid = function (x, y) {
 	const gridSize = this.gridSpacing * this.zoom;
 	const snappedX = Math.round(x / gridSize) * gridSize;
