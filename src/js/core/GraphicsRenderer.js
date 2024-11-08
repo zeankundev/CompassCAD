@@ -230,7 +230,7 @@ GraphicDisplay.prototype.clearGrid = function (e) {
 	this.context.save();
 
 	this.context.translate(this.displayWidth / 2, this.displayHeight / 2);
-	this.context.strokeStyle = "#e9e9e9";
+	this.context.strokeStyle = "#cccccc40";
 	this.context.lineWidth = 0.15;
 };
 
@@ -718,15 +718,15 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
     var xStart = (camXoff * this.gridSpacing * mildzoom) / 50;
     var yStart = (camYoff * this.gridSpacing * mildzoom) / 50;
     // Calculate the number of circles to draw along the width and height
-    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 99;
-    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 99;
+    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 20;
+    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 20;
 
     // Loop to draw the circles
     for (var i = 0; i < numCirclesX; i++) {
         for (var j = 0; j < numCirclesY; j++) {
             var x = xStart + (i - Math.floor(numCirclesX / 2)) * this.gridSpacing * mildzoom;
             var y = yStart + (j - Math.floor(numCirclesY / 2)) * this.gridSpacing * mildzoom;
-            this.context.fillStyle = "#ccc";
+            this.context.fillStyle = "#cccccc40";
             this.context.beginPath();
             this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
             this.context.closePath();
