@@ -1209,16 +1209,40 @@ GraphicDisplay.prototype.resetMode = function (e) {
 };
 
 GraphicDisplay.prototype.setZoom = function (zoomFactor) {
-	var newZoom = this.zoom * zoomFactor;
-	console.log(newZoom)
+    // Store the previous gridSpacing
+    var previousGridSpacing = this.gridSpacing;
 
-	// Zoom interval control
-	if (newZoom <= 0.4 || newZoom >= 5)
-		return;
+    // Calculate the new zoom based on the current zoom and zoomFactor
+    var newZoom = this.zoom * zoomFactor;
+    console.log(newZoom);
 
-	this.targetZoom = newZoom;
-	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`
+    // Dynamic minimum zoom based on the grid spacing
+    var minZoom = 0.4; // Default minimum zoom value
+
+    // Adjust minimum zoom based on the grid spacing
+    if (this.gridSpacing < 10) {
+        minZoom = Math.max(minZoom, 1 / this.gridSpacing);  // Avoid zooming too far out if spacing is small
+    }
+
+    // Check if the grid spacing has changed suddenly
+    if (this.gridSpacing !== previousGridSpacing) {
+        // Set zoom to the minimum zoom when grid spacing changes
+        this.targetZoom = minZoom;
+        console.log('Grid spacing changed, setting zoom to minimum:', minZoom);
+    } else {
+        // Ensure zoom does not go beyond limits
+        if (newZoom <= minZoom || newZoom >= 5) {
+            return;
+        }
+
+        // Set the target zoom normally
+        this.targetZoom = newZoom;
+    }
+
+    // Display the zoom level
+    document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
 };
+
 
 GraphicDisplay.prototype.zoomIn = function (e) {
 	this.setZoom(this.zoomin);
