@@ -1229,16 +1229,27 @@ GraphicDisplay.prototype.zoomOut = function (e) {
 };
 
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-	const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
-	const rawXInFrame = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
-	return Math.round(rawXInFrame / adjustedGridSpacing) * adjustedGridSpacing - this.camX;
+    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
+    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+
+    // Calculate the raw local X position based on the global mouse position and offsets
+    const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+
+    // Snap to the adjusted grid spacing
+    return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-	const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
-	const rawYInFrame = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
-	return Math.round(rawYInFrame / adjustedGridSpacing) * adjustedGridSpacing - this.camY;
+    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
+    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+
+    // Calculate the raw local Y position based on the global mouse position and offsets
+    const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+
+    // Snap to the adjusted grid spacing
+    return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
 };
+
 
 GraphicDisplay.prototype.getCursorXInFrame = function (e) {
 	// Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
