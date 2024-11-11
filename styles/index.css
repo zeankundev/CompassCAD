@@ -38,6 +38,11 @@ body {
     color: var(--text);
     overflow-x: hidden;
 }
+td, th {
+    border: 1px solid white;
+    padding: 5px;
+    margin: 0;
+}
 h1 {
     font-weight: 800;
 }
