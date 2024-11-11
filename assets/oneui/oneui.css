@@ -1,0 +1,10 @@
+@font-face {
+    font-family: 'OneUISans';
+    font-weight: 400;
+    src: url('./SEC-VF-regular.ttf');
+}
+@font-face {
+    font-family: 'OneUISans';
+    font-weight: 700;
+    src: url('./SEC-VF-instance.ttf');
+}
