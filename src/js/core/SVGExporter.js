@@ -271,8 +271,6 @@ SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
 		    0, 3.14159*2, false);
 	this.c2s.closePath();
 	this.c2s.stroke();
-	
-	this.drawPointSvg(x1, y1, color, radius);
 };
 
 SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius) {
@@ -368,9 +366,7 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.restore();
 };
 
-SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
-	this.drawPointSvg(x, y, '#0ff', 2);
-	
+SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {	
 	var localZoom = 1;
 	var localDiff = 0;
 	
@@ -424,10 +420,6 @@ SVGExporter.prototype.drawArcSvg = function(x1, y1, x2, y2, x3, y3, color, radiu
 		    this.rendererComponent.getDistance(x1, y1, x2, y2) * 1,
 		    firstAngle, secondAngle, false);
 	this.c2s.stroke();
-	
-	this.drawPointSvg(x1, y1, color, radius);
-	this.drawPointSvg(x2, y2, color, radius);
-	this.drawPointSvg(x3, y3, color, radius);
 };
 SVGExporter.prototype.drawShapeSvg = function (shape) {
     for (var i = 0; i < shape.components.length; i++) {
@@ -436,7 +428,6 @@ SVGExporter.prototype.drawShapeSvg = function (shape) {
         component.y += shape.y;
     }
     this.renderElementExclusiveForShape(shape.components, shape.x, shape.y);
-    this.drawPointSvg(shape.x, shape.y, shape.color, shape.radius)
 }
 SVGExporter.prototype.exportSVG = function () {
     // will return the SVG
