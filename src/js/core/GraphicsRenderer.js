@@ -665,7 +665,7 @@ GraphicDisplay.prototype.drawToolTip = function (e) {
 
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
-    this.context.font = "13px 'Segoe UI Variable Display', system-ui";
+    this.context.font = "13px 'Segoe UI Variable Display','notosansjp', system-ui";
     this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 10, this.displayHeight / 2 - 10);
 };
 
