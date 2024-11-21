@@ -15,6 +15,8 @@
   "dependencies": {
     "@electron/remote": "^2.0.9",
     "canvas-to-svg": "^1.0.3",
+    "discord-rich-presence": "^0.0.8",
+    "discord-rpc": "^4.0.1",
     "jquery": "^3.7.1",
     "mathjax-electron": "^3.0.0",
     "peerjs": "^1.5.4"

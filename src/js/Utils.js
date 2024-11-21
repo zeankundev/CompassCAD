@@ -230,6 +230,13 @@ const getBackups = async () => {
                     renderer.logicDisplay.components = []
                     renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components)
                     applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' (Backed Up) - CompassCAD');
+                    client.setActivity({
+                        details: 'Working on a backed up design',
+                        state: 'On New Design 1 (Backed Up)',
+                        largeImageKey: 'logo_round',
+                        smallImageKey: 'work_backup',
+                        startTimestamp: new Date().now
+                    })
                 })
                 document.getElementById('backups-close').click()
             }
@@ -273,3 +280,7 @@ ipcRenderer.on('file-path', (event, filePath) => {
         return;
     }
 });
+function objparse(obj) {
+    renderer.logicDisplay.components = []
+    renderer.logicDisplay.importJSON(JSON.parse(obj),renderer.logicDisplay.components)
+}

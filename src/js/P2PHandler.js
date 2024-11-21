@@ -11,7 +11,15 @@ const join = () => {
     })
     peer.on('connection', (c) => {
         connection = c;
+        console.log(c)
         console.log('connected')
+        client.setActivity({
+            details: 'Working on a collaborated design',
+            state: `ID: ${c.peer}`,
+            largeImageKey: 'logo_round',
+            smallImageKey: 'work_multi',
+            startTimestamp: new Date().now
+        })
         document.getElementById('peer-connected').style.display = 'block'
         setTimeout(() => {
             document.getElementById('peer-connected').style.display = 'none'

@@ -1,4 +1,7 @@
 const $ = require('jquery')
+const rpc = require('discord-rpc')
+const client = new rpc.Client({transport: 'ipc'})
+client.login({clientId: '1309147585130397736'}).catch(console.error)
 const diag = require('@electron/remote').dialog
 const fs = require('fs');
 const { BrowserWindow } = require('@electron/remote');
@@ -149,6 +152,13 @@ GraphicDisplay.prototype.init = async function (e) {
 	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");
 	this.maximumStack = await this.config.getValueKey("maximumStack");
+	client.setActivity({
+		details: 'Working on a new design',
+		state: 'On New Design 1',
+		largeImageKey: 'logo_round',
+		smallImageKey: 'work_file',
+		startTimestamp: new Date().now
+	})
 };
 GraphicDisplay.prototype.lerp = function (start, end, time) {
 	return start + (end - start) * time;
@@ -1385,6 +1395,13 @@ GraphicDisplay.prototype.openDesign = function () {
 				this.logicDisplay.importJSON(data, this.logicDisplay.components)
 				this.filePath = res.filePaths[0]
 				this.temporaryObjectArray = data
+				client.setActivity({
+					details: 'Working on a saved design',
+					state: `On ${this.filePath}`,
+					largeImageKey: 'logo_round',
+					smallImageKey: 'work_file',
+					startTimestamp: new Date().now
+				})
 			})
 			.catch(error => {
 				console.error('Error reading or parsing the file:', error);
@@ -1450,6 +1467,13 @@ GraphicDisplay.prototype.saveDesign = function () {
 				document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
 				$('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
 				console.log(`file is ${data.filePath[0].replace(/\\/g, '/')}, actual datapath is ${data.filePath}`)
+				client.setActivity({
+					details: 'Working on a saved design',
+					state: `On ${this.filePath}`,
+					largeImageKey: 'logo_round',
+					smallImageKey: 'work_file',
+					startTimestamp: new Date().now
+				})
 			}
 		}).catch(err => {
 			console.error('Error during save:', err);
