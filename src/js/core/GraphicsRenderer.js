@@ -200,8 +200,10 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.drawRules();
 	// Draw to tooltip
 	this.drawToolTip();
-	if (this.drawDebugPoint)
+	if (this.drawDebugPoint) {
 		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2)
+		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2)
+	}
 };
 
 GraphicDisplay.prototype.saveState = function () {
