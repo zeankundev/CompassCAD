@@ -100,6 +100,7 @@ $(document).ready(async() => {
         'l': 'add-picture',
         'z': 'ruler'
     };
+    document.getElementById('inspector').style.display = 'block';
     resizeWin()
     window.onresize = resizeWin
     renderer.unitMeasure = 'm'

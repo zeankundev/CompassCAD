@@ -359,6 +359,7 @@ command-pallete input[type=text] {
     min-width: 18%;
     background-color: var(--secondary);
     height: 83vh;
+    display: none;
 }
 #form input[type=text] {
     -webkit-appearance: none;
