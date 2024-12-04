@@ -85,6 +85,18 @@ function openSettings() {
     }
 }
 
+function toggleInspector() {
+    const inspector = document.getElementById('inspector');
+
+    if (inspector.style.display == 'block') {
+        inspector.style.display = 'none';
+        resizeWin()
+    } else {
+        inspector.style.display = 'block';
+        resizeWin()
+    }
+}
+
 function openEvalConsole() {
     const evalModal = document.getElementById('eval-modal');
     const error = document.getElementById('eval-error');
@@ -287,10 +299,12 @@ function objparse(obj) {
 const clearForm = () => {
     const dynamicForm = document.getElementById("form");
     dynamicForm.innerHTML = 'Nothing to inspect...';
+    dynamicForm.style.overflowY = 'hidden'
 }
 const createFormForSelection = () => {
     const dynamicForm = document.getElementById("form");
     dynamicForm.innerHTML = '';
+    dynamicForm.style.overflowY = 'scroll'
 
     // Get the selected component
     const selectedIndex = renderer.selectedComponent;

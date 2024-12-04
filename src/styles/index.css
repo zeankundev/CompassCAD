@@ -358,7 +358,6 @@ command-pallete input[type=text] {
     padding: 10px;
     min-width: 18%;
     background-color: var(--secondary);
-    overflow-y: scroll;
     height: 83vh;
 }
 #form input[type=text] {
