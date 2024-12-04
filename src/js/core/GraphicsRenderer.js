@@ -1040,6 +1040,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						this.getCursorXLocal(),
 						this.getCursorYLocal());
 					this.saveState()
+					createFormForSelection()
 					this.execute()
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
@@ -1048,6 +1049,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				} else {
 					sendCurrentEditorState()
 					this.unselectComponent();
+					clearForm()
 					this.saveState()
 					this.execute()
 				}
@@ -1185,7 +1187,6 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 				this.logicDisplay.components[index].y3 += dy;
 				break;
 		}
-		createFormForSelection()
 	}
 };
 
