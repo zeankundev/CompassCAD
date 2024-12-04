@@ -126,6 +126,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.mouse = null;
 	this.config = null;
 	this.translator = null;
+	this.drawDebugPoint = false;
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -199,6 +200,8 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.drawRules();
 	// Draw to tooltip
 	this.drawToolTip();
+	if (this.drawDebugPoint)
+		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2)
 };
 
 GraphicDisplay.prototype.saveState = function () {
@@ -1032,8 +1035,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
 					this.temporarySelectedComponent = this.findIntersectionWith(
-						this.getCursorXLocal(),
-						this.getCursorYLocal());
+						this.getCursorXRaw(),
+						this.getCursorYRaw());
 				} else {
 					this.moveComponent(
 						this.selectedComponent,
@@ -1065,8 +1068,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
 					this.temporarySelectedComponent = this.findIntersectionWith(
-						this.getCursorXLocal(),
-						this.getCursorYLocal()
+						this.getCursorXRaw(),
+						this.getCursorYRaw()
 					);
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
@@ -1091,8 +1094,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
 					this.temporarySelectedComponent = this.findIntersectionWith(
-						this.getCursorXLocal(),
-						this.getCursorYLocal());
+						this.getCursorXRaw(),
+						this.getCursorYRaw());
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
 				if (this.temporarySelectedComponent != null) {
@@ -1290,6 +1293,14 @@ GraphicDisplay.prototype.zoomIn = function (e) {
 
 GraphicDisplay.prototype.zoomOut = function (e) {
 	this.setZoom(this.zoomout);
+};
+
+GraphicDisplay.prototype.getCursorXRaw = function (e) {
+	return Math.floor(this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+};
+
+GraphicDisplay.prototype.getCursorYRaw = function (e) {
+	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
 
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
