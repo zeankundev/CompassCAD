@@ -466,3 +466,32 @@ const updateSizeIfNeeded = (component) => {
         }
     }
 };
+let clickCount = 0;
+let clickTimeout;
+
+const targetElement = document.getElementById('ccadlogo'); // Replace with your element's ID
+
+// Function to execute after 7 fast clicks
+function enableDevMode() {
+  callToast('Developer mode enabled. Refresh (Ctrl+R) to disable.')
+  document.getElementById('open-eval').style.display = 'block'
+  renderer.drawDebugPoint = true
+}
+
+// Handle click event
+targetElement.addEventListener('click', () => {
+  clickCount++;
+
+  if (clickCount === 1) {
+    // Start a timeout to reset the count after 1 second of inactivity
+    clickTimeout = setTimeout(() => {
+      clickCount = 0;
+    }, 1000); // Reset after 1000ms (1 second) of inactivity
+  }
+
+  if (clickCount >= 7) {
+    clearTimeout(clickTimeout); // Clear the timeout if 7 clicks are detected
+    enableDevMode();
+    clickCount = 0; // Reset click count after function is executed
+  }
+});
