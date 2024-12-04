@@ -42,8 +42,8 @@ function GraphicDisplay(displayName, width, height) {
 	// Draw read only
 	this.readonly = false;
 
-	// By default the mode is NAVIGATE
-	this.mode = this.MODES.NAVIGATE;
+	// By default the mode is SELECT (used to be NAVIGATE)
+	this.mode = this.MODES.SELECT;
 
 	this.previousColor = null;
 	this.previousRadius = null;
@@ -1059,6 +1059,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			this.tooltip = "Edit (press esc to cancel)";
 			break;
 		case this.MODES.SELECT:
+			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
 					this.temporarySelectedComponent = this.findIntersectionWith(
@@ -1081,7 +1082,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 					clearForm()
 				}
 			}
-			this.tooltip = 'select tool (wip)';
+			this.tooltip = await this.getLocal('select');
 			break;			
 		case this.MODES.DELETE:
 			this.cvn.css('cursor', 'default');

@@ -85,8 +85,9 @@ $(document).ready(async() => {
         }
     };    
     const keyBindings = {
-        'q': 'navigate',
-        'Escape': 'navigate',
+        'q': 'select',
+        'w': 'navigate',
+        'Escape': 'select',
         'e': 'move-obj',
         't': 'del-obj',
         'a': 'add-point',
@@ -104,6 +105,11 @@ $(document).ready(async() => {
     renderer.unitMeasure = 'm'
     renderer.unitConversionFactor = 1/100
     renderer.showOrigin = false
+    document.getElementById('select').onclick = () => {
+        console.log('Select button clicked');
+        renderer.setMode(renderer.MODES.SELECT)
+    };
+
     document.getElementById('navigate').onclick = () => {
         console.log('Navigate button clicked');
         renderer.setMode(renderer.MODES.NAVIGATE)
@@ -220,6 +226,7 @@ $(document).ready(async() => {
     applyStringOnHTML('exportDesign', document.getElementById('export-design'), 'title', '');
     applyStringOnHTML('undo', document.getElementById('undo'), 'title', '');
     applyStringOnHTML('redo', document.getElementById('redo'), 'title', '');
+    applyStringOnHTML('selectToolbar', document.getElementById('select'), 'title', '');
     applyStringOnHTML('navigateToolbar', document.getElementById('navigate'), 'title', '');
     applyStringOnHTML('moveToolbar', document.getElementById('move-obj'), 'title', '');
     applyStringOnHTML('deleteToolbar', document.getElementById('del-obj'), 'title', '');

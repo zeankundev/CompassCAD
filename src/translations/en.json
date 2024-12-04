@@ -32,6 +32,7 @@
     "addBarrelToolbar": "Add North Reference (j)",
     "addTreeToolbar": "Add Tree (k)",
     "addMeasureToolbar": "Measure (z)",
+    "select": "Select",
     "navigate": "Navigate",
     "move": "Move (select a node point to move, esc to cancel)",
     "delete": "Delete (click a node point to delete, esc to cancel)",
