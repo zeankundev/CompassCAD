@@ -70,7 +70,7 @@
     }
   },
   "devDependencies": {
-    "electron": "^33.0.2",
+    "electron": "^33.2.0",
     "electron-builder": "^25.1.7",
     "electron-is-dev": "^3.0.1",
     "electron-reloader": "^1.2.3"
