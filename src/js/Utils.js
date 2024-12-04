@@ -431,6 +431,11 @@ const createFormForSelection = () => {
                 input.value = component[key];
                 input.addEventListener("input", (e) => {
                     component[key] = e.target.value;
+                    if (key === 'color') {
+                        renderer.previousColor = e.target.value
+                    } else if (key === 'radius') {
+                        renderer.previousRadius = e.target.value
+                    }
                 });
             } else if (typeof component[key] === 'number') {
                 input = document.createElement("input");
