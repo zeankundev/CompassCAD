@@ -1,5 +1,6 @@
 let renderer;
 let isReady = false
+let resizeWin;
 $(document).ready(async() => {
     const config = new ConfigHandler()
     renderer = new GraphicDisplay('canvas', 800,600)
@@ -35,7 +36,7 @@ $(document).ready(async() => {
         config.saveKey('lang', document.getElementById('language').value);
     };
 
-    const resizeWin = () => {
+    resizeWin = () => {
         // Get the device pixel ratio
         const dpr = window.devicePixelRatio || 1;
     
@@ -43,8 +44,18 @@ $(document).ready(async() => {
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 10;
     
+        // Determine the width of the inspector if it exists and is visible
+        const inspector = document.getElementById('inspector');
+        let inspectorWidth = 0; // Default to 0 if inspector is not present or not visible
+        if (inspector && (getComputedStyle(inspector).display === 'block' || 
+                          getComputedStyle(inspector).display === 'flex')) {
+            inspectorWidth = inspector.offsetWidth;
+        }
+    
         // Set the display dimensions of the canvas
-        const displayWidth = window.innerWidth - document.getElementById('quick-tool').offsetWidth;
+        const displayWidth = window.innerWidth - 
+                             document.getElementById('quick-tool').offsetWidth - 
+                             inspectorWidth;
         const displayHeight = window.innerHeight - resultedHeight;
     
         // Set the renderer's display dimensions (scaled by the device pixel ratio)
@@ -72,7 +83,7 @@ $(document).ready(async() => {
         if (ctx) {
             ctx.scale(dpr, dpr);  // Scale the context to account for the higher pixel density
         }
-    };
+    };    
     const keyBindings = {
         'q': 'navigate',
         'Escape': 'navigate',
@@ -85,7 +96,6 @@ $(document).ready(async() => {
         'g': 'add-rect',
         'h': 'add-label',
         'j': 'add-barrel',
-        'k': 'add-tree',
         'l': 'add-picture',
         'z': 'ruler'
     };
@@ -147,11 +157,6 @@ $(document).ready(async() => {
     document.getElementById('add-barrel').onclick = () => {
         console.log('Add Vertical Barrel button clicked');
         renderer.setModeShape(CreateVerticalBarrel)
-    };
-
-    document.getElementById('add-tree').onclick = () => {
-        console.log('Add Tree button clicked');
-        renderer.setModeShape(PlantATree)
     };
 
     document.getElementById('ruler').onclick = () => {
@@ -226,7 +231,6 @@ $(document).ready(async() => {
     applyStringOnHTML('addLabelToolbar', document.getElementById('add-label'), 'title', '');
     applyStringOnHTML('addPictureToolbar', document.getElementById('add-picture'), 'title', '');
     applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
-    applyStringOnHTML('addTreeToolbar', document.getElementById('add-tree'), 'title', '');
     applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
     applyStringOnHTML('undoStackText', document.getElementById('undo-stack-text'), 'html', '');
     applyStringOnHTML('fontSizeText', document.getElementById('font-size-text'), 'html', '');

@@ -354,6 +354,37 @@ command-pallete input[type=text] {
     overflow-y: scroll;
     max-height: 10%;
 }
+.inspector {
+    padding: 10px;
+    min-width: 15%;
+    background-color: var(--secondary);
+    overflow-y: scroll;
+    height: 83vh;
+}
+#form input[type=text] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 7.5px;
+    color: var(--text);
+    width: 50%;
+    outline: none;
+}
+#form input[type=number] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 7.5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    color: var(--text);
+    width: 22%;
+    outline: none;
+}
 .option {
     margin-top: 5px;
     padding: 5px;

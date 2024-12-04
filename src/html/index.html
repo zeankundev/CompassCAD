@@ -137,7 +137,8 @@
             </div>
             <div class="container">
                 <div class="quick-tool" id="quick-tool">
-                    <button title="Navigate (q)" id="navigate"><img src="../../assets/icons/navigate.svg"></button>
+                    <button title="Select (q)" id="select"><img src="../../assets/icons/navigate.svg"></button> 
+                    <button title="Navigate (w)" id="navigate"><img src="../../assets/icons/pan.svg"></button> 
                     <button title="Move Object (e)" id="move-obj"><img src="../../assets/icons/move.svg"></button>
                     <button title="Delete Object (t)" id="del-obj"><img src="../../assets/icons/delete.svg"></button>
                     <button title="Add Point (a)" id="add-point"><img src="../../assets/icons/point.svg"></button>
@@ -148,11 +149,15 @@
                     <button title="Add Text (h)" id="add-label"><img src="../../assets/icons/text.svg"></button>
                     <button title="Add Picture (l)" id="add-picture"><img src="../../assets/icons/image.svg"></button>
                     <button title="Add North Reference (j)" id="add-barrel"><img src="../../assets/icons/vertical-barrel.svg"></button>
-                    <button title="Add Tree (k)" id="add-tree"><img src="../../assets/icons/tree.svg"></button>
                     <button title="Measure (z)" id="ruler"><img src="../../assets/icons/measure.svg"></button>
                 </div>
                 <div class="canvas-container">
                     <canvas id="canvas" width="800" height="600" oncontextmenu="return false"></canvas>
+                </div>
+                <div class="inspector" id="inspector">
+                    <h2>Inspector</h2>
+                    <br>
+                    <div id="form"></div>
                 </div>
             </div>
         </div>

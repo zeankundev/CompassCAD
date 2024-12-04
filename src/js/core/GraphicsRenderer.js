@@ -26,7 +26,8 @@ function GraphicDisplay(displayName, width, height) {
 		TRIM: 21,
 		NAVIGATE: 22,
 		MOVE: 23,
-		EDIT: 24
+		EDIT: 24,
+		SELECT: 25
 	};
 
 	// Enumerate all type of action
@@ -159,6 +160,7 @@ GraphicDisplay.prototype.init = async function (e) {
 		smallImageKey: 'work_file',
 		startTimestamp: new Date().now
 	})
+	clearForm()
 };
 GraphicDisplay.prototype.lerp = function (start, end, time) {
 	return start + (end - start) * time;
@@ -1056,6 +1058,31 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			// TODO: In the next release
 			this.tooltip = "Edit (press esc to cancel)";
 			break;
+		case this.MODES.SELECT:
+			if (action == this.MOUSEACTION.MOVE) {
+				if (this.selectedComponent == null) {
+					this.temporarySelectedComponent = this.findIntersectionWith(
+						this.getCursorXLocal(),
+						this.getCursorYLocal()
+					);
+				}
+			} else if (action == this.MOUSEACTION.DOWN) {
+				if (this.temporarySelectedComponent != null) {
+					if (this.selectedComponent === this.temporarySelectedComponent) {
+						this.unselectComponent();
+						clearForm()
+					} else {
+						this.selectComponent(this.temporarySelectedComponent);
+						createFormForSelection()
+						console.log(this.logicDisplay.components[this.temporarySelectedComponent]);
+					}
+				} else {
+					this.unselectComponent();
+					clearForm()
+				}
+			}
+			this.tooltip = 'select tool (wip)';
+			break;			
 		case this.MODES.DELETE:
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
@@ -1157,6 +1184,7 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 				this.logicDisplay.components[index].y3 += dy;
 				break;
 		}
+		createFormForSelection()
 	}
 };
 
@@ -1318,32 +1346,52 @@ GraphicDisplay.prototype.getDistance = function (x1, y1, x2, y2) {
 
 // TODO: Move in Utils.
 GraphicDisplay.prototype.findIntersectionWith = function (x, y) {
-	for (var i = this.logicDisplay.components.length - 1; i >= 0; i--) {
-		if (!this.logicDisplay.components[i].isActive())
-			continue;
+    for (var i = this.logicDisplay.components.length - 1; i >= 0; i--) {
+        if (!this.logicDisplay.components[i].isActive())
+            continue;
 
-		switch (this.logicDisplay.components[i].type) {
-			case COMPONENT_TYPES.POINT:
-			case COMPONENT_TYPES.LABEL:
-			case COMPONENT_TYPES.PICTURE:
-			case COMPONENT_TYPES.SHAPE:
-				var delta = this.getDistance(x, y, this.logicDisplay.components[i].x, this.logicDisplay.components[i].y);
-				if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
-					return i;
-				break;
-			case COMPONENT_TYPES.LINE:
-			case COMPONENT_TYPES.CIRCLE:
-			case COMPONENT_TYPES.ARC:
-			case COMPONENT_TYPES.RECTANGLE:
-			case COMPONENT_TYPES.MEASURE:
-				var delta = this.getDistance(x, y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
-				if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
-					return i;
-				break;
-		}
-	}
+        switch (this.logicDisplay.components[i].type) {
+            case COMPONENT_TYPES.POINT:
+            case COMPONENT_TYPES.LABEL:
+            case COMPONENT_TYPES.PICTURE:
+            case COMPONENT_TYPES.SHAPE:
+                var delta = this.getDistance(x, y, this.logicDisplay.components[i].x, this.logicDisplay.components[i].y);
+                if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
+                    return i;
+                break;
 
-	return null;
+            case COMPONENT_TYPES.LINE:
+            case COMPONENT_TYPES.CIRCLE:
+            case COMPONENT_TYPES.RECTANGLE:
+            case COMPONENT_TYPES.MEASURE:
+                // For LINE, check both endpoints (x1, y1) and (x2, y2)
+                var delta1 = this.getDistance(x, y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
+                if (delta1 >= 0 && delta1 <= this.snapTolerance / this.zoom)
+                    return i;
+                
+                var delta2 = this.getDistance(x, y, this.logicDisplay.components[i].x2, this.logicDisplay.components[i].y2);
+                if (delta2 >= 0 && delta2 <= this.snapTolerance / this.zoom)
+                    return i;
+                break;
+
+            case COMPONENT_TYPES.ARC:
+                // For ARC, check the center (cx, cy), start point (x1, y1), and end point (x2, y2)
+                var deltaCenter = this.getDistance(x, y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
+                if (deltaCenter >= 0 && deltaCenter <= this.snapTolerance / this.zoom)
+                    return i;
+
+                var deltaStart = this.getDistance(x, y, this.logicDisplay.components[i].x2, this.logicDisplay.components[i].y2);
+                if (deltaStart >= 0 && deltaStart <= this.snapTolerance / this.zoom)
+                    return i;
+
+                var deltaEnd = this.getDistance(x, y, this.logicDisplay.components[i].x3, this.logicDisplay.components[i].y3);
+                if (deltaEnd >= 0 && deltaEnd <= this.snapTolerance / this.zoom)
+                    return i;
+                break;
+        }
+    }
+
+    return null;
 };
 
 GraphicDisplay.prototype.saveComponent = function () {
@@ -1432,9 +1480,7 @@ GraphicDisplay.prototype.updateEditor = function (array) {
 }
 GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged() == true) {
-		console.log('its changed')
 		if (this.logicDisplay.components.length == this.undoStack.length) {
-			console.log('undostack match, blocking')
 		} else {
 			this.saveState()
 		}

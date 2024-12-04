@@ -284,3 +284,171 @@ function objparse(obj) {
     renderer.logicDisplay.components = []
     renderer.logicDisplay.importJSON(JSON.parse(obj),renderer.logicDisplay.components)
 }
+const clearForm = () => {
+    const dynamicForm = document.getElementById("form");
+    dynamicForm.innerHTML = 'Nothing to inspect...';
+}
+const createFormForSelection = () => {
+    const dynamicForm = document.getElementById("form");
+    dynamicForm.innerHTML = '';
+
+    // Get the selected component
+    const selectedIndex = renderer.selectedComponent;
+    if (selectedIndex === null) return;
+
+    const component = renderer.logicDisplay.components[selectedIndex];
+
+    // Iterate through each property of the selected component
+    Object.keys(component).forEach((key) => {
+        // Skip 'type' field
+        if (key === 'type') return;
+
+        let label, input;
+
+        // Handle Position, Size, and Arc Coverage specifically
+        if (key === 'x' && 'y' in component) {
+            // Position (for single x and y)
+            const positionLabel = document.createElement("label");
+            positionLabel.textContent = "Position";
+            dynamicForm.appendChild(positionLabel);
+
+            // Position inputs
+            ['x', 'y'].forEach((posKey) => {
+                const posInput = document.createElement("input");
+                posInput.type = "number";
+                posInput.value = component[posKey];
+                posInput.addEventListener("input", (e) => {
+                    component[posKey] = parseFloat(e.target.value);
+                    updateSizeIfNeeded(component); // Update size when position changes
+                });
+                dynamicForm.appendChild(posInput);
+            });
+            // Add line break after Position set
+            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Position set
+        } else if (key === 'x1' && 'x2' in component && 'y1' in component && 'y2' in component) {
+            // Multiple coordinate sets: Position and Size
+            const positionLabel = document.createElement("label");
+            positionLabel.textContent = "Position";
+            dynamicForm.appendChild(positionLabel);
+
+            // Position inputs for x1, y1 only (hide x2, y2)
+            ['x1', 'y1'].forEach((posKey) => {
+                const posInput = document.createElement("input");
+                posInput.type = "number";
+                posInput.value = component[posKey];
+                posInput.addEventListener("input", (e) => {
+                    component[posKey] = parseFloat(e.target.value);
+                    updateSizeIfNeeded(component); // Update size when position changes
+                });
+                dynamicForm.appendChild(posInput);
+            });
+
+            // Size (width and height based on x1, x2, y1, y2)
+            const sizeLabel = document.createElement("label");
+            sizeLabel.textContent = "Size";
+            dynamicForm.appendChild(sizeLabel);
+
+            // Width (x2 - x1)
+            const widthInput = document.createElement("input");
+            widthInput.type = "number";
+            widthInput.value = component.x2 - component.x1; // Initial width calculation
+            widthInput.addEventListener("input", (e) => {
+                const value = parseFloat(e.target.value);
+                component.x2 = component.x1 + value; // Update x2 based on width
+            });
+            dynamicForm.appendChild(widthInput);
+
+            // Height (y2 - y1)
+            const heightInput = document.createElement("input");
+            heightInput.type = "number";
+            heightInput.value = component.y2 - component.y1; // Initial height calculation
+            heightInput.addEventListener("input", (e) => {
+                const value = parseFloat(e.target.value);
+                component.y2 = component.y1 + value; // Update y2 based on height
+            });
+            dynamicForm.appendChild(heightInput);
+
+            // Hide x2 and y2 from the form (as we are using Size now)
+            dynamicForm.querySelectorAll("input[type='number']").forEach((inputElement) => {
+                if (inputElement.value === component.x2 || inputElement.value === component.y2) {
+                    inputElement.style.display = 'none'; // Hide x2 and y2 inputs
+                }
+            });
+
+            // Add line break after Position and Size set
+            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Position and Size set
+        } else if (key === 'x3' && 'y3' in component) {
+            // Arc Coverage (with x3 and y3)
+            const arcLabel = document.createElement("label");
+            arcLabel.textContent = "Arc Coverage";
+            dynamicForm.appendChild(arcLabel);
+
+            // Arc inputs for x3 and y3
+            ['x3', 'y3'].forEach((arcKey) => {
+                const arcInput = document.createElement("input");
+                arcInput.type = "number";
+                arcInput.value = component[arcKey];
+                arcInput.addEventListener("input", (e) => {
+                    component[arcKey] = parseFloat(e.target.value);
+                });
+                dynamicForm.appendChild(arcInput);
+            });
+
+            // Add line break after Arc Coverage set
+            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Arc Coverage set
+        } else {
+            // Default input for other fields
+            label = document.createElement("label");
+            label.textContent = key.charAt(0).toUpperCase() + key.slice(1);
+            dynamicForm.appendChild(label);
+
+            dynamicForm.appendChild(document.createElement("br")); // Line break after label
+
+            if (typeof component[key] === 'boolean') {
+                input = document.createElement("input");
+                input.type = "checkbox";
+                input.checked = component[key];
+                input.addEventListener("change", (e) => {
+                    component[key] = e.target.checked;
+                });
+            } else if (typeof component[key] === 'string') {
+                input = document.createElement("input");
+                input.type = "text";
+                input.value = component[key];
+                input.addEventListener("input", (e) => {
+                    component[key] = e.target.value;
+                });
+            } else if (typeof component[key] === 'number') {
+                input = document.createElement("input");
+                input.type = "number";
+                input.value = component[key];
+                input.addEventListener("input", (e) => {
+                    component[key] = parseFloat(e.target.value);
+                });
+            }
+
+            if (input) {
+                dynamicForm.appendChild(input);
+                dynamicForm.appendChild(document.createElement("br")); // Line break after each input
+            }
+        }
+    });
+};
+
+// Helper function to update Size dynamically
+const updateSizeIfNeeded = (component) => {
+    if ('x1' in component && 'x2' in component && 'y1' in component && 'y2' in component) {
+        // Dynamically update the size inputs if needed (calculate width and height)
+        const sizeX = component.x2 - component.x1;
+        const sizeY = component.y2 - component.y1;
+
+        // Update the width and height inputs
+        const widthInputs = document.querySelectorAll('input[type="number"]');
+        if (widthInputs.length > 0) {
+            widthInputs[0].value = sizeX; // Set width input
+        }
+        if (widthInputs.length > 1) {
+            widthInputs[1].value = sizeY; // Set height input
+        }
+    }
+};
