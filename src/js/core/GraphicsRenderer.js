@@ -203,6 +203,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.drawDebugPoint) {
 		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2)
 		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2)
+		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal() - (this.gridSpacing / 2), this.getCursorYLocal() - (this.gridSpacing / 2), '#fff', 2)
 	}
 };
 
@@ -459,7 +460,7 @@ GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 };
 
 GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
-	this.context.lineWidth = radius;
+	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
@@ -476,7 +477,7 @@ GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
 };
 
 GraphicDisplay.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
-	this.context.lineWidth = radius;
+	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
@@ -1032,35 +1033,48 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				this.camY += this.getCursorYLocal() - this.yCNaught;
 			}
 			break;
-		case this.MODES.MOVE:
-			this.cvn.css('cursor', 'default');
-			if (action == this.MOUSEACTION.MOVE) {
-				if (this.selectedComponent == null) {
-					this.temporarySelectedComponent = this.findIntersectionWith(
-						this.getCursorXRaw(),
-						this.getCursorYRaw());
-				} else {
-					this.moveComponent(
-						this.selectedComponent,
-						this.getCursorXLocal(),
-						this.getCursorYLocal());
-					this.saveState()
-					createFormForSelection()
-					this.execute()
+			case this.MODES.MOVE:
+				this.cvn.css('cursor', 'default');
+				if (action == this.MOUSEACTION.MOVE) {
+					// Try to find a component under the cursor if none is selected
+					if (this.selectedComponent == null) {
+						this.temporarySelectedComponent = this.findIntersectionWith(
+							this.getCursorXRaw(),
+							this.getCursorYRaw()
+						);
+					} else {
+						// Move the selected component
+						this.moveComponent(
+							this.selectedComponent,
+							this.getCursorXLocal(),
+							this.getCursorYLocal()
+						);
+						this.saveState();
+						createFormForSelection();
+						this.execute();
+					}
+				} else if (action == this.MOUSEACTION.DOWN) {
+					// Select the temporary component if one exists
+					if (this.temporarySelectedComponent != null) {
+						if (this.selectedComponent === this.temporarySelectedComponent) {
+							// If clicking the already selected component, unselect it
+							this.unselectComponent();
+							clearForm();
+						} else {
+							// Select the component under the cursor
+							this.selectComponent(this.temporarySelectedComponent);
+							createFormForSelection();
+						}
+					} else {
+						// No component under the cursor; deselect the currently selected component
+						this.unselectComponent();
+						clearForm();
+					}
+					this.saveState();
+					this.execute();
 				}
-			} else if (action == this.MOUSEACTION.DOWN) {
-				if (this.selectedComponent == null) {
-					this.selectComponent(this.temporarySelectedComponent);
-				} else {
-					sendCurrentEditorState()
-					this.unselectComponent();
-					clearForm()
-					this.saveState()
-					this.execute()
-				}
-			}
-			this.tooltip = await this.getLocal('move');
-			break;
+				this.tooltip = await this.getLocal('move');
+				break;			
 		case this.MODES.EDIT:
 			// TODO: In the next release
 			this.tooltip = "Edit (press esc to cancel)";
@@ -1201,14 +1215,12 @@ GraphicDisplay.prototype.selectComponent = function (index) {
 		this.previousColor = this.logicDisplay.components[index].color;
 		this.previousRadius = this.logicDisplay.components[index].radius;
 		this.logicDisplay.components[index].color = this.selectedColor;
-		this.logicDisplay.components[index].radius = this.selectedRadius;
 	}
 };
 
 GraphicDisplay.prototype.unselectComponent = function (e) {
 	if (this.selectedComponent != null) {
 		this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
-		this.logicDisplay.components[this.selectedComponent].radius = this.previousRadius;
 		this.selectedComponent = null;
 	}
 };
