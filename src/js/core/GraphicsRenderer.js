@@ -85,6 +85,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.08; // Adjust the speed of the zoom transition
+	this.maxZoomFactor = 5;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -127,6 +128,9 @@ function GraphicDisplay(displayName, width, height) {
 	this.config = null;
 	this.translator = null;
 	this.drawDebugPoint = false;
+
+	// Miscellaneous settings
+	this.pcbEditorMode = false;
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -183,6 +187,13 @@ GraphicDisplay.prototype.execute = async function (e) {
 
 	this.clearGrid();
 
+	if (this.pcbEditorMode) {
+		this.showGrid = false;
+		this.gridSpacing = 10;
+		this.maxZoomFactor = 25;
+		this.conversionFactor = 2.7;
+		this.unitMeasure = 'mm';
+	}
 	// Draw basic grid
 	if (this.showGrid)
 		this.drawGrid(this.cOutX, this.cOutY);
@@ -460,20 +471,20 @@ GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 };
 
 GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
-	this.context.lineWidth = radius * this.zoom;
-	this.context.fillStyle = color;
-	this.context.strokeStyle = color;
-	this.context.beginPath();
-	this.context.moveTo(
-		(x1 + this.cOutX) * this.zoom,
-		(y1 + this.cOutY) * this.zoom);
-	this.context.lineTo(
-		(x2 + this.cOutX) * this.zoom,
-		(y2 + this.cOutY) * this.zoom);
-	this.context.closePath();
-	this.context.stroke();
-
-	//this.drawPoint(x2, y2, color, radius);
+    this.context.lineWidth = radius * this.zoom;
+    this.context.fillStyle = color;
+    this.context.strokeStyle = color;
+    this.context.lineCap = "round"; // Ensure rounded ends for the line
+    this.context.beginPath();
+    this.context.moveTo(
+        (x1 + this.cOutX) * this.zoom,
+        (y1 + this.cOutY) * this.zoom
+    );
+    this.context.lineTo(
+        (x2 + this.cOutX) * this.zoom,
+        (y2 + this.cOutY) * this.zoom
+    );
+    this.context.stroke();
 };
 
 GraphicDisplay.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
@@ -501,7 +512,7 @@ GraphicDisplay.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius
 
 GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
     // Calculate the distance between the two points
-    var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
+    var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
 
     // Calculate the angle of the line in radians
     var angle = Math.atan2(y2 - y1, x2 - x1);
@@ -515,7 +526,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     }
 
     // Format the distance text
-    const distanceText = distance.toFixed(2) + "" + this.unitMeasure;
+    const distanceText = distance.toFixed(0) + "" + this.unitMeasure;
 
     // Measure the text width to create an adaptive gap
     this.context.save();
@@ -1288,7 +1299,7 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
         console.log('Grid spacing changed, setting zoom to minimum:', minZoom);
     } else {
         // Ensure zoom does not go beyond limits
-        if (newZoom <= minZoom || newZoom >= 5) {
+        if (newZoom <= minZoom || newZoom >= this.maxZoomFactor) {
             return;
         }
 
@@ -1367,7 +1378,6 @@ GraphicDisplay.prototype.getToolTip = function (e) {
 //TODO: Move in Utils.
 GraphicDisplay.prototype.getDistance = function (x1, y1, x2, y2) {
 	var distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
-
 	return distance.toFixed(2);
 };
 

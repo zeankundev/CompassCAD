@@ -247,6 +247,7 @@ SVGExporter.prototype.drawLineSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.lineWidth = radius;
 	this.c2s.fillStyle = "#000000";
 	this.c2s.strokeStyle = "#000000";
+	this.c2s.lineCap = "round"
 	this.c2s.beginPath();
 	this.c2s.moveTo(
 			x1,
@@ -254,9 +255,7 @@ SVGExporter.prototype.drawLineSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.lineTo(
 			x2,
 			y2);
-	this.c2s.closePath();
 	this.c2s.stroke();
-	
 };
 
 SVGExporter.prototype.drawCircleSvg = function(x1, y1, x2, y2, color, radius) {
