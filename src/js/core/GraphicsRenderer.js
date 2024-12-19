@@ -190,7 +190,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.pcbEditorMode) {
 		this.showGrid = false;
 		this.gridSpacing = 10;
-		this.maxZoomFactor = 25;
+		this.maxZoomFactor = 6;
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
 	}
@@ -362,7 +362,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 				this.selectedRadius);
 			break;
 		case COMPONENT_TYPES.LINE:
-			this.drawMeasure(
+			this.drawLine(
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.temporaryPoints[2],
