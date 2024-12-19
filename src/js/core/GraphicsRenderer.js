@@ -189,7 +189,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 
 	if (this.pcbEditorMode) {
 		this.showGrid = false;
-		this.gridSpacing = 10;
+		this.gridSpacing = 2;
 		this.maxZoomFactor = 6;
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
@@ -499,8 +499,6 @@ GraphicDisplay.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
 		0, 3.14159 * 2, false);
 	this.context.closePath();
 	this.context.stroke();
-
-	this.drawPoint(x1, y1, color, radius);
 };
 
 GraphicDisplay.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius) {
@@ -512,7 +510,10 @@ GraphicDisplay.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius
 
 GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
     // Calculate the distance between the two points
-    var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
+	if (this.pcbEditorMode)
+    	var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
+	else
+	var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
 
     // Calculate the angle of the line in radians
     var angle = Math.atan2(y2 - y1, x2 - x1);
@@ -526,11 +527,11 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     }
 
     // Format the distance text
-    const distanceText = distance.toFixed(0) + "" + this.unitMeasure;
+    const distanceText = distance.toFixed(2) + "" + this.unitMeasure;
 
     // Measure the text width to create an adaptive gap
     this.context.save();
-    this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+    this.context.font = (24 * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
     const textWidth = this.context.measureText(distanceText).width;
     this.context.restore();
 
@@ -645,7 +646,7 @@ GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radi
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
 
-	this.context.lineWidth = radius;
+	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
@@ -655,10 +656,6 @@ GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radi
 		this.getDistance(x1, y1, x2, y2) * this.zoom,
 		firstAngle, secondAngle, false);
 	this.context.stroke();
-
-	this.drawPoint(x1, y1, color, radius);
-	this.drawPoint(x2, y2, color, radius);
-	this.drawPoint(x3, y3, color, radius);
 };
 
 GraphicDisplay.prototype.drawShape = function (shape) {

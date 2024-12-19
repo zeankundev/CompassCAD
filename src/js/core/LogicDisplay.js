@@ -145,7 +145,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x1,
 						arrJSON[i].y1,
 						arrJSON[i].x2,
-						arrJSON[i].y2));
+						arrJSON[i].y2,
+						arrJSON[i].radius));
 				break;
 			case COMPONENT_TYPES.RECTANGLE:
 				parent.push(new Rectangle(
@@ -159,7 +160,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x1,
 						arrJSON[i].y1,
 						arrJSON[i].x2,
-						arrJSON[i].y2));
+						arrJSON[i].y2,
+						arrJSON[i].radius));
 				break;
 			case COMPONENT_TYPES.ARC:
 				parent.push(new Arc(
@@ -168,7 +170,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x2,
 						arrJSON[i].y2,
 						arrJSON[i].x3,
-						arrJSON[i].y3));
+						arrJSON[i].y3,
+						arrJSON[i].radius));
 				break;
 			case COMPONENT_TYPES.MEASURE:
 				parent.push(new Measure(

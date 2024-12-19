@@ -59,7 +59,7 @@ Point.prototype.constructor = Point;
 * @param x2
 * @param y2
 */
-function Line(x1, y1, x2, y2) {
+function Line(x1, y1, x2, y2, radius) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.LINE;
@@ -67,6 +67,12 @@ function Line(x1, y1, x2, y2) {
     this.y1 = 0;
     this.x2 = 0;
     this.y2 = 0;
+
+    if (radius != undefined) {
+        this.radius = radius
+    } else {
+        this.radius = 2
+    }
 
     if ( x1 != undefined
         && y1 != undefined
@@ -90,9 +96,13 @@ Line.prototype.constructor = Line;
 * @param x2
 * @param y2
 */
-function Circle(x1, y1, x2, y2) {
+function Circle(x1, y1, x2, y2, radius) {
     Line.call(this, x1, y1, x2, y2);
-
+    if (radius != undefined) {
+        this.radius = radius
+    } else {
+        this.radius = 2
+    }
     this.type = COMPONENT_TYPES.CIRCLE;
 }
 Circle.prototype = new Line();
@@ -158,7 +168,7 @@ Label.prototype.constructor = Label;
 * @param x3
 * @param y3
 */
-function Arc(x1, y1, x2, y2, x3, y3) {
+function Arc(x1, y1, x2, y2, x3, y3, radius) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.ARC;
@@ -168,6 +178,12 @@ function Arc(x1, y1, x2, y2, x3, y3) {
     this.y2 = 0;
     this.x3 = 0;
     this.y3 = 0;
+
+    if (radius != undefined) {
+        this.radius = radius
+    } else {
+        this.radius = 2
+    }
 
     if ( x1 != undefined
         && y1 != undefined
