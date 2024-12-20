@@ -131,6 +131,9 @@ function GraphicDisplay(displayName, width, height) {
 
 	// Miscellaneous settings
 	this.pcbEditorMode = false;
+	this.pcbEditor = {
+		radius: 1
+	}
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -158,14 +161,28 @@ GraphicDisplay.prototype.init = async function (e) {
 	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");
 	this.maximumStack = await this.config.getValueKey("maximumStack");
-	client.setActivity({
-		details: 'Working on a new design',
-		state: 'On New Design 1',
-		largeImageKey: 'logo_round',
-		smallImageKey: 'work_file',
-		startTimestamp: new Date().now
-	})
+	this.updateActivity('Starting a new design', 'On New Design 1');
 	clearForm()
+};
+GraphicDisplay.prototype.updateActivity = function (details = null) {
+	// Use the last details if none are provided
+	if (details === null) {
+		details = this.lastActivityDetails || 'Editing design'; // Default fallback
+	} else {
+		this.lastActivityDetails = details; // Cache the current details for future use
+	}
+
+	// Avoid redundant updates by comparing the current component count
+	if (!this.lastComponentCount || this.lastComponentCount !== this.logicDisplay.components.length) {
+		this.lastComponentCount = this.logicDisplay.components.length; // Cache the latest count
+		client.setActivity({
+			details: details, // Action being performed
+			state: `Total components: ${this.logicDisplay.components.length}`, // Component count
+			largeImageKey: 'logo_round', // Main image key for Discord Rich Presence
+			smallImageKey: 'work_file', // Secondary image key
+			startTimestamp: Date.now() // Start timestamp for the session
+		}).catch(console.error); // Log any errors
+	}
 };
 GraphicDisplay.prototype.lerp = function (start, end, time) {
 	return start + (end - start) * time;
@@ -174,19 +191,22 @@ GraphicDisplay.prototype.getLocal = async function (key) {
 	return await this.translator.getLocalizedString(key);
 }
 GraphicDisplay.prototype.execute = async function (e) {
-	const disableLerp = await this.config.getValueKey("disableLerp")
-	this.preferredFont = await this.config.getValueKey("preferredFont")
+	const disableLerp = await this.config.getValueKey("disableLerp");
+	this.preferredFont = await this.config.getValueKey("preferredFont");
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
-	if (disableLerp != true)
+
+	// Handle zoom interpolation
+	if (disableLerp !== true) {
 		this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
-	else
+	} else {
 		this.currentZoom = this.targetZoom;
+	}
 	this.zoom = this.currentZoom;
 	this.updateCamera();
 
+	// Clear and redraw grid
 	this.clearGrid();
-
 	if (this.pcbEditorMode) {
 		this.showGrid = false;
 		this.gridSpacing = 2;
@@ -194,29 +214,35 @@ GraphicDisplay.prototype.execute = async function (e) {
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
 	}
-	// Draw basic grid
-	if (this.showGrid)
-		this.drawGrid(this.cOutX, this.cOutY);
+	if (this.showGrid) this.drawGrid(this.cOutX, this.cOutY);
+	if (this.showOrigin) this.drawOrigin(this.cOutX, this.cOutY);
 
-	if (this.showOrigin)
-		this.drawOrigin(this.cOutX, this.cOutY);
-
-	// Draw all components
+	// Draw components and temporary elements
 	this.drawAllComponents(this.logicDisplay.components, 0, 0);
+	if (this.temporaryComponentType !== null) this.drawTemporaryComponent();
 
-	// Draw temporary component
-	if (this.temporaryComponentType != null)
-		this.drawTemporaryComponent();
-
+	// Draw rules and tooltips
 	this.drawRules();
-	// Draw to tooltip
 	this.drawToolTip();
+
+	// Debugging visuals
 	if (this.drawDebugPoint) {
-		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2)
-		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2)
-		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal() - (this.gridSpacing / 2), this.getCursorYLocal() - (this.gridSpacing / 2), '#fff', 2)
+		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2);
+		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2);
+		this.drawLine(
+			this.getCursorXRaw(),
+			this.getCursorYRaw(),
+			this.getCursorXLocal() - this.gridSpacing / 2,
+			this.getCursorYLocal() - this.gridSpacing / 2,
+			'#fff',
+			2
+		);
 	}
+
+	// Update Rich Presence only when the component count changes
+	this.updateActivity()
 };
+
 
 GraphicDisplay.prototype.saveState = function () {
 	let hasChanged = false;
@@ -368,7 +394,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.pcbEditorMode ? this.pcbEditor.radius : this.selectedRadius);
 			break;
 		case COMPONENT_TYPES.CIRCLE:
 			this.drawCircle(
@@ -824,7 +850,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						this.temporaryPoints[0],
 						this.temporaryPoints[1],
 						this.temporaryPoints[2],
-						this.temporaryPoints[3]));
+						this.temporaryPoints[3],
+						this.pcbEditorMode ? this.pcbEditor.radius : this.selectedRadius));
 
 					this.temporaryPoints[0] = this.temporaryPoints[2];
 					this.temporaryPoints[1] = this.temporaryPoints[3];
@@ -1449,15 +1476,16 @@ GraphicDisplay.prototype.getAngle = function (x1, y1, x2, y2) {
 };
 
 GraphicDisplay.prototype.createNew = function () {
-	this.logicDisplay.components = []
-	this.filePath = ''
-	document.title = `New Design 1 - CompassCAD`
-	$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
-	this.undoStack = []
-	this.redoStack = []
-	this.temporaryObjectArray = []
-	this.execute
-}
+	this.logicDisplay.components = [];
+	this.filePath = '';
+	document.title = `New Design 1 - CompassCAD`;
+	$('#titlething')[0].innerText = `New Design 1 - CompassCAD`;
+	this.undoStack = [];
+	this.redoStack = [];
+	this.temporaryObjectArray = [];
+	this.updateActivity('Starting a new design', 'On New Design 1');
+};
+
 GraphicDisplay.prototype.openDesign = function () {
 	diag.showOpenDialog({
 		title: 'Open CompassCAD file',
@@ -1466,38 +1494,27 @@ GraphicDisplay.prototype.openDesign = function () {
 			{ name: 'CompassCAD File', extensions: ['ccad'] }
 		]
 	}).then(res => {
-		document.title = `${res.filePaths[0].replace(/\\/g, '/')} - CompassCAD`
-		$('#titlething')[0].innerText = `${res.filePaths[0].replace(/\\/g, '/')} - CompassCAD`
-		console.log(res)
-		fs.promises.readFile(res.filePaths[0], 'utf-8')
-			.then(resp => JSON.parse(resp))
-			.then(data => {
-				console.log(data)
-				this.logicDisplay.components = [];
-				this.logicDisplay.importJSON(data, this.logicDisplay.components)
-				this.filePath = res.filePaths[0]
-				this.temporaryObjectArray = data
-				client.setActivity({
-					details: 'Working on a saved design',
-					state: `On ${this.filePath}`,
-					largeImageKey: 'logo_round',
-					smallImageKey: 'work_file',
-					startTimestamp: new Date().now
+		if (res.filePaths && res.filePaths[0]) {
+			const fileName = path.basename(res.filePaths[0]);
+			document.title = `${fileName} - CompassCAD`;
+			$('#titlething')[0].innerText = `${fileName} - CompassCAD`;
+
+			fs.promises.readFile(res.filePaths[0], 'utf-8')
+				.then(resp => JSON.parse(resp))
+				.then(data => {
+					this.logicDisplay.components = [];
+					this.logicDisplay.importJSON(data, this.logicDisplay.components);
+					this.filePath = res.filePaths[0];
+					this.updateActivity(`Working on ${fileName}`, `On ${fileName}`);
 				})
-			})
-			.catch(error => {
-				console.error('Error reading or parsing the file:', error);
-				diag.showErrorBox('Failed to open CompassCAD file. Please recheck!', 'Invalid CompassCAD design (possibly unnested arrays) \nTry adding [] onto the file and reopen.\nIf this is another issue, you might need to recheck the design data\nIf neither works out, this means your file is maybe corrupt or have some abnormal strings in it. Please recheck.')
-				this.filePath = ''
-				document.title = `New Design 1 - CompassCAD`
-				$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
-			});
-	}).catch(e => {
-		this.filePath = ''
-		document.title = `New Design 1 - CompassCAD`
-		$('#titlething')[0].innerText = `New Design 1 - CompassCAD`
-	})
-}
+				.catch(error => {
+					console.error('Error reading or parsing the file:', error);
+					diag.showErrorBox('Failed to open CompassCAD file!', 'Please check the file format.');
+					this.updateActivity('Working on a new design', 'On New Design 1');
+				});
+		}
+	});
+};
 GraphicDisplay.prototype.isChanged = function () {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
@@ -1521,42 +1538,21 @@ GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 	}
 }
 GraphicDisplay.prototype.saveDesign = function () {
-	// Check if the file path is defined and if the project is not read-only
-	if (this.filePath != '') {
-		console.log('written to ' + this.filePath);
-		this.setToolTip('Save success');
-		// Directly write to the known file path
+	if (this.filePath) {
 		fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
+		this.setToolTip('Save success')
 	} else {
-		console.log('prompted!');
-		// Prompt the user to choose a save location
 		diag.showSaveDialog({
 			title: 'Save CompassCAD file',
 			defaultPath: 'New Design 1.ccad',
-			filters: [
-				{ name: 'CompassCAD File', extensions: ['ccad'] }
-			]
+			filters: [{ name: 'CompassCAD File', extensions: ['ccad'] }]
 		}).then(data => {
 			if (!data.canceled) {
-				// Save the chosen file path
 				this.filePath = data.filePath;
-				// Write to the chosen file path
 				fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
-				this.temporaryObjectArray = this.logicDisplay.components
-				this.setToolTip('Save success');
-				document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
-				$('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`;
-				console.log(`file is ${data.filePath[0].replace(/\\/g, '/')}, actual datapath is ${data.filePath}`)
-				client.setActivity({
-					details: 'Working on a saved design',
-					state: `On ${this.filePath}`,
-					largeImageKey: 'logo_round',
-					smallImageKey: 'work_file',
-					startTimestamp: new Date().now
-				})
+				this.setToolTip('Save success')
+				this.updateActivity(`Working on ${path.basename(this.filePath)}`, `On ${path.basename(this.filePath)}`);
 			}
-		}).catch(err => {
-			console.error('Error during save:', err);
 		});
 	}
 };
