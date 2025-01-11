@@ -6,11 +6,12 @@ function Editor() {
 
     useEffect(() => {
         if (editor.current) {
-            console.log("Canvas element:", editor.current);
-            const gd = new GraphicDisplay(editor.current, 800, 600);
+            console.log("Canvas element:", editor?.current);
+            const gd = new GraphicDisplay(editor?.current, 800, 600);
             IntializeInstance(gd);
         }
     }, []);
+    console.log(editor.current?.getContext("2d"))
 
     return (
         <div className="react-editor">

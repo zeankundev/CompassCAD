@@ -166,8 +166,8 @@ export class GraphicDisplay {
     }
     execute() {
         let deviceScale = window.devicePixelRatio || 1;
-        this.offsetX = this.displayRef.offsetLeft;
-        this.offsetY = this.displayRef.offsetTop;
+        this.offsetX = this.displayRef!.offsetLeft;
+        this.offsetY = this.displayRef!.offsetTop;
         this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
         this.zoom = this.currentZoom;
         this.updateCamera();
@@ -487,7 +487,7 @@ export class GraphicDisplay {
     performAction(e: any, action: number) {
         switch (this.mode) {
             case this.MODES.ADDPOINT:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add point';
                 if (action = this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -505,7 +505,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDLINE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add line';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -537,7 +537,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDCIRCLE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add circle';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -567,7 +567,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDARC:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add arc';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -605,7 +605,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDRECTANGLE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add rectangle';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -635,7 +635,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDMEASURE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add measure';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -665,7 +665,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDLABEL:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add text';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -688,7 +688,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDSHAPE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add shape';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -705,7 +705,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.ADDPICTURE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Add picture';
                 if (action == this.MOUSEACTION.MOVE) {
                     if (this.temporaryComponentType == null) {
@@ -728,7 +728,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.NAVIGATE:
-                this.displayRef.style.cursor = 'grab';
+                this.displayRef!.style.cursor = 'grab';
                 this.tooltip = 'Navigate';
                 if (action == this.MOUSEACTION.DOWN) {
                     this.camMoving = true;
@@ -741,7 +741,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.MOVE:
-                this.displayRef.style.cursor = 'move';
+                this.displayRef!.style.cursor = 'move';
                 this.tooltip = 'Move';
                 if (action == this.MOUSEACTION.MOVE) {
                     if ( this.selectedComponent == null ) {
@@ -767,7 +767,7 @@ export class GraphicDisplay {
                 }
                 break;
             case this.MODES.DELETE:
-                this.displayRef.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Delete';
                 if (action == this.MOUSEACTION.MOVE) {
                     if ( this.selectedComponent == null ) {
@@ -997,20 +997,20 @@ export const IntializeInstance = (gd: GraphicDisplay) => {
         gd.keyboard?.onKeyDown(e);
     }
     console.log(gd.displayRef)
-    gd.displayRef.onmousemove = (e) => {
+    gd.displayRef!.onmousemove = (e) => {
         gd.mouse?.onMouseMove(e);
         if (!gd.gridPointer)
             gd.gridPointer = true;
         gd.performAction(e, gd.MOUSEACTION.MOVE);
     }
-    gd.displayRef.onmouseout = (e) => {
+    gd.displayRef!.onmouseout = (e) => {
         gd.gridPointer = false;
     }
-    gd.displayRef.onmousedown = (e) => {
+    gd.displayRef!.onmousedown = (e) => {
         gd.mouse?.onMouseDown(e)
         gd.performAction(e, gd.MOUSEACTION.DOWN);
     }
-    gd.displayRef.onwheel = (e) => {
+    gd.displayRef!.onwheel = (e) => {
         if (e.deltaY > 0) {
             gd.zoomOut();
         } else {
