@@ -765,32 +765,37 @@ GraphicDisplay.prototype.drawRules = function (e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
-    var mildzoom = this.zoom / 2;
+	// Adjust grid spacing based on zoom level
+	const gridSpacingAdjusted = this.gridSpacing * this.zoom;
+	// Use half the grid spacing for double density
+	const halfGridSpacing = gridSpacingAdjusted / 2;
+	
+	// Calculate the visible area boundaries
+	const leftBound = -this.displayWidth/2;
+	const rightBound = this.displayWidth/2;
+	const topBound = -this.displayHeight/2;
+	const bottomBound = this.displayHeight/2;
 
-    // Calculate the starting offset for the grid based on the camera offsets and zoom level
-    // We will remove any zoom scaling from the offsets to keep the grid stationary
-    var xStart = (this.gridSpacing * mildzoom);
-    var yStart = (this.gridSpacing * mildzoom);
+	// Calculate the starting grid positions aligned with camera offset
+	const startX = Math.floor((leftBound - camXoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
+	const startY = Math.floor((topBound - camYoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
+	const endX = Math.ceil((rightBound - camXoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
+	const endY = Math.ceil((bottomBound - camYoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
 
-    // Calculate the number of circles to draw along the width and height
-    var numCirclesX = Math.ceil(this.displayWidth / this.gridSpacing / mildzoom) + 20;
-    var numCirclesY = Math.ceil(this.displayHeight / this.gridSpacing / mildzoom) + 20;
+	// Set grid style
+	this.context.fillStyle = "#cccccc40";
 
-    // Loop to draw the circles
-    for (var i = 0; i < numCirclesX; i++) {
-        for (var j = 0; j < numCirclesY; j++) {
-            var x = xStart + (i - Math.floor(numCirclesX / 2)) * this.gridSpacing * mildzoom;
-            var y = yStart + (j - Math.floor(numCirclesY / 2)) * this.gridSpacing * mildzoom;
-
-            // Set the grid color and style
-            this.context.fillStyle = "#cccccc40";
-            this.context.beginPath();
-            this.context.arc(x, y, 2, 0, Math.PI * 2); // 2 is the radius of the circle
-            this.context.closePath();
-            this.context.fill();
-            this.context.stroke();
-        }
-    }
+	// Draw grid points with double density
+	for (let x = startX; x <= endX; x += halfGridSpacing) {
+		for (let y = startY; y <= endY; y += halfGridSpacing) {
+			this.context.beginPath();
+			// Adjust the point position by the camera offset
+			const adjustedX = x + camXoff * this.zoom;
+			const adjustedY = y + camYoff * this.zoom;
+			this.context.arc(adjustedX, adjustedY, 2, 0, Math.PI * 2);
+			this.context.fill();
+		}
+	}
 };
 
 GraphicDisplay.prototype.snapToGrid = function (x, y) {
@@ -1060,12 +1065,12 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			this.tooltip = await this.getLocal('navigate');
 			if (action == this.MOUSEACTION.DOWN) {
 				this.camMoving = true;
-				this.xCNaught = this.getCursorXLocal();
-				this.yCNaught = this.getCursorYLocal();
+				this.xCNaught = this.getCursorXRaw();
+				this.yCNaught = this.getCursorYRaw();
 			} else if (action == this.MOUSEACTION.UP) {
 				this.camMoving = false;
-				this.camX += this.getCursorXLocal() - this.xCNaught;
-				this.camY += this.getCursorYLocal() - this.yCNaught;
+				this.camX += this.getCursorXRaw() - this.xCNaught;
+				this.camY += this.getCursorYRaw() - this.yCNaught;
 			}
 			break;
 			case this.MODES.MOVE:
@@ -1265,8 +1270,8 @@ GraphicDisplay.prototype.updateCamera = function () {
 	this.cOutY = this.camY;
 
 	if (this.camMoving) {
-		this.cOutX += this.getCursorXLocal() - this.xCNaught;
-		this.cOutY += this.getCursorYLocal() - this.yCNaught;
+		this.cOutX += this.getCursorXRaw() - this.xCNaught;
+		this.cOutY += this.getCursorYRaw() - this.yCNaught;
 	}
 };
 
@@ -1351,45 +1356,67 @@ GraphicDisplay.prototype.getCursorXRaw = function (e) {
 GraphicDisplay.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
-
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
-
-    // Calculate the raw local X position based on the global mouse position and offsets
-    const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
-
-    // Snap to the adjusted grid spacing
-    return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	// Get raw cursor position in screen coordinates
+	const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
+	
+	// Convert to world coordinates with zoom and camera offset
+	const worldX = screenX / this.zoom + this.camX;
+	
+	if (!this.snap) return worldX;
+	
+	// Use constant grid spacing in world coordinates
+	const worldGridSpacing = this.gridSpacing;
+	
+	// Snap to nearest grid line in world coordinates
+	return Math.round(worldX / worldGridSpacing) * worldGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
-
-    // Calculate the raw local Y position based on the global mouse position and offsets
-    const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
-
-    // Snap to the adjusted grid spacing
-    return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	// Get raw cursor position in screen coordinates
+	const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
+	
+	// Convert to world coordinates with zoom and camera offset
+	const worldY = screenY / this.zoom + this.camY;
+	
+	if (!this.snap) return worldY;
+	
+	// Use constant grid spacing in world coordinates  
+	const worldGridSpacing = this.gridSpacing;
+	
+	// Snap to nearest grid line in world coordinates
+	return Math.round(worldY / worldGridSpacing) * worldGridSpacing;
 };
 
-
-GraphicDisplay.prototype.getCursorXInFrame = function (e) {
-	// Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-	const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
-	const rawXInFrame = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
-	return Math.round(rawXInFrame / adjustedGridSpacing) * adjustedGridSpacing;
+GraphicDisplay.prototype.getCursorXInFrame = function () {
+	// Get cursor position relative to canvas center (0,0)
+	const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
+	
+	// Convert to world coordinates with camera offset
+	const worldX = (screenX / this.zoom) - this.cOutX;
+	
+	// Apply grid snapping while maintaining reference to world origin
+	const gridSize = this.gridSpacing / 2;
+	const snappedX = Math.round(worldX / gridSize) * gridSize;
+	
+	// Convert back to screen coordinates while preserving origin reference
+	return (snappedX + this.cOutX) * this.zoom;
 };
 
-GraphicDisplay.prototype.getCursorYInFrame = function (e) {
-	// Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-	const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
-	const rawYInFrame = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
-	return Math.round(rawYInFrame / adjustedGridSpacing) * adjustedGridSpacing;
+GraphicDisplay.prototype.getCursorYInFrame = function () {
+	// Get cursor position relative to canvas center (0,0) 
+	const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
+	
+	// Convert to world coordinates with camera offset
+	const worldY = (screenY / this.zoom) - this.cOutY;
+	
+	// Apply grid snapping while maintaining reference to world origin
+	const gridSize = this.gridSpacing / 2;
+	const snappedY = Math.round(worldY / gridSize) * gridSize;
+	
+	// Convert back to screen coordinates while preserving origin reference
+	return (snappedY + this.cOutY) * this.zoom;
 };
-
-
 GraphicDisplay.prototype.setToolTip = function (text) {
 	this.tooltip = text;
 };
