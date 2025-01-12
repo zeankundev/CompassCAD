@@ -763,14 +763,37 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 	
 	// Dynamically adjust density based on zoom level
 	let densityDivisor;
-	if (this.zoom <= 0.5) {
-		densityDivisor = 2; // Very sparse at low zoom
-	} else if (this.zoom <= 1) {
-		densityDivisor = 0.5; // Sparse at normal zoom
-	} else if (this.zoom <= 2) {
-		densityDivisor = 0.5; // Normal density
-	} else {
-		densityDivisor = 0.5; // Dense at high zoom
+	// For very small grid spacing (<5), be more aggressive with density reduction
+	if (this.gridSpacing < 5) {
+		if (this.zoom <= 1) {
+			densityDivisor = 50; // Very sparse at low zoom
+		} else if (this.zoom <= 2) {
+			densityDivisor = 25; // Sparse at normal zoom
+		} else {
+			densityDivisor = 20; // Show full density only at high zoom
+		}
+	}
+	// For small grid spacing (5-10), moderate density reduction
+	else if (this.gridSpacing < 10) {
+		if (this.zoom < 1) {
+			densityDivisor = 6; // Very sparse at low zoom
+		} else if (this.zoom <= 2) {
+			densityDivisor = 3; // Normal density
+		} else {
+			densityDivisor = 1; // Dense at high zoom
+		}
+	}
+	// For medium grid spacing (10-15), light density reduction
+	else if (this.gridSpacing < 20) {
+		if (this.zoom < 1) {
+			densityDivisor = 3; // Slightly sparse at low zoom
+		} else {
+			densityDivisor = 1.5; // Normal density at all other zooms
+		}
+	}
+	// For large grid spacing (>=15), no density reduction needed
+	else {
+		densityDivisor = 0.5; // Maintain full density at all zoom levels
 	}
 
 	// Adjust spacing based on density
@@ -1314,36 +1337,16 @@ GraphicDisplay.prototype.resetMode = function (e) {
 };
 
 GraphicDisplay.prototype.setZoom = function (zoomFactor) {
-    // Store the previous gridSpacing
-    var previousGridSpacing = this.gridSpacing;
 
     // Calculate the new zoom based on the current zoom and zoomFactor
     var newZoom = this.zoom * zoomFactor;
     console.log(newZoom);
-
-    // Dynamic minimum zoom based on the grid spacing
-    var minZoom = 0.4; // Default minimum zoom value
-
-    // Adjust minimum zoom based on the grid spacing
-    if (this.gridSpacing < 10) {
-        minZoom = Math.max(minZoom, 1 / this.gridSpacing);  // Avoid zooming too far out if spacing is small
+    // Ensure zoom does not go beyond limits
+    if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
+        return;
     }
-
-    // Check if the grid spacing has changed suddenly
-    if (this.gridSpacing !== previousGridSpacing) {
-        // Set zoom to the minimum zoom when grid spacing changes
-        this.targetZoom = minZoom;
-        console.log('Grid spacing changed, setting zoom to minimum:', minZoom);
-    } else {
-        // Ensure zoom does not go beyond limits
-        if (newZoom <= minZoom || newZoom >= this.maxZoomFactor) {
-            return;
-        }
-
-        // Set the target zoom normally
-        this.targetZoom = newZoom;
-    }
-
+    // Set the target zoom normally
+    this.targetZoom = newZoom;
     // Display the zoom level
     document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
 };
