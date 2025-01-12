@@ -128,6 +128,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.config = null;
 	this.translator = null;
 	this.drawDebugPoint = false;
+	this.colliderColor = '#00ff00'
 
 	// Miscellaneous settings
 	this.pcbEditorMode = false;
@@ -229,14 +230,6 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.drawDebugPoint) {
 		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2);
 		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2);
-		this.drawLine(
-			this.getCursorXRaw(),
-			this.getCursorYRaw(),
-			this.getCursorXLocal() - this.gridSpacing / 2,
-			this.getCursorYLocal() - this.gridSpacing / 2,
-			'#fff',
-			2
-		);
 	}
 
 	// Update Rich Presence only when the component count changes
@@ -484,14 +477,14 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 };
 
 GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
-	this.context.lineWidth = 3;
+	this.context.lineWidth = 3 * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
 	this.context.arc(
 		(x + this.cOutX) * this.zoom,
 		(y + this.cOutY) * this.zoom,
-		2, 0, 3.14159 * 2, false);
+		2 * this.zoom, 0, 3.14159 * 2, false);
 	this.context.closePath();
 	this.context.stroke();
 };
