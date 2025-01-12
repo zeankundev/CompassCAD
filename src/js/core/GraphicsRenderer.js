@@ -783,7 +783,7 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 	const endY = Math.ceil((bottomBound - camYoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
 
 	// Set grid style
-	this.context.fillStyle = "#cccccc40";
+	this.context.fillStyle = "#cccccc75";
 
 	// Draw grid points with double density
 	for (let x = startX; x <= endX; x += halfGridSpacing) {
@@ -792,7 +792,7 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 			// Adjust the point position by the camera offset
 			const adjustedX = x + camXoff * this.zoom;
 			const adjustedY = y + camYoff * this.zoom;
-			this.context.arc(adjustedX, adjustedY, 2, 0, Math.PI * 2);
+			this.context.arc(adjustedX, adjustedY, 1, 0, Math.PI * 2);
 			this.context.fill();
 		}
 	}
@@ -1357,35 +1357,25 @@ GraphicDisplay.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-	// Get raw cursor position in screen coordinates
-	const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
-	
-	// Convert to world coordinates with zoom and camera offset
-	const worldX = screenX / this.zoom + this.camX;
-	
-	if (!this.snap) return worldX;
-	
-	// Use constant grid spacing in world coordinates
-	const worldGridSpacing = this.gridSpacing;
-	
-	// Snap to nearest grid line in world coordinates
-	return Math.round(worldX / worldGridSpacing) * worldGridSpacing;
+    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
+    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+
+    // Calculate the raw local X position based on the global mouse position and offsets
+    const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+
+    // Snap to the adjusted grid spacing
+    return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-	// Get raw cursor position in screen coordinates
-	const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
-	
-	// Convert to world coordinates with zoom and camera offset
-	const worldY = screenY / this.zoom + this.camY;
-	
-	if (!this.snap) return worldY;
-	
-	// Use constant grid spacing in world coordinates  
-	const worldGridSpacing = this.gridSpacing;
-	
-	// Snap to nearest grid line in world coordinates
-	return Math.round(worldY / worldGridSpacing) * worldGridSpacing;
+    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
+    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+
+    // Calculate the raw local Y position based on the global mouse position and offsets
+    const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+
+    // Snap to the adjusted grid spacing
+    return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorXInFrame = function () {
