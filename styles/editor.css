@@ -129,7 +129,7 @@ body {
 
 .blackout {
     background-color: rgba(0, 0, 0, 0.5);
-    animation: pop 0.5s ease;
+    animation: pop 0.45s ease;
     display: none;
     position: absolute;
     top: 0;
@@ -169,6 +169,7 @@ body {
     cursor: pointer;
 }
 .close-modal-generic {
+    display: inline-block;
     background-color: #0091E2;
     max-width: fit-content;
     padding: 10px;

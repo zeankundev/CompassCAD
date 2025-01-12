@@ -226,6 +226,9 @@ $(document).ready(async () => {
         document.getElementById('link-output').value = `${window.location.href}?data=${btoa(JSON.stringify(renderer.logicDisplay.components))}`
         document.getElementById('link-output').title = document.getElementById('link-output').value
     }
+    document.getElementById('donate').onclick = () => {
+        document.getElementById('donate-modal').style.display = 'block'
+    }
     document.getElementById('copy-link').onclick = () => {
         const link = document.getElementById('link-output')
         link.select()
@@ -235,5 +238,8 @@ $(document).ready(async () => {
     }
     document.getElementById('close-share-modal').onclick = () => {
         document.getElementById('share-modal').style.display = 'none'
+    }
+    document.getElementById('close-donate-modal').onclick = () => {
+        document.getElementById('donate-modal').style.display = 'none'
     }
 })
