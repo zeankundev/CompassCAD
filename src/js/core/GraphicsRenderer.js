@@ -1130,10 +1130,12 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						if (this.selectedComponent === this.temporarySelectedComponent) {
 							// If clicking the already selected component, unselect it
 							this.unselectComponent();
+							sendCurrentEditorState();
 							clearForm();
 						} else {
 							// Select the component under the cursor
 							this.selectComponent(this.temporarySelectedComponent);
+							sendCurrentEditorState();
 							createFormForSelection();
 						}
 					} else {
