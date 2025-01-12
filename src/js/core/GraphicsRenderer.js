@@ -758,31 +758,46 @@ GraphicDisplay.prototype.drawRules = function (e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
-	// Adjust grid spacing based on zoom level
+	// Base grid spacing adjusted by zoom
 	const gridSpacingAdjusted = this.gridSpacing * this.zoom;
-	// Use half the grid spacing for double density
-	const halfGridSpacing = gridSpacingAdjusted / 2;
 	
-	// Calculate the visible area boundaries
+	// Dynamically adjust density based on zoom level
+	let densityDivisor;
+	if (this.zoom <= 0.5) {
+		densityDivisor = 2; // Very sparse at low zoom
+	} else if (this.zoom <= 1) {
+		densityDivisor = 0.5; // Sparse at normal zoom
+	} else if (this.zoom <= 2) {
+		densityDivisor = 0.5; // Normal density
+	} else {
+		densityDivisor = 0.5; // Dense at high zoom
+	}
+
+	// Adjust spacing based on density
+	const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
+	
+	// Calculate visible area boundaries
 	const leftBound = -this.displayWidth/2;
 	const rightBound = this.displayWidth/2;
 	const topBound = -this.displayHeight/2;
 	const bottomBound = this.displayHeight/2;
 
-	// Calculate the starting grid positions aligned with camera offset
-	const startX = Math.floor((leftBound - camXoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
-	const startY = Math.floor((topBound - camYoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
-	const endX = Math.ceil((rightBound - camXoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
-	const endY = Math.ceil((bottomBound - camYoff * this.zoom) / halfGridSpacing) * halfGridSpacing;
+	// Calculate grid start/end positions with camera offset
+	const startX = Math.floor((leftBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+	const startY = Math.floor((topBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+	const endX = Math.ceil((rightBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+	const endY = Math.ceil((bottomBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
 
+	// Adjust point size based on zoom
+	const pointSize = Math.min(1, Math.max(0.5, this.zoom * 0.5));
+	
 	// Set grid style
 	this.context.fillStyle = "#cccccc75";
 
-	// Draw grid points with double density
-	for (let x = startX; x <= endX; x += halfGridSpacing) {
-		for (let y = startY; y <= endY; y += halfGridSpacing) {
+	// Draw optimized grid points
+	for (let x = startX; x <= endX; x += effectiveSpacing) {
+		for (let y = startY; y <= endY; y += effectiveSpacing) {
 			this.context.beginPath();
-			// Adjust the point position by the camera offset
 			const adjustedX = x + camXoff * this.zoom;
 			const adjustedY = y + camYoff * this.zoom;
 			this.context.arc(adjustedX, adjustedY, 1, 0, Math.PI * 2);
