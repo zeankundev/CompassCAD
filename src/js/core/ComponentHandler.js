@@ -116,8 +116,8 @@ Circle.prototype.constructor = Circle;
 * @param x2
 * @param y2
 */
-function Rectangle(x1, y1, x2, y2) {
-    Line.call(this, x1, y1, x2, y2);
+function Rectangle(x1, y1, x2, y2, radius) {
+    Line.call(this, x1, y1, x2, y2, radius);
 
     this.type = COMPONENT_TYPES.RECTANGLE;
 }

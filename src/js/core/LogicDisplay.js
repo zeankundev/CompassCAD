@@ -153,7 +153,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x1,
 						arrJSON[i].y1,
 						arrJSON[i].x2,
-						arrJSON[i].y2));
+						arrJSON[i].y2,
+						arrJSON[i].radius));
 				break;
 			case COMPONENT_TYPES.CIRCLE:
 				parent.push(new Circle(
