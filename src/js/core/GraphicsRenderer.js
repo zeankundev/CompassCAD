@@ -791,9 +791,17 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 			densityDivisor = 1.5; // Normal density at all other zooms
 		}
 	}
+	else if (this.gridSpacing < 50) {
+		if (this.zoom < 1) densityDivisor = 2;
+		else densityDivisor = 1;
+	}
 	// For large grid spacing (>=15), no density reduction needed
 	else {
-		densityDivisor = 0.5; // Maintain full density at all zoom levels
+		if (this.zoom < 0.75) {
+			densityDivisor = 1.5
+		} else {
+			densityDivisor = 0.5;
+		}
 	}
 
 	// Adjust spacing based on density
