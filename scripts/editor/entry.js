@@ -185,7 +185,7 @@ $(document).ready(async () => {
     console.log(basedDesign)
     if (basedDesign != null && basedDesign != '' && basedDesign != ' ') {
         try {
-            renderer.logicDisplay.importJSON(JSON.parse(atob(basedDesign)), renderer.logicDisplay.components)
+            renderer.logicDisplay.importJSON(JSON.parse(LZString.decompressFromEncodedURIComponent(basedDesign)), renderer.logicDisplay.components)
             callToast('Your shared design has been successfully imported', 'success')
         } catch (e) {
             console.error(e)
@@ -223,7 +223,7 @@ $(document).ready(async () => {
 	}, {ctrl: true});
     document.getElementById('share').onclick = () => {
         document.getElementById('share-modal').style.display = 'block'
-        document.getElementById('link-output').value = `${window.location.href}?data=${btoa(JSON.stringify(renderer.logicDisplay.components))}`
+        document.getElementById('link-output').value = `${window.location.href}?data=${LZString.compressToEncodedURIComponent(JSON.stringify(renderer.logicDisplay.components))}`
         document.getElementById('link-output').title = document.getElementById('link-output').value
     }
     document.getElementById('donate').onclick = () => {
