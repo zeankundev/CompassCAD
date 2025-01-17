@@ -35,7 +35,7 @@ body {
     margin-right: 10px;
 }
 .menubar-interaction:hover {
-    background-color: var(--secondary);
+    background-color: var(--tertiary);
     max-width: fit-content;
     max-height: fit-content;
 }
@@ -46,19 +46,43 @@ body {
 }
 .toolbar {
     padding: 5px;
+    position: absolute;
+    z-index: 999;
+    height: 75%;
+    top: 57%;
+    overflow-y: scroll;
+    left: 1.5%;
+    border-radius: 10px;
+    transform: translateY(-51%);
     background-color: var(--secondary);
     max-width: fit-content;
     flex: 1;
+
+    /* Hide scrollbar for most browsers */
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
+
+.toolbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, and Opera */
+}
+
 .canvas-container {
     max-width: fit-content;
 }
 .canvas-container canvas {
     flex: 1;
+    position: absolute;
 }
 .menubar {
     display: flex;
     align-items: center;
+    position: absolute;
+    left: 1.5%;
+    top: 3%;
+    border-radius: 10px;
+    background-color: var(--secondary);
+    z-index: 999;
 }
 .menubar-interaction img {
     width: 24px;
@@ -71,6 +95,7 @@ body {
     padding: 5px;
     display: flex;
     margin-bottom: 10px;
+    border-radius: 10px;
 }
 .toolbar-tool:hover {
     background-color: var(--tertiary);
@@ -79,6 +104,7 @@ body {
     position: absolute;
     user-select: none;
     bottom: 0;
+    z-index: 999;
     font-size: 9pt;
     margin-left: 10px;
     margin-bottom: 10px;
@@ -102,17 +128,17 @@ body {
 .top-text-input {
     -webkit-appearance: none;
     border: none;
-    background-color: var(--primary);
+    background-color: var(--secondary);
     color: var(--text);
     font-weight: 800;
     outline: none;
-    font-size: 18pt;
+    font-size: 14pt;
     font-family: 'OneUISans', system-ui;
     padding: 10px;
     border-radius: 10px;
 }
 .top-text-input:hover {
-    background-color: var(--secondary);
+    background-color: var(--tertiary);
     transition: all 0.2s ease;
 }
 .share-design {

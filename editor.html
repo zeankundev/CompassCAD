@@ -73,10 +73,6 @@
                 <div class="toolbar-tool" title="Add tree (k)" id="add-tree"><img src="./assets/editor/tree.svg"></div>
                 <div class="toolbar-tool" title="Measure (z)" id="ruler"><img src="./assets/editor/measure.svg"></div>
             </div>
-            <div class="canvas-container">
-                <span class="tooltip-renderer" id="tooltip"></span>
-                <canvas id="working-canvas" width="800" height="600" oncontextmenu="javascript: return false"></canvas>
-            </div>
         </div>
         <div class="toast" id="toast">
             <div class="toast-icon">
@@ -86,6 +82,10 @@
                 <span id="toast-details">
                 </span>
             </div>
+        </div>
+        <div class="canvas-container">
+            <span class="tooltip-renderer" id="tooltip"></span>
+            <canvas id="working-canvas" width="800" height="600" oncontextmenu="javascript: return false"></canvas>
         </div>
         <script src="./scripts/editor/entry.js"></script>
         <script src="./scripts/toast.js"></script>

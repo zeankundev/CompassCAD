@@ -55,14 +55,14 @@ $(document).ready(async () => {
         const displayHeight = window.innerHeight - document.getElementById('menubar').offsetHeight    
         const displayWidth = window.innerWidth - document.getElementById('toolbar').offsetWidth 
         // Set the renderer's display dimensions
-        renderer.displayHeight = displayHeight;
-        renderer.displayWidth = displayWidth;
+        renderer.displayHeight = window.innerHeight;
+        renderer.displayWidth = window.innerWidth;
         
         // Set the canvas dimensions
-        document.getElementById('working-canvas').width = displayWidth * devicePixelRatio;
-        document.getElementById('working-canvas').height = displayHeight * devicePixelRatio;
-        document.getElementById('working-canvas').style.width = displayWidth + 'px'
-        document.getElementById('working-canvas').style.height = displayHeight + 'px'
+        document.getElementById('working-canvas').width = window.innerWidth * devicePixelRatio;
+        document.getElementById('working-canvas').height = window.innerHeight * devicePixelRatio;
+        document.getElementById('working-canvas').style.width = window.innerWidth + 'px'
+        document.getElementById('working-canvas').style.height = window.innerHeight + 'px'
         const context = document.getElementById('working-canvas').getContext('2d')
         if (context) {
             context.scale(devicePixelRatio, devicePixelRatio)
