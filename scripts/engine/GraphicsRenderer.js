@@ -1216,25 +1216,33 @@ GraphicDisplay.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+	// Base grid spacing that remains constant across zoom levels
+	const baseGridSpacing = this.gridSpacing / 2;
 
-    // Calculate the raw local X position based on the global mouse position and offsets
-    const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+	// Calculate raw cursor position in world coordinates
+	const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
 
-    // Snap to the adjusted grid spacing
-    return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	if (!this.snap) {
+		return rawXLocal;
+	}
+
+	// Snap to base grid spacing regardless of zoom level
+	return Math.round(rawXLocal / baseGridSpacing) * baseGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+	// Base grid spacing that remains constant across zoom levels
+	const baseGridSpacing = this.gridSpacing / 2;
 
-    // Calculate the raw local Y position based on the global mouse position and offsets
-    const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+	// Calculate raw cursor position in world coordinates  
+	const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 
-    // Snap to the adjusted grid spacing
-    return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	if (!this.snap) {
+		return rawYLocal;
+	}
+
+	// Snap to base grid spacing regardless of zoom level
+	return Math.round(rawYLocal / baseGridSpacing) * baseGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorXInFrame = function () {
