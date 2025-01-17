@@ -1042,12 +1042,14 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 					this.temporaryPoints[1] = this.getCursorYLocal();
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
+				let savedX = this.getCursorXLocal()
+				let savedY = this.getCursorYLocal()
 				callPrompt(await this.getLocal('enterText'))
 					.then(text => {
 						if (text.length > 0) {
 							this.logicDisplay.addComponent(new Label(
-								this.temporaryPoints[0],
-								this.temporaryPoints[1],
+								savedX,
+								savedY,
 								text));
 							this.saveState()
 							this.execute()
@@ -1084,12 +1086,14 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 					this.temporaryPoints[1] = this.getCursorYLocal();
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
+				let savedX = this.getCursorXLocal()
+				let savedY = this.getCursorYLocal()
 				callPrompt('Enter valid image URL')
 					.then(url => {
 						if (url.length > 0) {
 							this.logicDisplay.addComponent(new Picture(
-								this.temporaryPoints[0],
-								this.temporaryPoints[1],
+								savedX,
+								savedY,
 								url));
 							this.saveState()
 							this.execute()
