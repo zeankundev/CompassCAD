@@ -1267,11 +1267,6 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			if (this.selectedComponent !== null) {
 			const selectedComponent = this.logicDisplay.components[this.selectedComponent];
 			const handlePoints = this.getComponentHandles(selectedComponent);
-			
-			// Draw all handles with white color and size 2
-			for (const handle of handlePoints) {
-				this.drawPoint(handle.x, handle.y, '#fff', 2);
-			}
 			}
 			
 			this.tooltip = await this.getLocal('select');
