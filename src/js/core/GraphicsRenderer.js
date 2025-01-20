@@ -1195,7 +1195,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				if (this.dragHandle) {
 				// Use uniform grid snapping regardless of grid spacing
 				const snapToUniformGrid = (value) => {
-					const baseGridSize = this.gridSpacing; // Base grid size for uniform snapping
+					const baseGridSize = this.gridSpacing;
 					return Math.round(value / baseGridSize) * baseGridSize;
 				};
 				
