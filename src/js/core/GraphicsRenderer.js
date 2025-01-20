@@ -1143,9 +1143,15 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 								this.saveState();
 								// Defer form updates to next idle period
 								if ('requestIdleCallback' in window) {
-									requestIdleCallback(() => createFormForSelection());
+									requestIdleCallback(() => {
+										sendCurrentEditorState()
+										createFormForSelection()
+									});
 								} else {
-									setTimeout(() => createFormForSelection(), 0);
+									setTimeout(() => {
+										sendCurrentEditorState()
+										createFormForSelection()
+									}, 0);
 								}
 							});
 						}
