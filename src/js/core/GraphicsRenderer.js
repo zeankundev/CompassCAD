@@ -1181,106 +1181,133 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 		case this.MODES.SELECT:
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
-			if (this.selectedComponent == null) {
-				// Find component under cursor
-				this.temporarySelectedComponent = this.findIntersectionWith(
-					this.getCursorXRaw(),
-					this.getCursorYRaw()
-				);
-			} else {
-				// Get the selected component
-				const component = this.logicDisplay.components[this.selectedComponent];
-				
-				// If actively dragging a handle
-				if (this.dragHandle) {
-					const localX = this.getCursorXLocal();
-					const localY = this.getCursorYLocal();
-					
-					// Update component directly based on handle being dragged
-					switch (component.type) {
-						case COMPONENT_TYPES.LINE:
-						case COMPONENT_TYPES.RECTANGLE:
-						case COMPONENT_TYPES.CIRCLE:
-						if (this.dragHandle === 'start') {
-							component.x1 = localX;
-							component.y1 = localY;
-						} else if (this.dragHandle === 'end') {
-							component.x2 = localX;
-							component.y2 = localY;
-						}
-						break;
-						case COMPONENT_TYPES.POINT:
-						case COMPONENT_TYPES.LABEL:
-						case COMPONENT_TYPES.PICTURE:
-						component.x = localX;
-						component.y = localY;
-						break;
-					}
-					this.saveState();
-					createFormForSelection();
+				if (this.selectedComponent == null) {
+					// Find component under cursor
+					this.temporarySelectedComponent = this.findIntersectionWith(
+						this.getCursorXRaw(),
+						this.getCursorYRaw()
+					);
 				} else {
-					// Check if hovering over a handle
-					const handles = this.getComponentHandles(component);
-					const handleSize = 5;
-					let isOverHandle = false;
+					// Get the selected component
+					const component = this.logicDisplay.components[this.selectedComponent];
 					
-					for (const handle of handles) {
-						const handleX = (handle.x + this.cOutX) * this.zoom;
-						const handleY = (handle.y + this.cOutY) * this.zoom;
+					// If actively dragging a handle
+					if (this.dragHandle) {
+						const localX = this.getCursorXLocal();
+						const localY = this.getCursorYLocal();
 						
-						if (Math.abs(this.getCursorXRaw() * this.zoom - handleX) < handleSize &&
-						Math.abs(this.getCursorYRaw() * this.zoom - handleY) < handleSize) {
-						this.cvn.css('cursor', handle.cursor || 'pointer');
-						isOverHandle = true;
-						break;
+						// Update component based on type
+						switch (component.type) {
+							case COMPONENT_TYPES.LINE:
+							case COMPONENT_TYPES.RECTANGLE:
+							case COMPONENT_TYPES.CIRCLE:
+								if (this.dragHandle === 'start') {
+									component.x1 = localX;
+									component.y1 = localY;
+								} else if (this.dragHandle === 'end') {
+									component.x2 = localX;
+									component.y2 = localY;
+								}
+								break;
+							case COMPONENT_TYPES.POINT:
+							case COMPONENT_TYPES.LABEL:  
+							case COMPONENT_TYPES.PICTURE:
+								// For point-type components, just move the whole thing
+								component.x = localX;
+								component.y = localY;
+								break;
 						}
-					}
-					
-					if (!isOverHandle) {
-						this.cvn.css('cursor', 'move');
+						this.saveState();
+						if (frameCount % 6 === 0) { // Only update form every 6 frames for better performance
+							requestAnimationFrame(() => {
+								// Cache values to avoid layout thrashing
+								const component = this.logicDisplay.components[this.selectedComponent];
+								if ('requestIdleCallback' in window) {
+									requestIdleCallback(() => createFormForSelection()); // Lower priority update
+								} else {
+									setTimeout(() => createFormForSelection(), 0); // Fallback for browsers without requestIdleCallback
+								}
+							});
+						}
+					} else {
+						// Set cursor based on component type
+						if (component.type === COMPONENT_TYPES.POINT ||
+							component.type === COMPONENT_TYPES.LABEL ||
+							component.type === COMPONENT_TYPES.PICTURE) {
+							this.cvn.css('cursor', 'move');
+						} else {
+							// Check if hovering over a handle for non-point components
+							const handles = this.getComponentHandles(component);
+							const handleSize = 5;
+							let isOverHandle = false;
+							
+							for (const handle of handles) {
+								const handleX = (handle.x + this.cOutX) * this.zoom;
+								const handleY = (handle.y + this.cOutY) * this.zoom;
+								
+								if (Math.abs(this.getCursorXRaw() * this.zoom - handleX) < handleSize &&
+									Math.abs(this.getCursorYRaw() * this.zoom - handleY) < handleSize) {
+									this.cvn.css('cursor', handle.cursor || 'pointer');
+									isOverHandle = true;
+									break;
+								}
+							}
+							
+							if (!isOverHandle) {
+								this.cvn.css('cursor', 'move');
+							}
+						}
 					}
 				}
-			}
 			} else if (action == this.MOUSEACTION.DOWN) {
 				if (this.selectedComponent !== null) {
-					// Check if clicking on a handle
 					const component = this.logicDisplay.components[this.selectedComponent];
-					const handles = this.getComponentHandles(component);
-					const handleSize = 5;
-					
-					for (const handle of handles) {
-					const handleX = (handle.x + this.cOutX) * this.zoom;
-					const handleY = (handle.y + this.cOutY) * this.zoom;
-					
-					if (Math.abs(this.getCursorXRaw() * this.zoom - handleX) < handleSize &&
-						Math.abs(this.getCursorYRaw() * this.zoom - handleY) < handleSize) {
-						this.dragHandle = handle.id;
-						return;
-					}
+					// Only check handles for non-point components
+					if (component.type !== COMPONENT_TYPES.POINT && 
+						component.type !== COMPONENT_TYPES.LABEL &&
+						component.type !== COMPONENT_TYPES.PICTURE) {
+							
+						const handles = this.getComponentHandles(component);
+						const handleSize = 5;
+						
+						for (const handle of handles) {
+							const handleX = (handle.x + this.cOutX) * this.zoom;
+							const handleY = (handle.y + this.cOutY) * this.zoom;
+							
+							if (Math.abs(this.getCursorXRaw() * this.zoom - handleX) < handleSize &&
+								Math.abs(this.getCursorYRaw() * this.zoom - handleY) < handleSize) {
+								this.dragHandle = handle.id;
+								return;
+							}
+						}
 					}
 				}
-			
-			if (this.temporarySelectedComponent != null) {
-				if (this.selectedComponent === this.temporarySelectedComponent) {
+				
+				if (this.temporarySelectedComponent != null) {
+					if (this.selectedComponent === this.temporarySelectedComponent) {
+						this.unselectComponent();
+						clearForm();
+					} else {
+						this.selectComponent(this.temporarySelectedComponent);
+						createFormForSelection();
+					}
+				} else {
 					this.unselectComponent();
 					clearForm();
-				} else {
-					this.selectComponent(this.temporarySelectedComponent);
-					createFormForSelection();
 				}
-			} else {
-				this.unselectComponent();
-				clearForm();
-			}
 			} else if (action == this.MOUSEACTION.UP) {
-			this.dragHandle = null;
-			this.cvn.css('cursor', 'default');
+				this.dragHandle = null;
+				this.cvn.css('cursor', 'default');
 			}
 			
-			// Always draw selection handles if a component is selected
+			// Draw handles only for non-point components
 			if (this.selectedComponent !== null) {
-			const selectedComponent = this.logicDisplay.components[this.selectedComponent];
-			const handlePoints = this.getComponentHandles(selectedComponent);
+				const selectedComponent = this.logicDisplay.components[this.selectedComponent];
+				if (selectedComponent.type !== COMPONENT_TYPES.POINT &&
+					selectedComponent.type !== COMPONENT_TYPES.LABEL &&
+					selectedComponent.type !== COMPONENT_TYPES.PICTURE) {
+					const handlePoints = this.getComponentHandles(selectedComponent);
+				}
 			}
 			
 			this.tooltip = await this.getLocal('select');
