@@ -177,16 +177,20 @@ GraphicDisplay.prototype.updateActivity = function (details = null) {
 	// Avoid redundant updates by comparing the current component count
 	if (!this.lastComponentCount || this.lastComponentCount !== this.logicDisplay.components.length) {
 		this.lastComponentCount = this.logicDisplay.components.length; // Cache the latest count
-		try {
-			client.setActivity({
-				details: details, // Action being performed
-				state: `Total components: ${this.logicDisplay.components.length}`, // Component count
-				largeImageKey: 'logo_round', // Main image key for Discord Rich Presence
-				smallImageKey: 'work_file', // Secondary image key
-				startTimestamp: Date.now() // Start timestamp for the session
-			});
-		} catch (e) {
-			return;
+		if (client && typeof client.setActivity === 'function') {
+			try {
+				client.setActivity({
+					details: details || 'Editing design', // Action being performed
+					state: `Total components: ${this.logicDisplay.components.length}`, // Component count
+					largeImageKey: 'logo_round', // Main image key for Discord Rich Presence
+					smallImageKey: 'work_file', // Secondary image key
+					startTimestamp: Date.now() // Start timestamp for the session
+				}).catch(() => {
+					// Silently handle Discord RPC errors
+				});
+			} catch {
+				// Ignore any Discord RPC initialization errors
+			}
 		}
 	}
 };
@@ -1383,28 +1387,6 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						this.lastSelectedComponent = this.selectedComponent;
 					}
 				}
-			}
-			if (selectedComponent.type === COMPONENT_TYPES.ARC) {
-				const startHandle = {
-					x: selectedComponent.x1,
-					y: selectedComponent.y1,
-					id: 'start',
-					cursor: 'move'
-				};
-				
-				const radiusHandle = {
-					x: selectedComponent.x2,
-					y: selectedComponent.y2,
-					id: 'radius',
-					cursor: 'nw-resize'
-				};
-				
-				const arcHandle = {
-					x: selectedComponent.x3,
-					y: selectedComponent.y3,
-					id: 'arc',
-					cursor: 'se-resize' 
-				};
 			}
 			
 			this.tooltip = await this.getLocal('select');
