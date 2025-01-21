@@ -1243,8 +1243,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				if (this.selectedComponent == null) {
 					// Find component under cursor
 					this.temporarySelectedComponent = this.findIntersectionWith(
-					this.getCursorXRaw(),
-					this.getCursorYRaw()
+						this.getCursorXRaw(),
+						this.getCursorYRaw()
 					);
 				} else {
 					// Get the selected component
@@ -1252,108 +1252,114 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 					
 					// If actively dragging a handle
 					if (this.dragHandle) {
-					// Use uniform grid snapping regardless of grid spacing
-					const snapToUniformGrid = (value) => {
-						const baseGridSize = this.gridSpacing / 2;
-						return Math.round(value / baseGridSize) * baseGridSize;
-					};
-					
-					const localX = snapToUniformGrid(this.getCursorXRaw());
-					const localY = snapToUniformGrid(this.getCursorYRaw());
-					
-					// Update component based on type
-					switch (component.type) {
-						case COMPONENT_TYPES.LINE:
-						case COMPONENT_TYPES.RECTANGLE:
-						case COMPONENT_TYPES.CIRCLE:
-						if (this.dragHandle === 'start') {
-							component.x1 = localX;
-							component.y1 = localY;
-						} else if (this.dragHandle === 'end') {
-							component.x2 = localX;
-							component.y2 = localY;
+						// Use uniform grid snapping regardless of grid spacing
+						const snapToUniformGrid = (value) => {
+							const baseGridSize = this.gridSpacing / 2;
+							return Math.round(value / baseGridSize) * baseGridSize;
+						};
+						
+						// Get cursor position in world coordinates
+						const localX = snapToUniformGrid(this.getCursorXLocal());
+						const localY = snapToUniformGrid(this.getCursorYLocal());
+						
+						// Update component based on type
+						switch (component.type) {
+							case COMPONENT_TYPES.LINE:
+							case COMPONENT_TYPES.RECTANGLE:
+							case COMPONENT_TYPES.CIRCLE:
+								if (this.dragHandle === 'start') {
+									component.x1 = localX;
+									component.y1 = localY;
+								} else if (this.dragHandle === 'end') {
+									component.x2 = localX;
+									component.y2 = localY;
+								}
+								break;
+							case COMPONENT_TYPES.ARC:
+								if (this.dragHandle === 'start') {
+									component.x1 = localX;
+									component.y1 = localY;
+								} else if (this.dragHandle === 'mid') {
+									component.x2 = localX;
+									component.y2 = localY;
+								} else if (this.dragHandle === 'end') {
+									component.x3 = localX;
+									component.y3 = localY;
+								}
+								break;
+							case COMPONENT_TYPES.POINT:
+							case COMPONENT_TYPES.LABEL:  
+							case COMPONENT_TYPES.PICTURE:
+								component.x = localX;
+								component.y = localY;
+								break;
 						}
-						break;
-						case COMPONENT_TYPES.ARC:
-							if (this.dragHandle === 'start') {
-								component.x1 = localX;
-								component.y1 = localY;
-							} else if (this.dragHandle === 'mid') {
-								component.x2 = localX;
-								component.y2 = localY;
-							} else if (this.dragHandle === 'end') {
-								component.x3 = localX;
-								component.y3 = localY;
-							}
-							break;
-						case COMPONENT_TYPES.POINT:
-						case COMPONENT_TYPES.LABEL:  
-						case COMPONENT_TYPES.PICTURE:
-						// For point-type components, just move the whole thing
-						component.x = localX;
-						component.y = localY;
-						break;
-					}
-					this.saveState();
-					if (frameCount % 6 === 0) {
-						requestAnimationFrame(() => {
-						if ('requestIdleCallback' in window) {
-							requestIdleCallback(() => createFormForSelection());
-						} else {
-							setTimeout(() => createFormForSelection(), 0);
+						this.saveState();
+						// Update form every 6 frames for better performance
+						if (frameCount % 6 === 0) {
+							console.log('[framecount] framecount % 6 is 0, executing optimized tick')
+							// Use requestAnimationFrame for smoother updates
+							window.requestAnimationFrame(() => {
+								createFormForSelection();
+								sendCurrentEditorState();
+							});
 						}
-						});
-					}
 					} else {
-					// Enhanced handle detection with fixed sensitivity
-					const handleSize = Math.max(5, 10 / this.zoom); // Maintain consistent handle size
-					const handles = this.getComponentHandles(component);
-					let isOverHandle = false;
-					
-					for (const handle of handles) {
-						const handleX = (handle.x + this.cOutX) * this.zoom;
-						const handleY = (handle.y + this.cOutY) * this.zoom;
+						// Enhanced handle detection that accounts for camera position
+						const handleSize = 5 / this.zoom; // Consistent handle size in world units
+						const handles = this.getComponentHandles(component);
+						let isOverHandle = false;
 						
-						// Use squared distance for better performance
-						const dx = this.getCursorXRaw() * this.zoom - handleX;
-						const dy = this.getCursorYRaw() * this.zoom - handleY;
-						const distSquared = dx * dx + dy * dy;
-						
-						if (distSquared < handleSize * handleSize) {
-						this.cvn.css('cursor', handle.cursor || 'pointer');
-						isOverHandle = true;
-						break;
+						for (const handle of handles) {
+							// Calculate distance in world coordinates
+							const dx = this.getCursorXLocal() - handle.x;
+							const dy = this.getCursorYLocal() - handle.y;
+							const distSquared = dx * dx + dy * dy;
+							
+							if (this.drawDebugPoint) {
+								// Draw handle visualization (in screen space)
+								const screenX = (handle.x + this.cOutX) * this.zoom;
+								const screenY = (handle.y + this.cOutY) * this.zoom;
+								this.context.beginPath();
+								this.context.arc(screenX, screenY, handleSize * this.zoom, 0, Math.PI * 2);
+								this.context.strokeStyle = this.colliderColor;
+								this.context.stroke();
+							}
+							
+							// Check if cursor is over handle using world coordinates
+							if (distSquared < (handleSize * handleSize)) {
+								this.cvn.css('cursor', handle.cursor || 'pointer');
+								isOverHandle = true;
+								break;
+							}
 						}
-					}
-					
-					if (!isOverHandle) {
-						this.cvn.css('cursor', 'move');
-					}
+						
+						if (!isOverHandle) {
+							this.cvn.css('cursor', 'move');
+						}
 					}
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
 				if (this.selectedComponent !== null) {
 					const component = this.logicDisplay.components[this.selectedComponent];
 					if (component.type !== COMPONENT_TYPES.POINT && 
-					component.type !== COMPONENT_TYPES.LABEL &&
-					component.type !== COMPONENT_TYPES.PICTURE) {
+						component.type !== COMPONENT_TYPES.LABEL &&
+						component.type !== COMPONENT_TYPES.PICTURE) {
 						
-					const handles = this.getComponentHandles(component);
-					const handleSize = Math.max(5, 10 / this.zoom);
-					
-					for (const handle of handles) {
-						const handleX = (handle.x + this.cOutX) * this.zoom;
-						const handleY = (handle.y + this.cOutY) * this.zoom;
+						const handles = this.getComponentHandles(component);
+						const handleSize = 5 / this.zoom;
 						
-						const dx = this.getCursorXRaw() * this.zoom - handleX;
-						const dy = this.getCursorYRaw() * this.zoom - handleY;
-						const distSquared = dx * dx + dy * dy;
-						
-						if (distSquared < handleSize * handleSize) {
-						this.dragHandle = handle.id;
-						return;
+						for (const handle of handles) {
+							// Check collision in world coordinates
+							const dx = this.getCursorXLocal() - handle.x;
+							const dy = this.getCursorYLocal() - handle.y;
+							const distSquared = dx * dx + dy * dy;
+							
+							if (distSquared < (handleSize * handleSize)) {
+								this.dragHandle = handle.id;
+								return;
+							}
 						}
-					}
 					}
 				}
 				
@@ -1373,15 +1379,14 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 				this.dragHandle = null;
 				this.cvn.css('cursor', 'default');
 			}
-			
-			// Draw handles for selected non-point components
+
+			// Draw handles for selected component
 			if (this.selectedComponent !== null) {
 				const selectedComponent = this.logicDisplay.components[this.selectedComponent];
 				if (selectedComponent.type !== COMPONENT_TYPES.POINT &&
 					selectedComponent.type !== COMPONENT_TYPES.LABEL &&
 					selectedComponent.type !== COMPONENT_TYPES.PICTURE) {
 					const handlePoints = this.getComponentHandles(selectedComponent);
-					// Reset drag handle on component change
 					if (this.lastSelectedComponent !== this.selectedComponent) {
 						this.dragHandle = null;
 						this.lastSelectedComponent = this.selectedComponent;
