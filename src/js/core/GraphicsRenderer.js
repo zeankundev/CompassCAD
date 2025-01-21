@@ -177,13 +177,17 @@ GraphicDisplay.prototype.updateActivity = function (details = null) {
 	// Avoid redundant updates by comparing the current component count
 	if (!this.lastComponentCount || this.lastComponentCount !== this.logicDisplay.components.length) {
 		this.lastComponentCount = this.logicDisplay.components.length; // Cache the latest count
-		client.setActivity({
-			details: details, // Action being performed
-			state: `Total components: ${this.logicDisplay.components.length}`, // Component count
-			largeImageKey: 'logo_round', // Main image key for Discord Rich Presence
-			smallImageKey: 'work_file', // Secondary image key
-			startTimestamp: Date.now() // Start timestamp for the session
-		}).catch(console.error); // Log any errors
+		try {
+			client.setActivity({
+				details: details, // Action being performed
+				state: `Total components: ${this.logicDisplay.components.length}`, // Component count
+				largeImageKey: 'logo_round', // Main image key for Discord Rich Presence
+				smallImageKey: 'work_file', // Secondary image key
+				startTimestamp: Date.now() // Start timestamp for the session
+			});
+		} catch (e) {
+			return;
+		}
 	}
 };
 GraphicDisplay.prototype.lerp = function (start, end, time) {
@@ -223,15 +227,23 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.drawAllComponents(this.logicDisplay.components, 0, 0);
 	if (this.temporaryComponentType !== null) this.drawTemporaryComponent();
 
-	// Draw rules and tooltips
-	this.drawRules();
-	this.drawToolTip();
-
 	// Debugging visuals
 	if (this.drawDebugPoint) {
 		this.drawPoint(this.getCursorXRaw(), this.getCursorYRaw(), '#fff', 2);
 		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2);
 	}
+
+	if (this.selectedComponent != null) {
+		console.log('[handle] tick: not null')
+		const handles = this.getComponentHandles(this.selectComponent)
+		for (const handle of handles) {
+			console.log('[handles] drawing handles (called)...')
+			this.drawPoint(handle.x, handle.y, '#fff', 2)
+		}
+	}
+	// Draw rules and tooltips
+	this.drawRules();
+	this.drawToolTip();
 
 	// Update Rich Presence only when the component count changes
 	this.updateActivity()
@@ -1224,136 +1236,175 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 		case this.MODES.SELECT:
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
-			if (this.selectedComponent == null) {
-				// Find component under cursor
-				this.temporarySelectedComponent = this.findIntersectionWith(
-				this.getCursorXRaw(),
-				this.getCursorYRaw()
-				);
-			} else {
-				// Get the selected component
-				const component = this.logicDisplay.components[this.selectedComponent];
-				
-				// If actively dragging a handle
-				if (this.dragHandle) {
-				// Use uniform grid snapping regardless of grid spacing
-				const snapToUniformGrid = (value) => {
-					const baseGridSize = this.gridSpacing;
-					return Math.round(value / baseGridSize) * baseGridSize;
-				};
-				
-				const localX = snapToUniformGrid(this.getCursorXRaw());
-				const localY = snapToUniformGrid(this.getCursorYRaw());
-				
-				// Update component based on type
-				switch (component.type) {
-					case COMPONENT_TYPES.LINE:
-					case COMPONENT_TYPES.RECTANGLE:
-					case COMPONENT_TYPES.CIRCLE:
-					if (this.dragHandle === 'start') {
-						component.x1 = localX;
-						component.y1 = localY;
-					} else if (this.dragHandle === 'end') {
-						component.x2 = localX;
-						component.y2 = localY;
+				if (this.selectedComponent == null) {
+					// Find component under cursor
+					this.temporarySelectedComponent = this.findIntersectionWith(
+					this.getCursorXRaw(),
+					this.getCursorYRaw()
+					);
+				} else {
+					// Get the selected component
+					const component = this.logicDisplay.components[this.selectedComponent];
+					
+					// If actively dragging a handle
+					if (this.dragHandle) {
+					// Use uniform grid snapping regardless of grid spacing
+					const snapToUniformGrid = (value) => {
+						const baseGridSize = this.gridSpacing / 2;
+						return Math.round(value / baseGridSize) * baseGridSize;
+					};
+					
+					const localX = snapToUniformGrid(this.getCursorXRaw());
+					const localY = snapToUniformGrid(this.getCursorYRaw());
+					
+					// Update component based on type
+					switch (component.type) {
+						case COMPONENT_TYPES.LINE:
+						case COMPONENT_TYPES.RECTANGLE:
+						case COMPONENT_TYPES.CIRCLE:
+						if (this.dragHandle === 'start') {
+							component.x1 = localX;
+							component.y1 = localY;
+						} else if (this.dragHandle === 'end') {
+							component.x2 = localX;
+							component.y2 = localY;
+						}
+						break;
+						case COMPONENT_TYPES.ARC:
+							if (this.dragHandle === 'start') {
+								component.x1 = localX;
+								component.y1 = localY;
+							} else if (this.dragHandle === 'mid') {
+								component.x2 = localX;
+								component.y2 = localY;
+							} else if (this.dragHandle === 'end') {
+								component.x3 = localX;
+								component.y3 = localY;
+							}
+							break;
+						case COMPONENT_TYPES.POINT:
+						case COMPONENT_TYPES.LABEL:  
+						case COMPONENT_TYPES.PICTURE:
+						// For point-type components, just move the whole thing
+						component.x = localX;
+						component.y = localY;
+						break;
 					}
-					break;
-					case COMPONENT_TYPES.POINT:
-					case COMPONENT_TYPES.LABEL:  
-					case COMPONENT_TYPES.PICTURE:
-					// For point-type components, just move the whole thing
-					component.x = localX;
-					component.y = localY;
-					break;
-				}
-				this.saveState();
-				if (frameCount % 6 === 0) {
-					requestAnimationFrame(() => {
-					if ('requestIdleCallback' in window) {
-						requestIdleCallback(() => createFormForSelection());
+					this.saveState();
+					if (frameCount % 6 === 0) {
+						requestAnimationFrame(() => {
+						if ('requestIdleCallback' in window) {
+							requestIdleCallback(() => createFormForSelection());
+						} else {
+							setTimeout(() => createFormForSelection(), 0);
+						}
+						});
+					}
 					} else {
-						setTimeout(() => createFormForSelection(), 0);
-					}
-					});
-				}
-				} else {
-				// Enhanced handle detection with fixed sensitivity
-				const handleSize = Math.max(5, 10 / this.zoom); // Maintain consistent handle size
-				const handles = this.getComponentHandles(component);
-				let isOverHandle = false;
-				
-				for (const handle of handles) {
-					const handleX = (handle.x + this.cOutX) * this.zoom;
-					const handleY = (handle.y + this.cOutY) * this.zoom;
+					// Enhanced handle detection with fixed sensitivity
+					const handleSize = Math.max(5, 10 / this.zoom); // Maintain consistent handle size
+					const handles = this.getComponentHandles(component);
+					let isOverHandle = false;
 					
-					// Use squared distance for better performance
-					const dx = this.getCursorXRaw() * this.zoom - handleX;
-					const dy = this.getCursorYRaw() * this.zoom - handleY;
-					const distSquared = dx * dx + dy * dy;
+					for (const handle of handles) {
+						const handleX = (handle.x + this.cOutX) * this.zoom;
+						const handleY = (handle.y + this.cOutY) * this.zoom;
+						
+						// Use squared distance for better performance
+						const dx = this.getCursorXRaw() * this.zoom - handleX;
+						const dy = this.getCursorYRaw() * this.zoom - handleY;
+						const distSquared = dx * dx + dy * dy;
+						
+						if (distSquared < handleSize * handleSize) {
+						this.cvn.css('cursor', handle.cursor || 'pointer');
+						isOverHandle = true;
+						break;
+						}
+					}
 					
-					if (distSquared < handleSize * handleSize) {
-					this.cvn.css('cursor', handle.cursor || 'pointer');
-					isOverHandle = true;
-					break;
+					if (!isOverHandle) {
+						this.cvn.css('cursor', 'move');
+					}
 					}
 				}
-				
-				if (!isOverHandle) {
-					this.cvn.css('cursor', 'move');
-				}
-				}
-			}
 			} else if (action == this.MOUSEACTION.DOWN) {
-			if (this.selectedComponent !== null) {
-				const component = this.logicDisplay.components[this.selectedComponent];
-				if (component.type !== COMPONENT_TYPES.POINT && 
-				component.type !== COMPONENT_TYPES.LABEL &&
-				component.type !== COMPONENT_TYPES.PICTURE) {
+				if (this.selectedComponent !== null) {
+					const component = this.logicDisplay.components[this.selectedComponent];
+					if (component.type !== COMPONENT_TYPES.POINT && 
+					component.type !== COMPONENT_TYPES.LABEL &&
+					component.type !== COMPONENT_TYPES.PICTURE) {
+						
+					const handles = this.getComponentHandles(component);
+					const handleSize = Math.max(5, 10 / this.zoom);
 					
-				const handles = this.getComponentHandles(component);
-				const handleSize = Math.max(5, 10 / this.zoom);
-				
-				for (const handle of handles) {
-					const handleX = (handle.x + this.cOutX) * this.zoom;
-					const handleY = (handle.y + this.cOutY) * this.zoom;
-					
-					const dx = this.getCursorXRaw() * this.zoom - handleX;
-					const dy = this.getCursorYRaw() * this.zoom - handleY;
-					const distSquared = dx * dx + dy * dy;
-					
-					if (distSquared < handleSize * handleSize) {
-					this.dragHandle = handle.id;
-					return;
+					for (const handle of handles) {
+						const handleX = (handle.x + this.cOutX) * this.zoom;
+						const handleY = (handle.y + this.cOutY) * this.zoom;
+						
+						const dx = this.getCursorXRaw() * this.zoom - handleX;
+						const dy = this.getCursorYRaw() * this.zoom - handleY;
+						const distSquared = dx * dx + dy * dy;
+						
+						if (distSquared < handleSize * handleSize) {
+						this.dragHandle = handle.id;
+						return;
+						}
+					}
 					}
 				}
-				}
-			}
-			
-			if (this.temporarySelectedComponent != null) {
-				if (this.selectedComponent === this.temporarySelectedComponent) {
-				this.unselectComponent();
-				clearForm();
+				
+				if (this.temporarySelectedComponent != null) {
+					if (this.selectedComponent === this.temporarySelectedComponent) {
+						this.unselectComponent();
+						clearForm();
+					} else {
+						this.selectComponent(this.temporarySelectedComponent);
+						createFormForSelection();
+					}
 				} else {
-				this.selectComponent(this.temporarySelectedComponent);
-				createFormForSelection();
+					this.unselectComponent();
+					clearForm();
 				}
-			} else {
-				this.unselectComponent();
-				clearForm();
-			}
 			} else if (action == this.MOUSEACTION.UP) {
-			this.dragHandle = null;
-			this.cvn.css('cursor', 'default');
+				this.dragHandle = null;
+				this.cvn.css('cursor', 'default');
 			}
 			
 			// Draw handles for selected non-point components
 			if (this.selectedComponent !== null) {
-			const selectedComponent = this.logicDisplay.components[this.selectedComponent];
-			if (selectedComponent.type !== COMPONENT_TYPES.POINT &&
-				selectedComponent.type !== COMPONENT_TYPES.LABEL &&
-				selectedComponent.type !== COMPONENT_TYPES.PICTURE) {
-				const handlePoints = this.getComponentHandles(selectedComponent);
+				const selectedComponent = this.logicDisplay.components[this.selectedComponent];
+				if (selectedComponent.type !== COMPONENT_TYPES.POINT &&
+					selectedComponent.type !== COMPONENT_TYPES.LABEL &&
+					selectedComponent.type !== COMPONENT_TYPES.PICTURE) {
+					const handlePoints = this.getComponentHandles(selectedComponent);
+					// Reset drag handle on component change
+					if (this.lastSelectedComponent !== this.selectedComponent) {
+						this.dragHandle = null;
+						this.lastSelectedComponent = this.selectedComponent;
+					}
+				}
 			}
+			if (selectedComponent.type === COMPONENT_TYPES.ARC) {
+				const startHandle = {
+					x: selectedComponent.x1,
+					y: selectedComponent.y1,
+					id: 'start',
+					cursor: 'move'
+				};
+				
+				const radiusHandle = {
+					x: selectedComponent.x2,
+					y: selectedComponent.y2,
+					id: 'radius',
+					cursor: 'nw-resize'
+				};
+				
+				const arcHandle = {
+					x: selectedComponent.x3,
+					y: selectedComponent.y3,
+					id: 'arc',
+					cursor: 'se-resize' 
+				};
 			}
 			
 			this.tooltip = await this.getLocal('select');
@@ -1404,6 +1455,32 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 				id: 'end',
 				cursor: 'se-resize'
 			});
+			break;
+
+		case COMPONENT_TYPES.ARC:
+			// Clear any existing handles first
+			handles.length = 0;
+			
+			handles.push({
+				x: component.x1,
+				y: component.y1,
+				id: 'start',
+				cursor: 'nw-resize'
+			});
+			
+			handles.push({
+				x: component.x2,
+				y: component.y2, 
+				id: 'mid',
+				cursor: 'se-resize'
+			});
+
+			handles.push({
+				x: component.x3,
+				y: component.y3,
+				id: 'end',
+				cursor: 'move'
+			})
 			break;
 			
 		case COMPONENT_TYPES.POINT:
