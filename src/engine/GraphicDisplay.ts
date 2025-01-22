@@ -128,7 +128,7 @@ export class GraphicDisplay {
         this.showOrigin = true;
         this.showRules = true;
         this.gridPointer = false;
-        this.gridSpacing = 10;
+        this.gridSpacing = 100;
         this.conversionFactor = 1;
         this.unitName = 'px';
         this.unitMeasure = 'm';
@@ -138,7 +138,7 @@ export class GraphicDisplay {
         this.snapTolerance = 5;
         this.fontSize = 12;
         this.maximumStack = 50;
-        this.displayRef = document.createElement('canvas');
+        this.displayRef = displayReference;
         const context = this.displayRef!.getContext('2d');
         if (!context) {
             throw new Error("Failed to get 2D context");
@@ -165,13 +165,15 @@ export class GraphicDisplay {
         return start + t * (end - start);
     }
     execute() {
-        let deviceScale = window.devicePixelRatio || 1;
         this.offsetX = this.displayRef!.offsetLeft;
         this.offsetY = this.displayRef!.offsetTop;
         this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
         this.zoom = this.currentZoom;
         this.updateCamera();
+
+        this.context.save();
         this.clearGrid();
+        
         if (this.showGrid)
             this.drawGrid(this.cOutX, this.cOutY);
         if (this.showOrigin)
@@ -180,9 +182,10 @@ export class GraphicDisplay {
         this.drawAllComponents(this.logicDisplay!.components, 0, 0);
 
         if (this.temporaryComponentType !== null)
-            this.drawTemporaryComponent()
+            this.drawTemporaryComponent();
 
-        this.drawRules()
+        this.drawRules();
+        this.context.restore();
     }
     saveState() {
         this.undoStack.push(JSON.stringify(this.logicDisplay?.components));
@@ -190,17 +193,16 @@ export class GraphicDisplay {
         if (this.undoStack.length > this.maximumStack) {
             this.undoStack.shift();
         }
-        this.redoStack = [];
     }
     clearGrid() {
-        this.context.restore();
         this.context.fillStyle = '#202020';
         this.context.fillRect(0, 0, this.displayWidth, this.displayHeight);
-        this.context.save();
         this.context.translate(this.displayWidth / 2, this.displayHeight / 2);
         this.context.strokeStyle = '#e9e9e9';
         this.context.lineWidth = 0.15;
+        
     }
+        
     drawAllComponents(components: any[], moveByX: number, moveByY: number) {
         for (var i = 0; i < components.length; i++) {
             if (!components[i].isActive())
@@ -524,11 +526,11 @@ export class GraphicDisplay {
                         this.temporaryPoints[3] = this.getCursorYLocal();
                     } else if (this.temporaryComponentType == COMPONENT_TYPES.LINE) {
                         this.logicDisplay?.addComponent(new Line(
-                                this.temporaryPoints[0],
-                                this.temporaryPoints[1],
-                                this.temporaryPoints[2],
-                                this.temporaryPoints[3]));
-                        
+                            this.temporaryPoints[0],
+                            this.temporaryPoints[1],
+                            this.temporaryPoints[2],
+                            this.temporaryPoints[3]));
+
                         this.temporaryPoints[0] = this.temporaryPoints[2];
                         this.temporaryPoints[1] = this.temporaryPoints[3];
                         this.saveState()
@@ -674,13 +676,13 @@ export class GraphicDisplay {
                         this.temporaryPoints[0] = this.getCursorXLocal();
                         this.temporaryPoints[1] = this.getCursorYLocal();
                     }
-                } else if ( action == this.MOUSEACTION.DOWN ) {
+                } else if (action == this.MOUSEACTION.DOWN) {
                     let text = prompt('Add text...')
-                    if ( text!.length > 0 ) {
+                    if (text!.length > 0) {
                         this.logicDisplay?.addComponent(new Label(
-                                this.temporaryPoints[0],
-                                this.temporaryPoints[1],
-                                text!));
+                            this.temporaryPoints[0],
+                            this.temporaryPoints[1],
+                            text!));
                         this.saveState()
                         this.execute()
                         this.setMode(this.MODES.NAVIGATE)
@@ -716,7 +718,7 @@ export class GraphicDisplay {
                     }
                 } else if (action == this.MOUSEACTION.DOWN) {
                     let url = prompt('Add image URL...')
-                    if ( url!.length > 0 ) {
+                    if (url!.length > 0) {
                         this.logicDisplay?.addComponent(new Picture(
                             this.temporaryPoints[0],
                             this.temporaryPoints[1],
@@ -737,27 +739,27 @@ export class GraphicDisplay {
                 } else if (action == this.MOUSEACTION.UP) {
                     this.camMoving = false;
                     this.camX += this.getCursorXLocal() - this.xCNaught;
-				    this.camY += this.getCursorYLocal() - this.yCNaught;
+                    this.camY += this.getCursorYLocal() - this.yCNaught;
                 }
                 break;
             case this.MODES.MOVE:
                 this.displayRef!.style.cursor = 'move';
                 this.tooltip = 'Move';
                 if (action == this.MOUSEACTION.MOVE) {
-                    if ( this.selectedComponent == null ) {
+                    if (this.selectedComponent == null) {
                         this.temporarySelectedComponent = this.findIntersectionWith(
-                                this.getCursorXLocal(),
-                                this.getCursorYLocal());
+                            this.getCursorXLocal(),
+                            this.getCursorYLocal());
                     } else {
                         this.moveComponent(
-                                this.selectedComponent,
-                                this.getCursorXLocal(),
-                                this.getCursorYLocal());
+                            this.selectedComponent,
+                            this.getCursorXLocal(),
+                            this.getCursorYLocal());
                         this.saveState()
                         this.execute()
                     }
-                } else if ( action == this.MOUSEACTION.DOWN ) {
-                    if ( this.selectedComponent == null ) {
+                } else if (action == this.MOUSEACTION.DOWN) {
+                    if (this.selectedComponent == null) {
                         this.selectComponent(this.temporarySelectedComponent);
                     } else {
                         this.unselectComponent();
@@ -770,13 +772,13 @@ export class GraphicDisplay {
                 this.displayRef!.style.cursor = 'crosshair';
                 this.tooltip = 'Delete';
                 if (action == this.MOUSEACTION.MOVE) {
-                    if ( this.selectedComponent == null ) {
+                    if (this.selectedComponent == null) {
                         this.temporarySelectedComponent = this.findIntersectionWith(
-                                this.getCursorXLocal(),
-                                this.getCursorYLocal());
+                            this.getCursorXLocal(),
+                            this.getCursorYLocal());
                     }
-                } else if ( action == this.MOUSEACTION.DOWN ) {
-                    if ( this.temporarySelectedComponent != null ) {
+                } else if (action == this.MOUSEACTION.DOWN) {
+                    if (this.temporarySelectedComponent != null) {
                         this.logicDisplay?.components[this.temporarySelectedComponent].setActive(false);
                     }
                     this.saveState()
@@ -817,14 +819,14 @@ export class GraphicDisplay {
     }
     moveComponent(index: number, x: number, y: number) {
         if (index != null) {
-            switch ( this.logicDisplay!.components[index].type ) {
+            switch (this.logicDisplay!.components[index].type) {
                 case COMPONENT_TYPES.POINT:
                 case COMPONENT_TYPES.LABEL:
                 case COMPONENT_TYPES.PICTURE:
                 case COMPONENT_TYPES.SHAPE:
                     var dx = x - this.logicDisplay!.components[index].x;
                     var dy = y - this.logicDisplay!.components[index].y;
-                    
+
                     this.logicDisplay!.components[index].x += dx;
                     this.logicDisplay!.components[index].y += dy;
                     break;
@@ -834,7 +836,7 @@ export class GraphicDisplay {
                 case COMPONENT_TYPES.MEASURE:
                     var dx = x - this.logicDisplay!.components[index].x1;
                     var dy = y - this.logicDisplay!.components[index].y1;
-                    
+
                     this.logicDisplay!.components[index].x1 += dx;
                     this.logicDisplay!.components[index].y1 += dy;
                     this.logicDisplay!.components[index].x2 += dx;
@@ -843,7 +845,7 @@ export class GraphicDisplay {
                 case COMPONENT_TYPES.ARC:
                     var dx = x - this.logicDisplay!.components[index].x1;
                     var dy = y - this.logicDisplay!.components[index].y1;
-                    
+
                     this.logicDisplay!.components[index].x1 += dx;
                     this.logicDisplay!.components[index].y1 += dy;
                     this.logicDisplay!.components[index].x2 += dx;
@@ -864,7 +866,7 @@ export class GraphicDisplay {
         }
     }
     unselectComponent() {
-        if ( this.selectedComponent != null ) {
+        if (this.selectedComponent != null) {
             this.logicDisplay!.components[this.selectedComponent].color = this.previousColor;
             this.logicDisplay!.components[this.selectedComponent].radius = this.previousRadius;
             this.selectedComponent = null;
@@ -892,21 +894,21 @@ export class GraphicDisplay {
     resetMode() {
         this.temporaryComponentType = 0;
         this.temporaryShape = null;
-        
+
         for (var i = 0; i < this.temporaryPoints.length; i++)
             delete this.temporaryPoints[i];
-        
+
         this.mode = -1;
         this.tooltip = this.tooltipDefault;
     }
     setZoom(zoomFactor: number) {
-        var newZoom = this.zoom * zoomFactor; 
+        var newZoom = this.zoom * zoomFactor;
         console.log(newZoom)
-        
+
         // Zoom interval control
-        if ( newZoom <= 0.4 || newZoom >= 15 )
+        if (newZoom <= 0.4 || newZoom >= 15)
             return;
-        
+
         this.targetZoom = newZoom;
     }
     zoomIn() {
@@ -928,8 +930,8 @@ export class GraphicDisplay {
     // lmao these functions are a duplicate
     getCursorXInFrame() {
         const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
-	    const rawXInFrame = this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2;
-	    return Math.round(rawXInFrame / adjustedGridSpacing) * adjustedGridSpacing;
+        const rawXInFrame = this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2;
+        return Math.round(rawXInFrame / adjustedGridSpacing) * adjustedGridSpacing;
     }
     getCursorYInFrame() {
         const adjustedGridSpacing = (this.gridSpacing / 2) * this.zoom;
@@ -948,17 +950,17 @@ export class GraphicDisplay {
         return parseFloat(distance.toFixed(2));
     }
     findIntersectionWith(x: number, y: number) {
-        for ( var i = this.logicDisplay!.components.length - 1; i >= 0; i-- ) {
+        for (var i = this.logicDisplay!.components.length - 1; i >= 0; i--) {
             if (!this.logicDisplay!.components[i].isActive())
                 continue;
-            
+
             switch (this.logicDisplay!.components[i].type) {
                 case COMPONENT_TYPES.POINT:
-                case COMPONENT_TYPES.LABEL:	
+                case COMPONENT_TYPES.LABEL:
                 case COMPONENT_TYPES.PICTURE:
                 case COMPONENT_TYPES.SHAPE:
-                    var delta = this.getDistance(x, y, this.logicDisplay!.components[i].x, this.logicDisplay!.components[i].y); 
-                    if ( delta >= 0 && delta <= this.snapTolerance / this.zoom )
+                    var delta = this.getDistance(x, y, this.logicDisplay!.components[i].x, this.logicDisplay!.components[i].y);
+                    if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
                         return i;
                     break;
                 case COMPONENT_TYPES.LINE:
@@ -966,13 +968,13 @@ export class GraphicDisplay {
                 case COMPONENT_TYPES.ARC:
                 case COMPONENT_TYPES.RECTANGLE:
                 case COMPONENT_TYPES.MEASURE:
-                    var delta = this.getDistance(x ,y, this.logicDisplay!.components[i].x1, this.logicDisplay!.components[i].y1);
-                    if ( delta >= 0 && delta <= this.snapTolerance / this.zoom )
+                    var delta = this.getDistance(x, y, this.logicDisplay!.components[i].x1, this.logicDisplay!.components[i].y1);
+                    if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
                         return i;
                     break;
             }
         }
-        
+
         return null;
     }
     saveComponent() {
@@ -990,6 +992,7 @@ export class GraphicDisplay {
 export const IntializeInstance = (gd: GraphicDisplay) => {
     console.log("initialized");
     gd.init();
+    gd.setMode(gd.MODES.NAVIGATE)
     document.onkeyup = (e) => {
         gd.keyboard?.onKeyUp(e);
     }

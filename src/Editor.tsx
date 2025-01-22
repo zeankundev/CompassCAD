@@ -5,13 +5,21 @@ function Editor() {
     const editor = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
+        let gd: GraphicDisplay | undefined;
+        
         if (editor.current) {
-            console.log("Canvas element:", editor?.current);
-            const gd = new GraphicDisplay(editor?.current, 800, 600);
+            console.log("Canvas element:", editor.current);
+            gd = new GraphicDisplay(editor.current, 800, 600);
             IntializeInstance(gd);
         }
+
+        return () => {
+            if (gd) {
+                // Add cleanup logic if needed
+                gd = undefined;
+            }
+        };
     }, []);
-    console.log(editor.current?.getContext("2d"))
 
     return (
         <div className="react-editor">
