@@ -281,7 +281,9 @@ SVGExporter.prototype.drawRectangleSvg = function(x1, y1, x2, y2, color, radius)
 
 SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	// Calculate the distance between the two points
-	var distance = this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * this.rendererComponent.unitConversionFactor;
+	var distance = this.rendererComponent.pcbEditorMode
+		? (this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * (this.rendererComponent.unitConversionFactor / 0.37)) * 10
+		: this.rendererComponent.getDistance(x1, y1, x2, y2) * this.rendererComponent.unitFactor * this.rendererComponent.unitConversionFactor;
 
 	// Calculate the angle of the line in radians
 	var angle = Math.atan2(y2 - y1, x2 - x1);
@@ -320,19 +322,17 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	const midY = (y1 + y2) / 2;
 
 	// Offset text position above midpoint if distance is short
-	const textOffsetY = isShortDistance ? (-10 / this.rendererComponent.zoom) * this.rendererComponent.zoom * localDiff - 15 : 0;
+	const textOffsetY = isShortDistance ? (750 / 100) : 0;
 
 	// Draw line segments only if distance is above threshold
 	if (!isShortDistance) {
 		const basePadding = 20;
-		const adaptivePadding = basePadding * this.rendererComponent.zoom;
-		const labelGap = (textWidth + adaptivePadding) / this.rendererComponent.zoom;
+		const adaptivePadding = basePadding;
+		const labelGap = (textWidth + adaptivePadding);
 
-		// Calculate positions where the gap starts and ends
 		const halfGapX = (labelGap / 2) * Math.cos(angle);
 		const halfGapY = (labelGap / 2) * Math.sin(angle);
 
-		// Draw line segments on either side of the gap
 		this.drawLineSvg(x1, y1, midX - halfGapX, midY - halfGapY, color, radius);
 		this.drawLineSvg(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
 	}
@@ -355,7 +355,7 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 
 	// Draw the distance label with rotation and alignment
 	this.c2s.save();
-	this.c2s.translate(midX * this.rendererComponent.zoom, (midY * this.rendererComponent.zoom) - textOffsetY);
+	this.c2s.translate((midX * this.rendererComponent.zoom) + this.rendererComponent.cOutX * this.rendererComponent.zoom, ((midY * this.rendererComponent.zoom) + (textOffsetY * 2)) + this.rendererComponent.cOutY * this.rendererComponent.zoom);
 	this.c2s.rotate(angle);
 	this.c2s.textAlign = 'center';
 	this.c2s.textBaseline = isShortDistance ? 'top' : 'middle';
