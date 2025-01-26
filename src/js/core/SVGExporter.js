@@ -376,7 +376,7 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	}
 	
 	this.c2s.fillStyle = "#000000";
-	this.c2s.font =  (this.rendererComponent.fontSize * localZoom) + "px Consolas, monospace";
+	this.c2s.font =  (this.rendererComponent.fontSize) + "px Consolas, monospace";
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
