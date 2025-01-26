@@ -355,7 +355,7 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 
 	// Draw the distance label with rotation and alignment
 	this.c2s.save();
-	this.c2s.translate((midX * this.rendererComponent.zoom) + this.rendererComponent.cOutX * this.rendererComponent.zoom, ((midY * this.rendererComponent.zoom) + (textOffsetY * 2)) + this.rendererComponent.cOutY * this.rendererComponent.zoom);
+	this.c2s.translate(midX, midY + (textOffsetY + 2));
 	this.c2s.rotate(angle);
 	this.c2s.textAlign = 'center';
 	this.c2s.textBaseline = isShortDistance ? 'top' : 'middle';
