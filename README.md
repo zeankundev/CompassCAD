@@ -5,7 +5,10 @@
 very good CAD software. plan out buildings, and show it off to your boss.
 
 > [!WARNING]
-> Snap-based CompassCAD will be discontinued due to an issue on WSL intterupting the distribution of CompassCAD snap files. Please proceed with downloading only either `*.appimage`, `*.deb` or `*.rpm` distribution files.
+> Snap-based CompassCAD will be discontinued due to an issue on WSL intterupting the distribution of CompassCAD snap files. Please proceed with downloading only either `*.appimage`, `*.deb` or `*.rpm` distribution files. (Update: as of now, CompassCAD is revitalized with a snap release at 1.6.1 and newer.)
+
+> [!IMPORTANT]
+> There aren't, and never will, releases of Mac builds because of impatience. Sourceforge data states that some of you use Macs to use CompassCAD although there are no official Mac builds yet. Another point to highlight why I wouldn't deploy to a Mac because I don't have a Mac machine (I don't want to dualboot my Kubuntu instance with Hackintosh). Signing programs for Mac (especially DMGs) require you to use a Mac just for signing!. I will start building for Macs if you are patient.
 
 [![compasscad](https://snapcraft.io/compasscad/badge.svg)](https://snapcraft.io/compasscad)
 
