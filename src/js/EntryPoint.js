@@ -214,7 +214,6 @@ $(document).ready(async() => {
     // Apply translations to window action buttons
     applyStringOnHTML('fpsWarning', document.getElementById('fps-warner'), 'title', '');
     applyStringOnHTML('fpsWarning', document.getElementById('fps-warner-inner'), 'html', '');
-    applyStringOnHTML('considerSupporting', document.querySelector('.window-actions button[onclick^="redirectToSomewhere"]'), 'title', '');
     applyStringOnHTML('minimize', document.getElementById('minimize'), 'title', '');
     applyStringOnHTML('maximize', document.getElementById('maximize'), 'title', '');
     applyStringOnHTML('close', document.getElementById('close'), 'title', '');
