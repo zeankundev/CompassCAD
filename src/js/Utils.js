@@ -338,6 +338,7 @@ const createFormForSelection = () => {
                 posInput.addEventListener("input", (e) => {
                     component[posKey] = parseFloat(e.target.value);
                     updateSizeIfNeeded(component); // Update size when position changes
+                    renderer.saveState()
                 });
                 dynamicForm.appendChild(posInput);
             });
@@ -357,6 +358,7 @@ const createFormForSelection = () => {
                 posInput.addEventListener("input", (e) => {
                     component[posKey] = parseFloat(e.target.value);
                     updateSizeIfNeeded(component); // Update size when position changes
+                    renderer.saveState()
                 });
                 dynamicForm.appendChild(posInput);
             });
@@ -408,6 +410,7 @@ const createFormForSelection = () => {
                 arcInput.value = component[arcKey];
                 arcInput.addEventListener("input", (e) => {
                     component[arcKey] = parseFloat(e.target.value);
+                    renderer.saveState()
                 });
                 dynamicForm.appendChild(arcInput);
             });
@@ -428,6 +431,7 @@ const createFormForSelection = () => {
                 input.checked = component[key];
                 input.addEventListener("change", (e) => {
                     component[key] = e.target.checked;
+                    renderer.saveState()
                 });
             } else if (typeof component[key] === 'string') {
                 input = document.createElement("input");
@@ -440,6 +444,7 @@ const createFormForSelection = () => {
                     } else if (key === 'radius') {
                         renderer.previousRadius = e.target.value
                     }
+                    renderer.saveState()
                 });
             } else if (typeof component[key] === 'number') {
                 input = document.createElement("input");
@@ -447,6 +452,7 @@ const createFormForSelection = () => {
                 input.value = component[key];
                 input.addEventListener("input", (e) => {
                     component[key] = parseFloat(e.target.value);
+                    renderer.saveState()
                 });
             }
 
