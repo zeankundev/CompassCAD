@@ -136,6 +136,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.pcbEditor = {
 		radius: 1
 	}
+	this.enableLegacyGridStyle = false;
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -813,82 +814,114 @@ GraphicDisplay.prototype.drawRules = function (e) {
 };
 
 GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
-	// Base grid spacing adjusted by zoom
-	const gridSpacingAdjusted = this.gridSpacing * this.zoom;
-	
-	// Dynamically adjust density based on zoom level
-	let densityDivisor;
-	// For very small grid spacing (<5), be more aggressive with density reduction
-	if (this.gridSpacing < 5) {
-		if (this.zoom <= 1) {
-			densityDivisor = 50; // Very sparse at low zoom
-		} else if (this.zoom <= 2) {
-			densityDivisor = 25; // Sparse at normal zoom
-		} else {
-			densityDivisor = 20; // Show full density only at high zoom
+	if (!this.enableLegacyGridStyle) {
+		// Modern dot grid style
+		// Base grid spacing adjusted by zoom
+		const gridSpacingAdjusted = (this.gridSpacing * 2) * this.zoom;
+		
+		// Dynamically adjust density based on zoom level
+		let densityDivisor;
+		// For very small grid spacing (<5), be more aggressive with density reduction
+		if (this.gridSpacing < 5) {
+			if (this.zoom <= 1) {
+				densityDivisor = 50; // Very sparse at low zoom
+			} else if (this.zoom <= 2) {
+				densityDivisor = 25; // Sparse at normal zoom
+			} else {
+				densityDivisor = 20; // Show full density only at high zoom
+			}
 		}
-	}
-	// For small grid spacing (5-10), moderate density reduction
-	else if (this.gridSpacing < 10) {
-		if (this.zoom < 1) {
-			densityDivisor = 6; // Very sparse at low zoom
-		} else if (this.zoom <= 2) {
-			densityDivisor = 3; // Normal density
-		} else {
-			densityDivisor = 1; // Dense at high zoom
+		// For small grid spacing (5-10), moderate density reduction
+		else if (this.gridSpacing < 10) {
+			if (this.zoom < 1) {
+				densityDivisor = 6; // Very sparse at low zoom
+			} else if (this.zoom <= 2) {
+				densityDivisor = 3; // Normal density
+			} else {
+				densityDivisor = 1; // Dense at high zoom
+			}
 		}
-	}
-	// For medium grid spacing (10-15), light density reduction
-	else if (this.gridSpacing < 20) {
-		if (this.zoom < 1) {
-			densityDivisor = 3; // Slightly sparse at low zoom
-		} else {
-			densityDivisor = 1.5; // Normal density at all other zooms
+		// For medium grid spacing (10-15), light density reduction 
+		else if (this.gridSpacing < 20) {
+			if (this.zoom < 1) {
+				densityDivisor = 3; // Slightly sparse at low zoom
+			} else {
+				densityDivisor = 1.5; // Normal density at all other zooms
+			}
 		}
-	}
-	else if (this.gridSpacing < 50) {
-		if (this.zoom < 1) densityDivisor = 2;
-		else densityDivisor = 1;
-	}
-	// For large grid spacing (>=15), no density reduction needed
-	else {
-		if (this.zoom < 0.75) {
-			densityDivisor = 1.5
-		} else {
-			densityDivisor = 0.5;
+		else if (this.gridSpacing < 50) {
+			if (this.zoom < 1) densityDivisor = 2;
+			else densityDivisor = 1;
 		}
-	}
+		else {
+			if (this.zoom < 0.75) {
+				densityDivisor = 1.5
+			} else {
+				densityDivisor = 0.5;
+			}
+		}
 
-	// Adjust spacing based on density
-	const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
-	
-	// Calculate visible area boundaries
-	const leftBound = -this.displayWidth/2;
-	const rightBound = this.displayWidth/2;
-	const topBound = -this.displayHeight/2;
-	const bottomBound = this.displayHeight/2;
+		// Adjust spacing based on density
+		const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
+		
+		// Calculate grid boundaries
+		const leftBound = -this.displayWidth/2;
+		const rightBound = this.displayWidth/2;
+		const topBound = -this.displayHeight/2;
+		const bottomBound = this.displayHeight/2;
 
-	// Calculate grid start/end positions with camera offset
-	const startX = Math.floor((leftBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
-	const startY = Math.floor((topBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
-	const endX = Math.ceil((rightBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
-	const endY = Math.ceil((bottomBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+		// Calculate grid start/end positions
+		const startX = Math.floor((leftBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+		const startY = Math.floor((topBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+		const endX = Math.ceil((rightBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
+		const endY = Math.ceil((bottomBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
 
-	// Adjust point size based on zoom
-	const pointSize = Math.min(1, Math.max(0.5, this.zoom * 0.5));
-	
-	// Set grid style
-	this.context.fillStyle = "#cccccc75";
+		// Draw dot grid
+		this.context.fillStyle = "#cccccc75";
+		for (let x = startX; x <= endX; x += effectiveSpacing) {
+			for (let y = startY; y <= endY; y += effectiveSpacing) {
+				this.context.beginPath();
+				const adjustedX = x + camXoff * this.zoom;
+				const adjustedY = y + camYoff * this.zoom;
+				this.context.arc(adjustedX, adjustedY, 1, 0, Math.PI * 2);
+				this.context.fill();
+			}
+		}
+	} else {
+		// Legacy cartesian grid style
+		const gridSpacing = this.gridSpacing * this.zoom;
+		
+		// Calculate grid boundaries
+		const leftBound = -this.displayWidth/2;
+		const rightBound = this.displayWidth/2;
+		const topBound = -this.displayHeight/2;
+		const bottomBound = this.displayHeight/2;
 
-	// Draw optimized grid points
-	for (let x = startX; x <= endX; x += effectiveSpacing) {
-		for (let y = startY; y <= endY; y += effectiveSpacing) {
-			this.context.beginPath();
+		// Calculate grid lines start/end positions
+		const startX = Math.floor((leftBound - camXoff * this.zoom) / gridSpacing) * gridSpacing;
+		const endX = Math.ceil((rightBound - camXoff * this.zoom) / gridSpacing) * gridSpacing;
+		const startY = Math.floor((topBound - camYoff * this.zoom) / gridSpacing) * gridSpacing;
+		const endY = Math.ceil((bottomBound - camYoff * this.zoom) / gridSpacing) * gridSpacing;
+
+		// Draw vertical lines
+		this.context.beginPath();
+		this.context.strokeStyle = "#cccccc40";
+		this.context.lineWidth = 0.5;
+		
+		for (let x = startX; x <= endX; x += gridSpacing) {
 			const adjustedX = x + camXoff * this.zoom;
-			const adjustedY = y + camYoff * this.zoom;
-			this.context.arc(adjustedX, adjustedY, 1, 0, Math.PI * 2);
-			this.context.fill();
+			this.context.moveTo(adjustedX, topBound);
+			this.context.lineTo(adjustedX, bottomBound);
 		}
+
+		// Draw horizontal lines
+		for (let y = startY; y <= endY; y += gridSpacing) {
+			const adjustedY = y + camYoff * this.zoom;
+			this.context.moveTo(leftBound, adjustedY);
+			this.context.lineTo(rightBound, adjustedY);
+		}
+
+		this.context.stroke();
 	}
 };
 
@@ -1647,7 +1680,7 @@ GraphicDisplay.prototype.getCursorYRaw = function (e) {
 };
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
     // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+    const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
 
     // Calculate the raw local X position based on the global mouse position and offsets
     const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
@@ -1658,7 +1691,7 @@ GraphicDisplay.prototype.getCursorXLocal = function (e) {
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
     // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing / 2, this.gridSpacing / 2 * this.zoom / 6);
+    const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
 
     // Calculate the raw local Y position based on the global mouse position and offsets
     const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
@@ -1675,7 +1708,7 @@ GraphicDisplay.prototype.getCursorXInFrame = function () {
 	const worldX = (screenX / this.zoom) - this.cOutX;
 	
 	// Apply grid snapping while maintaining reference to world origin
-	const gridSize = this.gridSpacing / 2;
+	const gridSize = this.gridSpacing;
 	const snappedX = Math.round(worldX / gridSize) * gridSize;
 	
 	// Convert back to screen coordinates while preserving origin reference
@@ -1690,7 +1723,7 @@ GraphicDisplay.prototype.getCursorYInFrame = function () {
 	const worldY = (screenY / this.zoom) - this.cOutY;
 	
 	// Apply grid snapping while maintaining reference to world origin
-	const gridSize = this.gridSpacing / 2;
+	const gridSize = this.gridSpacing;
 	const snappedY = Math.round(worldY / gridSize) * gridSize;
 	
 	// Convert back to screen coordinates while preserving origin reference
