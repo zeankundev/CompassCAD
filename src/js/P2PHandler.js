@@ -20,6 +20,7 @@ const join = () => {
             smallImageKey: 'work_multi',
             startTimestamp: new Date().now
         })
+        document.getElementById('peer-connecting').style.display = 'none'
         document.getElementById('peer-connected').style.display = 'block'
         setTimeout(() => {
             document.getElementById('peer-connected').style.display = 'none'
@@ -51,6 +52,7 @@ const join = () => {
 }
 join()
 const joinSession = (id) => {
+    document.getElementById('peer-connecting').style.display = 'block'
     console.log('asking to join session')
     if (connection && connection.open) return;
     connection = peer.connect(id)

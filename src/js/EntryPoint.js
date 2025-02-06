@@ -246,6 +246,7 @@ $(document).ready(async() => {
     applyStringOnHTML('languageText', document.getElementById('language-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('settings-text'), 'html', '');
     applyStringOnHTML('settings', document.getElementById('open-settings'), 'title', '');
+    applyStringOnHTML('toggleInspector', document.getElementById('toggle-inspector'), 'title', '');
     applyStringOnHTML('hostOrJoinP2P', document.getElementById('join-remote'), 'title', '');
     applyStringOnHTML('hostOrJoinP2P', document.getElementById('p2p-head'), 'html', '');
     applyStringOnHTML('yourSessionId', document.getElementById('your-id'), 'html', '');
@@ -254,6 +255,7 @@ $(document).ready(async() => {
     applyStringOnHTML('backupsTitle', document.getElementById('backups-headtext'), 'html', '')
     applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
+    applyStringOnHTML('inspector', document.getElementById('inspector-title'), 'html', '');
     window.onbeforeunload = (e) => {
         // Check if components is not null and is not empty
         if (renderer.logicDisplay.components && renderer.logicDisplay.components.length > 0) {

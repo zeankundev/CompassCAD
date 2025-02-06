@@ -87,6 +87,7 @@
                 <button id="p2p-connect">Connect</button>
                 <button id="p2p-close">Close</button>
             </div>
+            <div id="peer-connecting"><div class="spinner-absolute"></div>&nbsp;<span id="peer-connect-text">Connecting, please wait...</span></div>
             <div id="peer-connected"><img src="../../assets/icons/complete.svg">&nbsp;<span id="peer-success-text">You are now connected. Have fun!</span></div>
         </modal>
         <modal class="prompt hidden" id="eval-modal">
@@ -156,7 +157,7 @@
                     <canvas id="canvas" width="800" height="600" oncontextmenu="return false"></canvas>
                 </div>
                 <div class="inspector" id="inspector">
-                    <h2>Inspector</h2>
+                    <h2 id="inspector-title">Inspector</h2>
                     <br>
                     <div id="form"></div>
                 </div>

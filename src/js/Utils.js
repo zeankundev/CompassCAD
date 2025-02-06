@@ -120,13 +120,16 @@ function openBackupRecovery() {
 }
 
 function openMultiEditor() {
+    const peerConnecting = document.getElementById('peer-connecting');
     const peerConnected = document.getElementById('peer-connected');
     const p2pInitializer = document.getElementById('p2p-initializer');
 
     if (p2pInitializer.classList.contains('hidden')) {
+        peerConnecting.style.display = 'none';
         peerConnected.style.display = 'none';
         p2pInitializer.classList.remove('hidden');
     } else {
+        peerConnecting.style.display = 'block';
         peerConnected.style.display = 'block';
         p2pInitializer.classList.add('hidden');
     }
@@ -296,9 +299,10 @@ function objparse(obj) {
     renderer.logicDisplay.components = []
     renderer.logicDisplay.importJSON(JSON.parse(obj),renderer.logicDisplay.components)
 }
-const clearForm = () => {
+const clearForm = async () => {
+    const loc = new Localizator()
     const dynamicForm = document.getElementById("form");
-    dynamicForm.innerHTML = 'Nothing to inspect...';
+    dynamicForm.innerHTML = await loc.getLocalizedString('nothingToInspect');
     dynamicForm.style.overflowY = 'hidden'
 }
 const createFormForSelection = () => {
