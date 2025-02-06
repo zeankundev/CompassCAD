@@ -1469,18 +1469,6 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 				cursor: 'move'
 			})
 			break;
-			
-		case COMPONENT_TYPES.POINT:
-		case COMPONENT_TYPES.LABEL:
-		case COMPONENT_TYPES.PICTURE:
-			// Center handle
-			handles.push({
-				x: (component.x + this.cOutX) * this.zoom,
-				y: (component.y + this.cOutY) * this.zoom,
-				id: 'center',
-				cursor: 'move'
-			});
-			break;
 	}
 	
 	return handles;
