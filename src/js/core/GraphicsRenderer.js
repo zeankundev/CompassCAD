@@ -241,8 +241,10 @@ GraphicDisplay.prototype.execute = async function (e) {
 		console.log('[handle] tick: not null')
 		const handles = this.getComponentHandles(this.selectComponent)
 		for (const handle of handles) {
-			console.log('[handles] drawing handles (called)...')
-			this.drawPoint(handle.x, handle.y, '#fff', 2)
+			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
+				console.log('[handles] drawing handles (called)...')
+				this.drawPoint(handle.x, handle.y, '#fff', 2)
+			}
 		}
 	}
 	// Draw rules and tooltips
@@ -1420,55 +1422,56 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 };
 const handles = []
 GraphicDisplay.prototype.getComponentHandles = function(component) {
+	if (this.selectedComponent != null || !this.logicDisplay.components[this.selectedComponent].isActive()) {
+		switch(component.type) {
+			case COMPONENT_TYPES.LINE:
+			case COMPONENT_TYPES.RECTANGLE:
+			case COMPONENT_TYPES.CIRCLE:
+				// Clear any existing handles first
+				handles.length = 0;
+				
+				// Start handle
+				handles.push({
+					x: component.x1,
+					y: component.y1,
+					id: 'start',
+					cursor: 'nw-resize'
+				});
+				// End handle 
+				handles.push({
+					x: component.x2,
+					y: component.y2, 
+					id: 'end',
+					cursor: 'se-resize'
+				});
+				break;
 	
-	switch(component.type) {
-		case COMPONENT_TYPES.LINE:
-		case COMPONENT_TYPES.RECTANGLE:
-		case COMPONENT_TYPES.CIRCLE:
-			// Clear any existing handles first
-			handles.length = 0;
-			
-			// Start handle
-			handles.push({
-				x: component.x1,
-				y: component.y1,
-				id: 'start',
-				cursor: 'nw-resize'
-			});
-			// End handle 
-			handles.push({
-				x: component.x2,
-				y: component.y2, 
-				id: 'end',
-				cursor: 'se-resize'
-			});
-			break;
-
-		case COMPONENT_TYPES.ARC:
-			// Clear any existing handles first
-			handles.length = 0;
-			
-			handles.push({
-				x: component.x1,
-				y: component.y1,
-				id: 'start',
-				cursor: 'nw-resize'
-			});
-			
-			handles.push({
-				x: component.x2,
-				y: component.y2, 
-				id: 'mid',
-				cursor: 'se-resize'
-			});
-
-			handles.push({
-				x: component.x3,
-				y: component.y3,
-				id: 'end',
-				cursor: 'move'
-			})
-			break;
+			case COMPONENT_TYPES.ARC:
+				// Clear any existing handles first
+				handles.length = 0;
+				
+				handles.push({
+					x: component.x1,
+					y: component.y1,
+					id: 'start',
+					cursor: 'nw-resize'
+				});
+				
+				handles.push({
+					x: component.x2,
+					y: component.y2, 
+					id: 'mid',
+					cursor: 'se-resize'
+				});
+	
+				handles.push({
+					x: component.x3,
+					y: component.y3,
+					id: 'end',
+					cursor: 'move'
+				})
+				break;
+		}
 	}
 	
 	return handles;
