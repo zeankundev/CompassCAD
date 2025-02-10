@@ -204,10 +204,11 @@ GraphicDisplay.prototype.getLocal = async function (key) {
 }
 GraphicDisplay.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp");
+	const useOldGrid = await this.config.getValueKey("useOldGrid");
 	this.preferredFont = await this.config.getValueKey("preferredFont");
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
-
+	this.enableLegacyGridStyle = useOldGrid;
 	// Handle zoom interpolation
 	if (disableLerp !== true) {
 		this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);

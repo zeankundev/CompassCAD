@@ -11,6 +11,7 @@ $(document).ready(async() => {
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
     document.getElementById('disable-lerp').checked = await config.getValueKey('disableLerp')
+    document.getElementById('use-old-grid').checked = await config.getValueKey('useOldGrid')
     document.getElementById('language').value = await config.getValueKey('lang')
     document.getElementById('workspace-font').value = await config.getValueKey('preferredFont')
     document.getElementById('undo-stack').onchange = () => {
@@ -26,6 +27,9 @@ $(document).ready(async() => {
     };
     document.getElementById('disable-lerp').onchange = () => {
         config.saveKey('disableLerp', document.getElementById('disable-lerp').checked);
+    };
+    document.getElementById('use-old-grid').onchange = () => {
+        config.saveKey('useOldGrid', document.getElementById('use-old-grid').checked);
     };
 
     document.getElementById('workspace-font').onchange = () => {
