@@ -84,7 +84,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.zoomout = 2/3;
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
-	this.zoomSpeed = 0.08; // Adjust the speed of the zoom transition
+	this.zoomSpeed = 0.25; // Adjust the speed of the zoom transition
 	this.maxZoomFactor = 5;
 	this.camMoving = false;
 	this.xCNaught = 0;
@@ -2031,25 +2031,59 @@ var initCAD = function (gd) {
 	});
 
 	// Start CAD
-	function repeatInstance(e) {
-		const currentTime = performance.now();
-		frameCount++;
-		if (currentTime - lastTime >= 1000) {
-			fps = frameCount;
-			frameCount = 0;
-			lastTime = currentTime;
-			if (fps < fpsWarningThreshold && !warningDisplayed) {
-				console.warn('FPS dropped below 20!');
-				document.getElementById('fps-warner').style.display = 'inline-flex'
-			} else if (fps >= fpsWarningThreshold) {
-				document.getElementById('fps-warner').style.display = 'none'
-			}
+	let animationFrameId;
+	let isWindowFocused = true;
+
+	// Focus/blur event listeners
+	window.addEventListener('focus', () => {
+		isWindowFocused = true;
+		// Restart animation loop when window regains focus
+		if (!animationFrameId) {
+			repeatInstance();
 		}
-		gd.execute();
-	};
-	setInterval(repeatInstance, 0)
+	});
+
+	window.addEventListener('blur', () => {
+		isWindowFocused = false;
+		// Cancel animation frame when window loses focus
+		if (animationFrameId) {
+			cancelAnimationFrame(animationFrameId);
+			animationFrameId = null;
+		}
+	});
+
+	function repeatInstance() {
+		// Only run animation if window is focused
+		if (isWindowFocused) {
+			const currentTime = performance.now();
+			frameCount++;
+			
+			if (currentTime - lastTime >= 1000) {
+				fps = frameCount;
+				frameCount = 0;
+				lastTime = currentTime;
+				
+				if (fps < fpsWarningThreshold && !warningDisplayed) {
+					console.warn('FPS dropped below 20!');
+					document.getElementById('fps-warner').style.display = 'inline-flex';
+				} else if (fps >= fpsWarningThreshold) {
+					document.getElementById('fps-warner').style.display = 'none';
+				}
+			}
+
+			gd.execute();
+			animationFrameId = requestAnimationFrame(repeatInstance);
+		}
+	}
+
+	// Start initial animation
+	repeatInstance();
+
+	// Keep peer changes check interval but at a longer interval when unfocused
 	setInterval(() => {
-		gd.checkForAnyPeerChanges()
-	}, 250)
+		if (isWindowFocused) {
+			gd.checkForAnyPeerChanges();
+		}
+	}, isWindowFocused ? 250 : 1000);
 };
 
