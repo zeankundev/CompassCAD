@@ -84,8 +84,8 @@ function GraphicDisplay(displayName, width, height) {
 	this.zoomout = 2/3;
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
-	this.zoomSpeed = 0.25; // Adjust the speed of the zoom transition
-	this.maxZoomFactor = 5;
+	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
+	this.maxZoomFactor = 10;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -221,7 +221,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	if (this.pcbEditorMode) {
 		this.showGrid = false;
 		this.gridSpacing = 2;
-		this.maxZoomFactor = 6;
+		this.maxZoomFactor = 12;
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
 	}
@@ -1220,10 +1220,21 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						// Cache local cursor positions
 						const localX = this.getCursorXLocal();
 						const localY = this.getCursorYLocal();
-						
-						// Move component every frame for smooth motion
+
+						// Move component every frame for smooth motion 
 						this.moveComponent(this.selectedComponent, localX, localY);
-						
+
+						// Update handles live during movement
+						const component = this.logicDisplay.components[this.selectedComponent];
+						if (component.type !== COMPONENT_TYPES.POINT && 
+							component.type !== COMPONENT_TYPES.LABEL &&
+							component.type !== COMPONENT_TYPES.PICTURE) {
+							const handles = this.getComponentHandles(component);
+							for (const handle of handles) {
+								this.drawPoint(handle.x, handle.y, '#fff', 2);
+							}
+						}
+
 						// Throttle state saves and form updates to every 6 frames
 						if (frameCount % 6 === 0) {
 							// Use requestAnimationFrame for better performance
@@ -1628,6 +1639,9 @@ GraphicDisplay.prototype.setModeShape = function (getShape) {
 };
 
 GraphicDisplay.prototype.setMode = function (mode) {
+	if (this.temporarySelectedComponent != null) {
+		this.unselectComponent();
+	}
 	this.resetMode();
 
 	if (this.readonly)
@@ -1654,8 +1668,11 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
     console.log(newZoom);
     // Ensure zoom does not go beyond limits
     if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
+		console.log(`[zoom] set zoom to ${newZoom}`);
         return;
-    }
+    } else {
+		console.log('[zoom] ignoring zoom...');
+	}
     // Set the target zoom normally
     this.targetZoom = newZoom;
     // Display the zoom level
@@ -1971,6 +1988,11 @@ var initCAD = function (gd) {
 
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.LESSTHAN, function (e) {
 		gd.zoomOut();
+	});
+
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.FORWARDSLASH, function (e) {
+		const requiredZoomFactor = 1 / renderer.zoom;
+		renderer.setZoom(requiredZoomFactor);
 	});
 
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.N, function (e) {
