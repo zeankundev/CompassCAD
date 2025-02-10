@@ -5,7 +5,7 @@
     "openBackups": "Buka Cadangan",
     "zoomIn": "Perbesar (>)",
     "zoomOut": "Perkecil (<)",
-    "togggleSnap": "Hidupkan/Matikan Snapping (ctrl+k)",
+    "toggleSnap": "Hidupkan/Matikan Snapping (ctrl+k)",
     "backupsTitle": "Pulihkan atau buka cadangan",
     "totalBackupSize": "Ukuran total folder cadangan:",
     "inspector": "Inspektur",

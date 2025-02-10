@@ -5,7 +5,7 @@
     "openBackups": "Ouvrir les sauvegardes",
     "zoomIn": "Zoom avant (>)",
     "zoomOut": "Zoom arrière (<)",
-    "togggleSnap": "Activer/désactiver l'alignement (ctrl+k)",
+    "toggleSnap": "Activer/désactiver l'alignement (ctrl+k)",
     "backupsTitle": "Récupérer ou ouvrir des sauvegardes",
     "hostOrJoinP2P": "Héberger ou rejoindre une session multi-édition",
     "yourSessionId": "Votre ID de session :",

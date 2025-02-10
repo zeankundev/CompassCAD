@@ -5,7 +5,7 @@
     "openBackups": "Open Backups",
     "zoomIn": "Zoom in (>)",
     "zoomOut": "Zoom out (<)",
-    "togggleSnap": "Turn snap on/off (ctrl+k)",
+    "toggleSnap": "Turn snap on/off (ctrl+k)",
     "backupsTitle": "Recover or open backups",
     "hostOrJoinP2P": "Host or join a multi-edit session",
     "yourSessionId": "Your Session ID:",

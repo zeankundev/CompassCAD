@@ -5,7 +5,7 @@
     "openBackups": "Back-ups Openen",
     "zoomIn": "Inzoomen (>)",
     "zoomOut": "Uitzoomen (<)",
-    "togggleSnap": "Aan/Uit Snappen (ctrl+k)",
+    "toggleSnap": "Aan/Uit Snappen (ctrl+k)",
     "backupsTitle": "Back-ups herstellen of openen",
     "totalBackupSize": "Totale back-up mapgrootte:",
     "inspector": "Inspecteur",

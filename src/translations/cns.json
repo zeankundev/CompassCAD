@@ -5,7 +5,7 @@
     "openBackups": "打开备份",
     "zoomIn": "放大 (>)",
     "zoomOut": "缩小 (<)",
-    "togggleSnap": "打开/关闭对齐 (ctrl+k)",
+    "toggleSnap": "打开/关闭对齐 (ctrl+k)",
     "backupsTitle": "恢复或打开备份",
     "hostOrJoinP2P": "创建或加入多人编辑会话",
     "yourSessionId": "您的会话 ID:",

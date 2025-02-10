@@ -5,7 +5,7 @@
     "openBackups": "Öppna Backuper",
     "zoomIn": "Zooma in (>)",
     "zoomOut": "Zooma ut (<)",
-    "togggleSnap": "Slå på/av Snappning (ctrl+k)",
+    "toggleSnap": "Slå på/av Snappning (ctrl+k)",
     "backupsTitle": "Återställ eller öppna backuper",
     "totalBackupSize": "Total storlek på backupmappen:",
     "inspector": "Inspicient",

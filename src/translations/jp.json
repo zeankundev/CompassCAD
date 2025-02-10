@@ -5,7 +5,7 @@
     "openBackups": "バックアップを開く",
     "zoomIn": "ズームイン (>)",
     "zoomOut": "ズームアウト (<)",
-    "togggleSnap": "スナップのオン/オフ (ctrl+k)",
+    "toggleSnap": "スナップのオン/オフ (ctrl+k)",
     "backupsTitle": "バックアップの復元または開く",
     "hostOrJoinP2P": "マルチ編集セッションをホストまたは参加",
     "yourSessionId": "あなたのセッションID:",
