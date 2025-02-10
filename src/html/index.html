@@ -127,9 +127,12 @@
                 <div class="division-line"></div>
                 <button title="Undo (ctrl+z)" id="undo"><img src="../../assets/icons/undo.svg"></button>
                 <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
+                <button title="Zoom in (>)" id="zoom-in" onclick="renderer.zoomIn()"><img src="../../assets/icons/zoomin.svg"></button>
+                <button title="Zoom out (<)" id="zoom-out" onclick="renderer.zoomOut()"><img src="../../assets/icons/zoomout.svg"></button>
+                <span class="menubar-text" style="margin-left: 20px;" id="zoom-level" onclick="const requiredZoomFactor = 1 / renderer.zoom;renderer.setZoom(requiredZoomFactor);"></span>
+                <button title="Turn snap on/off (ctrl+k)" id="toggle-snap" onclick="toggleSnap()"><img id="snap-toggle" src="../../assets/icons/snap.svg"></button>
                 <div class="division-line"></div>
                 &nbsp;
-                <span class="menubar-text" style="margin-left: 20px;" id="zoom-level" onclick="const requiredZoomFactor = 1 / renderer.zoom;renderer.setZoom(requiredZoomFactor);"></span>
                 <button title="Host or join a multi-edit session" id="join-remote" onclick="openMultiEditor()"><img src="../../assets/icons/remoteconnect.svg"></button>
                 <button title="Toggle inspector" id="toggle-inspector" onclick="toggleInspector()"><img src="../../assets/icons/inspector.svg"></button>
                 <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>

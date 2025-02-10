@@ -131,12 +131,13 @@ function GraphicDisplay(displayName, width, height) {
 	this.colliderColor = '#00ff00'
 	this.imageCache = {};
 
-	// Miscellaneous settings
+	// Miscellaneous/debug settings
 	this.pcbEditorMode = false;
 	this.pcbEditor = {
 		radius: 1
 	}
 	this.enableLegacyGridStyle = false;
+	this.enableSnap = true;
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -1697,55 +1698,47 @@ GraphicDisplay.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
-
-    // Calculate the raw local X position based on the global mouse position and offsets
-    const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
-
-    // Snap to the adjusted grid spacing
-    return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
+    if (this.enableSnap) {
+		const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
+		const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+		return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	} else {
+		return (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+	}
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-    // Adjust the grid spacing to be coarser at low zoom levels and finer at high zoom levels
-    const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
-
-    // Calculate the raw local Y position based on the global mouse position and offsets
-    const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
-
-    // Snap to the adjusted grid spacing
-    return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
+    if (this.enableSnap) {
+		const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
+		const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+		return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
+	} else {
+		return (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+	}
 };
 
 GraphicDisplay.prototype.getCursorXInFrame = function () {
-	// Get cursor position relative to canvas center (0,0)
-	const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
-	
-	// Convert to world coordinates with camera offset
-	const worldX = (screenX / this.zoom) - this.cOutX;
-	
-	// Apply grid snapping while maintaining reference to world origin
-	const gridSize = this.gridSpacing;
-	const snappedX = Math.round(worldX / gridSize) * gridSize;
-	
-	// Convert back to screen coordinates while preserving origin reference
-	return (snappedX + this.cOutX) * this.zoom;
+	if (this.enableSnap) {
+		const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
+		const worldX = (screenX / this.zoom) - this.cOutX;
+		const gridSize = this.gridSpacing;
+		const snappedX = Math.round(worldX / gridSize) * gridSize;
+		return (snappedX + this.cOutX) * this.zoom;
+	} else {
+		return this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
+	}
 };
 
 GraphicDisplay.prototype.getCursorYInFrame = function () {
-	// Get cursor position relative to canvas center (0,0) 
-	const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
-	
-	// Convert to world coordinates with camera offset
-	const worldY = (screenY / this.zoom) - this.cOutY;
-	
-	// Apply grid snapping while maintaining reference to world origin
-	const gridSize = this.gridSpacing;
-	const snappedY = Math.round(worldY / gridSize) * gridSize;
-	
-	// Convert back to screen coordinates while preserving origin reference
-	return (snappedY + this.cOutY) * this.zoom;
+	if (this.enableSnap) {
+		const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
+		const worldY = (screenY / this.zoom) - this.cOutY;
+		const gridSize = this.gridSpacing;
+		const snappedY = Math.round(worldY / gridSize) * gridSize;
+		return (snappedY + this.cOutY) * this.zoom;
+	} else {
+		return this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
+	}
 };
 GraphicDisplay.prototype.setToolTip = function (text) {
 	this.tooltip = text;
@@ -1753,7 +1746,7 @@ GraphicDisplay.prototype.setToolTip = function (text) {
 
 GraphicDisplay.prototype.getToolTip = function (e) {
 	var text = this.tooltip;
-	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${fps.toFixed(0)} FPS)`;
+	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${(this.enableSnap ? "snapping" : "not snapping")}, ${fps.toFixed(0)} FPS)`;
 };
 
 //TODO: Move in Utils.
@@ -2017,6 +2010,9 @@ var initCAD = function (gd) {
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.E, function (e) {
 		gd.exportDesign()
 		gd.setMode(gd.MODES.NAVIGATE)
+	}, { ctrl: true });
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.K, function (e) {
+		toggleSnap()
 	}, { ctrl: true });
 
 	// Bind mouse events

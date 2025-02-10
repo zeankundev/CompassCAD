@@ -6,6 +6,7 @@ $(document).ready(async() => {
     renderer = new GraphicDisplay('canvas', 800,600)
     renderer.logicDisplay = renderer.logicDisplay || {};
     renderer.logicDisplay.components = renderer.logicDisplay.components || [];
+    document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');
     document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
@@ -226,6 +227,9 @@ $(document).ready(async() => {
     applyStringOnHTML('exportDesign', document.getElementById('export-design'), 'title', '');
     applyStringOnHTML('undo', document.getElementById('undo'), 'title', '');
     applyStringOnHTML('redo', document.getElementById('redo'), 'title', '');
+    applyStringOnHTML('zoomIn', document.getElementById('zoom-in'), 'title', '');
+    applyStringOnHTML('zoomOut', document.getElementById('zoom-out'), 'title', '');
+    applyStringOnHTML('toggleSnap', document.getElementById('toggle-snap'), 'title', '');
     applyStringOnHTML('selectToolbar', document.getElementById('select'), 'title', '');
     applyStringOnHTML('navigateToolbar', document.getElementById('navigate'), 'title', '');
     applyStringOnHTML('moveToolbar', document.getElementById('move-obj'), 'title', '');

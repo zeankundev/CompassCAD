@@ -463,7 +463,10 @@ const createFormForSelection = () => {
         }
     });
 };
-
+const toggleSnap = () => {
+    renderer.enableSnap = !renderer.enableSnap;
+    document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');
+}
 // Helper function to update Size dynamically
 const updateSizeIfNeeded = (component) => {
     if ('x1' in component && 'x2' in component && 'y1' in component && 'y2' in component) {
