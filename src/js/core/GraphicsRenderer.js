@@ -1672,7 +1672,6 @@ GraphicDisplay.prototype.resetMode = function (e) {
 };
 
 GraphicDisplay.prototype.setZoom = function (zoomFactor) {
-
     // Calculate the new zoom based on the current zoom and zoomFactor
     var newZoom = this.zoom * zoomFactor;
     console.log(newZoom);
