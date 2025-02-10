@@ -1228,11 +1228,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 
 						// Update handles live during movement
 						const component = this.logicDisplay.components[this.selectedComponent];
-						if (component.type !== COMPONENT_TYPES.POINT && 
-							component.type !== COMPONENT_TYPES.LABEL &&
-							component.type !== COMPONENT_TYPES.PICTURE) {
-								
-						}
+						// Skip handle drawing during move mode - handles are only for select mode
 
 						// Throttle state saves and form updates to every 6 frames
 						if (frameCount % 6 === 0) {
@@ -1769,52 +1765,163 @@ GraphicDisplay.prototype.getDistance = function (x1, y1, x2, y2) {
 
 // TODO: Move in Utils.
 GraphicDisplay.prototype.findIntersectionWith = function (x, y) {
-    for (var i = this.logicDisplay.components.length - 1; i >= 0; i--) {
-        if (!this.logicDisplay.components[i].isActive())
-            continue;
+	// Track all intersections with their distances
+	const intersections = [];
+	const snapBox = this.snapTolerance / this.zoom;
 
-        switch (this.logicDisplay.components[i].type) {
-            case COMPONENT_TYPES.POINT:
-            case COMPONENT_TYPES.LABEL:
-            case COMPONENT_TYPES.PICTURE:
-            case COMPONENT_TYPES.SHAPE:
-                var delta = this.getDistance(x, y, this.logicDisplay.components[i].x, this.logicDisplay.components[i].y);
-                if (delta >= 0 && delta <= this.snapTolerance / this.zoom)
-                    return i;
-                break;
+	// First pass: collect all intersections
+	for (var i = this.logicDisplay.components.length - 1; i >= 0; i--) {
+		if (!this.logicDisplay.components[i].isActive()) continue;
 
-            case COMPONENT_TYPES.LINE:
-            case COMPONENT_TYPES.CIRCLE:
-            case COMPONENT_TYPES.RECTANGLE:
-            case COMPONENT_TYPES.MEASURE:
-                // For LINE, check both endpoints (x1, y1) and (x2, y2)
-                var delta1 = this.getDistance(x, y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
-                if (delta1 >= 0 && delta1 <= this.snapTolerance / this.zoom)
-                    return i;
-                
-                var delta2 = this.getDistance(x, y, this.logicDisplay.components[i].x2, this.logicDisplay.components[i].y2);
-                if (delta2 >= 0 && delta2 <= this.snapTolerance / this.zoom)
-                    return i;
-                break;
+		// Debug visualization
+		if (this.drawDebugPoint) {
+			this.visualizeColliders(i, snapBox);
+		}
 
-            case COMPONENT_TYPES.ARC:
-                // For ARC, check the center (cx, cy), start point (x1, y1), and end point (x2, y2)
-                var deltaCenter = this.getDistance(x, y, this.logicDisplay.components[i].x1, this.logicDisplay.components[i].y1);
-                if (deltaCenter >= 0 && deltaCenter <= this.snapTolerance / this.zoom)
-                    return i;
+		// Calculate intersection data
+		const intersection = this.calculateIntersection(i, x, y);
+		if (intersection) {
+			intersections.push({
+				index: i,
+				distance: intersection.distance,
+				type: this.logicDisplay.components[i].type,
+				pointType: intersection.pointType // 'center', 'start', 'end', etc.
+			});
+		}
+	}
 
-                var deltaStart = this.getDistance(x, y, this.logicDisplay.components[i].x2, this.logicDisplay.components[i].y2);
-                if (deltaStart >= 0 && deltaStart <= this.snapTolerance / this.zoom)
-                    return i;
+	// If no intersections found, return null
+	if (intersections.length === 0) return null;
 
-                var deltaEnd = this.getDistance(x, y, this.logicDisplay.components[i].x3, this.logicDisplay.components[i].y3);
-                if (deltaEnd >= 0 && deltaEnd <= this.snapTolerance / this.zoom)
-                    return i;
-                break;
-        }
-    }
+	// Sort intersections by priority rules
+	return this.getPrioritizedIntersection(intersections);
+};
 
-    return null;
+GraphicDisplay.prototype.calculateIntersection = function(index, x, y) {
+	const component = this.logicDisplay.components[index];
+	const tolerance = this.snapTolerance / this.zoom;
+
+	switch (component.type) {
+		case COMPONENT_TYPES.POINT:
+		case COMPONENT_TYPES.LABEL:
+		case COMPONENT_TYPES.PICTURE:
+		case COMPONENT_TYPES.SHAPE:
+			const delta = this.getDistance(x, y, component.x, component.y);
+			if (delta <= tolerance) {
+				return { distance: delta, pointType: 'center' };
+			}
+			break;
+
+		case COMPONENT_TYPES.LINE:
+		case COMPONENT_TYPES.CIRCLE:
+		case COMPONENT_TYPES.RECTANGLE:
+		case COMPONENT_TYPES.MEASURE:
+			const delta1 = this.getDistance(x, y, component.x1, component.y1);
+			const delta2 = this.getDistance(x, y, component.x2, component.y2);
+			if (delta1 <= tolerance || delta2 <= tolerance) {
+				return {
+					distance: Math.min(delta1, delta2),
+					pointType: delta1 < delta2 ? 'start' : 'end'
+				};
+			}
+			break;
+
+		case COMPONENT_TYPES.ARC:
+			const deltaCenter = this.getDistance(x, y, component.x1, component.y1);
+			const deltaStart = this.getDistance(x, y, component.x2, component.y2);
+			const deltaEnd = this.getDistance(x, y, component.x3, component.y3);
+			
+			if (deltaCenter <= tolerance || deltaStart <= tolerance || deltaEnd <= tolerance) {
+				const minDelta = Math.min(deltaCenter, deltaStart, deltaEnd);
+				return {
+					distance: minDelta,
+					pointType: minDelta === deltaCenter ? 'center' : 
+							  minDelta === deltaStart ? 'start' : 'end'
+				};
+			}
+			break;
+	}
+	return null;
+};
+
+GraphicDisplay.prototype.getPrioritizedIntersection = function(intersections) {
+	// Sort by priority rules
+	intersections.sort((a, b) => {
+		// 1. First priority: Distance (closer = higher priority)
+		if (Math.abs(a.distance - b.distance) > 0.1) {
+			return a.distance - b.distance;
+		}
+
+		// 2. Second priority: Component type
+		const typePriority = {
+			[COMPONENT_TYPES.POINT]: 1,
+			[COMPONENT_TYPES.LABEL]: 2,
+			[COMPONENT_TYPES.PICTURE]: 2,
+			[COMPONENT_TYPES.SHAPE]: 3,
+			[COMPONENT_TYPES.LINE]: 4,
+			[COMPONENT_TYPES.CIRCLE]: 5,
+			[COMPONENT_TYPES.RECTANGLE]: 6,
+			[COMPONENT_TYPES.ARC]: 7,
+			[COMPONENT_TYPES.MEASURE]: 8
+		};
+
+		if (typePriority[a.type] !== typePriority[b.type]) {
+			return typePriority[a.type] - typePriority[b.type];
+		}
+
+		// 3. Third priority: Point type within component
+		const pointTypePriority = {
+			'center': 1,
+			'start': 2,
+			'end': 3
+		};
+		
+		return pointTypePriority[a.pointType] - pointTypePriority[b.pointType];
+	});
+
+	// Return the index of the highest priority intersection
+	return intersections[0].index;
+};
+
+GraphicDisplay.prototype.visualizeColliders = function(index, snapBox) {
+	const component = this.logicDisplay.components[index];
+	
+	this.context.strokeStyle = this.colliderColor;
+	this.context.lineWidth = 1;
+
+	switch (component.type) {
+		case COMPONENT_TYPES.POINT:
+		case COMPONENT_TYPES.LABEL:
+		case COMPONENT_TYPES.PICTURE:
+		case COMPONENT_TYPES.SHAPE:
+			this.drawCollisionBox(component.x, component.y, snapBox);
+			break;
+
+		case COMPONENT_TYPES.LINE:
+		case COMPONENT_TYPES.CIRCLE:
+		case COMPONENT_TYPES.RECTANGLE:
+		case COMPONENT_TYPES.MEASURE:
+			this.drawCollisionBox(component.x1, component.y1, snapBox);
+			this.drawCollisionBox(component.x2, component.y2, snapBox);
+			break;
+
+		case COMPONENT_TYPES.ARC:
+			this.drawCollisionBox(component.x1, component.y1, snapBox);
+			this.drawCollisionBox(component.x2, component.y2, snapBox);
+			this.drawCollisionBox(component.x3, component.y3, snapBox);
+			break;
+	}
+};
+
+GraphicDisplay.prototype.drawCollisionBox = function(x, y, size) {
+	this.drawRectangle(
+		x - size,
+		y - size,
+		x + size,
+		y + size,
+		this.colliderColor,
+		1
+	);
 };
 
 GraphicDisplay.prototype.saveComponent = function () {
