@@ -1641,6 +1641,7 @@ GraphicDisplay.prototype.setModeShape = function (getShape) {
 GraphicDisplay.prototype.setMode = function (mode) {
 	if (this.temporarySelectedComponent != null) {
 		this.unselectComponent();
+		clearForm();
 	}
 	this.resetMode();
 
