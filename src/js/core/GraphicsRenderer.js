@@ -242,7 +242,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 
 	if (this.selectedComponent != null) {
 		console.log('[handle] tick: not null')
-		const handles = this.getComponentHandles(this.selectComponent)
+		const handles = this.getComponentHandles(this.selectedComponent)
 		for (const handle of handles) {
 			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
 				console.log('[handles] drawing handles (called)...')
@@ -1607,15 +1607,11 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 GraphicDisplay.prototype.selectComponent = function (index) {
 	if (index != null) {
 		this.selectedComponent = index;
-		this.previousColor = this.logicDisplay.components[index].color;
-		this.previousRadius = this.logicDisplay.components[index].radius;
-		this.logicDisplay.components[index].color = this.selectedColor;
 	}
 };
 
 GraphicDisplay.prototype.unselectComponent = function (e) {
 	if (this.selectedComponent != null) {
-		this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
 		this.selectedComponent = null;
 	}
 };

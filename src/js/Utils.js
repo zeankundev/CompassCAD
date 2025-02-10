@@ -435,8 +435,13 @@ const createFormForSelection = () => {
                 });
             } else if (typeof component[key] === 'string') {
                 input = document.createElement("input");
-                input.type = "text";
-                input.value = component[key];
+                if (key === 'color') {
+                    input.type = "color";
+                    input.value = component[key].color || '#ffffff';
+                } else {
+                    input.type = "text";
+                    input.value = component[key];
+                }
                 input.addEventListener("input", (e) => {
                     component[key] = e.target.value;
                     if (key === 'color') {
