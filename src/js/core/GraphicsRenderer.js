@@ -1231,10 +1231,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						if (component.type !== COMPONENT_TYPES.POINT && 
 							component.type !== COMPONENT_TYPES.LABEL &&
 							component.type !== COMPONENT_TYPES.PICTURE) {
-							const handles = this.getComponentHandles(component);
-							for (const handle of handles) {
-								this.drawPoint(handle.x, handle.y, '#fff', 2);
-							}
+								return;
 						}
 
 						// Throttle state saves and form updates to every 6 frames
@@ -1300,15 +1297,21 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 					
 					// If actively dragging a handle
 					if (this.dragHandle) {
-						// Use uniform grid snapping regardless of grid spacing
-						const snapToUniformGrid = (value) => {
-							const baseGridSize = this.gridSpacing / 2;
-							return Math.round(value / baseGridSize) * baseGridSize;
-						};
-						
 						// Get cursor position in world coordinates
-						const localX = snapToUniformGrid(this.getCursorXLocal());
-						const localY = snapToUniformGrid(this.getCursorYLocal());
+						let localX, localY;
+						if (this.enableSnap) {
+							// Use uniform grid snapping regardless of grid spacing
+							const snapToUniformGrid = (value) => {
+								const baseGridSize = this.gridSpacing / 2;
+								return Math.round(value / baseGridSize) * baseGridSize;
+							};
+							localX = snapToUniformGrid(this.getCursorXLocal());
+							localY = snapToUniformGrid(this.getCursorYLocal());
+						} else {
+							// Allow free movement when snap is disabled
+							localX = this.getCursorXLocal();
+							localY = this.getCursorYLocal(); 
+						}
 						
 						// Update component based on type
 						switch (component.type) {
@@ -1607,11 +1610,23 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 GraphicDisplay.prototype.selectComponent = function (index) {
 	if (index != null) {
 		this.selectedComponent = index;
+		if (this.mode === this.MODES.MOVE) {
+			this.previousColor = this.logicDisplay.components[index].color;
+			this.previousRadius = this.logicDisplay.components[index].radius;
+			this.logicDisplay.components[index].color = this.selectedColor;
+			this.logicDisplay.components[index].radius = this.selectedRadius;
+		}
 	}
 };
 
 GraphicDisplay.prototype.unselectComponent = function (e) {
 	if (this.selectedComponent != null) {
+		if (this.mode === this.MODES.MOVE && this.previousColor) {
+			this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
+			this.logicDisplay.components[this.selectedComponent].radius = this.previousRadius;
+			this.previousColor = null;
+			this.previousRadius = null;
+		}
 		this.selectedComponent = null;
 	}
 };
