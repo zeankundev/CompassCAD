@@ -1231,7 +1231,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						if (component.type !== COMPONENT_TYPES.POINT && 
 							component.type !== COMPONENT_TYPES.LABEL &&
 							component.type !== COMPONENT_TYPES.PICTURE) {
-								return;
+								
 						}
 
 						// Throttle state saves and form updates to every 6 frames
