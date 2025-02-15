@@ -22,7 +22,7 @@ very good CAD software. plan out buildings, and show it off to your boss.
 
 # Features
 - Simple to use user interface (backed by community testing)
-- Tools and shortcuts are designed with [CTS](https://www.google.com/search?q=carpal+tunnel+syndrome) in mind
+- ~~Tools and shortcuts are designed with [CTS](https://www.google.com/search?q=carpal+tunnel+syndrome) in mind~~ (not really lol)
 - Seeps in less resource, CPU usage and less battery, so CompassCAD runs 87% faster than AutoCAD
 - Transparent community
 - Designed with less bloatware in mind and only integrating the core features
