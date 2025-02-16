@@ -85,7 +85,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
-	this.maxZoomFactor = 10;
+	this.maxZoomFactor = 12;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -364,7 +364,8 @@ GraphicDisplay.prototype.drawComponent = function (component, moveByX, moveByY) 
 				component.y + moveByY,
 				component.text,
 				component.color,
-				component.radius);
+				component.radius,
+				component.fontSize);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -472,7 +473,8 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[1],
 				this.temporaryText,
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				this.fontSize);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -641,7 +643,7 @@ GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, 
     this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
 };
 
-GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) {
+GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius, fontSize) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	var localZoom = this.zoom;
@@ -654,7 +656,8 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius) 
 	}
 
 	this.context.fillStyle = color;
-	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+	var fontSize = fontSize || this.fontSize;
+	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
@@ -736,7 +739,7 @@ GraphicDisplay.prototype.renderImage = function (x, y, img) {
 				new Line(-7, 7, 7, -7, 2),
 				
 				// Error text
-				new Label(17, 6, "Image Error")
+				new Label(17, 6, "Image Error", this.fontSize)
 			],
 			x: x,
 			y: y,
@@ -1140,7 +1143,8 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 							this.logicDisplay.addComponent(new Label(
 								savedX,
 								savedY,
-								text));
+								text,
+								parseInt(this.fontSize)));
 							this.saveState()
 							this.execute()
 							this.setMode(this.MODES.NAVIGATE)

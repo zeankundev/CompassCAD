@@ -159,12 +159,13 @@ Measure.prototype.constructor = Measure;
 * @param y
 * @param text
 */
-function Label(x, y, text) {
+function Label(x, y, text, fontSize) {
     Point.call(this, x, y);
 
     this.type = COMPONENT_TYPES.LABEL;
     this.color = "#eee";
     this.text = text;
+    this.fontSize = fontSize;
 }
 Label.prototype = new Point();
 Label.prototype.constructor = Label;

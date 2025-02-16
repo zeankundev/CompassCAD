@@ -5,7 +5,7 @@ const CreateVerticalBarrel = () => {
 	shape.addComponent(new Line(0,0,-25,50));
 	shape.addComponent(new Line(-25,50,0,50))
 	shape.addComponent(new Line(25,50,0,50));
-	shape.addComponent(new Label(0,0,'North'));
+	shape.addComponent(new Label(0,0,'North', 18));
     return shape
 }
 

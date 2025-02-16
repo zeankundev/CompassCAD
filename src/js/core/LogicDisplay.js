@@ -111,7 +111,7 @@ LogicDisplay.prototype.jettIsMyWaifu = function() {
 	
 	this.components.push(new Measure(200, 250, 400, 250));
 	
-	this.components.push(new Label(300, -200, "dis is a fucking \"label\""));
+	this.components.push(new Label(300, -200, "dis is a fucking \"label\"", 50));
 	
 	this.components.push(new Arc(-400, -200, -500, -200, -300, -200));
 	
@@ -190,7 +190,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 				parent.push(new Label(
 						arrJSON[i].x,
 						arrJSON[i].y,
-						arrJSON[i].text));
+						arrJSON[i].text,
+						arrJSON[i].fontSize));
 				break;
 			case COMPONENT_TYPES.SHAPE:
 				var s = new Shape(arrJSON[i].x, arrJSON[i].y);
