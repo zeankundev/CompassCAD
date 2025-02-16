@@ -85,7 +85,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
-	this.maxZoomFactor = 12;
+	this.maxZoomFactor = 16;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -501,7 +501,11 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 };
 
 GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
-	this.context.lineWidth = 3 * this.zoom;
+	if (this.temporarySelectedComponent != null) {
+		this.context.lineWidth = 3;
+	} else {
+		this.context.lineWidth = 3 * this.zoom;
+	}
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
 	this.context.beginPath();
