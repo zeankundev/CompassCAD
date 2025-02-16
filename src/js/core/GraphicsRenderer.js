@@ -85,7 +85,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
-	this.maxZoomFactor = 16;
+	this.maxZoomFactor = 20;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
