@@ -209,12 +209,13 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
 	this.enableLegacyGridStyle = useOldGrid;
-	// Handle zoom interpolation
-	if (disableLerp !== true) {
+	// I know I might get a lot of controversy for this
+	/*if (disableLerp !== true) {
 		this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
 	} else {
-		this.currentZoom = this.targetZoom;
-	}
+		
+	}*/
+	this.currentZoom = this.targetZoom;
 	this.zoom = this.currentZoom;
 	this.updateCamera();
 
