@@ -291,6 +291,8 @@ GraphicDisplay.prototype.paste = function (e) {
 				// Merge existing components with the new ones
 				const currentComponents = this.logicDisplay.components;
 				const initialLength = currentComponents.length;
+
+				clearForm()
 				
 				this.unselectComponent(); // Ensure no previous selection before pasting
 				this.logicDisplay.importJSON(pastedComponents, currentComponents);
@@ -309,6 +311,7 @@ GraphicDisplay.prototype.paste = function (e) {
 					this.setMode(this.MODES.SELECT);
 					this.unselectComponent(); // Ensure components are properly deselected
 					document.removeEventListener("mousedown", handleMouseDown);
+					clearForm()
 					this.saveState()
 				};
 				document.addEventListener("mousedown", handleMouseDown);
@@ -2206,7 +2209,21 @@ var initCAD = function (gd) {
 		gd.copy()
 	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.V, function (e) {
-		gd.paste()
+		console.log('[clipboard] paste event fired.')
+		navigator.clipboard.readText().then(clipText => {
+			console.log('[clipboard] checking if pasted is an object')
+			console.log(clipText)
+			try {
+				console.log('[clipboard] parse successful')
+				if (clipText.includes('active') && clipText.includes('type')) {
+					console.log('[clipboard] object detected, pasting on canvas')
+					gd.paste()
+				}
+			} catch (e) {
+				console.log('[clipboard] not an object, pasting like normal...')
+				document.execCommand('paste')
+			}
+		})
 	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.X, function (e) {
 		gd.cut()
