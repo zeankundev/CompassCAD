@@ -242,11 +242,9 @@ GraphicDisplay.prototype.execute = async function (e) {
 	}
 
 	if (this.selectedComponent != null) {
-		console.log('[handle] tick: not null')
 		const handles = this.getComponentHandles(this.selectedComponent)
 		for (const handle of handles) {
 			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
-				console.log('[handles] drawing handles (called)...')
 				this.drawPoint(handle.x, handle.y, '#fff', 2)
 			}
 		}
@@ -259,6 +257,69 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.updateActivity()
 };
 
+GraphicDisplay.prototype.copy = function (e) {
+	if (this.selectedComponent != null) {
+		const component = this.logicDisplay.components[this.selectedComponent];
+		this.temporaryObjectArray = [component];
+		navigator.clipboard.writeText(JSON.stringify(this.temporaryObjectArray));
+		callToast('Copied to clipboard.')
+	}
+}
+
+GraphicDisplay.prototype.cut = function (e) {
+	if (this.selectedComponent != null) {
+		const component = this.logicDisplay.components[this.selectedComponent];
+		this.temporaryObjectArray = [component];
+		this.logicDisplay.components.splice(this.selectedComponent, 1);
+		this.unselectComponent()
+		this.saveState();
+		navigator.clipboard.writeText(JSON.stringify(this.temporaryObjectArray));
+	}
+}
+
+GraphicDisplay.prototype.paste = function (e) {
+    if (this.selectedComponent == null) {
+		navigator.clipboard.readText().then(data => {
+			this.unselectComponent()
+			try {
+				const pastedComponents = JSON.parse(data);
+				if (!Array.isArray(pastedComponents)) {
+					console.error("Pasted data is not an array");
+					return;
+				}
+				
+				// Merge existing components with the new ones
+				const currentComponents = this.logicDisplay.components;
+				const initialLength = currentComponents.length;
+				
+				this.unselectComponent(); // Ensure no previous selection before pasting
+				this.logicDisplay.importJSON(pastedComponents, currentComponents);
+				
+				// Ensure correct selection of the newly pasted object
+				this.unselectComponent();
+				this.setMode(this.MODES.SELECT);
+				this.unselectComponent();
+				const newComponentIndex = this.logicDisplay.components.length - pastedComponents.length;
+				this.setMode(this.MODES.MOVE);
+				this.unselectComponent()
+				this.selectComponent(newComponentIndex);
+				
+				// Ensure mode switches back to SELECT if mouse is down
+				const handleMouseDown = () => {
+					this.setMode(this.MODES.SELECT);
+					this.unselectComponent(); // Ensure components are properly deselected
+					document.removeEventListener("mousedown", handleMouseDown);
+					this.saveState()
+				};
+				document.addEventListener("mousedown", handleMouseDown);
+			} catch (error) {
+				console.error("Error parsing clipboard data:", error);
+			}
+		}).catch(err => console.error("Failed to read clipboard contents:", err));
+	} else {
+		callToast('Deselect to paste.')
+	}
+}
 
 GraphicDisplay.prototype.saveState = function () {
 	let hasChanged = false;
@@ -2140,6 +2201,15 @@ var initCAD = function (gd) {
 	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.K, function (e) {
 		toggleSnap()
+	}, { ctrl: true });
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.C, function (e) {
+		gd.copy()
+	}, { ctrl: true });
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.V, function (e) {
+		gd.paste()
+	}, { ctrl: true });
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.X, function (e) {
+		gd.cut()
 	}, { ctrl: true });
 
 	// Bind mouse events

@@ -137,15 +137,15 @@ function openMultiEditor() {
 
 
 function callToast(text) {
-    document.getElementById('toast').style.animation = 'toast 1s ease'
+    document.getElementById('toast').style.animation = 'toast 0.3s ease'
     document.getElementById('toast-text').innerHTML = text
     document.getElementById('toast').style.display = 'block'
     setTimeout(() => {
-        document.getElementById('toast').style.animation = 'toast-cancel 1s ease'
+        document.getElementById('toast').style.animation = 'toast-cancel 0.3s ease'
         setTimeout(() => {
             document.getElementById('toast').style.display = 'none'
             document.getElementById('toast-text').innerHTML = ''
-        }, 1000)
+        }, 300)
     }, 3000)
 }
 
