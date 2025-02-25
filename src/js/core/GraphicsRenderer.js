@@ -61,7 +61,7 @@ function GraphicDisplay(displayName, width, height) {
 
 	// Temporary or selected color
 	this.selectedColor = "#0080ff";
-	this.selectedRadius = "2";
+	this.selectedRadius = 2;
 
 	this.logicDisplay;
 
@@ -568,17 +568,20 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 	if (this.temporarySelectedComponent != null) {
 		this.context.lineWidth = 3;
+		this.context.fillStyle = '#fff';
+		this.context.strokeStyle = this.selectedColor;
 	} else {
 		this.context.lineWidth = 3 * this.zoom;
+		this.context.fillStyle = color;
+		this.context.strokeStyle = color;
 	}
-	this.context.fillStyle = color;
-	this.context.strokeStyle = color;
 	this.context.beginPath();
 	this.context.arc(
 		(x + this.cOutX) * this.zoom,
 		(y + this.cOutY) * this.zoom,
 		2 * this.zoom, 0, 3.14159 * 2, false);
 	this.context.closePath();
+	this.context.fill();
 	this.context.stroke();
 };
 
