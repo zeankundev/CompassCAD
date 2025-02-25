@@ -60,6 +60,21 @@ function callPrompt(message) {
         window.addEventListener('keydown', onEnterKey);  // Listen for Enter key
     });
 }
+fs.readdir(app.getPath('userData') + '/plugins', (err, files) => {
+    if (err) {
+      console.error('Error reading folder:', err);
+      return;
+    }
+    console.log(files)
+    const jsFiles = files.filter(file => path.extname(file) === '.js');
+  
+    jsFiles.forEach(jsFile => {
+      const scriptTag = document.createElement('script');
+      scriptTag.src = path.join(app.getPath('userData') + '/plugins', jsFile);
+      document.body.appendChild(scriptTag)
+      console.log(scriptTag);
+    });
+});
 async function applyStringOnHTML(key, affected, type, additionalString) {
     const loc = new Localizator();
     if (type === 'html') {

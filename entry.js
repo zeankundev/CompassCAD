@@ -66,6 +66,9 @@ const init = () => {
   if (!fs.existsSync(`${userDataPath}/backups`)) {
     fs.mkdirSync(`${userDataPath}/backups`);
   }
+  if (!fs.existsSync(`${userDataPath}/plugins`)) {
+    fs.mkdirSync(`${userDataPath}/plugins`);
+  }
 
   ipcMain.on('ragequit', () => {
     app.quit();
