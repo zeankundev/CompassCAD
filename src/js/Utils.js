@@ -72,6 +72,26 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
         throw new Error('Unknown type');
     }
 }
+document.getElementById("toolbar").addEventListener("wheel", (evt) => {
+    evt.preventDefault();
+    const toolbar = document.getElementById("toolbar");
+    let start = toolbar.scrollLeft;
+    let end = start + evt.deltaY;
+    let startTime = null;
+    let speed = 100;
+
+    function animateScroll(timestamp) {
+        if (!startTime) startTime = timestamp;
+        const progress = timestamp - startTime;
+        const scrollAmount = Math.min(progress / speed, 1) * (end - start);
+        toolbar.scrollLeft = start + scrollAmount;
+        if (progress < speed) {
+            requestAnimationFrame(animateScroll);
+        }
+    }
+
+    requestAnimationFrame(animateScroll);
+});
 function openSettings() {
     const setModal = document.getElementById('set-modal');
     const peerConnected = document.getElementById('peer-connected');

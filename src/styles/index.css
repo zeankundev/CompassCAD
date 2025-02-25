@@ -102,8 +102,14 @@ small {
 .toolbar {
     padding: 5px;
     display: flex;
+    overflow-x: auto;
     margin-bottom: 10px;
     align-items: center;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+}
+.toolbar::-webkit-scrollbar {
+    display: none;
 }
 .toolbar button {
     -webkit-appearance: none;
@@ -142,9 +148,16 @@ small {
     display: flex;
     padding: 5px;
     flex: 1;
+    overflow: auto;
     height: calc(100vh - 106px);
+    min-width: 30px;
     max-width: fit-content;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
     background-color: var(--secondary);
+}
+.quick-tool::-webkit-scrollbar {
+    display: none;
 }
 .quick-tool button {
     -webkit-appearance: none;
