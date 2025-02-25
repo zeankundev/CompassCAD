@@ -92,6 +92,7 @@ small {
 }
 .window-actions button img {
     width: 16px;
+    -webkit-user-drag: none;
 }
 .window-actions button:hover {
     background-color: var(--secondary);
@@ -123,6 +124,9 @@ small {
     display: inline-flex;
     align-items: center;
     background-color: var(--primary);
+}
+.toolbar button img {
+    -webkit-user-drag: none;
 }
 .toolbar button:hover {
     background-color: var(--secondary);
@@ -178,6 +182,7 @@ small {
 }
 .quick-tool button img  {
     width: 20px;
+    -webkit-user-drag: none;
 }
 .canvas-container {
     display: flex;
@@ -388,6 +393,7 @@ command-pallete input[type=text] {
     background-color: var(--secondary);
     height: 83vh;
     display: none;
+    user-select: none;
 }
 #form input[type=text] {
     -webkit-appearance: none;
