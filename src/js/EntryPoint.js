@@ -209,6 +209,22 @@ $(document).ready(async() => {
     });
 
     initCAD(renderer)
+    fs.readdir(remApp.getPath('userData') + '/plugins', (err, files) => {
+        console.log('checking for plugins')
+        if (err) {
+          console.error('Error reading folder:', err);
+          return;
+        }
+        console.log(files)
+        const jsFiles = files.filter(file => path.extname(file) === '.js');
+      
+        jsFiles.forEach(jsFile => {
+          const scriptTag = document.createElement('script');
+          scriptTag.src = path.join(remApp.getPath('userData') + '/plugins', jsFile);
+          document.body.appendChild(scriptTag)
+          console.log(scriptTag);
+        });
+    });
     isReady = true
     // Apply translations to header elements
     applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
