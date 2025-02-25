@@ -1778,23 +1778,33 @@ GraphicDisplay.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
 GraphicDisplay.prototype.getCursorXLocal = function (e) {
-    if (this.enableSnap) {
-		const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
-		const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
-		return Math.round(rawXLocal / adjustedGridSpacing) * adjustedGridSpacing;
-	} else {
-		return (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+	// Base grid spacing that remains constant across zoom levels
+	const baseGridSpacing = this.gridSpacing;
+
+	// Calculate raw cursor position in world coordinates
+	const rawXLocal = (this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+
+	if (!this.enableSnap) {
+		return rawXLocal;
 	}
+
+	// Snap to base grid spacing regardless of zoom level
+	return Math.round(rawXLocal / baseGridSpacing) * baseGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorYLocal = function (e) {
-    if (this.enableSnap) {
-		const adjustedGridSpacing = Math.max(this.gridSpacing, this.gridSpacing * this.zoom / 6);
-		const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
-		return Math.round(rawYLocal / adjustedGridSpacing) * adjustedGridSpacing;
-	} else {
-		return (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+	// Base grid spacing that remains constant across zoom levels
+	const baseGridSpacing = this.gridSpacing;
+
+	// Calculate raw cursor position in world coordinates  
+	const rawYLocal = (this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+
+	if (!this.enableSnap) {
+		return rawYLocal;
 	}
+
+	// Snap to base grid spacing regardless of zoom level
+	return Math.round(rawYLocal / baseGridSpacing) * baseGridSpacing;
 };
 
 GraphicDisplay.prototype.getCursorXInFrame = function () {
