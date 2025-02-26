@@ -67,7 +67,7 @@ $(document).ready(async () => {
         if (context) {
             context.scale(devicePixelRatio, devicePixelRatio)
         }
-    };
+    }
     resizeWin()
     window.onresize = resizeWin
     document.getElementById('new').onclick = () => {
@@ -191,6 +191,17 @@ $(document).ready(async () => {
             console.error(e)
             callToast('An error occured while loading your shared design.<br>Check your data to ensure the data integrity is correct<br>as it should be.', 'failure')
         }
+    }
+    // Piss the Mac users off
+    // Check their UA and if it's a Mac, show them a message
+    if (navigator.userAgent.includes('Macintosh') || navigator.userAgent.includes('Mac OS') || navigator.userAgent.includes('MacIntel') || navigator.userAgent.includes('Mac')) {
+        callToast(`
+            Mac users, to use CompassCAD at its fullest, you should<br>
+            switch to Windows or any Linux distro of your choice.<br>
+            Read the Notion page to specify why. However, if you keep <br>
+            running CompassCAD Desktop on Mac using wine, you won't<br>
+            receive any official support from us. Thank you. 😁🙏
+        `, 'failure')
     }
     // Adding keyboard events 
 	

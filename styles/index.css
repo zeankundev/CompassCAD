@@ -153,6 +153,7 @@ header.scrolled::before {
     animation: ui-slidein 0.2s ease forwards;
     border-radius: 20px;
     background-color: var(--main-button-color);
+    z-index: 999999;
 }
 .toast-icon {
     align-items: center;

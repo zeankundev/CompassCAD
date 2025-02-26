@@ -10,6 +10,12 @@ const GetType = (type) => {
         case 'success':
             return 'ui-toast-success'
             break
+        case 'fail':
+            return 'ui-toast-error'
+            break
+        case 'error':
+            return 'ui-toast-error'
+            break
         default:
             return ''
             break
