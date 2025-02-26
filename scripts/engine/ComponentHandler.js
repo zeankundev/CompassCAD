@@ -59,7 +59,7 @@ Point.prototype.constructor = Point;
 * @param x2
 * @param y2
 */
-function Line(x1, y1, x2, y2, radius) {
+function Line(x1, y1, x2, y2, radius, color) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.LINE;
@@ -72,6 +72,10 @@ function Line(x1, y1, x2, y2, radius) {
         this.radius = radius
     } else {
         this.radius = 2
+    }
+
+    if (color != undefined) {
+        this.color = color
     }
 
     if ( x1 != undefined
@@ -96,12 +100,15 @@ Line.prototype.constructor = Line;
 * @param x2
 * @param y2
 */
-function Circle(x1, y1, x2, y2, radius) {
+function Circle(x1, y1, x2, y2, radius, color) {
     Line.call(this, x1, y1, x2, y2);
     if (radius != undefined) {
         this.radius = radius
     } else {
         this.radius = 2
+    }
+    if (color != undefined) {
+        this.color = color
     }
     this.type = COMPONENT_TYPES.CIRCLE;
 }
@@ -116,9 +123,11 @@ Circle.prototype.constructor = Circle;
 * @param x2
 * @param y2
 */
-function Rectangle(x1, y1, x2, y2) {
-    Line.call(this, x1, y1, x2, y2);
-
+function Rectangle(x1, y1, x2, y2, radius, color) {
+    Line.call(this, x1, y1, x2, y2, radius);
+    if (color != undefined) {
+        this.color = color
+    }
     this.type = COMPONENT_TYPES.RECTANGLE;
 }
 Rectangle.prototype = new Line();
@@ -132,9 +141,11 @@ Rectangle.prototype.constructor = Rectangle;
 * @param x2
 * @param y2
 */
-function Measure(x1, y1, x2, y2) {
+function Measure(x1, y1, x2, y2, color) {
     Line.call(this, x1, y1, x2, y2);
-
+    if (color != undefined) {
+        this.color = color
+    }
     this.type = COMPONENT_TYPES.MEASURE;
     this.color = "#ff3";
 }
@@ -148,12 +159,13 @@ Measure.prototype.constructor = Measure;
 * @param y
 * @param text
 */
-function Label(x, y, text) {
+function Label(x, y, text, fontSize) {
     Point.call(this, x, y);
 
     this.type = COMPONENT_TYPES.LABEL;
     this.color = "#eee";
     this.text = text;
+    this.fontSize = fontSize;
 }
 Label.prototype = new Point();
 Label.prototype.constructor = Label;
@@ -168,7 +180,7 @@ Label.prototype.constructor = Label;
 * @param x3
 * @param y3
 */
-function Arc(x1, y1, x2, y2, x3, y3, radius) {
+function Arc(x1, y1, x2, y2, x3, y3, radius, color) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.ARC;
@@ -183,6 +195,10 @@ function Arc(x1, y1, x2, y2, x3, y3, radius) {
         this.radius = radius
     } else {
         this.radius = 2
+    }
+
+    if (color != undefined) {
+        this.color = color
     }
 
     if ( x1 != undefined

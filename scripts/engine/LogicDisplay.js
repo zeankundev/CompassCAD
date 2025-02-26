@@ -146,14 +146,17 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y1,
 						arrJSON[i].x2,
 						arrJSON[i].y2,
-						arrJSON[i].radius));
+						arrJSON[i].radius,
+						arrJSON[i].color));
 				break;
 			case COMPONENT_TYPES.RECTANGLE:
 				parent.push(new Rectangle(
 						arrJSON[i].x1,
 						arrJSON[i].y1,
 						arrJSON[i].x2,
-						arrJSON[i].y2));
+						arrJSON[i].y2,
+						arrJSON[i].radius,
+						arrJSON[i].color));
 				break;
 			case COMPONENT_TYPES.CIRCLE:
 				parent.push(new Circle(
@@ -161,7 +164,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y1,
 						arrJSON[i].x2,
 						arrJSON[i].y2,
-						arrJSON[i].radius));
+						arrJSON[i].radius,
+						arrJSON[i].color));
 				break;
 			case COMPONENT_TYPES.ARC:
 				parent.push(new Arc(
@@ -171,20 +175,23 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y2,
 						arrJSON[i].x3,
 						arrJSON[i].y3,
-						arrJSON[i].radius));
+						arrJSON[i].radius,
+						arrJSON[i].color));
 				break;
 			case COMPONENT_TYPES.MEASURE:
 				parent.push(new Measure(
 						arrJSON[i].x1,
 						arrJSON[i].y1,
 						arrJSON[i].x2,
-						arrJSON[i].y2));
+						arrJSON[i].y2,
+						arrJSON[i].color));
 				break;
 			case COMPONENT_TYPES.LABEL:
 				parent.push(new Label(
 						arrJSON[i].x,
 						arrJSON[i].y,
-						arrJSON[i].text));
+						arrJSON[i].text,
+						arrJSON[i].fontSize));
 				break;
 			case COMPONENT_TYPES.SHAPE:
 				var s = new Shape(arrJSON[i].x, arrJSON[i].y);
@@ -195,8 +202,7 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 				parent.push(new Picture(
 					arrJSON[i].x,
 					arrJSON[i].y,
-					arrJSON[i].pictureSource
-				))
+					arrJSON[i].pictureSource));
 				break;
 		}
 	}
