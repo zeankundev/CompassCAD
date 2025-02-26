@@ -145,7 +145,7 @@ GraphicDisplay.prototype.execute = async function(e) {
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
 	this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
-	this.zoom = this.currentZoom;
+	this.zoom = this.targetZoom;
 	this.updateCamera();
 	
 	this.clearGrid();
@@ -1404,22 +1404,50 @@ var initCAD = function(gd) {
     });
 	
 	// Start CAD
-	function repeatInstance(e) {
-	    const currentTime = performance.now();
-        frameCount++;
-        if (currentTime - lastTime >= 1000) {
-            fps = frameCount;
-            frameCount = 0;
-            lastTime = currentTime;
-            if (fps < fpsWarningThreshold && !warningDisplayed) {
-                console.warn('FPS dropped below 20!');
-                
-            } else if (fps >= fpsWarningThreshold) {
-                
-            }
-        }
-		gd.execute();
-	};
-	setInterval(repeatInstance, 0)
+	// Start CAD
+	let animationFrameId;
+	let isWindowFocused = true;
+
+	// Focus/blur event listeners
+	window.addEventListener('focus', () => {
+		isWindowFocused = true;
+		// Restart animation loop when window regains focus
+		if (!animationFrameId) {
+			repeatInstance();
+		}
+	});
+
+	window.addEventListener('blur', () => {
+		isWindowFocused = false;
+		// Cancel animation frame when window loses focus
+		if (animationFrameId) {
+			cancelAnimationFrame(animationFrameId);
+			animationFrameId = null;
+		}
+	});
+
+	function repeatInstance() {
+		// Only run animation if window is focused
+		if (isWindowFocused) {
+			const currentTime = performance.now();
+			frameCount++;
+			
+			if (currentTime - lastTime >= 1000) {
+				fps = frameCount;
+				frameCount = 0;
+				lastTime = currentTime;
+				
+				if (fps < fpsWarningThreshold && !warningDisplayed) {
+					console.warn('FPS dropped below 20!');
+				}
+			}
+
+			gd.execute();
+			animationFrameId = requestAnimationFrame(repeatInstance);
+		}
+	}
+
+	// Start initial animation
+	repeatInstance();
 };
 
