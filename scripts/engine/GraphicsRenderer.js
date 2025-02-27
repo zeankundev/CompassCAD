@@ -248,7 +248,8 @@ GraphicDisplay.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.y + moveByY,
 					component.text,
 					component.color,
-					component.radius);
+					component.radius,
+					component.fontSize);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -356,7 +357,8 @@ GraphicDisplay.prototype.drawTemporaryComponent = function(e) {
 					this.temporaryPoints[1],
 					this.temporaryText,
 					this.selectedColor,
-					this.selectedRadius);
+					this.selectedRadius,
+					this.fontSize);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -521,7 +523,7 @@ GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, 
 };
 
 
-GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
+GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius, fontSize) {
 	this.drawPoint(x, y, '#0ff', 2);
 	
 	var localZoom = this.zoom;
@@ -534,7 +536,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius) {
 	}
 	
 	this.context.fillStyle = color;
-	this.context.font =  (this.fontSize * localZoom) + `px ${this.displayFont}, monospace`;
+	this.context.font =  (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
