@@ -131,7 +131,7 @@ SVGExporter.prototype.drawAllComponents = function(components, moveByX, moveByY)
     var origin = dimensions.origin;
 
     // Adjust canvas size dynamically based on the design width and height + padding
-    var padding = 45;
+    var padding = 60;
     this.c2s = new canvas2svg(width + 2 * padding, height + 2 * padding);
 
     // Refine the origin and apply padding
@@ -211,7 +211,8 @@ SVGExporter.prototype.drawComponent = function(component, moveByX, moveByY) {
 					component.y + moveByY,
 					component.text,
 					component.color,
-					component.radius);
+					component.radius,
+					component.fontSize);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArcSvg(
@@ -365,7 +366,7 @@ SVGExporter.prototype.drawMeasureSvg = function(x1, y1, x2, y2, color, radius) {
 	this.c2s.restore();
 };
 
-SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {	
+SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius, fontSize) {	
 	var localZoom = 1;
 	var localDiff = 0;
 	
@@ -376,7 +377,7 @@ SVGExporter.prototype.drawLabelSvg = function(x, y, text, color, radius) {
 	}
 	
 	this.c2s.fillStyle = "#000000";
-	this.c2s.font =  (this.rendererComponent.fontSize) + "px Consolas, monospace";
+	this.c2s.font =  (fontSize) + "px Consolas, monospace";
 	
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;

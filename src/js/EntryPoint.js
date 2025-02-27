@@ -197,7 +197,14 @@ $(document).ready(async() => {
     }
 
     document.addEventListener('keydown', (event) => {
-        console.log('Key down')
+        // Check if the active element is an input or textarea
+        const activeElement = document.activeElement;
+        console.log(`[keydown] active elem: ${activeElement.tagName}`);
+        if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+            return; // Do nothing if an input or textarea is focused
+        }
+
+        console.log('Key down');
         const elementId = keyBindings[event.key];
         if (elementId) {
             const element = document.getElementById(elementId);
