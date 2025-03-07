@@ -941,7 +941,8 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 					this.logicDisplay.addComponent(new Label(
 							this.temporaryPoints[0],
 							this.temporaryPoints[1],
-							text));
+							text,
+							this.fontSize));
 					this.saveState()
 					this.execute()
 					this.setMode(this.MODES.NAVIGATE)

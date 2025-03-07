@@ -52,13 +52,8 @@ $(document).ready(async () => {
     renderer = new GraphicDisplay('working-canvas', 800, 600)
     const resizeWin = () => {
         const devicePixelRatio = window.devicePixelRatio || 1
-        const displayHeight = window.innerHeight - document.getElementById('menubar').offsetHeight    
-        const displayWidth = window.innerWidth - document.getElementById('toolbar').offsetWidth 
-        // Set the renderer's display dimensions
         renderer.displayHeight = window.innerHeight;
         renderer.displayWidth = window.innerWidth;
-        
-        // Set the canvas dimensions
         document.getElementById('working-canvas').width = window.innerWidth * devicePixelRatio;
         document.getElementById('working-canvas').height = window.innerHeight * devicePixelRatio;
         document.getElementById('working-canvas').style.width = window.innerWidth + 'px'
