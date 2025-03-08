@@ -1371,40 +1371,119 @@ var initCAD = function(gd) {
 		else
 			return
 	});
-	
-	// Bind mouse events
+	// Initialize variables
+	let initialDistance = 0;
+	let currentZoom = 1;
+	const zoomFactor = 0.1; // Adjust zoom sensitivity
+	// Mouse event handlers
 	gd.cvn.mousemove(function(e) {
 		gd.mouse.onMouseMove(e);
 		
-		if (!gd.gridPointer)
+		if (!gd.gridPointer) {
 			gd.gridPointer = true;
+		}
 		
 		gd.performAction(e, gd.MOUSEACTION.MOVE);
 	});
-	
+
 	gd.cvn.mouseout(function(e) {
 		gd.gridPointer = false;
 	});
-	
+
 	gd.cvn.mousedown(function(e) {
 		gd.mouse.onMouseDown(e);
 		gd.performAction(e, gd.MOUSEACTION.DOWN);
 	});
-	
+
 	gd.cvn.mouseup(function(e) {
 		gd.mouse.onMouseUp(e);
 		gd.performAction(e, gd.MOUSEACTION.UP);
 	});
+
+	// Mouse wheel event for zooming
 	gd.cvn.on('wheel', (event) => {
-		let zoomFactor = 1
-        if (event.originalEvent.deltaY < 0) {
-            gd.zoomIn()
-        } else {
-            gd.zoomOut()
-        }
-        console.log(`Zoom factor: ${zoomFactor}`);
-        event.preventDefault();
-    });
+		event.preventDefault(); // Prevent default scroll behavior
+		if (event.originalEvent.deltaY < 0) {
+			gd.zoomIn();
+		} else {
+			gd.zoomOut();
+		}
+		console.log(`Zoom factor: ${event.originalEvent.deltaY < 0 ? 'Zoom In' : 'Zoom Out'}`);
+	});
+	function getDistance(touch1, touch2) {
+		const dx = touch1.clientX - touch2.clientX;
+		const dy = touch1.clientY - touch2.clientY;
+		return Math.sqrt(dx * dx + dy * dy);
+	}
+	// Touch event handlers
+	gd.cvn.on('touchstart', function(e) {
+		if (e.touches.length === 2) {
+			initialDistance = getDistance(e.touches[0], e.touches[1]);
+			e.preventDefault(); // Prevent default touch behavior
+		}
+	});
+
+	gd.cvn.on('touchmove', function(e) {
+		if (e.touches.length === 2) {
+			const currentDistance = getDistance(e.touches[0], e.touches[1]);
+			const scaleChange = (currentDistance - initialDistance) * zoomFactor;
+
+			// Update zoom level
+			currentZoom += scaleChange;
+			currentZoom = Math.max(0.1, Math.min(currentZoom, 5)); // Limit zoom level
+
+			// Apply zoom to the canvas
+			gd.setZoom(currentZoom);
+			initialDistance = currentDistance; // Update initial distance for next move
+			e.preventDefault(); // Prevent default touch behavior
+		} else if (e.touches.length === 1) {
+			// Handle single touch for mouse movement
+			const touch = e.touches[0];
+			const mouseEvent = new MouseEvent('mousemove', {
+				clientX: touch.clientX,
+				clientY: touch.clientY,
+				bubbles: true,
+				cancelable: true
+			});
+			gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousemove event
+		}
+	});
+
+	gd.cvn.on('touchend', function(e) {
+		if (e.touches.length < 2) {
+			initialDistance = 0; // Reset initial distance
+		}
+	});
+
+	// Optional: Handle touch cancel
+	gd.cvn.on('touchcancel', function(e) {
+		initialDistance = 0; // Reset initial distance
+	});
+
+	// Bind touch events to mouse actions
+	gd.cvn.on('touchstart', function(e) {
+		const touch = e.touches[0];
+		const mouseEvent = new MouseEvent('mousedown', {
+			clientX: touch.clientX,
+			clientY: touch.clientY,
+			bubbles: true,
+			cancelable: true
+		});
+		gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousedown event
+		gd.performAction(e, gd.MOUSEACTION.DOWN);
+	});
+
+	gd.cvn.on('touchend', function(e) {
+		const touch = e.changedTouches[0];
+		const mouseEvent = new MouseEvent('mouseup', {
+			clientX: touch.clientX,
+			clientY: touch.clientY,
+			bubbles: true,
+			cancelable: true
+		});
+		gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mouseup event
+		gd.performAction(e, gd.MOUSEACTION.UP);
+	});
 	
 	// Start CAD
 	// Start CAD
