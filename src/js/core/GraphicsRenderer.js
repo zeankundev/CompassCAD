@@ -254,7 +254,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.drawToolTip();
 
 	// Update Rich Presence only when the component count changes
-	this.updateActivity()
+	this.updateActivity();
 };
 
 GraphicDisplay.prototype.copy = function (e) {

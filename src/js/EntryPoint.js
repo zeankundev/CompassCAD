@@ -204,6 +204,11 @@ $(document).ready(async() => {
             return; // Do nothing if an input or textarea is focused
         }
 
+        // Don't process if any modifier keys are pressed
+        if (event.ctrlKey || event.altKey || event.shiftKey) {
+            return;
+        }
+
         console.log('Key down');
         const elementId = keyBindings[event.key];
         if (elementId) {
