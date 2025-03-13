@@ -160,7 +160,7 @@ GraphicDisplay.prototype.init = async function (e) {
 
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor', 'crosshair');
-	this.context = this.cvn[0].getContext('2d');
+	this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
 	this.execute()
 	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");
