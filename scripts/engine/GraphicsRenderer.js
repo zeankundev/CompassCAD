@@ -1374,7 +1374,7 @@ var initCAD = function(gd) {
 	// Initialize variables
 	let initialDistance = 0;
 	let currentZoom = 1;
-	const zoomFactor = 0.1; // Adjust zoom sensitivity
+	const zoomFactor = 0.0001; // Adjust zoom sensitivity
 	// Mouse event handlers
 	gd.cvn.mousemove(function(e) {
 		gd.mouse.onMouseMove(e);
