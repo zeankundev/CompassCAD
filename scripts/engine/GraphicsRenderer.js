@@ -1415,16 +1415,30 @@ var initCAD = function(gd) {
 		const dy = touch1.clientY - touch2.clientY;
 		return Math.sqrt(dx * dx + dy * dy);
 	}
-	// Touch event handlers
+	let initialTouch = { x: 0, y: 0 }; // Store initial touch position
+	let isNavigating = false; // Flag to indicate navigation mode
+	let isTap = false; // Flag to detect a tap (quick touch without significant movement)
+	const tapThreshold = 10; // Threshold to distinguish between a tap and a swipe
+
 	gd.cvn.on('touchstart', function(e) {
-		if (e.touches.length === 2) {
+		console.log('[touch] touch started');
+		if (e.touches.length === 1) {
+			// Store the initial touch position
+			initialTouch.x = e.touches[0].clientX;
+			initialTouch.y = e.touches[0].clientY;
+			isNavigating = true;
+			isTap = true; // Assume it's a tap until proven otherwise
+		} else if (e.touches.length === 2) {
+			console.log('[touch] touchstart: length more than 2!');
 			initialDistance = getDistance(e.touches[0], e.touches[1]);
+			console.log(`[touch] initial distance: ${initialDistance}`);
 			e.preventDefault(); // Prevent default touch behavior
 		}
 	});
 
 	gd.cvn.on('touchmove', function(e) {
 		if (e.touches.length === 2) {
+			console.log('[touch] touchmove: length more than 2!');
 			const currentDistance = getDistance(e.touches[0], e.touches[1]);
 			const scaleChange = (currentDistance - initialDistance) * zoomFactor;
 
@@ -1436,55 +1450,78 @@ var initCAD = function(gd) {
 			gd.setZoom(currentZoom);
 			initialDistance = currentDistance; // Update initial distance for next move
 			e.preventDefault(); // Prevent default touch behavior
-		} else if (e.touches.length === 1) {
-			// Handle single touch for mouse movement
+		} else if (e.touches.length === 1 && isNavigating) {
+			console.log('[touch] touchmove: length is 1!');
 			const touch = e.touches[0];
-			const mouseEvent = new MouseEvent('mousemove', {
-				clientX: touch.clientX,
-				clientY: touch.clientY,
-				bubbles: true,
-				cancelable: true
-			});
-			gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousemove event
+
+			// Calculate the offset
+			const offsetX = touch.clientX - initialTouch.x;
+			const offsetY = touch.clientY - initialTouch.y;
+
+			// Check if the movement exceeds the tap threshold
+			if (Math.abs(offsetX) > tapThreshold || Math.abs(offsetY) > tapThreshold) {
+				isTap = false; // It's a swipe, not a tap
+			}
+
+			if (!isTap) {
+				// Emulate touchpad-like behavior: translate touch movement into mouse movement
+				const mouseEvent = new MouseEvent('mousemove', {
+					clientX: touch.clientX,
+					clientY: touch.clientY,
+					bubbles: true,
+					cancelable: true
+				});
+				gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousemove event
+			}
+
+			// Apply the offset to the camera or viewport for navigation
+			gd.camX += offsetX / gd.zoom; // Adjust for zoom level
+			gd.camY += offsetY / gd.zoom; // Adjust for zoom level
+
+			// Update the initial touch position for the next move
+			initialTouch.x = touch.clientX;
+			initialTouch.y = touch.clientY;
+
+			e.preventDefault(); // Prevent default touch behavior
 		}
 	});
 
 	gd.cvn.on('touchend', function(e) {
+		console.log('[touch] touch end');
 		if (e.touches.length < 2) {
+			console.log('[touch] touch,len=2: end');
 			initialDistance = 0; // Reset initial distance
+			isNavigating = false; // Reset navigation flag
+
+			// If it was a tap, trigger mousedown and mouseup
+			if (isTap) {
+				const touch = e.changedTouches[0];
+				const mouseDownEvent = new MouseEvent('mousedown', {
+					clientX: touch.clientX,
+					clientY: touch.clientY,
+					bubbles: true,
+					cancelable: true
+				});
+				gd.cvn[0].dispatchEvent(mouseDownEvent); // Dispatch the mousedown event
+
+				const mouseUpEvent = new MouseEvent('mouseup', {
+					clientX: touch.clientX,
+					clientY: touch.clientY,
+					bubbles: true,
+					cancelable: true
+				});
+				gd.cvn[0].dispatchEvent(mouseUpEvent); // Dispatch the mouseup event
+			}
 		}
 	});
 
-	// Optional: Handle touch cancel
 	gd.cvn.on('touchcancel', function(e) {
+		console.log('[touch] touch: cancel');
 		initialDistance = 0; // Reset initial distance
+		isNavigating = false; // Reset navigation flag
+		isTap = false; // Reset tap flag
 	});
-
-	// Bind touch events to mouse actions
-	gd.cvn.on('touchstart', function(e) {
-		const touch = e.touches[0];
-		const mouseEvent = new MouseEvent('mousedown', {
-			clientX: touch.clientX,
-			clientY: touch.clientY,
-			bubbles: true,
-			cancelable: true
-		});
-		gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousedown event
-		gd.performAction(e, gd.MOUSEACTION.DOWN);
-	});
-
-	gd.cvn.on('touchend', function(e) {
-		const touch = e.changedTouches[0];
-		const mouseEvent = new MouseEvent('mouseup', {
-			clientX: touch.clientX,
-			clientY: touch.clientY,
-			bubbles: true,
-			cancelable: true
-		});
-		gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mouseup event
-		gd.performAction(e, gd.MOUSEACTION.UP);
-	});
-	
+		
 	// Start CAD
 	// Start CAD
 	let animationFrameId;
