@@ -567,7 +567,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 
 GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 	if (this.temporarySelectedComponent != null) {
-		this.context.lineWidth = 3;
+		this.context.lineWidth = 2 * this.zoom;
 		this.context.fillStyle = '#fff';
 		this.context.strokeStyle = this.selectedColor;
 	} else {
@@ -656,7 +656,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     let arrowLength = defaultArrowLength;
 
     // Minimum distance to display the full measure line and gap
-    const minDistanceForFullArrow = defaultArrowLength * 2 / 100; // 0.5 meters
+    const minDistanceForFullArrow = defaultArrowLength * 3 / 100; // 0.5 meters
     if (distance < minDistanceForFullArrow) {
         arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
     }
@@ -686,10 +686,13 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
     this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
 
-    // Save context to apply rotation for the label
-    this.context.save();
-    this.context.translate((midX * this.zoom) + this.cOutX * this.zoom, ((midY * this.zoom) + (textOffsetY * 2)) + this.cOutY * this.zoom);
-    this.context.rotate(angle);
+	this.context.save();
+	const centerOffsetX = midX * this.zoom + this.cOutX * this.zoom;
+	const centerOffsetY = midY * this.zoom + this.cOutY * this.zoom;
+	this.context.translate(centerOffsetX, centerOffsetY);
+	this.context.rotate(angle);
+	this.context.translate(-centerOffsetX, -centerOffsetY);
+	this.context.translate(centerOffsetX, centerOffsetY + textOffsetY * 2);
 
     // Set text alignment to center
     this.context.textAlign = 'center';
@@ -1388,12 +1391,30 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						// Update component based on type
 						switch (component.type) {
 							case COMPONENT_TYPES.LINE:
-							case COMPONENT_TYPES.RECTANGLE:
 							case COMPONENT_TYPES.CIRCLE:
 								if (this.dragHandle === 'start') {
 									component.x1 = localX;
 									component.y1 = localY;
 								} else if (this.dragHandle === 'end') {
+									component.x2 = localX; 
+									component.y2 = localY;
+								}
+								break;
+							case COMPONENT_TYPES.RECTANGLE:
+								if (this.dragHandle === 'start') {
+									// NW resize
+									component.x1 = localX;
+									component.y1 = localY;
+								} else if (this.dragHandle === 'anchor-handle-1') {
+									// NE resize 
+									component.x2 = localX;
+									component.y1 = localY;
+								} else if (this.dragHandle === 'anchor-handle-2') {
+									// SW resize
+									component.x1 = localX;
+									component.y2 = localY;
+								} else if (this.dragHandle === 'end') {
+									// SE resize
 									component.x2 = localX;
 									component.y2 = localY;
 								}
@@ -1471,7 +1492,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						
 						const handles = this.getComponentHandles(component);
 						const handleSize = 5 / this.zoom;
-						
+
 						for (const handle of handles) {
 							// Check collision in world coordinates
 							const dx = this.getCursorXLocal() - handle.x;
@@ -1480,6 +1501,35 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 							
 							if (distSquared < (handleSize * handleSize)) {
 								this.dragHandle = handle.id;
+								
+								// Handle resizing based on handle type
+								switch (handle.id) {
+									case 'start':
+										// NW resize - updates x1,y1
+										component.x1 = this.getCursorXLocal();
+										component.y1 = this.getCursorYLocal();
+										break;
+										
+									case 'anchor-handle-1': 
+										// NE resize - updates x2,y1
+										component.x2 = this.getCursorXLocal();
+										component.y1 = this.getCursorYLocal();
+										break;
+										
+									case 'anchor-handle-2':
+										// SW resize - updates x1,y2 
+										component.x1 = this.getCursorXLocal();
+										component.y2 = this.getCursorYLocal();
+										break;
+										
+									case 'end':
+										// SE resize - updates x2,y2
+										component.x2 = this.getCursorXLocal();
+										component.y2 = this.getCursorYLocal();
+										break;
+								}
+								
+								this.saveState();
 								return;
 							}
 						}
@@ -1545,9 +1595,7 @@ const handles = []
 GraphicDisplay.prototype.getComponentHandles = function(component) {
 	if (this.selectedComponent != null || !this.logicDisplay.components[this.selectedComponent].isActive()) {
 		switch(component.type) {
-			case COMPONENT_TYPES.LINE:
 			case COMPONENT_TYPES.RECTANGLE:
-			case COMPONENT_TYPES.CIRCLE:
 				// Clear any existing handles first
 				handles.length = 0;
 				
@@ -1558,6 +1606,18 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 					id: 'start',
 					cursor: 'nw-resize'
 				});
+				handles.push({
+					x: component.x2,
+					y: component.y1,
+					id: 'anchor-handle-1',
+					cursor: 'ne-resize'
+				});
+				handles.push({
+					x: component.x1,
+					y: component.y2,
+					id: 'anchor-handle-2',
+					cursor: 'sw-resize'
+				})
 				// End handle 
 				handles.push({
 					x: component.x2,
@@ -1566,7 +1626,24 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 					cursor: 'se-resize'
 				});
 				break;
-	
+				case COMPONENT_TYPES.LINE:
+			case COMPONENT_TYPES.CIRCLE:
+				handles.length = 0;
+				
+				// Start handle
+				handles.push({
+					x: component.x1,
+					y: component.y1,
+					id: 'start',
+					cursor: 'move'
+				});
+				handles.push({
+					x: component.x2,
+					y: component.y2, 
+					id: 'end',
+					cursor: 'move'
+				});
+				break;
 			case COMPONENT_TYPES.ARC:
 				// Clear any existing handles first
 				handles.length = 0;
@@ -1899,7 +1976,6 @@ GraphicDisplay.prototype.calculateIntersection = function(index, x, y) {
 
 		case COMPONENT_TYPES.LINE:
 		case COMPONENT_TYPES.CIRCLE:
-		case COMPONENT_TYPES.RECTANGLE:
 		case COMPONENT_TYPES.MEASURE:
 			const delta1 = this.getDistance(x, y, component.x1, component.y1);
 			const delta2 = this.getDistance(x, y, component.x2, component.y2);
@@ -1911,6 +1987,27 @@ GraphicDisplay.prototype.calculateIntersection = function(index, x, y) {
 			}
 			break;
 
+		case COMPONENT_TYPES.RECTANGLE:
+			// Check all 4 corners of rectangle
+			const nw = this.getDistance(x, y, component.x1, component.y1); // Northwest
+			const ne = this.getDistance(x, y, component.x2, component.y1); // Northeast
+			const sw = this.getDistance(x, y, component.x1, component.y2); // Southwest
+			const se = this.getDistance(x, y, component.x2, component.y2); // Southeast
+			
+			const minDist = Math.min(nw, ne, sw, se);
+			if (minDist <= tolerance) {
+				let pointType;
+				if (minDist === nw) pointType = 'nw';
+				else if (minDist === ne) pointType = 'ne';
+				else if (minDist === sw) pointType = 'sw';
+				else pointType = 'se';
+				
+				return {
+					distance: minDist,
+					pointType: pointType
+				};
+			}
+			break;
 		case COMPONENT_TYPES.ARC:
 			const deltaCenter = this.getDistance(x, y, component.x1, component.y1);
 			const deltaStart = this.getDistance(x, y, component.x2, component.y2);
