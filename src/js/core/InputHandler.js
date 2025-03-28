@@ -195,3 +195,6 @@ MouseHandler.prototype.onMouseUp = function(e) {
 			break;
 	}
 };
+MouseHandler.prototype.onMouseLeave = function(e) {
+    this.updateCoords(0, 0);
+}

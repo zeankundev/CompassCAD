@@ -138,6 +138,7 @@ function GraphicDisplay(displayName, width, height) {
 	}
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
+	this.enableZoomWarpingToCursor = false;
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -1833,20 +1834,22 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 		return;
 	}
 
-	// Get cursor position relative to canvas center before zoom
-	const cursorXBeforeZoom = this.getCursorXRaw(); 
-	const cursorYBeforeZoom = this.getCursorYRaw();
+	if (this.enableZoomWarpingToCursor == true) {
+		// Get cursor position relative to canvas center before zoom
+		const cursorXBeforeZoom = this.getCursorXRaw(); 
+		const cursorYBeforeZoom = this.getCursorYRaw();
+
+		// Calculate cursor position after zoom
+		const cursorXAfterZoom = cursorXBeforeZoom * (this.targetZoom / this.zoom);
+		const cursorYAfterZoom = cursorYBeforeZoom * (this.targetZoom / this.zoom);
+
+		// Adjust camera position to keep cursor position fixed
+		this.camX += cursorXBeforeZoom - cursorXAfterZoom;
+		this.camY += cursorYBeforeZoom - cursorYAfterZoom;
+	}
 
 	// Set the target zoom
 	this.targetZoom = newZoom;
-
-	// Calculate cursor position after zoom
-	const cursorXAfterZoom = cursorXBeforeZoom * (this.targetZoom / this.zoom);
-	const cursorYAfterZoom = cursorYBeforeZoom * (this.targetZoom / this.zoom);
-
-	// Adjust camera position to keep cursor position fixed
-	this.camX += cursorXBeforeZoom - cursorXAfterZoom;
-	this.camY += cursorYBeforeZoom - cursorYAfterZoom;
 
 	// Display the zoom level
 	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
@@ -2373,6 +2376,10 @@ var initCAD = function (gd) {
 		gd.mouse.onMouseUp(e);
 		gd.performAction(e, gd.MOUSEACTION.UP);
 	});
+	gd.cvn.mouseleave(function (e) {
+		gd.mouse.onMouseLeave(e);
+		console.warn('Mouse left')
+	})
 	gd.cvn.on('wheel', (event) => {
 		let zoomFactor = 1
 		if (event.originalEvent.deltaY < 0) {
