@@ -85,7 +85,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
-	this.maxZoomFactor = 20;
+	this.maxZoomFactor = 15;
 	this.camMoving = false;
 	this.xCNaught = 0;
 	this.yCNaught = 0;
@@ -1825,20 +1825,31 @@ GraphicDisplay.prototype.resetMode = function (e) {
 };
 
 GraphicDisplay.prototype.setZoom = function (zoomFactor) {
-    // Calculate the new zoom based on the current zoom and zoomFactor
-    var newZoom = this.zoom * zoomFactor;
-    console.log(newZoom);
-    // Ensure zoom does not go beyond limits
-    if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
-		console.log(`[zoom] set zoom to ${newZoom}`);
-        return;
-    } else {
-		console.log('[zoom] ignoring zoom...');
+	// Calculate the new zoom based on the current zoom and zoomFactor
+	var newZoom = this.zoom * zoomFactor;
+	
+	// Ensure zoom does not go beyond limits
+	if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
+		return;
 	}
-    // Set the target zoom normally
-    this.targetZoom = newZoom;
-    // Display the zoom level
-    document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
+
+	// Get cursor position relative to canvas center before zoom
+	const cursorXBeforeZoom = this.getCursorXRaw(); 
+	const cursorYBeforeZoom = this.getCursorYRaw();
+
+	// Set the target zoom
+	this.targetZoom = newZoom;
+
+	// Calculate cursor position after zoom
+	const cursorXAfterZoom = cursorXBeforeZoom * (this.targetZoom / this.zoom);
+	const cursorYAfterZoom = cursorYBeforeZoom * (this.targetZoom / this.zoom);
+
+	// Adjust camera position to keep cursor position fixed
+	this.camX += cursorXBeforeZoom - cursorXAfterZoom;
+	this.camY += cursorYBeforeZoom - cursorYAfterZoom;
+
+	// Display the zoom level
+	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
 };
 
 
