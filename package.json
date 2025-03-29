@@ -72,8 +72,9 @@
   },
   "devDependencies": {
     "electron": "^35.1.1",
-    "electron-builder": "^25.1.7",
+    "electron-builder": "^26.0.12",
     "electron-is-dev": "^3.0.1",
-    "electron-reloader": "^1.2.3"
+    "electron-reloader": "^1.2.3",
+    "node-abi": "^4.2.0"
   }
 }
