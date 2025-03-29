@@ -170,6 +170,11 @@ GraphicDisplay.prototype.init = async function (e) {
 	this.updateActivity('Starting a new design', 'On New Design 1');
 	clearForm()
 	this.configFlags = await this.config.getFlags();
+	console.log(this.configFlags)
+	const useOldGrid = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-old-grid') : false;
+	this.enableLegacyGridStyle = useOldGrid;
+	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
+	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
 };
 GraphicDisplay.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
@@ -207,11 +212,9 @@ GraphicDisplay.prototype.getLocal = async function (key) {
 }
 GraphicDisplay.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp");
-	const useOldGrid = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-old-grid') : false;
 	this.preferredFont = await this.config.getValueKey("preferredFont");
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
-	this.enableLegacyGridStyle = useOldGrid;
 	// I know I might get a lot of controversy for this
 	/*if (disableLerp !== true) {
 		this.currentZoom = this.lerp(this.currentZoom, this.targetZoom, this.zoomSpeed);
@@ -1836,7 +1839,11 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 		return;
 	}
 
+	// Set the target zoom
+	this.targetZoom = newZoom;
+
 	if (this.enableZoomWarpingToCursor == true) {
+		console.log('[flag] warping enabled')
 		// Get cursor position relative to canvas center before zoom
 		const cursorXBeforeZoom = this.getCursorXRaw(); 
 		const cursorYBeforeZoom = this.getCursorYRaw();
@@ -1849,9 +1856,6 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 		this.camX += cursorXBeforeZoom - cursorXAfterZoom;
 		this.camY += cursorYBeforeZoom - cursorYAfterZoom;
 	}
-
-	// Set the target zoom
-	this.targetZoom = newZoom;
 
 	// Display the zoom level
 	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
