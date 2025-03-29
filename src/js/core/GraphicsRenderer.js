@@ -1844,17 +1844,23 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 
 	if (this.enableZoomWarpingToCursor == true) {
 		console.log('[flag] warping enabled')
-		// Get cursor position relative to canvas center before zoom
-		const cursorXBeforeZoom = this.getCursorXRaw(); 
-		const cursorYBeforeZoom = this.getCursorYRaw();
+		// Get cursor position in local coordinates before zoom
+		const cursorXLocal = this.getCursorXLocal();
+		const cursorYLocal = this.getCursorYLocal();
 
-		// Calculate cursor position after zoom
-		const cursorXAfterZoom = cursorXBeforeZoom * (this.targetZoom / this.zoom);
-		const cursorYAfterZoom = cursorYBeforeZoom * (this.targetZoom / this.zoom);
+		// Calculate cursor position relative to viewport center
+		const viewportCenterX = this.displayWidth / 2;
+		const viewportCenterY = this.displayHeight / 2;
+		const cursorOffsetX = (this.mouse.cursorXGlobal - this.offsetX - viewportCenterX) / this.zoom;
+		const cursorOffsetY = (this.mouse.cursorYGlobal - this.offsetY - viewportCenterY) / this.zoom;
+
+		// Calculate the zoom difference
+		const zoomDiff = this.targetZoom - this.zoom;
 
 		// Adjust camera position to keep cursor position fixed
-		this.camX += cursorXBeforeZoom - cursorXAfterZoom;
-		this.camY += cursorYBeforeZoom - cursorYAfterZoom;
+		// Use the local cursor position to determine the zoom center point
+		this.camX -= cursorOffsetX * (zoomDiff / this.zoom);
+		this.camY -= cursorOffsetY * (zoomDiff / this.zoom);
 	}
 
 	// Display the zoom level
