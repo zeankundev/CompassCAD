@@ -13,6 +13,7 @@ $(document).ready(async() => {
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
     const flags = await config.getFlags();
     document.getElementById('use-old-grid').checked = Array.isArray(flags) ? flags.includes('enable-old-grid') : false;
+    document.getElementById('enable-warping').checked = Array.isArray(flags) ? flags.includes('enable-zoom-to-cursor-warping') : false;
     document.getElementById('language').value = await config.getValueKey('lang')
     document.getElementById('workspace-font').value = await config.getValueKey('preferredFont')
     document.getElementById('undo-stack').onchange = () => {
@@ -33,6 +34,13 @@ $(document).ready(async() => {
             config.purgeFlag('enable-old-grid')
         }
     };
+    document.getElementById('enable-warping').onchange = () => {
+        if (document.getElementById('enable-warping').checked) {
+            config.appendFlag('enable-zoom-to-cursor-warping')
+        } else {
+            config.purgeFlag('enable-zoom-to-cursor-warping')
+        }
+    }
 
     document.getElementById('workspace-font').onchange = () => {
         console.log('font changed');
