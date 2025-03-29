@@ -62,6 +62,10 @@
     "languageText": "Bahasa",
     "settings": "Pengaturan",
     "configSaved": "Konfigurasi disimpan! Mulai ulang untuk menerapkan",
-    "help": "Bantuan"
+    "help": "Bantuan",
+    "workspace": "Tempat kerja",
+    "general": "Umum",
+    "flag": "Flags",
+    "about": "Tentang"
   }
   

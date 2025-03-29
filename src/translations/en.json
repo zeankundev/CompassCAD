@@ -62,5 +62,9 @@
     "languageText": "Language",
     "settings": "Settings",
     "configSaved": "Config saved! Restart to apply",
-    "help": "Help"
+    "help": "Help",
+    "workspace": "Workspace",
+    "general": "General",
+    "flag": "Flags",
+    "about": "About"
 }

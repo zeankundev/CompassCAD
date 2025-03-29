@@ -62,5 +62,9 @@
     "languageText": "语言",
     "settings": "设置",
     "configSaved": "配置已保存！重启以生效",
-    "help": "帮助"
+    "help": "帮助",
+    "workspace": "工作区",
+    "general": "常规",
+    "flag": "国旗",
+    "about": "关于"
 }

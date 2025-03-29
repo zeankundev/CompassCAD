@@ -62,5 +62,9 @@
     "languageText": "언어",
     "settings": "설정",
     "configSaved": "설정이 저장되었습니다! 적용하려면 다시 시작하세요",
-    "help": "도움말"
+    "help": "도움말",
+    "workspace": "작업 공간",
+    "general": "일반",
+    "flag": "국기",
+    "about": "정보"
   }

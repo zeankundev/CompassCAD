@@ -62,5 +62,9 @@
     "languageText": "Langue",
     "settings": "Paramètres",
     "configSaved": "Configuration enregistrée ! Redémarrez pour appliquer",
-    "help": "Aide"
+    "help": "Aide",
+    "workspace": "Espace",
+    "general": "Général",
+    "flag": "Drapeaux",
+    "about": "À propos"
 }

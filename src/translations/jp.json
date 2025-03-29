@@ -62,5 +62,9 @@
     "languageText": "言語",
     "settings": "設定",
     "configSaved": "設定を保存しました！適用には再起動が必要です",
-    "help": "ヘルプ"
+    "help": "ヘルプ",
+    "workspace": "ワークスペース",
+    "general": "一般",
+    "flag": "国旗",
+    "about": "アバウト"
 }

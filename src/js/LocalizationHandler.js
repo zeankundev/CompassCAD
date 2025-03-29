@@ -51,7 +51,11 @@ function Localizator() {
         addTree: "Add Tree (press esc to cancel)",
         addMeasure: "Measure (press esc to cancel)",
         enterText: "Enter text",
-        cancel: "Cancel"
+        cancel: "Cancel",
+        workspace: "Workspace",
+        general: "General",
+        flags: "Flags",
+        about: "About"
     };
 }
 

@@ -62,5 +62,9 @@
     "languageText": "Lingua",
     "settings": "Impostazioni",
     "configSaved": "Configurazione salvata! Riavvia per applicare",
-    "help": "Aiuto"
+    "help": "Aiuto",
+    "workspace": "Spazio",
+    "general": "Generale",
+    "flag": "Bandiera",
+    "about": "Informazioni"
   }

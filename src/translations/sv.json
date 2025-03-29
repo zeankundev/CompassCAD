@@ -62,6 +62,10 @@
     "languageText": "Språk",
     "settings": "Inställningar",
     "configSaved": "Konfiguration sparad! Starta om för att tillämpa",
-    "help": "Hjälp"
+    "help": "Hjälp",
+    "workspace": "Arbetsyta",
+    "general": "Allmän",
+    "flag": "Flaggor",
+    "about": "Om"
   }
   

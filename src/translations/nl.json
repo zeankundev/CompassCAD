@@ -62,6 +62,10 @@
     "languageText": "Taal",
     "settings": "Instellingen",
     "configSaved": "Configuratie opgeslagen! Herstart om toe te passen",
-    "help": "Hulp"
+    "help": "Hulp",
+    "workspace": "Werkruimte",
+    "general": "Algemeen",
+    "flag": "Flags",
+    "about": "Over"
   }
   

@@ -44,6 +44,20 @@
                 <label id="undo-stack-text">Undo stack size</label>&nbsp;
                 <input type="number" id="undo-stack" value="50">
                 <br><br>
+                <label id="language-text">Language</label>&nbsp;
+                <select id="language">
+                    <option value="cns">中文（简体）</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ge">ქართული ენა</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="it">Italia</option>
+                    <option value="jp">日本語</option>
+                    <option value="kr">한국</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="ru">Русский</option>
+                    <option value="sv">Svenska</option>
+                </select>
             </div>
             <div id="flags" class="tabcontent">
                 <label id="use-old-grid-text">Use legacy grid (older than v1.5.0)</label>&nbsp;
@@ -60,21 +74,13 @@
                     <p id="copyright">&copy 2024 - {curryear} zeankun.dev</p>
                 </div>
                 <p id="app-version">App version: </p>
-                <label id="language-text">Language</label>&nbsp;
-                <select id="language">
-                    <option value="cns">中文（简体）</option>
-                    <option value="en">English</option>
-                    <option value="fr">Français</option>
-                    <option value="ge">ქართული ენა</option>
-                    <option value="id">Bahasa Indonesia</option>
-                    <option value="it">Italia</option>
-                    <option value="jp">日本語</option>
-                    <option value="kr">한국</option>
-                    <option value="nl">Nederlands</option>
-                    <option value="ru">Русский</option>
-                    <option value="sv">Svenska</option>
-                </select>
-                <br><br>
+                <p>CompassCAD is free and open source software, licensed under the GNU General Public License version 3.</p>
+                <div class="socials">
+                    <img src="../../assets/misc/notion.png" alt="Notion Logo" title="Read our wiki/handbook on Notion" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki?utm_source=compasscad-desktop-client`)">
+                    <img src="../../assets/misc/x.png" alt="X/Twitter Logo" title="Follow us on X/Twitter" onclick="redirectToSomewhere(`https://x.com/CompassCAD`)">
+                    <img src="../../assets/misc/github.png" alt="Github Logo" title="Check out our Github" onclick="redirectToSomewhere(`https://github.com/zeankundev/CompassCAD`)">
+                    <img src="../../assets/misc/producthunt.png" alt="Product hunt Logo" title="Check out our Product Hunt" onclick="redirectToSomewhere(`https://www.producthunt.com/posts/compasscad`)">
+                </div>
             </div>
             <br>
             <button id="prompt-close">Close</button>
@@ -161,7 +167,7 @@
                 <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>
                 <button title="Open eval console" id="open-eval" style="display: none;" onclick="openEvalConsole()"><img src="../../assets/icons/eval.svg"></button>
                 <button title="Join CompassCAD Discord Server" onclick="redirectToSomewhere(`https://discord.gg/Qvw9afNs3e`)"><img src="../../assets/icons/discord.svg"></button>
-                <button title="Help" id="help" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki`)"><img src="../../assets/icons/help.svg"></button>
+                <button title="Help" id="help" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki?utm_source=compasscad-desktop-client`)"><img src="../../assets/icons/help.svg"></button>
             </div>
             <div class="container">
                 <div class="quick-tool" id="quick-tool">

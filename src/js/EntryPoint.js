@@ -303,6 +303,10 @@ $(document).ready(async() => {
     applyStringOnHTML('help', document.getElementById('help'), 'title', '');
     applyStringOnHTML('configSaved', document.getElementById('config-text'), 'html', '');
     applyStringOnHTML('inspector', document.getElementById('inspector-title'), 'html', '');
+    applyStringOnHTML('workspace', document.getElementById('workspace-settings'), 'html', '');
+    applyStringOnHTML('general', document.getElementById('general-settings'), 'html', '');
+    applyStringOnHTML('flags', document.getElementById('flags-settings'), 'html', '');
+    applyStringOnHTML('about', document.getElementById('about-settings'), 'html', '');
     window.onbeforeunload = (e) => {
         // Check if components is not null and is not empty
         if (renderer.logicDisplay.components && renderer.logicDisplay.components.length > 0) {

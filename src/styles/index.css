@@ -343,6 +343,13 @@ small {
     margin-left: 10px;
 }
 
+.socials img {
+    width: 32px;
+    margin-right: 5px;
+    display: inline-block;
+    -webkit-user-drag: none;
+}
+
 @keyframes popup {
     0% {
         opacity: 0;
