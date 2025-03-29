@@ -139,6 +139,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
 	this.enableZoomWarpingToCursor = false;
+	this.configFlags = [];
 }
 
 GraphicDisplay.prototype.init = async function (e) {
@@ -168,6 +169,7 @@ GraphicDisplay.prototype.init = async function (e) {
 	this.maximumStack = await this.config.getValueKey("maximumStack");
 	this.updateActivity('Starting a new design', 'On New Design 1');
 	clearForm()
+	this.configFlags = await this.config.getFlags();
 };
 GraphicDisplay.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
@@ -205,7 +207,7 @@ GraphicDisplay.prototype.getLocal = async function (key) {
 }
 GraphicDisplay.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp");
-	const useOldGrid = await this.config.getValueKey("useOldGrid");
+	const useOldGrid = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-old-grid') : false;
 	this.preferredFont = await this.config.getValueKey("preferredFont");
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;

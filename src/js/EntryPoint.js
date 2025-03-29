@@ -3,6 +3,7 @@ let isReady = false
 let resizeWin;
 $(document).ready(async() => {
     const config = new ConfigHandler()
+    await config.loadConfig()
     renderer = new GraphicDisplay('canvas', 800,600)
     renderer.logicDisplay = renderer.logicDisplay || {};
     renderer.logicDisplay.components = renderer.logicDisplay.components || [];
@@ -10,7 +11,8 @@ $(document).ready(async() => {
     document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
     document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
-    document.getElementById('use-old-grid').checked = await config.getValueKey('useOldGrid')
+    const flags = await config.getFlags();
+    document.getElementById('use-old-grid').checked = Array.isArray(flags) ? flags.includes('enable-old-grid') : false;
     document.getElementById('language').value = await config.getValueKey('lang')
     document.getElementById('workspace-font').value = await config.getValueKey('preferredFont')
     document.getElementById('undo-stack').onchange = () => {
@@ -25,7 +27,11 @@ $(document).ready(async() => {
         config.saveKey('gridSpacing', document.getElementById('grid-spacing').value);
     };
     document.getElementById('use-old-grid').onchange = () => {
-        config.saveKey('useOldGrid', document.getElementById('use-old-grid').checked);
+        if (document.getElementById('use-old-grid').checked) {
+            config.appendFlag('enable-old-grid')
+        } else {
+            config.purgeFlag('enable-old-grid')
+        }
     };
 
     document.getElementById('workspace-font').onchange = () => {
