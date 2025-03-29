@@ -44,8 +44,7 @@
       "icon": "build/icons/icon.ico",
       "target": [
         "nsis"
-      ],
-      "publisherName": "zeankun.dev"
+      ]
     },
     "linux": {
       "target": [
