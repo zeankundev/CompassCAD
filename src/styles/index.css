@@ -315,6 +315,34 @@ small {
     padding: 10px;
     cursor: pointer;
 }
+
+.disabled {
+    background-color: var(--disabled-secondary) !important;
+}
+
+.tabcontent {
+    display: none;
+    background-color: var(--secondary);
+    padding: 10px;
+}
+
+.tabcontent input[type=text],.tabcontent input[type=number], .tabcontent select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary) !important;
+    border: none;
+    font-family: var(--main-font);
+    padding: 10px;
+    color: var(--text);
+    width: 40%;
+    outline: none;
+}
+
+.about-info {
+    display: inline-block;
+    margin-left: 10px;
+}
+
 @keyframes popup {
     0% {
         opacity: 0;

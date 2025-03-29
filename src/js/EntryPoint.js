@@ -237,7 +237,9 @@ $(document).ready(async() => {
           console.log(scriptTag);
         });
     });
-    isReady = true
+    isReady = true;
+    document.getElementById('copyright').innerHTML = `&copy 2024 - ${new Date().getFullYear()} zeankun.dev`
+    document.getElementById('app-version').innerHTML = `App version: ${remote.app.getVersion()}`
     // Apply translations to header elements
     applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
     // Apply translations to window action buttons

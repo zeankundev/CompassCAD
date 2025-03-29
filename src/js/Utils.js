@@ -99,6 +99,7 @@ document.getElementById("toolbar").addEventListener("wheel", (evt) => {
     requestAnimationFrame(animateScroll);
 });
 function openSettings() {
+    openSettingsTab('workspace')
     const setModal = document.getElementById('set-modal');
     const peerConnected = document.getElementById('peer-connected');
 
@@ -330,6 +331,29 @@ const clearForm = async () => {
     const dynamicForm = document.getElementById("form");
     dynamicForm.innerHTML = await loc.getLocalizedString('nothingToInspect');
     dynamicForm.style.overflowY = 'hidden'
+}
+const openSettingsTab = (tabName) => {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll(".tabcontent");
+    tabContents.forEach((content) => {
+        content.style.display = "none";
+    });
+
+    // Show the selected tab content
+    const selectedTabContent = document.getElementById(tabName);
+    if (selectedTabContent) {
+        selectedTabContent.style.display = "block";
+    }
+
+    // Remove the disabled class of that button
+    const buttons = document.querySelectorAll(".settings-button");
+    buttons.forEach((button) => {
+        button.classList.add('disabled');
+    });
+    const selectedButton = document.getElementById(tabName + '-settings');
+    if (selectedButton) {
+        selectedButton.classList.remove('disabled')
+    }
 }
 const createFormForSelection = () => {
     const dynamicForm = document.getElementById("form");

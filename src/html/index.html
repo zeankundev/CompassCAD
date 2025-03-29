@@ -23,39 +23,60 @@
         <modal class="modal hidden" id="set-modal">
             <h3 id="settings-text">Settings</h3>
             <br>
-            <label id="undo-stack-text">Undo stack size</label>&nbsp;
-            <input type="number" id="undo-stack" value="50">
-            <br><br>
-            <label id="font-size-text">Font Size (px)</label>&nbsp;
-            <input type="number" id="font-size" value="24">
-            <br><br>
-            <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
-            <input type="number" id="grid-spacing" value="100">
-            <br><br>
-            <label id="use-old-grid-text">Use legacy grid (older than v1.5.0)</label>&nbsp;
-            <input type="checkbox" id="use-old-grid">
-            <br><br>
-            <label id="workspacefont-text">Preferred workspace font</label>&nbsp;
-            <input type="text" id="workspace-font">
-            <br><br>
-            <label id="language-text">Language</label>&nbsp;
-            <select id="language">
-                <option value="cns">中文（简体）</option>
-                <option value="en">English</option>
-                <option value="fr">Français</option>
-                <option value="ge">ქართული ენა</option>
-                <option value="id">Bahasa Indonesia</option>
-                <option value="it">Italia</option>
-                <option value="jp">日本語</option>
-                <option value="kr">한국</option>
-                <option value="nl">Nederlands</option>
-                <option value="ru">Русский</option>
-                <option value="sv">Svenska</option>
-            </select>
-            <br><br>
+            <div class="tab">
+                <button id="workspace-settings" class="settings-button disabled" onclick="openSettingsTab('workspace')">Workspace</button>
+                <button id="general-settings" class="settings-button disabled" onclick="openSettingsTab('general')">General</button>
+                <button id="flags-settings" class="settings-button disabled" onclick="openSettingsTab('flags')">Flags</button>
+                <button id="about-settings" class="settings-button disabled" onclick="openSettingsTab('about')">About</button>
+            </div>
+            <div id="workspace" class="tabcontent">
+                <label id="font-size-text">Font Size (px)</label>&nbsp;
+                <input type="number" id="font-size" value="24">
+                <br><br>
+                <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
+                <input type="number" id="grid-spacing" value="100">
+                <br><br>
+                <label id="workspacefont-text">Preferred workspace font</label>&nbsp;
+                <input type="text" id="workspace-font">
+                <br><br>
+            </div>
+            <div id="general" class="tabcontent">
+                <label id="undo-stack-text">Undo stack size</label>&nbsp;
+                <input type="number" id="undo-stack" value="50">
+                <br><br>
+            </div>
+            <div id="flags" class="tabcontent">
+                <label id="use-old-grid-text">Use legacy grid (older than v1.5.0)</label>&nbsp;
+                <input type="checkbox" id="use-old-grid">
+                <br><br>
+            </div>
+            <div id="about" class="tabcontent">
+                <img src="../../assets/logos/512x512.png" width="50" alt="CCAD Logo" id="ccadlogo">
+                <div class="about-info">
+                    <h1>CompassCAD</h1>
+                    <p id="copyright">&copy 2024 - {curryear} zeankun.dev</p>
+                </div>
+                <p id="app-version">App version: </p>
+                <label id="language-text">Language</label>&nbsp;
+                <select id="language">
+                    <option value="cns">中文（简体）</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ge">ქართული ენა</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="it">Italia</option>
+                    <option value="jp">日本語</option>
+                    <option value="kr">한국</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="ru">Русский</option>
+                    <option value="sv">Svenska</option>
+                </select>
+                <br><br>
+            </div>
+            <br>
             <button id="prompt-close">Close</button>
-            <br><br>
             <div id="config-saved"><img src="../../assets/icons/complete.svg">&nbsp;<span id="config-text">Config saved! Restart to apply</span></div>
+            <br><br>
         </modal>
         <modal class="modal hidden" id="backups-modal">
             <h3 id="backups-headtext">Recover or open backups</h3>
