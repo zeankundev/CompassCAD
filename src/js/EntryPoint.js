@@ -10,7 +10,6 @@ $(document).ready(async() => {
     document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');
     document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
-    document.getElementById('grid-spacing').value = await config.getValueKey('gridSpacing')
     const flags = await config.getFlags();
     document.getElementById('use-old-grid').checked = Array.isArray(flags) ? flags.includes('enable-old-grid') : false;
     document.getElementById('enable-warping').checked = Array.isArray(flags) ? flags.includes('enable-zoom-to-cursor-warping') : false;
@@ -22,10 +21,6 @@ $(document).ready(async() => {
 
     document.getElementById('font-size').onchange = () => {
         config.saveKey('fontSize', document.getElementById('font-size').value);
-    };
-
-    document.getElementById('grid-spacing').onchange = () => {
-        config.saveKey('gridSpacing', document.getElementById('grid-spacing').value);
     };
     document.getElementById('use-old-grid').onchange = () => {
         if (document.getElementById('use-old-grid').checked) {
@@ -254,6 +249,27 @@ $(document).ready(async() => {
     isReady = true;
     document.getElementById('copyright').innerHTML = `&copy 2024 - ${new Date().getFullYear()} zeankun.dev`
     document.getElementById('app-version').innerHTML = `App version: ${remote.app.getVersion()}`
+    config.getValueKey('gridSettings').then((res) => {
+        // res is an Array [100,50,25,10]
+        const gridSelector = document.getElementById('grid-selector');
+        gridSelector.innerHTML = '';
+        let finalRes = res.sort((a, b) => {
+            return b - a
+        })
+        finalRes.forEach((item) => {
+            const option = document.createElement('option');
+            option.value = item;
+            if (item == 100) {
+                option.selected = true;
+            }
+            option.text = `Grid ${item / 100}m (${item}cm)`;
+            gridSelector.appendChild(option);
+        });
+    })
+    document.getElementById('grid-selector').onchange = () => {
+        console.log('Grid changed');
+        renderer.gridSpacing = document.getElementById('grid-selector').value
+    }
     // Apply translations to header elements
     applyStringOnHTML('newDesign', document.getElementById('titlething'), 'html', ' - CompassCAD');
     // Apply translations to window action buttons

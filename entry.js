@@ -59,7 +59,7 @@ const init = () => {
   if (!fs.existsSync(`${userDataPath}/.compasscfg`)) {
     fs.writeFileSync(
       `${userDataPath}/.compasscfg`,
-      '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"en","preferredFont":"gsansmono", "flags":[]}',
+      '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"en","preferredFont":"gsansmono", "flags":[], "gridSettings": [100, 50, 25, 10]}',
       { encoding: 'utf-8' }
     );
   }

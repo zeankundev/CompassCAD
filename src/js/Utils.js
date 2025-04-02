@@ -1,4 +1,5 @@
-const { ipcRenderer } = require('electron')
+const { ipcRenderer } = require('electron');
+let storedIndex = -1;
 function callPrompt(message) {
     return new Promise((resolve, reject) => {
         const promptContainer = document.getElementById('prompt-container');
@@ -98,7 +99,9 @@ document.getElementById("toolbar").addEventListener("wheel", (evt) => {
 
     requestAnimationFrame(animateScroll);
 });
-function openSettings() {
+async function openSettings() {
+    const config = new ConfigHandler();
+    await config.loadConfig();
     openSettingsTab('workspace')
     const setModal = document.getElementById('set-modal');
     const peerConnected = document.getElementById('peer-connected');
@@ -106,9 +109,59 @@ function openSettings() {
     if (setModal.classList.contains('hidden')) {
         peerConnected.style.display = 'none';
         setModal.classList.remove('hidden');
+        const gridSettings = document.getElementById('grid-settings')
+        gridSettings.innerHTML = ''
+        await config.getGridSettings().then(res => {
+            console.log('[settings] got grid settings')
+            console.log(res)
+            res.map((data, index) => {
+                console.log(`[settings] grid setting ${index}: ${data}`)
+                const gridConfiguration = document.createElement('div');
+                gridConfiguration.className = 'grid-settings-display';
+                gridConfiguration.innerHTML = `${data}cm (${data / 100}m)`;
+                gridConfiguration.onclick = () => {
+                    console.log(storedIndex)
+                    // if stored index is -1, set the index to that, and make it to selected
+                    // if the stored index is not -1, set the index to that, and make the others unselected, while the selected index is selected
+                    const previousGrid = document.getElementsByClassName('selected')[0];
+                    if (previousGrid) {
+                        previousGrid.classList.remove('selected');
+                    }
+                    storedIndex = index;
+                    console.log(storedIndex)
+                    gridConfiguration.classList.add('selected');
+                }
+                gridSettings.appendChild(gridConfiguration);
+            })
+        }).catch(err => console.error('[settings] error getting grid settings:', err));
+        
     } else {
         peerConnected.style.display = 'block';
         setModal.classList.add('hidden');
+    }
+}
+
+document.getElementById('remove-grid').onclick = async () => {
+    const config = new ConfigHandler();
+    await config.loadConfig();
+    const grids = await config.getGridSettings()
+    if (grids.length > 0 && storedIndex != -1) {
+        console.log(storedIndex)
+        if (confirm(`Delete grid ${grids[storedIndex]}cm? (${grids[storedIndex] / 100}m)`)) {
+            config.purgeGridSetting(grids[storedIndex])
+            storedIndex = -1;
+        }
+    }
+}
+
+document.getElementById('add-grid').onclick = async () => {
+    const config = new ConfigHandler();
+    await config.loadConfig();
+    const whatGridToAdd = await callPrompt('Enter the grid size (in cm)')
+    if (whatGridToAdd != null) {
+        console.log(whatGridToAdd)
+        config.appendGridSetting(parseFloat(whatGridToAdd))
+        storedIndex = -1;
     }
 }
 

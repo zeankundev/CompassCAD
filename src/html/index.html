@@ -34,8 +34,13 @@
                 <input type="number" id="font-size" value="24">
                 <br><br>
                 <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
-                <input type="number" id="grid-spacing" value="100">
                 <br><br>
+                <div class="grid-config">
+                    <div id="grid-settings"></div>
+                    <button id="add-grid">Add</button>
+                    <button id="remove-grid">Remove</button>
+                </div>
+                <br>
                 <label id="workspacefont-text">Preferred workspace font</label>&nbsp;
                 <input type="text" id="workspace-font">
                 <br><br>
@@ -160,6 +165,8 @@
                 <button title="Zoom out (<)" id="zoom-out" onclick="renderer.zoomOut()"><img src="../../assets/icons/zoomout.svg"></button>
                 <span class="menubar-text" style="margin-left: 20px;" id="zoom-level" onclick="const requiredZoomFactor = 1 / renderer.zoom;renderer.setZoom(requiredZoomFactor);"></span>
                 <button title="Turn snap on/off (ctrl+k)" id="toggle-snap" onclick="toggleSnap()"><img id="snap-toggle" src="../../assets/icons/snap.svg"></button>
+                <select id="grid-selector" class="grid-selector">
+                </select>
                 <div class="division-line"></div>
                 &nbsp;
                 <button title="Host or join a multi-edit session" id="join-remote" onclick="openMultiEditor()"><img src="../../assets/icons/remoteconnect.svg"></button>
