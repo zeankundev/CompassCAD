@@ -112,7 +112,7 @@ small {
 }
 
 .window-actions button img {
-    width: 16px;
+    width: 20px;
     -webkit-user-drag: none;
 }
 
@@ -130,6 +130,15 @@ small {
     overflow-x: scroll;
     margin-bottom: 10px;
     align-items: center;
+}
+
+.group {
+    box-shadow: 5px 10px 10px 3px rgba(0, 0, 0, 0.25);
+    position: absolute;
+    width: 100vw;
+    z-index: 999;
+    background-color: var(--primary);
+    border-bottom: 0.5px solid var(--outline);
 }
 
 .toolbar::-webkit-scrollbar {
@@ -186,12 +195,10 @@ small {
     padding: 5px;
     flex: 1;
     overflow: auto;
-    height: 80vh;
-    min-width: 30px;
-    max-width: fit-content;
-    position: absolute;
+    position: fixed; /* Changed from absolute */
     left: 20px;
-    bottom: 20px;
+    top: 120px;
+    bottom: 20px; /* Added bottom anchor */
     z-index: 999;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
@@ -200,6 +207,12 @@ small {
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
     border: 0.5px solid var(--outline);
+    box-sizing: border-box; /* Added for proper dimension calculations */
+
+    /* Dynamic sizing constraints */
+    min-width: 30px;
+    max-width: calc(100vw - 60px); /* Prevents overflow with left margin + safety */
+    width: fit-content; /* Maintain content-based width */
 }
 
 .quick-tool::-webkit-scrollbar {
@@ -232,6 +245,10 @@ small {
 }
 
 .canvas-container {
+    position: absolute;
+    top: 13.35vh;
+    height: 86.65vh;
+    width: 100%;
     display: flex;
     flex: 1;
     justify-content: space-between;
@@ -240,6 +257,8 @@ small {
 .canvas-container canvas {
     background-color: #161616;
     flex: 1;
+    position: absolute;
+    bottom: 0;
 }
 
 .properties-selector {
@@ -541,14 +560,15 @@ command-pallete input[type=text] {
     border: 0.5px solid var(--outline);
     border-radius: 10px;
     box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.5);
-    height: 80vh;
     z-index: 999;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
+    position: fixed; /* Changed from absolute to fixed */
+    right: 20px;
+    top: 120px;
+    bottom: 20px; /* Added bottom anchor */
     display: none;
     user-select: none;
     transition: all 0.3s ease;
+    box-sizing: border-box; /* Added to include padding in dimensions */
 }
 
 #form input[type=text] {

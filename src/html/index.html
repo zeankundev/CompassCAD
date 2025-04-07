@@ -136,21 +136,21 @@
                 <button id="eval-exit">Close</button>
             </div>
         </modal>
-        <header class="menubar" id="menubar">
-            <div class="menubar-branding">
-                <img src="../../assets/logos/512x512.png" width="20" alt="CCAD Logo" id="ccadlogo">
-            </div>
-            <div class="menubar-centered">
-                <small id="titlething">New Design 1 - CompassCAD</small>
-            </div>
-            <div class="window-actions">
-                <button id="fps-warner" style="display:none;width:350px;font-size:9pt;" title="Your computer is going below the optimal FPS!"><img src="../../assets/icons/warn.svg">&nbsp;&nbsp;<p id="fps-warner-inner"></p></button>
-                <button id="minimize" title="Minimize"><img src="../../assets/icons/minimize.svg"></button>
-                <button id="maximize" title="Maximize"><img src="../../assets/icons/maximize.svg"></button>
-                <button id="close" title="Close"><img src="../../assets/icons/close.svg"></button>
-            </div>
-        </header>
-        <div class="main-content">
+        <div class="group">
+            <header class="menubar" id="menubar">
+                <div class="menubar-branding">
+                    <img src="../../assets/logos/512x512.png" width="20" alt="CCAD Logo" id="ccadlogo">
+                </div>
+                <div class="menubar-centered">
+                    <small id="titlething">New Design 1 - CompassCAD</small>
+                </div>
+                <div class="window-actions">
+                    <button id="fps-warner" style="display:none;width:350px;font-size:9pt;" title="Your computer is going below the optimal FPS!"><img src="../../assets/icons/warn.svg">&nbsp;&nbsp;<p id="fps-warner-inner"></p></button>
+                    <button id="minimize" title="Minimize"><img src="../../assets/icons/minimize.svg"></button>
+                    <button id="maximize" title="Maximize"><img src="../../assets/icons/maximize.svg"></button>
+                    <button id="close" title="Close"><img src="../../assets/icons/close.svg"></button>
+                </div>
+            </header>
             <div class="toolbar" id="toolbar">
                 <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
                 <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
@@ -176,6 +176,8 @@
                 <!-- <button title="Join CompassCAD Discord Server" onclick="redirectToSomewhere(`https://discord.gg/Qvw9afNs3e`)"><img src="../../assets/icons/discord.svg"></button> -->
                 <button title="Help" id="help" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki?utm_source=compasscad-desktop-client`)"><img src="../../assets/icons/help.svg"></button>
             </div>
+        </div>
+        <div class="main-content">
             <div class="container">
                 <div class="quick-tool" id="quick-tool">
                     <button title="Select (q)" id="select"><img src="../../assets/icons/navigate.svg"></button> 

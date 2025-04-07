@@ -53,12 +53,25 @@ $(document).ready(async() => {
         // Calculate the height of menubar, toolbar, and status bar
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 10;
+
+        const inspector = document.getElementById('inspector');
+        let inspectorWidth = 0; // Default to 0 if inspector is not present or not visible
+        if (inspector && (getComputedStyle(inspector).display === 'block' || 
+                          getComputedStyle(inspector).display === 'flex')) {
+            inspectorWidth = inspector.offsetWidth;
+        }
+    
+        // Set the display dimensions of the canvas
+        const displaySafeArea = window.innerWidth - 
+                             document.getElementById('quick-tool').offsetWidth - 
+                             inspectorWidth;
     
         const displayHeight = window.innerHeight - resultedHeight;
     
         // Set the renderer's display dimensions (scaled by the device pixel ratio)
-        renderer.displayWidth = window.innerWidth * dpr;
+        renderer.displayWidth = window.innerWidth;
         renderer.displayHeight = displayHeight;
+        renderer.xSafeArea = displaySafeArea;
     
         // Set the canvas dimensions (scaled for the higher DPI)
         const canvas = document.getElementById('canvas');
@@ -72,7 +85,7 @@ $(document).ready(async() => {
         // Resize the bounding rectangle if needed
         const boundingRect = document.getElementById('bounding-rect');
         if (boundingRect) {
-            boundingRect.style.width = `${displayWidth}px`;
+            boundingRect.style.width = `${window.innerWidth}px`;
             boundingRect.style.height = `${displayHeight}px`;
         }
     

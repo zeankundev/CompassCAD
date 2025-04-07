@@ -864,7 +864,7 @@ GraphicDisplay.prototype.drawToolTip = function (e) {
 	this.context.textAlign = 'left';
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
-    this.context.font = "13px 'Segoe UI Variable Display', system-ui";
+    this.context.font = "13px 'OneUISans', sans-serif";
     this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 10, this.displayHeight / 2 - 10);
 };
 
@@ -1646,7 +1646,7 @@ GraphicDisplay.prototype.drawComponentSize = function (component) {
 	}
 
 	// Unified rendering code
-	this.context.font = '18px system-ui';
+	this.context.font = `18px 'OneUISans', sans-serif`;
 	const textWidth = this.context.measureText(displayText).width;
 	const boxWidth = textWidth + 20;
 	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
