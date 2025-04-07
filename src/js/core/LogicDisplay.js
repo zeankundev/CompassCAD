@@ -89,7 +89,7 @@ LogicDisplay.prototype.customSyntax = function (command) {
     return JSON.stringify(result);
 };
 
-LogicDisplay.prototype.jettIsMyWaifu = function() {
+LogicDisplay.prototype.hood_irony_type_shit = function() {
 	this.components.push(new Point(-100, -100));
 	this.components.push(new Point(100, -100));
 	
@@ -124,7 +124,7 @@ LogicDisplay.prototype.jettIsMyWaifu = function() {
 	this.components.push(new Circle(-500, 500, -500, 600));
 	
 	this.components.push(new Rectangle(200, 600, 500, 700));
-	this.components.push(new Picture(-350, 500, 'https://pbs.twimg.com/media/GSfEQEfXkAAr82x.png'))
+	this.components.push(new Picture(-350, 500, 'https://media.discordapp.net/attachments/821609322676355092/1358735340164087980/20250407_162053.jpg?ex=67f4ec65&is=67f39ae5&hm=b32a4004b494375c12a4f3bc3dbefa82682327648293850bc9a186a14b8f9244&=&format=webp&width=446&height=794'));
 };
 
 LogicDisplay.prototype.exportJSON = function() {
