@@ -17,7 +17,7 @@ var COMPONENT_TYPES = {
 function Component() {
     this.active = true;
     this.type = 0; 
-    this.color = "#fff";
+    this.color = "#ffffff";
     this.radius = 2;
 }
 

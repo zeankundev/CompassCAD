@@ -79,7 +79,7 @@ document.onerror = function (msg, url, lineNo, columnNo, error) {
         alert(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);
     }
 }
-document.getElementById("toolbar").addEventListener("wheel", (evt) => {
+/* document.getElementById("toolbar").addEventListener("wheel", (evt) => {
     evt.preventDefault();
     const toolbar = document.getElementById("toolbar");
     let start = toolbar.scrollLeft;
@@ -98,7 +98,7 @@ document.getElementById("toolbar").addEventListener("wheel", (evt) => {
     }
 
     requestAnimationFrame(animateScroll);
-});
+});*/
 async function openSettings() {
     const config = new ConfigHandler();
     await config.loadConfig();
@@ -540,7 +540,8 @@ const createFormForSelection = () => {
                 input = document.createElement("input");
                 if (key === 'color') {
                     input.type = "color";
-                    input.value = component[key].color || '#ffffff';
+                    console.log(`[form] ${key}: ${component[key]}`)
+                    input.value = component[key] || '#ffffff';
                 } else {
                     input.type = "text";
                     input.value = component[key];
