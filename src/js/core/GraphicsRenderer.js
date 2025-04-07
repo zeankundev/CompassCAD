@@ -248,6 +248,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	}
 
 	if (this.selectedComponent != null) {
+		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
 		const handles = this.getComponentHandles(this.selectedComponent)
 		for (const handle of handles) {
 			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
@@ -573,22 +574,32 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 
 GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 	if (this.temporarySelectedComponent != null) {
-		this.context.lineWidth = 2 * this.zoom;
+		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
 		this.context.strokeStyle = this.selectedColor;
+		this.context.beginPath();
+		this.context.rect(
+			(x + this.cOutX) * this.zoom - 4,
+			(y + this.cOutY) * this.zoom - 4,
+			8,
+			8
+		)
+		this.context.closePath();
+		this.context.fill();
+		this.context.stroke();
 	} else {
 		this.context.lineWidth = 3 * this.zoom;
 		this.context.fillStyle = color;
 		this.context.strokeStyle = color;
+		this.context.beginPath();
+		this.context.arc(
+			(x + this.cOutX) * this.zoom,
+			(y + this.cOutY) * this.zoom,
+			2 * this.zoom, 0, 3.14159 * 2, false);
+		this.context.closePath();
+		this.context.fill();
+		this.context.stroke();
 	}
-	this.context.beginPath();
-	this.context.arc(
-		(x + this.cOutX) * this.zoom,
-		(y + this.cOutY) * this.zoom,
-		2 * this.zoom, 0, 3.14159 * 2, false);
-	this.context.closePath();
-	this.context.fill();
-	this.context.stroke();
 };
 
 GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
@@ -849,7 +860,8 @@ GraphicDisplay.prototype.drawToolTip = function (e) {
 	this.context.shadowColor = "black";
 	this.context.shadowOffsetX = 2;
 	this.context.shadowOffsetY = 2;
-
+	this.context.textBaseline = 'alphabetic'
+	this.context.textAlign = 'left';
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
     this.context.font = "13px 'Segoe UI Variable Display', system-ui";
@@ -1433,10 +1445,11 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 									component.x2 = localX;
 									component.y2 = localY;
 								} else if (this.dragHandle === 'end') {
+									// Only update end point (x3,y3) without affecting mid point
 									component.x3 = localX;
 									component.y3 = localY;
 								}
-								break;
+								break; 
 							case COMPONENT_TYPES.POINT:
 							case COMPONENT_TYPES.LABEL:  
 							case COMPONENT_TYPES.PICTURE:
@@ -1511,27 +1524,43 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 								// Handle resizing based on handle type
 								switch (handle.id) {
 									case 'start':
-										// NW resize - updates x1,y1
-										component.x1 = this.getCursorXLocal();
-										component.y1 = this.getCursorYLocal();
+										if (component.type === COMPONENT_TYPES.ARC) {
+											component.x1 = this.getCursorXLocal();
+											component.y1 = this.getCursorYLocal();
+										} else {
+											component.x1 = this.getCursorXLocal();
+											component.y1 = this.getCursorYLocal();
+										}
 										break;
-										
-									case 'anchor-handle-1': 
-										// NE resize - updates x2,y1
-										component.x2 = this.getCursorXLocal();
-										component.y1 = this.getCursorYLocal();
+
+									case 'anchor-handle-1':
+									case 'mid': 
+										if (component.type === COMPONENT_TYPES.ARC) {
+											component.x2 = this.getCursorXLocal();
+											component.y2 = this.getCursorYLocal();
+										} else {
+											// NE resize for rectangle
+											component.x2 = this.getCursorXLocal();
+											component.y1 = this.getCursorYLocal();
+										}
 										break;
-										
+
 									case 'anchor-handle-2':
-										// SW resize - updates x1,y2 
-										component.x1 = this.getCursorXLocal();
-										component.y2 = this.getCursorYLocal();
+										if (component.type !== COMPONENT_TYPES.ARC) {
+											// SW resize for rectangle only
+											component.x1 = this.getCursorXLocal();
+											component.y2 = this.getCursorYLocal();
+										}
 										break;
-										
+
 									case 'end':
-										// SE resize - updates x2,y2
-										component.x2 = this.getCursorXLocal();
-										component.y2 = this.getCursorYLocal();
+										if (component.type === COMPONENT_TYPES.ARC) {
+											component.x3 = this.getCursorXLocal();
+											component.y3 = this.getCursorYLocal();
+										} else {
+											component.x2 = this.getCursorXLocal();
+											component.y2 = this.getCursorYLocal(); 
+										}
 										break;
 								}
 								
@@ -1597,6 +1626,86 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			this.tooltip = this.tooltipDefault;
 	}
 };
+GraphicDisplay.prototype.drawComponentSize = function (component) {
+	if (component.type == COMPONENT_TYPES.RECTANGLE || component.type == COMPONENT_TYPES.LINE) {
+		// add round rect as the background
+		this.context.fillStyle = this.selectedColor;
+		this.context.beginPath();
+		this.context.font = `18px system-ui`;  // Set font before measuring
+		const text = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
+		const textWidth = Math.min(this.context.measureText(text).width, 300); // Limit max width
+		const boxWidth = Math.min(textWidth * 1.8 + 20, 400); // Limit max box width
+		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+		this.context.roundRect(
+			boxX,  // Centered X position
+			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
+			boxWidth, // Dynamic width
+			25,  // Height
+			5   // Border radius
+		)
+		this.context.fill();
+		this.context.closePath();
+		this.context.fillStyle = '#fff';
+		this.context.textBaseline = 'middle'
+		this.context.textAlign = 'center';
+		this.context.font = `18px system-ui`;
+		this.context.fillText(
+			`${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`,
+			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
+			((component.y2 + this.cOutY) * this.zoom) + (22.5)
+		);
+	} else if (component.type == COMPONENT_TYPES.CIRCLE) {
+		this.context.fillStyle = this.selectedColor;
+		this.context.beginPath();
+		const text = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
+		const textWidth = this.context.measureText(text).width;
+		const boxWidth = textWidth * 1.8 + 20;
+		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+		this.context.roundRect(
+			boxX,  // Centered X position
+			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
+			boxWidth, // Dynamic width
+			25,  // Height
+			5   // Border radius
+		)
+		this.context.fill();
+		this.context.closePath();
+		this.context.fillStyle = '#fff';
+		this.context.textBaseline = 'middle'
+		this.context.textAlign = 'center';
+		this.context.font = `18px system-ui`;
+		this.context.fillText(
+			text,
+			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
+			((component.y2 + this.cOutY) * this.zoom) + (22.5)
+		);
+	} else if (component.type == COMPONENT_TYPES.ARC) {
+		this.context.fillStyle = this.selectedColor;
+		this.context.beginPath();
+		const text = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}, COV: ${Math.round((Math.abs(this.getAngle(component.x1, component.y1, component.x3, component.y3)).toFixed(2) / Math.PI) * 180)}°`;
+		const textWidth = this.context.measureText(text).width;
+		const boxWidth = textWidth + 20;
+		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+		this.context.roundRect(
+			boxX,  // Centered X position
+			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
+			boxWidth, // Dynamic width
+			25,  // Height
+			5   // Border radius
+		)
+		this.context.fill();
+		this.context.closePath();
+		this.context.fillStyle = '#fff';
+		this.context.textBaseline = 'middle'
+		this.context.textAlign = 'center';
+		this.context.font = `18px system-ui`;
+		this.context.fillText(
+			text,
+			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
+			((component.y2 + this.cOutY) * this.zoom) + (22.5)
+		);
+	}
+}
 const handles = []
 GraphicDisplay.prototype.getComponentHandles = function(component) {
 	if (this.selectedComponent != null || !this.logicDisplay.components[this.selectedComponent].isActive()) {
@@ -1623,7 +1732,7 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 					y: component.y2,
 					id: 'anchor-handle-2',
 					cursor: 'sw-resize'
-				})
+				}),
 				// End handle 
 				handles.push({
 					x: component.x2,
@@ -1674,6 +1783,19 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 					id: 'end',
 					cursor: 'move'
 				})
+				break;
+			case COMPONENT_TYPES.POINT:
+			case COMPONENT_TYPES.LABEL:
+			case COMPONENT_TYPES.PICTURE:
+			case COMPONENT_TYPES.SHAPE:
+				handles.length = 0;
+				
+				handles.push({
+					x: component.x,
+					y: component.y,
+					id: 'miscellaneous',
+					cursor: 'move'
+				});
 				break;
 		}
 	}
@@ -2378,15 +2500,38 @@ var initCAD = function (gd) {
 	gd.cvn.mouseout(function (e) {
 		gd.gridPointer = false;
 	});
-
+	/*
+	if (action == this.MOUSEACTION.DOWN) {
+				this.camMoving = true;
+				this.xCNaught = this.getCursorXRaw();
+				this.yCNaught = this.getCursorYRaw();
+			} else if (action == this.MOUSEACTION.UP) {
+				this.camMoving = false;
+				this.camX += this.getCursorXRaw() - this.xCNaught;
+				this.camY += this.getCursorYRaw() - this.yCNaught;
+			}
+	*/
 	gd.cvn.mousedown(function (e) {
-		gd.mouse.onMouseDown(e);
-		gd.performAction(e, gd.MOUSEACTION.DOWN);
+		if (e.which === 2) { // Middle mouse button
+			gd.camMoving = true;
+			gd.xCNaught = gd.getCursorXRaw();
+			gd.yCNaught = gd.getCursorYRaw();
+		} else {
+			gd.mouse.onMouseDown(e);
+			gd.performAction(e, gd.MOUSEACTION.DOWN); 
+		}
 	});
 
 	gd.cvn.mouseup(function (e) {
-		gd.mouse.onMouseUp(e);
-		gd.performAction(e, gd.MOUSEACTION.UP);
+		if (e.which === 2) { // Middle mouse button
+			gd.camMoving = false;
+			gd.camX += gd.getCursorXRaw() - gd.xCNaught;
+			gd.camY += gd.getCursorYRaw() - gd.yCNaught;
+			gd.updateCamera();
+		} else {
+			gd.mouse.onMouseUp(e);
+			gd.performAction(e, gd.MOUSEACTION.UP);
+		}
 	});
 	gd.cvn.mouseleave(function (e) {
 		gd.mouse.onMouseLeave(e);
