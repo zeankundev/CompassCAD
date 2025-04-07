@@ -54,31 +54,19 @@ $(document).ready(async() => {
         var resultedHeight = document.getElementById('menubar').offsetHeight + 
                              document.getElementById('toolbar').offsetHeight + 10;
     
-        // Determine the width of the inspector if it exists and is visible
-        const inspector = document.getElementById('inspector');
-        let inspectorWidth = 0; // Default to 0 if inspector is not present or not visible
-        if (inspector && (getComputedStyle(inspector).display === 'block' || 
-                          getComputedStyle(inspector).display === 'flex')) {
-            inspectorWidth = inspector.offsetWidth;
-        }
-    
-        // Set the display dimensions of the canvas
-        const displayWidth = window.innerWidth - 
-                             document.getElementById('quick-tool').offsetWidth - 
-                             inspectorWidth;
         const displayHeight = window.innerHeight - resultedHeight;
     
         // Set the renderer's display dimensions (scaled by the device pixel ratio)
-        renderer.displayWidth = displayWidth;
+        renderer.displayWidth = window.innerWidth * dpr;
         renderer.displayHeight = displayHeight;
     
         // Set the canvas dimensions (scaled for the higher DPI)
         const canvas = document.getElementById('canvas');
-        canvas.width = displayWidth * dpr;
+        canvas.width = window.innerWidth * dpr;
         canvas.height = displayHeight * dpr;
     
         // Adjust the canvas style dimensions to match the display size
-        canvas.style.width = `${displayWidth}px`;
+        canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${displayHeight}px`;
     
         // Resize the bounding rectangle if needed
