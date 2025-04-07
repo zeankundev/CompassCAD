@@ -1379,11 +1379,10 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			this.cvn.css('cursor', 'default');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
-					// Find component under cursor
 					this.temporarySelectedComponent = this.findIntersectionWith(
 						this.getCursorXRaw(),
 						this.getCursorYRaw()
-					);
+					)
 				} else {
 					// Get the selected component
 					const component = this.logicDisplay.components[this.selectedComponent];
@@ -1627,85 +1626,54 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 	}
 };
 GraphicDisplay.prototype.drawComponentSize = function (component) {
-	if (component.type == COMPONENT_TYPES.RECTANGLE || component.type == COMPONENT_TYPES.LINE) {
-		// add round rect as the background
-		this.context.fillStyle = this.selectedColor;
-		this.context.beginPath();
-		this.context.font = `18px system-ui`;
-		const text = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
-		const textWidth = this.context.measureText(text).width;
-		const boxWidth = textWidth * 1 + 20;
-		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
-		this.context.roundRect(
-			boxX,  // Centered X position
-			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
-			boxWidth, // Dynamic width
-			25,  // Height
-			5   // Border radius
-		)
-		this.context.fill();
-		this.context.closePath();
-		this.context.fillStyle = '#fff';
-		this.context.textBaseline = 'middle'
-		this.context.textAlign = 'center';
-		this.context.fillText(
-			`${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`,
-			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
-			((component.y2 + this.cOutY) * this.zoom) + (22.5)
-		);
-	} else if (component.type == COMPONENT_TYPES.CIRCLE) {
-		this.context.fillStyle = this.selectedColor;
-		this.context.beginPath();
-		this.context.font = `18px system-ui`;
-		const text = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
-		const textWidth = this.context.measureText(text).width;
-		const boxWidth = textWidth * 1 + 20;
-		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
-		this.context.roundRect(
-			boxX,  // Centered X position
-			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
-			boxWidth, // Dynamic width
-			25,  // Height
-			5   // Border radius
-		)
-		this.context.fill();
-		this.context.closePath();
-		this.context.fillStyle = '#fff';
-		this.context.textBaseline = 'middle'
-		this.context.textAlign = 'center';
-		this.context.fillText(
-			text,
-			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
-			((component.y2 + this.cOutY) * this.zoom) + (22.5)
-		);
-	} else if (component.type == COMPONENT_TYPES.ARC) {
-		this.context.fillStyle = this.selectedColor;
-		this.context.beginPath();
-		this.context.font = `18px system-ui`;
-		const text = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}, COV: ${Math.round((Math.abs(this.getAngle(component.x1, component.y1, component.x3, component.y3)).toFixed(2) / Math.PI) * 180)}°`;
-		const textWidth = this.context.measureText(text).width;
-		const boxWidth = textWidth * 1 + 20;
-		const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
-		this.context.roundRect(
-			boxX,  // Centered X position
-			((component.y2 + this.cOutY) * this.zoom) + 7.5, // Y position 
-			boxWidth, // Dynamic width
-			25,  // Height
-			5   // Border radius
-		)
-		this.context.fill();
-		this.context.closePath();
-		this.context.fillStyle = '#fff';
-		this.context.textBaseline = 'middle'
-		this.context.textAlign = 'center';
-		this.context.fillText(
-			text,
-			(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
-			((component.y2 + this.cOutY) * this.zoom) + (22.5)
-		);
-	} else {
-		return;
+	if (!component || !component.type) return;
+
+	// Configure text format based on component type
+	let displayText = '';
+	switch (component.type) {
+		case COMPONENT_TYPES.RECTANGLE:
+		case COMPONENT_TYPES.LINE:
+			displayText = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
+			break;
+		case COMPONENT_TYPES.CIRCLE:
+			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
+			break;
+		case COMPONENT_TYPES.ARC:
+			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}, COV: ${Math.round((Math.abs(this.getAngle(component.x1, component.y1, component.x3, component.y3)).toFixed(2) / Math.PI) * 180)}°`;
+			break;
+		default:
+			return; // Exit for unsupported types
 	}
+
+	// Unified rendering code
+	this.context.font = '18px system-ui';
+	const textWidth = this.context.measureText(displayText).width;
+	const boxWidth = textWidth + 20;
+	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+	const boxY = ((component.y2 + this.cOutY) * this.zoom) + 7.5;
+
+	// Draw background
+	this.context.fillStyle = this.selectedColor;
+	this.context.beginPath();
+	this.context.roundRect(
+		boxX,      // Centered X position
+		boxY,      // Y position 
+		boxWidth,  // Dynamic width
+		25,        // Height
+		5          // Border radius
+	);
+	this.context.fill();
+	this.context.closePath();
+
+	// Draw text
+	this.context.fillStyle = '#fff';
+	this.context.textBaseline = 'middle';
+	this.context.textAlign = 'center';
+	this.context.fillText(
+		displayText,
+		(((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom,
+		boxY + 15  // Vertically centered in box
+	);
 }
 const handles = []
 GraphicDisplay.prototype.getComponentHandles = function(component) {
