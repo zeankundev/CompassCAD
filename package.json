@@ -1,0 +1,79 @@
+{
+  "name": "compasscad",
+  "version": "1.8.5",
+  "description": "very good CAD software",
+  "main": "entry.js",
+  "author": "zeankun.dev",
+  "license": "GPL-3.0-only",
+  "homepage": "https://zeankundev.github.io/CompassCAD",
+  "scripts": {
+    "start": "set NODE_ENV=development && electron .",
+    "start:no-sandbox": "set NODE_ENV=development && electron . --no-sandbox",
+    "start:wl-no-sandbox": "set NODE_ENV=development && electron . --no-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland",
+    "instant-build": "electron-builder && electron-builder --win"
+  },
+  "private": false,
+  "dependencies": {
+    "@electron/remote": "^2.0.9",
+    "canvas-to-svg": "^1.0.3",
+    "discord-rich-presence": "^0.0.8",
+    "discord-rpc": "^4.0.1",
+    "jquery": "^3.7.1",
+    "mathjax-electron": "^3.0.0",
+    "peerjs": "^1.5.4"
+  },
+  "build": {
+    "appId": "dev.zeankun.compasscad",
+    "productName": "CompassCAD",
+    "copyright": "Copyright © 2024 zeankun.dev",
+    "icon": "build/icons/512x512.png",
+    "directories": {
+      "output": "dist"
+    },
+    "fileAssociations": [
+      {
+        "ext": "ccad",
+        "name": "CompassCAD drawing file",
+        "icon": "build/icons/ccad.ico"
+      }
+    ],
+    "nsis": {
+      "perMachine": true
+    },
+    "win": {
+      "icon": "build/icons/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "deb",
+        "AppImage",
+        "snap",
+        "rpm"
+      ],
+      "maintainer": "zeankun.dev",
+      "category": "Graphics",
+      "icon": "./build/icons/512x512.png"
+    },
+    "snap": {
+      "allowNativeWayland": true
+    },
+    "mac": {
+      "target": [
+        "zip",
+        "tar.gz"
+      ],
+      "category": "public.app-category.graphics-design",
+      "icon": "./build/icons/512x512.png"
+    }
+  },
+  "devDependencies": {
+    "electron": "^35.1.1",
+    "electron-builder": "^26.0.12",
+    "electron-is-dev": "^3.0.1",
+    "electron-reloader": "^1.2.3",
+    "node-abi": "^4.2.0"
+  }
+}

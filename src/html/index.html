@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>CompassCAD</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <link rel="stylesheet" href="../styles/index.css">
+        <link rel="stylesheet" href="../styles/theme.css">
+        <script src="../js/jquery-min.js"></script>
+    </head>
+    <body>
+        <command-pallete class="hidden">
+            <input type="text" placeholder="Start CompassCAD action">
+            <div class="pallete-actions" id="pallete-actions">
+                <div class="option" id="new-project">New Design</div>
+                <div class="option" id="new-project">Open Design</div>
+                <div class="option" id="new-project">Save Design</div>
+                <div class="option" id="new-project">Save Design as</div>
+            </div>
+        </command-pallete>
+        <div class="toast hide" id="toast">
+            <span id="toast-text">This is a toast</span>
+        </div>
+        <modal class="modal hidden" id="set-modal">
+            <h3 id="settings-text">Settings</h3>
+            <br>
+            <div class="tab">
+                <button id="workspace-settings" class="settings-button disabled" onclick="openSettingsTab('workspace')">Workspace</button>
+                <button id="general-settings" class="settings-button disabled" onclick="openSettingsTab('general')">General</button>
+                <button id="flags-settings" class="settings-button disabled" onclick="openSettingsTab('flags')">Flags</button>
+                <button id="about-settings" class="settings-button disabled" onclick="openSettingsTab('about')">About</button>
+            </div>
+            <div id="workspace" class="tabcontent">
+                <label id="font-size-text">Font Size (px)</label>&nbsp;
+                <input type="number" id="font-size" value="24">
+                <br><br>
+                <label id="grid-spacing-text">Grid Spacing (1/?)</label>&nbsp;
+                <br><br>
+                <div class="grid-config">
+                    <div id="grid-settings"></div>
+                    <button id="add-grid">Add</button>
+                    <button id="remove-grid">Remove</button>
+                </div>
+                <br>
+                <label id="workspacefont-text">Preferred workspace font</label>&nbsp;
+                <input type="text" id="workspace-font">
+                <br><br>
+            </div>
+            <div id="general" class="tabcontent">
+                <label id="undo-stack-text">Undo stack size</label>&nbsp;
+                <input type="number" id="undo-stack" value="50">
+                <br><br>
+                <label id="language-text">Language</label>&nbsp;
+                <select id="language">
+                    <option value="cns">中文（简体）</option>
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ge">ქართული ენა</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="it">Italia</option>
+                    <option value="jp">日本語</option>
+                    <option value="kr">한국</option>
+                    <option value="nl">Nederlands</option>
+                    <option value="ru">Русский</option>
+                    <option value="sv">Svenska</option>
+                </select>
+            </div>
+            <div id="flags" class="tabcontent">
+                <label id="use-old-grid-text">Use legacy grid (older than v1.5.0)</label>&nbsp;
+                <input type="checkbox" id="use-old-grid">
+                <br><br>
+                <label id="enable-warping-text">Enable zoom-to-cursor warping</label>
+                <input type="checkbox" id="enable-warping">
+                <br><br>
+            </div>
+            <div id="about" class="tabcontent">
+                <img src="../../assets/logos/512x512.png" width="50" alt="CCAD Logo" id="ccadlogo">
+                <div class="about-info">
+                    <h1>CompassCAD</h1>
+                    <p id="copyright">&copy 2024 - {curryear} zeankun.dev</p>
+                </div>
+                <p id="app-version">App version: </p>
+                <p>CompassCAD is free and open source software, licensed under the GNU General Public License version 3.</p>
+                <div class="socials">
+                    <img src="../../assets/misc/notion.png" alt="Notion Logo" title="Read our wiki/handbook on Notion" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki?utm_source=compasscad-desktop-client`)">
+                    <img src="../../assets/misc/x.png" alt="X/Twitter Logo" title="Follow us on X/Twitter" onclick="redirectToSomewhere(`https://x.com/CompassCAD`)">
+                    <img src="../../assets/misc/github.png" alt="Github Logo" title="Check out our Github" onclick="redirectToSomewhere(`https://github.com/zeankundev/CompassCAD`)">
+                    <img src="../../assets/misc/producthunt.png" alt="Product hunt Logo" title="Check out our Product Hunt" onclick="redirectToSomewhere(`https://www.producthunt.com/posts/compasscad`)">
+                </div>
+            </div>
+            <br>
+            <button id="prompt-close">Close</button>
+            <div id="config-saved"><br><br><img src="../../assets/icons/complete.svg">&nbsp;<br><br><span id="config-text">Config saved! Restart to apply</span></div>
+        </modal>
+        <modal class="modal hidden" id="backups-modal">
+            <h3 id="backups-headtext">Recover or open backups</h3>
+            <div id="backup-lister" class="backup-lister"></div>
+            <span id="backup-size">Total backup folder size:  0 KB</span>
+            <br>
+            <button id="backups-clear">Clear ALL backups</button>
+            <button id="backups-close">Close</button>
+        </modal>
+        <modal class="prompt hidden" id="prompt-container">
+            <h3 id="prompt-message">Enter Prompt</h3>
+            <br>
+            <input type="text" id="prompt-input" placeholder="Please enter text">
+            <br>
+            <div class="prompt-answer">
+                <button id="prompt-ok">OK</button>
+                <button id="prompt-cancel">Cancel</button>
+            </div>
+        </modal>
+        <modal class="prompt hidden" id="p2p-initializer">
+            <h3 id="p2p-head">Host or join a multi-edit session</h3>
+            <p id="your-id">Your Session ID:</p>
+            <b title="Click to copy" id="session-id">session id</b>
+            <br>
+            <br>
+            <h3 id="connect-another-client-head">Connect to an existing session</h3>
+            <input type="text" id="p2p-code-input" placeholder="Input session code">
+            <br>
+            <div class="prompt-answer">
+                <button id="p2p-connect">Connect</button>
+                <button id="p2p-close">Close</button>
+            </div>
+            <div id="peer-connecting"><div class="spinner-absolute"></div>&nbsp;<span id="peer-connect-text">Connecting, please wait...</span></div>
+            <div id="peer-connected"><img src="../../assets/icons/complete.svg">&nbsp;<span id="peer-success-text">You are now connected. Have fun!</span></div>
+        </modal>
+        <modal class="prompt hidden" id="eval-modal">
+            <h3 id="eval-console">Eval console</h3>
+            <p>Test experimental code here, without pressing <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd></p>
+            <pre>(this modal is never translated, so yeah)</pre>
+            <textarea id="eval-editor"></textarea>
+            <pre id="eval-error">error here</pre>
+            <div class="prompt-answer">
+                <button id="eval-run">Execute</button>
+                <button id="eval-exit">Close</button>
+            </div>
+        </modal>
+        <header class="menubar" id="menubar">
+            <div class="menubar-branding">
+                <img src="../../assets/logos/512x512.png" width="20" alt="CCAD Logo" id="ccadlogo">
+            </div>
+            <div class="menubar-centered">
+                <small id="titlething">New Design 1 - CompassCAD</small>
+            </div>
+            <div class="window-actions">
+                <button id="fps-warner" style="display:none;width:350px;font-size:9pt;" title="Your computer is going below the optimal FPS!"><img src="../../assets/icons/warn.svg">&nbsp;&nbsp;<p id="fps-warner-inner"></p></button>
+                <button id="minimize" title="Minimize"><img src="../../assets/icons/minimize.svg"></button>
+                <button id="maximize" title="Maximize"><img src="../../assets/icons/maximize.svg"></button>
+                <button id="close" title="Close"><img src="../../assets/icons/close.svg"></button>
+            </div>
+        </header>
+        <div class="main-content">
+            <div class="toolbar" id="toolbar">
+                <button title="New Design (ctrl+n)" id="new-design"><img src="../../assets/icons/newLogic.svg"></button>
+                <button title="Open Design (ctrl+o)" id="open-design"><img src="../../assets/icons/openLogic.svg"></button>
+                <button title="Open Backups" id="open-backups" onclick="openBackupRecovery()"><img src="../../assets/icons/openbackup.svg"></button>
+                <button title="Save Design (ctrl+s)" id="save-design"><img src="../../assets/icons/saveLogic.svg"></button>
+                <button title="Save Design as (ctrl+alt+s)" id="save-design-as"><img src="../../assets/icons/saveas.svg"></button>
+                <button title="Export Design as SVG (ctrl+e)" id="export-design"><img src="../../assets/icons/export.svg"></button>
+                <div class="division-line"></div>
+                <button title="Undo (ctrl+z)" id="undo"><img src="../../assets/icons/undo.svg"></button>
+                <button title="Redo (ctrl+y)" id="redo"><img src="../../assets/icons/redo.svg"></button>
+                <button title="Zoom in (>)" id="zoom-in" onclick="renderer.zoomIn()"><img src="../../assets/icons/zoomin.svg"></button>
+                <button title="Zoom out (<)" id="zoom-out" onclick="renderer.zoomOut()"><img src="../../assets/icons/zoomout.svg"></button>
+                <span class="menubar-text" style="margin-left: 20px;" id="zoom-level" onclick="const requiredZoomFactor = 1 / renderer.zoom;renderer.setZoom(requiredZoomFactor);"></span>
+                <button title="Turn snap on/off (ctrl+k)" id="toggle-snap" onclick="toggleSnap()"><img id="snap-toggle" src="../../assets/icons/snap.svg"></button>
+                &nbsp;&nbsp;
+                <select id="grid-selector" class="grid-selector">
+                </select>
+                <div class="division-line"></div>
+                &nbsp;
+                <button title="Host or join a multi-edit session" id="join-remote" onclick="openMultiEditor()"><img src="../../assets/icons/remoteconnect.svg"></button>
+                <button title="Settings" id="open-settings" onclick="openSettings()"><img src="../../assets/icons/settings.svg"></button>
+                <button title="Open eval console" id="open-eval" style="display: none;" onclick="openEvalConsole()"><img src="../../assets/icons/eval.svg"></button>
+                <!-- <button title="Join CompassCAD Discord Server" onclick="redirectToSomewhere(`https://discord.gg/Qvw9afNs3e`)"><img src="../../assets/icons/discord.svg"></button> -->
+                <button title="Help" id="help" onclick="redirectToSomewhere(`https://s.id/compasscad-wiki?utm_source=compasscad-desktop-client`)"><img src="../../assets/icons/help.svg"></button>
+            </div>
+            <div class="container">
+                <div class="quick-tool" id="quick-tool">
+                    <button title="Select (q)" id="select"><img src="../../assets/icons/navigate.svg"></button> 
+                    <button title="Navigate (w)" id="navigate"><img src="../../assets/icons/pan.svg"></button> 
+                    <button title="Move Object (e)" id="move-obj"><img src="../../assets/icons/move.svg"></button>
+                    <button title="Delete Object (t)" id="del-obj"><img src="../../assets/icons/delete.svg"></button>
+                    <button title="Add Point (a)" id="add-point"><img src="../../assets/icons/point.svg"></button>
+                    <button title="Add Line (s)" id="add-line"><img src="../../assets/icons/line.svg"></button>
+                    <button title="Add Circle (d)" id="add-circle"><img src="../../assets/icons/circle.svg"></button>
+                    <button title="Add Arc (f)" id="add-arc"><img src="../../assets/icons/arc.svg"></button>
+                    <button title="Add Rectangle (g)" id="add-rect"><img src="../../assets/icons/rectangle.svg"></button>
+                    <button title="Add Text (h)" id="add-label"><img src="../../assets/icons/text.svg"></button>
+                    <button title="Add Picture (l)" id="add-picture"><img src="../../assets/icons/image.svg"></button>
+                    <button title="Measure (z)" id="ruler"><img src="../../assets/icons/measure.svg"></button>
+                </div>
+                <div class="canvas-container">
+                    <canvas id="canvas" width="800" height="600" oncontextmenu="return false"></canvas>
+                </div>
+                <div class="inspector" id="inspector">
+                    <h2 id="inspector-title">Inspector</h2>
+                    <br>
+                    <div id="form"></div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/WindowHandling.js"></script>
+        <script src="../js/LinkToShell.js"></script>
+        <script src="../js/core/ComponentHandler.js"></script>
+        <script src="../js/core/MiscellaneousShapes.js"></script>
+        <script src="../js/core/LogicDisplay.js"></script>
+        <script src="../js/core/InputHandler.js"></script>
+        <script src="../js/core/GraphicsRenderer.js"></script>
+        <script src="../js/ConfigToPass.js"></script>
+        <script src="../js/Utils.js"></script>
+        <script src="../js/P2PHandler.js"></script>
+        <script src="../js/LocalizationHandler.js"></script>
+        <script src="../js/EntryPoint.js"></script>
+        <script src="../js/core/SVGExporter.js"></script>
+        <script src="../js/CodeEditor.js"></script>
+        <script src="../js/deps/mathjax/mathjax.js"></script>
+    </body>
+</html>

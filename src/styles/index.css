@@ -1,0 +1,619 @@
+@font-face {
+    font-family: 'newstroke';
+    src: url('../../assets/newstroke.ttf');
+}
+
+@font-face {
+    font-family: 'firamono';
+    src: url('../../assets/fonts/firamonoreg.ttf');
+}
+
+@font-face {
+    font-family: 'gsansmono';
+    src: url('../../assets/fonts/googlesansmono.ttf');
+}
+
+@font-face {
+    font-family: 'notosansjp';
+    src: url('../../assets/fonts/notosansjp.ttf');
+}
+
+* {
+    margin: 0;
+}
+
+.spinner-absolute {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: conic-gradient(#0000 0%, #fff);
+    -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 5px), #000 0);
+    animation: spinner-zp9dbg 1s infinite linear;
+}
+
+@keyframes spinner-zp9dbg {
+    to {
+        transform: rotate(1turn);
+    }
+}
+
+@keyframes toast {
+    0% {
+        transform: translateY(200px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes toast-cancel {
+    0% {
+        transform: translateY(0px);
+    }
+
+    100% {
+        transform: translateY(200px);
+    }
+}
+
+body {
+    background-color: var(--primary);
+    font-family: var(--main-font);
+    color: var(--text);
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+pre,
+code,
+kbd {
+    font-family: 'gsansmono', monospace !important;
+    font-size: 9pt;
+}
+
+small {
+    font-size: 9pt;
+}
+
+.menubar {
+    display: flex;
+    padding: 5px;
+    align-items: center;
+}
+
+.menubar-centered {
+    justify-content: center;
+    padding: 5px;
+    user-select: none;
+    -webkit-app-region: drag;
+    display: flex;
+    flex: 1;
+}
+
+.window-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.window-actions button {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    padding: 5px;
+    justify-content: center;
+    width: 40px;
+    margin-left: 10px;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary);
+}
+
+.window-actions button img {
+    width: 16px;
+    -webkit-user-drag: none;
+}
+
+.window-actions button:hover {
+    background-color: var(--secondary);
+}
+
+.menubar-branding {
+    user-select: none;
+}
+
+.toolbar {
+    padding: 5px;
+    display: flex;
+    overflow-x: scroll;
+    margin-bottom: 10px;
+    align-items: center;
+}
+
+.toolbar::-webkit-scrollbar {
+    display: none;
+}
+
+.toolbar button {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    padding: 4px;
+    border-radius: 10px;
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 5px;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary);
+}
+
+.toolbar button img {
+    -webkit-user-drag: none;
+    aspect-ratio: 1/1;
+    width: 28px;
+}
+
+.toolbar button:hover {
+    background-color: var(--secondary);
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.division-line {
+    border-left: 1px solid var(--text);
+    margin-left: 10px;
+    height: 35px;
+}
+
+.simulation-speed-indicator {
+    margin-left: 10px;
+    user-select: none;
+    align-self: center;
+    font-size: 15pt;
+    font-weight: bold;
+}
+
+.quick-tool {
+    flex-direction: column;
+    display: flex;
+    padding: 5px;
+    flex: 1;
+    overflow: auto;
+    height: calc(100vh - 100px);
+    min-width: 30px;
+    max-width: fit-content;
+    scroll-snap-type: y mandatory;
+    -webkit-overflow-scrolling: touch;
+    background-color: var(--secondary);
+}
+
+.quick-tool::-webkit-scrollbar {
+    display: none;
+}
+
+.quick-tool button {
+    -webkit-appearance: none;
+    appearance: none;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    outline: none;
+    user-select: none;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: none;
+    padding: 5px;
+    background-color: var(--secondary);
+}
+
+.quick-tool button:hover {
+    background-color: var(--tertiary);
+}
+
+.quick-tool button img {
+    width: 24px;
+    -webkit-user-drag: none;
+}
+
+.canvas-container {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+}
+
+.canvas-container canvas {
+    background-color: #161616;
+    flex: 1;
+}
+
+.properties-selector {
+    justify-content: flex-start;
+    display: inline-flex;
+    text-align: left;
+    width: 30%;
+    overflow-x: hidden;
+    height: calc(100vh - 130px);
+    padding: 5px;
+    padding-right: 10px;
+    background-color: var(--secondary);
+}
+
+.tool-switch {
+    font-family: var(--main-font);
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: var(--tertiary);
+    color: var(--text);
+    display: flex;
+    flex: 1;
+    padding: 10px;
+}
+
+.very-dynamic-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.text-input-generic {
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: var(--main-font);
+    border: none;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    background-color: var(--disabled-secondary);
+    padding: 5px;
+    color: var(--text);
+    outline: none;
+    display: flex;
+    width: calc(100% + 55px);
+    resize: none;
+}
+
+.submit-form {
+    -webkit-appearance: none;
+    appearance: none;
+    font-family: var(--main-font);
+    border: none;
+    justify-content: center;
+    justify-self: center;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    background-color: var(--disabled-secondary);
+    padding: 5px;
+    color: var(--text);
+    outline: none;
+    display: flex;
+    width: calc(100% + 65px);
+    resize: none;
+}
+
+.submit-form:hover {
+    background-color: var(--tertiary);
+}
+
+.status-bar {
+    padding: 5px;
+    background-color: var(--secondary);
+    font-size: 9pt;
+    user-select: none;
+}
+
+.prompt {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%;
+    /* Adjust width if necessary */
+    max-width: 80%;
+    /* Limit width to prevent overflow */
+    background-color: var(--primary);
+    padding: 10px;
+    z-index: 1000;
+    /* Ensure it stays on top */
+    overflow: hidden;
+    /* Enable scrolling if content overflows */
+    box-sizing: border-box;
+    /* Include padding in width/height calculations */
+}
+
+
+
+.prompt input[type=text] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--secondary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 10px;
+    color: var(--text);
+    width: 95%;
+    outline: none;
+}
+
+.prompt textarea {
+    width: 100%;
+    resize: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--secondary);
+    border: none;
+    font-family: 'gsansmono', monospace;
+    height: 200px;
+    padding: 10px;
+    color: var(--text);
+    width: 95%;
+    outline: none;
+}
+
+.prompt-answer {
+    text-align: right;
+    margin-top: 10px;
+}
+
+.prompt button,
+.modal button {
+    -webkit-appearance: none;
+    appearance: none;
+    color: var(--text);
+    border: none;
+    background-color: var(--secondary);
+    font-family: var(--main-font);
+    padding: 10px;
+    cursor: pointer;
+}
+
+.disabled {
+    background-color: var(--disabled-secondary) !important;
+}
+
+.tabcontent {
+    display: none;
+    background-color: var(--secondary);
+    padding: 10px;
+}
+
+.tabcontent input[type=text],
+.tabcontent input[type=number],
+.tabcontent select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary) !important;
+    border: none;
+    font-family: var(--main-font);
+    padding: 10px;
+    color: var(--text);
+    width: 40%;
+    outline: none;
+}
+
+.about-info {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.socials img {
+    width: 32px;
+    margin-right: 5px;
+    display: inline-block;
+    -webkit-user-drag: none;
+}
+
+.grid-selector {
+    -webkit-appearance: none;
+    font-family: var(--main-font);
+    border: none;
+    background-color: var(--secondary);
+    background-image: url('../../assets/icons/dropdown.svg');
+    background-repeat: no-repeat;
+    background-position-x: 132.5px;
+    background-position-y: 7px;
+    border-radius: 10px;
+    outline: none;
+    width: 165px;
+    color: var(--text);
+    padding: 10px;
+}
+
+.grid-config {
+    background-color: var(--primary);
+    padding: 5px
+}
+
+.grid-settings-display {
+    padding: 5px;
+    background-color: var(--secondary);
+    margin-bottom: 5px;
+}
+
+.selected {
+    background-color: var(--tertiary) !important; 
+}
+
+@keyframes popup {
+    0% {
+        opacity: 0;
+        transform: scale(0.7);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    /* Or set a specific percentage if needed */
+    max-width: 30%;
+    /* Limit width so it doesn't go out of screen bounds */
+    background-color: var(--primary);
+    padding: 10px;
+    z-index: 1000;
+    /* Ensure it appears on top */
+}
+
+.modal input[type=number],
+.modal input[type=text],
+.modal select {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--secondary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 10px;
+    color: var(--text);
+    width: 40%;
+    outline: none;
+}
+
+.hidden {
+    display: none;
+}
+
+p {
+    font-family: var(--main-font);
+    color: var(--text);
+}
+
+#config-saved {
+    display: none;
+}
+
+command-pallete {
+    position: absolute;
+    margin-top: 5%;
+    flex-direction: column;
+    display: block;
+    width: 25%;
+    margin-left: 35%;
+    background-color: var(--secondary);
+    padding: 5px;
+}
+
+command-pallete input[type=text] {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    font-size: 12pt;
+    display: flex;
+    flex: 1;
+    padding: 5px;
+    width: 97%;
+    font-family: var(--main-font);
+    background-color: var(--tertiary);
+    color: var(--text);
+    outline: none;
+}
+
+.pallete-actions {
+    overflow-y: scroll;
+    max-height: 10%;
+}
+
+.inspector {
+    padding: 10px;
+    min-width: 18%;
+    background-color: var(--secondary);
+    height: 83vh;
+    display: none;
+    user-select: none;
+}
+
+#form input[type=text] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 7.5px;
+    color: var(--text);
+    width: 50%;
+    outline: none;
+}
+
+#form input[type=number] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: none;
+    font-family: var(--main-font);
+    padding: 7.5px;
+    margin-right: 5px;
+    margin-top: 5px;
+    color: var(--text);
+    width: 22%;
+    outline: none;
+}
+
+.option {
+    margin-top: 5px;
+    padding: 5px;
+    user-select: none;
+}
+
+.option:hover {
+    background-color: var(--tertiary);
+}
+
+.menubar-text {
+    user-select: none;
+}
+
+#backups-modal {
+    height: 65%;
+}
+
+.backup-lister {
+    height: 80%;
+    margin-top: 10px;
+    overflow-y: scroll;
+}
+
+.backup-list {
+    display: flex;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.backup-list:hover {
+    background-color: var(--secondary);
+}
+
+.lister-leftcomp {
+    display: inline-flex;
+}
+
+.lister-rightcomp {
+    display: flex;
+    user-select: none;
+    margin-left: 10px;
+    flex-direction: column;
+}
+
+.toast {
+    position: absolute;
+    bottom: 0;
+    /*make sure it goes in the middle of the page but the padding must not do anything to affect*/
+    right: 0;
+    display: none;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    background-color: var(--secondary);
+    animation: toast 1s ease;
+}
