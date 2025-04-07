@@ -106,7 +106,6 @@ $(document).ready(async() => {
         'f': 'add-arc',
         'g': 'add-rect',
         'h': 'add-label',
-        'j': 'add-barrel',
         'l': 'add-picture',
         'z': 'ruler'
     };
@@ -169,11 +168,6 @@ $(document).ready(async() => {
     document.getElementById('add-picture').onclick = () => {
         console.log('Add Picture button clicked');
         renderer.setMode(renderer.MODES.ADDPICTURE)
-    };
-
-    document.getElementById('add-barrel').onclick = () => {
-        console.log('Add Vertical Barrel button clicked');
-        renderer.setModeShape(CreateVerticalBarrel)
     };
 
     document.getElementById('ruler').onclick = () => {
@@ -301,7 +295,6 @@ $(document).ready(async() => {
     applyStringOnHTML('addRectangleToolbar', document.getElementById('add-rect'), 'title', '');
     applyStringOnHTML('addLabelToolbar', document.getElementById('add-label'), 'title', '');
     applyStringOnHTML('addPictureToolbar', document.getElementById('add-picture'), 'title', '');
-    applyStringOnHTML('addBarrelToolbar', document.getElementById('add-barrel'), 'title', '');
     applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
     applyStringOnHTML('undoStackText', document.getElementById('undo-stack-text'), 'html', '');
     applyStringOnHTML('fontSizeText', document.getElementById('font-size-text'), 'html', '');

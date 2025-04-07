@@ -186,7 +186,7 @@ small {
     padding: 5px;
     flex: 1;
     overflow: auto;
-    height: calc(100vh - 106px);
+    height: calc(100vh - 100px);
     min-width: 30px;
     max-width: fit-content;
     scroll-snap-type: y mandatory;
@@ -218,7 +218,7 @@ small {
 }
 
 .quick-tool button img {
-    width: 20px;
+    width: 24px;
     -webkit-user-drag: none;
 }
 
