@@ -127,11 +127,9 @@ small {
 .toolbar {
     padding: 5px;
     display: flex;
-    overflow-x: auto;
+    overflow-x: scroll;
     margin-bottom: 10px;
     align-items: center;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
 }
 
 .toolbar::-webkit-scrollbar {
@@ -142,10 +140,11 @@ small {
     -webkit-appearance: none;
     appearance: none;
     border: none;
-    padding: 8px;
+    padding: 4px;
     border-radius: 10px;
     justify-content: center;
     margin-left: 10px;
+    margin-right: 5px;
     user-select: none;
     display: inline-flex;
     align-items: center;
@@ -154,6 +153,8 @@ small {
 
 .toolbar button img {
     -webkit-user-drag: none;
+    aspect-ratio: 1/1;
+    width: 28px;
 }
 
 .toolbar button:hover {

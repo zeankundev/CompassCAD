@@ -1485,7 +1485,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 						}
 						
 						if (!isOverHandle) {
-							this.cvn.css('cursor', 'move');
+							this.cvn.css('cursor', 'default');
 						}
 					}
 				}
