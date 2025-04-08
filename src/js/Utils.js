@@ -116,7 +116,7 @@ const refreshHierarchy = () => {
             found = true;
             const element = document.createElement('div');
             element.className = 'hierarchy-element';
-            element.innerHTML = component.name;
+            element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
             element.onclick = () => {
                 renderer.temporarySelectedComponent = index;
                 renderer.selectComponent(index)
