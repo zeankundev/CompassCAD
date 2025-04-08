@@ -18,6 +18,7 @@ function Component() {
     this.active = true;
     this.type = 0; 
     this.color = "#ffffff";
+    this.name = "Component"; // Adjustable names for the designer's convenience
     this.radius = 2;
 }
 
@@ -40,6 +41,7 @@ function Point(x, y) {
 
     this.radius = 5;
     this.type = COMPONENT_TYPES.POINT;
+    this.name = "Point";
     this.x = 0;
     this.y = 0;
 
@@ -63,6 +65,7 @@ function Line(x1, y1, x2, y2, radius, color) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.LINE;
+    this.name = "Line";
     this.x1 = 0;
     this.y1 = 0;
     this.x2 = 0;
@@ -110,6 +113,7 @@ function Circle(x1, y1, x2, y2, radius, color) {
     if (color != undefined) {
         this.color = color
     }
+    this.name = "Circle";
     this.type = COMPONENT_TYPES.CIRCLE;
 }
 Circle.prototype = new Line();
@@ -128,6 +132,7 @@ function Rectangle(x1, y1, x2, y2, radius, color) {
     if (color != undefined) {
         this.color = color
     }
+    this.name = "Rectangle";
     this.type = COMPONENT_TYPES.RECTANGLE;
 }
 Rectangle.prototype = new Line();
@@ -146,6 +151,7 @@ function Measure(x1, y1, x2, y2, color) {
     if (color != undefined) {
         this.color = color
     }
+    this.name = "Measure";
     this.type = COMPONENT_TYPES.MEASURE;
     this.color = "#ff3";
 }
@@ -163,6 +169,7 @@ function Label(x, y, text, fontSize) {
     Point.call(this, x, y);
 
     this.type = COMPONENT_TYPES.LABEL;
+    this.name = "Label";
     this.color = "#eee";
     this.text = text;
     this.fontSize = fontSize;
@@ -184,6 +191,7 @@ function Arc(x1, y1, x2, y2, x3, y3, radius, color) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.ARC;
+    this.name = "Arc";
     this.x1 = 0;
     this.y1 = 0;
     this.x2 = 0;
@@ -229,6 +237,7 @@ function Shape(x, y) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.SHAPE;
+    this.name = "Shape";
     this.x = 0;
     this.y = 0;
     this.color = "#f0f";
@@ -246,6 +255,7 @@ function Picture(x, y, basedURL) {
     Component.call(this)
     
     this.type = COMPONENT_TYPES.PICTURE;
+    this.name = "Picture";
     this.x = 0;
     this.y = 0;
     this.pictureSource = ''

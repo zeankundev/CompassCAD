@@ -624,13 +624,44 @@ command-pallete input[type=text] {
     background-color: var(--secondary-transparent);
 }
 
-#form {
-    max-height: 85%;
-    overflow-y: scroll;
-}
-
 .inspector-tabcontent {
     display: none;
+    max-height: 80%;
+    overflow-y: auto;
+    margin-top: 10px;
+}
+
+.search-group {
+    display: flex;
+    flex-direction: row;
+    border-radius: 15px;
+}
+
+.search-group [type=text] {
+    -webkit-appearance: none;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    appearance: none;
+    background-color: var(--secondary-transparent);
+    border: none;
+    font-family: var(--main-font);
+    padding: 10px;
+    color: var(--text);
+    width: 100%;
+    outline: none;
+}
+.search-group button {
+    -webkit-appearance: none;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    appearance: none;
+    border: none;
+    padding: 10px;
+    justify-content: center;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--secondary-transparent);
 }
 
 #form input[type=checkbox] {

@@ -10,7 +10,7 @@ let frameCount = 0;
 let fps = 0;
 let fpsWarningThreshold = 20;
 let warningDisplayed = false;
-function GraphicDisplay(displayName, width, height) {
+function GraphicsRenderer(displayName, width, height) {
 	// Enumerate all available modes
 	this.MODES = {
 		ADDPOINT: 1,
@@ -143,7 +143,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.configFlags = [];
 }
 
-GraphicDisplay.prototype.init = async function (e) {
+GraphicsRenderer.prototype.init = async function (e) {
 	/*
 	 * INITIALIZE THE LOGIC
 	 */
@@ -183,7 +183,7 @@ GraphicDisplay.prototype.init = async function (e) {
 	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
 	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
 };
-GraphicDisplay.prototype.updateActivity = function (details = null) {
+GraphicsRenderer.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
 	if (details === null) {
 		details = this.lastActivityDetails || 'Editing design'; // Default fallback
@@ -211,13 +211,13 @@ GraphicDisplay.prototype.updateActivity = function (details = null) {
 		}
 	}
 };
-GraphicDisplay.prototype.lerp = function (start, end, time) {
+GraphicsRenderer.prototype.lerp = function (start, end, time) {
 	return start + (end - start) * time;
 }
-GraphicDisplay.prototype.getLocal = async function (key) {
+GraphicsRenderer.prototype.getLocal = async function (key) {
 	return await this.translator.getLocalizedString(key);
 }
-GraphicDisplay.prototype.execute = async function (e) {
+GraphicsRenderer.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp");
 	this.preferredFont = await this.config.getValueKey("preferredFont");
 	this.offsetX = this.cvn.offset().left;
@@ -271,7 +271,7 @@ GraphicDisplay.prototype.execute = async function (e) {
 	this.updateActivity();
 };
 
-GraphicDisplay.prototype.copy = function (e) {
+GraphicsRenderer.prototype.copy = function (e) {
 	if (this.selectedComponent != null) {
 		const component = this.logicDisplay.components[this.selectedComponent];
 		this.temporaryObjectArray = [component];
@@ -280,7 +280,7 @@ GraphicDisplay.prototype.copy = function (e) {
 	}
 }
 
-GraphicDisplay.prototype.cut = function (e) {
+GraphicsRenderer.prototype.cut = function (e) {
 	if (this.selectedComponent != null) {
 		const component = this.logicDisplay.components[this.selectedComponent];
 		this.temporaryObjectArray = [component];
@@ -291,7 +291,7 @@ GraphicDisplay.prototype.cut = function (e) {
 	}
 }
 
-GraphicDisplay.prototype.paste = function (e) {
+GraphicsRenderer.prototype.paste = function (e) {
     if (this.selectedComponent == null) {
 		navigator.clipboard.readText().then(data => {
 			this.unselectComponent()
@@ -338,7 +338,7 @@ GraphicDisplay.prototype.paste = function (e) {
 	}
 }
 
-GraphicDisplay.prototype.saveState = function () {
+GraphicsRenderer.prototype.saveState = function () {
 	let hasChanged = false;
 	for (let i = 0; i < this.logicDisplay.components.length; i++) {
 	  if (JSON.stringify(this.logicDisplay.components[i]) !== JSON.stringify(this.lastArray[i])) {
@@ -367,12 +367,12 @@ GraphicDisplay.prototype.saveState = function () {
 	}
   };
 
-GraphicDisplay.prototype.returnLatexInstance = async function(latex) {
+GraphicsRenderer.prototype.returnLatexInstance = async function(latex) {
 	const MathJaxInstance = await MathJax;
 
     return MathJaxInstance.tex2svg(latex, {display: true});
 }
-GraphicDisplay.prototype.clearGrid = function (e) {
+GraphicsRenderer.prototype.clearGrid = function (e) {
 	this.context.restore();
 	this.context.fillStyle = "#202020";
 	this.context.fillRect(0, 0, this.displayWidth, this.displayHeight);
@@ -383,7 +383,7 @@ GraphicDisplay.prototype.clearGrid = function (e) {
 	this.context.lineWidth = 0.15;
 };
 
-GraphicDisplay.prototype.drawAllComponents = function (components, moveByX, moveByY) {
+GraphicsRenderer.prototype.drawAllComponents = function (components, moveByX, moveByY) {
 	for (var i = 0; i < components.length; i++) {
 		if (!components[i].isActive())
 			continue;
@@ -392,7 +392,7 @@ GraphicDisplay.prototype.drawAllComponents = function (components, moveByX, move
 	}
 };
 
-GraphicDisplay.prototype.drawComponent = function (component, moveByX, moveByY) {
+GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY) {
 	switch (component.type) {
 		case COMPONENT_TYPES.POINT:
 			this.drawPoint(
@@ -473,7 +473,7 @@ GraphicDisplay.prototype.drawComponent = function (component, moveByX, moveByY) 
 /**
  * This method is used to draw current temporary component
  */
-GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
+GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 	switch (this.temporaryComponentType) {
 		case COMPONENT_TYPES.POINT:
 			this.drawPoint(
@@ -579,7 +579,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function (e) {
 	}
 };
 
-GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
+GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
 	if (this.temporarySelectedComponent != null) {
 		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
@@ -609,7 +609,7 @@ GraphicDisplay.prototype.drawPoint = function (x, y, color, radius) {
 	}
 };
 
-GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
     this.context.lineWidth = radius * this.zoom;
     this.context.fillStyle = color;
     this.context.strokeStyle = color;
@@ -626,7 +626,7 @@ GraphicDisplay.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
     this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
 	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
@@ -640,14 +640,14 @@ GraphicDisplay.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius) {
 	this.drawLine(x1, y1, x2, y1, color, radius);
 	this.drawLine(x2, y1, x2, y2, color, radius);
 	this.drawLine(x2, y2, x1, y2, color, radius);
 	this.drawLine(x1, y2, x1, y1, color, radius);
 };
 
-GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
     // Calculate the distance between the two points
 	if (this.pcbEditorMode)
     	var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
@@ -731,7 +731,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     this.context.restore();
 };
 
-GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
+GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
     var arrowX = x + length * Math.cos(angle);
     var arrowY = y + length * Math.sin(angle);
     var offsetX = offset * Math.cos(angle + Math.PI / 2);
@@ -742,7 +742,7 @@ GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, 
     this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
 };
 
-GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius, fontSize) {
+GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	var localZoom = this.zoom;
@@ -785,7 +785,7 @@ GraphicDisplay.prototype.drawLabel = async function (x, y, text, color, radius, 
 		(this.cOutY + y) * this.zoom);
 };
 
-GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
+GraphicsRenderer.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
 
@@ -801,11 +801,11 @@ GraphicDisplay.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radi
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawShape = function (shape) {
+GraphicsRenderer.prototype.drawShape = function (shape) {
 	this.drawAllComponents(shape.components, shape.x, shape.y);
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
-GraphicDisplay.prototype.drawPicture = function (x, y, basedURL) {
+GraphicsRenderer.prototype.drawPicture = function (x, y, basedURL) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	if (!this.imageCache[basedURL]) {
@@ -825,7 +825,7 @@ GraphicDisplay.prototype.drawPicture = function (x, y, basedURL) {
 	}
 };
 
-GraphicDisplay.prototype.renderImage = function (x, y, img) {
+GraphicsRenderer.prototype.renderImage = function (x, y, img) {
 	if (img == true) {
 		// Draw a placeholder shape with X when image fails to load
 		const errorShape = {
@@ -862,7 +862,7 @@ GraphicDisplay.prototype.renderImage = function (x, y, img) {
 	);
 };
 
-GraphicDisplay.prototype.drawToolTip = function (e) {
+GraphicsRenderer.prototype.drawToolTip = function (e) {
     // Shadow effect (black text offset by 5px to the right and bottom)
 	this.context.shadowColor = "black";
 	this.context.shadowOffsetX = 2;
@@ -876,7 +876,7 @@ GraphicDisplay.prototype.drawToolTip = function (e) {
 };
 
 
-GraphicDisplay.prototype.drawOrigin = function (cx, cy) {
+GraphicsRenderer.prototype.drawOrigin = function (cx, cy) {
 	this.context.lineWidth = 1;
 	this.context.strokeStyle = "#fff";
 
@@ -893,7 +893,7 @@ GraphicDisplay.prototype.drawOrigin = function (cx, cy) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawRules = function (e) {
+GraphicsRenderer.prototype.drawRules = function (e) {
 	if (!this.showRules)
 		return;
 
@@ -918,7 +918,7 @@ GraphicDisplay.prototype.drawRules = function (e) {
 	// TODO Show rules!
 };
 
-GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
+GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 	if (!this.enableLegacyGridStyle) {
 		// Modern dot grid style
 		// Base grid spacing adjusted by zoom
@@ -1030,7 +1030,7 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 	}
 };
 
-GraphicDisplay.prototype.snapToGrid = function (x, y) {
+GraphicsRenderer.prototype.snapToGrid = function (x, y) {
 	const gridSize = this.gridSpacing * this.zoom;
 	const snappedX = Math.round(x / gridSize) * gridSize;
 	const snappedY = Math.round(y / gridSize) * gridSize;
@@ -1043,7 +1043,7 @@ GraphicDisplay.prototype.snapToGrid = function (x, y) {
  * @param e
  * @param action
  */
-GraphicDisplay.prototype.performAction = async function (e, action) {
+GraphicsRenderer.prototype.performAction = async function (e, action) {
 	switch (this.mode) {
 		case this.MODES.ADDPOINT:
 			this.cvn.css('cursor', 'crosshair');
@@ -1632,7 +1632,7 @@ GraphicDisplay.prototype.performAction = async function (e, action) {
 			this.tooltip = this.tooltipDefault;
 	}
 };
-GraphicDisplay.prototype.drawComponentSize = function (component) {
+GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	if (!component || !component.type) return;
 
 	// Configure text format based on component type
@@ -1683,7 +1683,7 @@ GraphicDisplay.prototype.drawComponentSize = function (component) {
 	);
 }
 const handles = []
-GraphicDisplay.prototype.getComponentHandles = function(component) {
+GraphicsRenderer.prototype.getComponentHandles = function(component) {
 	if (this.selectedComponent != null || !this.logicDisplay.components[this.selectedComponent].isActive()) {
 		switch(component.type) {
 			case COMPONENT_TYPES.RECTANGLE:
@@ -1779,7 +1779,7 @@ GraphicDisplay.prototype.getComponentHandles = function(component) {
 	
 	return handles;
 };
-GraphicDisplay.prototype.undo = function () {
+GraphicsRenderer.prototype.undo = function () {
 	if (this.undoStack.length > 0) {
 		// Remove the last state from the undoStack and push it to the redoStack
 		const state = this.undoStack.pop();
@@ -1799,7 +1799,7 @@ GraphicDisplay.prototype.undo = function () {
 
 
 
-GraphicDisplay.prototype.redo = function () {
+GraphicsRenderer.prototype.redo = function () {
 	if (this.redoStack.length > 0) {
 		// Move the current state to the undoStack
 		this.undoStack.push(JSON.stringify(this.logicDisplay.components));
@@ -1821,7 +1821,7 @@ GraphicDisplay.prototype.redo = function () {
 };
 
 
-GraphicDisplay.prototype.moveComponent = function (index, x, y) {
+GraphicsRenderer.prototype.moveComponent = function (index, x, y) {
 	if (index != null) {
 		switch (this.logicDisplay.components[index].type) {
 			case COMPONENT_TYPES.POINT:
@@ -1861,7 +1861,7 @@ GraphicDisplay.prototype.moveComponent = function (index, x, y) {
 	}
 };
 
-GraphicDisplay.prototype.selectComponent = function (index) {
+GraphicsRenderer.prototype.selectComponent = function (index) {
 	if (index != null) {
 		this.selectedComponent = index;
 		if (this.mode === this.MODES.MOVE) {
@@ -1873,7 +1873,7 @@ GraphicDisplay.prototype.selectComponent = function (index) {
 	}
 };
 
-GraphicDisplay.prototype.unselectComponent = function (e) {
+GraphicsRenderer.prototype.unselectComponent = function (e) {
 	if (this.selectedComponent != null) {
 		if (this.mode === this.MODES.MOVE && this.previousColor) {
 			this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
@@ -1885,7 +1885,7 @@ GraphicDisplay.prototype.unselectComponent = function (e) {
 	}
 };
 
-GraphicDisplay.prototype.updateCamera = function () {
+GraphicsRenderer.prototype.updateCamera = function () {
 	this.cOutX = this.camX;
 	this.cOutY = this.camY;
 
@@ -1900,12 +1900,12 @@ GraphicDisplay.prototype.updateCamera = function () {
  * This method is used to set CAD in SHAPE mode
  * @param getShape : a function that return a shape
  */
-GraphicDisplay.prototype.setModeShape = function (getShape) {
+GraphicsRenderer.prototype.setModeShape = function (getShape) {
 	this.setMode(this.MODES.ADDSHAPE);
 	this.temporaryShape = getShape();
 };
 
-GraphicDisplay.prototype.setMode = function (mode) {
+GraphicsRenderer.prototype.setMode = function (mode) {
 	if (this.temporarySelectedComponent != null) {
 		this.unselectComponent();
 		clearForm();
@@ -1918,7 +1918,7 @@ GraphicDisplay.prototype.setMode = function (mode) {
 		this.mode = mode;
 };
 
-GraphicDisplay.prototype.resetMode = function (e) {
+GraphicsRenderer.prototype.resetMode = function (e) {
 	this.temporaryComponentType = null;
 	this.temporaryShape = null;
 
@@ -1929,7 +1929,7 @@ GraphicDisplay.prototype.resetMode = function (e) {
 	this.tooltip = this.tooltipDefault;
 };
 
-GraphicDisplay.prototype.setZoom = function (zoomFactor) {
+GraphicsRenderer.prototype.setZoom = function (zoomFactor) {
 	// Calculate the new zoom based on the current zoom and zoomFactor
 	var newZoom = this.zoom * zoomFactor;
 	
@@ -1967,22 +1967,22 @@ GraphicDisplay.prototype.setZoom = function (zoomFactor) {
 };
 
 
-GraphicDisplay.prototype.zoomIn = function (e) {
+GraphicsRenderer.prototype.zoomIn = function (e) {
 	this.setZoom(this.zoomin);
 };
 
-GraphicDisplay.prototype.zoomOut = function (e) {
+GraphicsRenderer.prototype.zoomOut = function (e) {
 	this.setZoom(this.zoomout);
 };
 
-GraphicDisplay.prototype.getCursorXRaw = function (e) {
+GraphicsRenderer.prototype.getCursorXRaw = function (e) {
 	return Math.floor(this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
 };
 
-GraphicDisplay.prototype.getCursorYRaw = function (e) {
+GraphicsRenderer.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
-GraphicDisplay.prototype.getCursorXLocal = function (e) {
+GraphicsRenderer.prototype.getCursorXLocal = function (e) {
 	// Base grid spacing that remains constant across zoom levels
 	const baseGridSpacing = this.gridSpacing;
 
@@ -1997,7 +1997,7 @@ GraphicDisplay.prototype.getCursorXLocal = function (e) {
 	return Math.round(rawXLocal / baseGridSpacing) * baseGridSpacing;
 };
 
-GraphicDisplay.prototype.getCursorYLocal = function (e) {
+GraphicsRenderer.prototype.getCursorYLocal = function (e) {
 	// Base grid spacing that remains constant across zoom levels
 	const baseGridSpacing = this.gridSpacing;
 
@@ -2012,7 +2012,7 @@ GraphicDisplay.prototype.getCursorYLocal = function (e) {
 	return Math.round(rawYLocal / baseGridSpacing) * baseGridSpacing;
 };
 
-GraphicDisplay.prototype.getCursorXInFrame = function () {
+GraphicsRenderer.prototype.getCursorXInFrame = function () {
 	if (this.enableSnap) {
 		const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
 		const worldX = (screenX / this.zoom) - this.cOutX;
@@ -2024,7 +2024,7 @@ GraphicDisplay.prototype.getCursorXInFrame = function () {
 	}
 };
 
-GraphicDisplay.prototype.getCursorYInFrame = function () {
+GraphicsRenderer.prototype.getCursorYInFrame = function () {
 	if (this.enableSnap) {
 		const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
 		const worldY = (screenY / this.zoom) - this.cOutY;
@@ -2035,23 +2035,23 @@ GraphicDisplay.prototype.getCursorYInFrame = function () {
 		return this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
 	}
 };
-GraphicDisplay.prototype.setToolTip = function (text) {
+GraphicsRenderer.prototype.setToolTip = function (text) {
 	this.tooltip = text;
 };
 
-GraphicDisplay.prototype.getToolTip = function (e) {
+GraphicsRenderer.prototype.getToolTip = function (e) {
 	var text = this.tooltip;
 	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${(this.enableSnap ? "snapping" : "not snapping")}, ${fps.toFixed(0)} FPS)`;
 };
 
 //TODO: Move in Utils.
-GraphicDisplay.prototype.getDistance = function (x1, y1, x2, y2) {
+GraphicsRenderer.prototype.getDistance = function (x1, y1, x2, y2) {
 	var distance = Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2));
 	return distance.toFixed(2);
 };
 
 // TODO: Move in Utils.
-GraphicDisplay.prototype.findIntersectionWith = function (x, y) {
+GraphicsRenderer.prototype.findIntersectionWith = function (x, y) {
 	// Track all intersections with their distances
 	const intersections = [];
 	const snapBox = this.snapTolerance / this.zoom;
@@ -2084,7 +2084,7 @@ GraphicDisplay.prototype.findIntersectionWith = function (x, y) {
 	return this.getPrioritizedIntersection(intersections);
 };
 
-GraphicDisplay.prototype.calculateIntersection = function(index, x, y) {
+GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
 	const component = this.logicDisplay.components[index];
 	const tolerance = this.snapTolerance / this.zoom;
 
@@ -2151,7 +2151,7 @@ GraphicDisplay.prototype.calculateIntersection = function(index, x, y) {
 	return null;
 };
 
-GraphicDisplay.prototype.getPrioritizedIntersection = function(intersections) {
+GraphicsRenderer.prototype.getPrioritizedIntersection = function(intersections) {
 	// Sort by priority rules
 	intersections.sort((a, b) => {
 		// 1. First priority: Distance (closer = higher priority)
@@ -2190,7 +2190,7 @@ GraphicDisplay.prototype.getPrioritizedIntersection = function(intersections) {
 	return intersections[0].index;
 };
 
-GraphicDisplay.prototype.visualizeColliders = function(index, snapBox) {
+GraphicsRenderer.prototype.visualizeColliders = function(index, snapBox) {
 	const component = this.logicDisplay.components[index];
 	
 	this.context.strokeStyle = this.colliderColor;
@@ -2220,7 +2220,7 @@ GraphicDisplay.prototype.visualizeColliders = function(index, snapBox) {
 	}
 };
 
-GraphicDisplay.prototype.drawCollisionBox = function(x, y, size) {
+GraphicsRenderer.prototype.drawCollisionBox = function(x, y, size) {
 	this.drawRectangle(
 		x - size,
 		y - size,
@@ -2231,7 +2231,7 @@ GraphicDisplay.prototype.drawCollisionBox = function(x, y, size) {
 	);
 };
 
-GraphicDisplay.prototype.saveComponent = function () {
+GraphicsRenderer.prototype.saveComponent = function () {
 	console.warn(this.logicDisplay.exportJSON())
 }
 
@@ -2239,7 +2239,7 @@ GraphicDisplay.prototype.saveComponent = function () {
 /**
  * Return the angle in radiants
  */
-GraphicDisplay.prototype.getAngle = function (x1, y1, x2, y2) {
+GraphicsRenderer.prototype.getAngle = function (x1, y1, x2, y2) {
 	var PI = Math.PI;
 	var dx = x2 - x1;
 	var dy = y2 - y1;
@@ -2251,7 +2251,7 @@ GraphicDisplay.prototype.getAngle = function (x1, y1, x2, y2) {
 	return scaledAngle;
 };
 
-GraphicDisplay.prototype.createNew = function () {
+GraphicsRenderer.prototype.createNew = function () {
 	this.logicDisplay.components = [];
 	this.filePath = '';
 	document.title = `New Design 1 - CompassCAD`;
@@ -2262,7 +2262,7 @@ GraphicDisplay.prototype.createNew = function () {
 	this.updateActivity('Starting a new design', 'On New Design 1');
 };
 
-GraphicDisplay.prototype.openDesign = function () {
+GraphicsRenderer.prototype.openDesign = function () {
 	diag.showOpenDialog({
 		title: 'Open CompassCAD file',
 		properties: ['openFile'],
@@ -2291,10 +2291,10 @@ GraphicDisplay.prototype.openDesign = function () {
 		}
 	});
 };
-GraphicDisplay.prototype.isChanged = function () {
+GraphicsRenderer.prototype.isChanged = function () {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
-GraphicDisplay.prototype.updateEditor = function (array) {
+GraphicsRenderer.prototype.updateEditor = function (array) {
 	let backup = JSON.stringify(this.logicDisplay.components)
 	this.logicDisplay.components = []
 	peerChange = true
@@ -2305,7 +2305,7 @@ GraphicDisplay.prototype.updateEditor = function (array) {
 		throw new Error(e)
 	}
 }
-GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
+GraphicsRenderer.prototype.checkForAnyPeerChanges = function () {
 	if (this.isChanged() == true) {
 		if (this.logicDisplay.components.length == this.undoStack.length) {
 		} else {
@@ -2313,7 +2313,7 @@ GraphicDisplay.prototype.checkForAnyPeerChanges = function () {
 		}
 	}
 }
-GraphicDisplay.prototype.saveDesign = function () {
+GraphicsRenderer.prototype.saveDesign = function () {
 	if (this.filePath) {
 		fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 		this.setToolTip('Save success')
@@ -2333,7 +2333,7 @@ GraphicDisplay.prototype.saveDesign = function () {
 	}
 };
 
-GraphicDisplay.prototype.saveDesignAs = function () {
+GraphicsRenderer.prototype.saveDesignAs = function () {
 	console.log('user wants to save as!!')
 	// Prompt the user to choose a save location
 	diag.showSaveDialog({
@@ -2357,7 +2357,7 @@ GraphicDisplay.prototype.saveDesignAs = function () {
 		console.error('Error during save:', err);
 	});
 }
-GraphicDisplay.prototype.exportDesign = function () {
+GraphicsRenderer.prototype.exportDesign = function () {
 	console.log('user wants to export!!')
 	// Prompt the user to choose a save location
 	diag.showSaveDialog({
