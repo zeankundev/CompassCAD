@@ -136,6 +136,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.pcbEditor = {
 		radius: 1
 	}
+	this.enableWebGL = false;
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
 	this.enableZoomWarpingToCursor = false;
@@ -162,7 +163,13 @@ GraphicDisplay.prototype.init = async function (e) {
 
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor', 'crosshair');
-	this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
+	if (this.enableWebGL) {
+		console.log('[renderer] using WebGL')
+		this.context = enableWebGLCanvas(this.cvn[0]);
+	} else {
+		console.log('[renderer] using ctx2d')
+		this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
+	}
 	this.execute()
 	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");

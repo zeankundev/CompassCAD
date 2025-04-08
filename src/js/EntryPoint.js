@@ -5,6 +5,9 @@ $(document).ready(async() => {
     const config = new ConfigHandler()
     await config.loadConfig()
     renderer = new GraphicDisplay('canvas', 800,600)
+    // detect if the device supports WebGL by default
+    // fixme: WebGL not working in some instances
+    /* renderer.enableWebGL = checkForWebGL() */
     renderer.logicDisplay = renderer.logicDisplay || {};
     renderer.logicDisplay.components = renderer.logicDisplay.components || [];
     document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');

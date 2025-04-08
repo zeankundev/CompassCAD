@@ -73,6 +73,15 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
         throw new Error('Unknown type');
     }
 }
+const checkForWebGL = () => {
+    try {
+        var canvas = document.createElement('canvas'); 
+        return !!window.WebGLRenderingContext &&
+            (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+    } catch(e) {
+        return false;
+    }
+}
 document.onerror = function (msg, url, lineNo, columnNo, error) {
     if (!msg.includes("Could not connect")) {
         console.error(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);
