@@ -602,6 +602,28 @@ command-pallete input[type=text] {
     box-sizing: border-box; /* Added to include padding in dimensions */
 }
 
+.tab-controller {
+    display: flex;
+    position: fixed;
+    bottom: 15px;
+}
+
+.tab-controller button {
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    padding: 10px;
+    font-family: var(--main-font);
+    color: var(--text);
+    border-radius: 10px;
+    justify-content: center;
+    margin-right: 10px;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--secondary-transparent);
+}
+
 #form {
     max-height: 85%;
     overflow-y: scroll;

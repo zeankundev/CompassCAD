@@ -82,6 +82,29 @@ const checkForWebGL = () => {
         return false;
     }
 }
+const openInspectorTab = (tabName) => {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll(".inspector-tabcontent");
+    tabContents.forEach((content) => {
+        content.style.display = "none";
+    });
+
+    // Show the selected tab content
+    const selectedTabContent = document.getElementById(tabName);
+    if (selectedTabContent) {
+        selectedTabContent.style.display = "block";
+    }
+
+    // Remove the disabled class of that button
+    const buttons = document.querySelectorAll(".inspector-tab");
+    buttons.forEach((button) => {
+        button.classList.add('disabled');
+    });
+    const selectedButton = document.getElementById(tabName + '-tab');
+    if (selectedButton) {
+        selectedButton.classList.remove('disabled')
+    }
+}
 document.onerror = function (msg, url, lineNo, columnNo, error) {
     if (!msg.includes("Could not connect")) {
         console.error(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);

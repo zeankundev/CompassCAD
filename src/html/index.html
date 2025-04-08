@@ -203,7 +203,16 @@
                         <button id="inspector-collapse" title="Collapse to Right"><img src="../../assets/icons/collapse-right.svg"></button>
                     </div>
                     <br>
-                    <div id="form"></div>
+                    <div class="inspector-tabcontent" id="properties">
+                        <div id="form"></div>
+                    </div>
+                    <div class="inspector-tabcontent" id="hierarchy">
+                        <div id="hierarchy-list"></div>
+                    </div>
+                    <div class="tab-controller">
+                        <button id="properties-tab" class="inspector-tab" onclick="openInspectorTab('properties')">Properties</button>
+                        <button id="hierarchy-tab" class="inspector-tab disabled" onclick="openInspectorTab('hierarchy')">Hierarchy</button>
+                    </div>
                 </div>
             </div>
         </div>
