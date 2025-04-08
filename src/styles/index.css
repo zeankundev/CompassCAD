@@ -629,6 +629,10 @@ command-pallete input[type=text] {
     overflow-y: scroll;
 }
 
+.inspector-tabcontent {
+    display: none;
+}
+
 #form input[type=checkbox] {
     -webkit-appearance: none;
     appearance: none;

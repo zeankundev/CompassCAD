@@ -105,6 +105,7 @@ const openInspectorTab = (tabName) => {
         selectedButton.classList.remove('disabled')
     }
 }
+openInspectorTab('properties')
 document.onerror = function (msg, url, lineNo, columnNo, error) {
     if (!msg.includes("Could not connect")) {
         console.error(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);
