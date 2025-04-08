@@ -9,7 +9,7 @@
     "backupsTitle": "Pulihkan atau buka cadangan",
     "totalBackupSize": "Ukuran total folder cadangan:",
     "inspector": "Inspektur",
-    "nothingToInspect": "Tidak ada yang bisa diperiksa...",
+    "nothingToInspect": "Pilih komponen, lalu detail komponen kamu akan ditampil disini",
     "toggleInspector": "Sembunyi/tampilkan Inspektur",
     "saveDesign": "Simpan Desain (ctrl+s)",
     "saveDesignAs": "Simpan Desain sebagai (ctrl+alt+s)",

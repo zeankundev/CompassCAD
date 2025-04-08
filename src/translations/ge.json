@@ -9,7 +9,7 @@
     "backupsTitle": "არქივების აღდგენა ან გახსნა",
     "totalBackupSize": "არქივების საერთო ზომა:",
     "inspector": "ინსპექტორი",
-    "nothingToInspect": "არცერთი რამის ინსპექცია...",
+    "nothingToInspect": "აირჩიეთ კომპონენტი, თქვენი კომპონენტის დეტალები უნდა გამოჩნდეს აქ.",
     "toggleInspector": "ინსპექტორის ჩართვა/გამორთვა",
     "saveDesign": "დიზაინის შენახვა (ctrl+s)",
     "saveDesignAs": "დიზაინის შენახვა როგორც (ctrl+alt+s)",

@@ -13,7 +13,7 @@
     "connectedToP2P": "Вы подключены. Приятной работы!",
     "totalBackupSize": "Общий размер папки резервных копий:",
     "inspector": "Инспектор",
-    "nothingToInspect": "Нечего инспектировать...",
+    "nothingToInspect": "Выберите компонент, чтобы отобразить его детали здесь.",
     "toggleInspector": "Переключить инспектор",
     "saveDesign": "Сохранить дизайн (ctrl+s)",
     "saveDesignAs": "Сохранить дизайн как (ctrl+alt+s)",

@@ -9,7 +9,7 @@
     "backupsTitle": "Återställ eller öppna backuper",
     "totalBackupSize": "Total storlek på backupmappen:",
     "inspector": "Inspicient",
-    "nothingToInspect": "Inget att inspektera...",
+    "nothingToInspect": "Välj en komponent för att visa dina komponentdetaljer här.",
     "toggleInspector": "Växla Inspicient",
     "saveDesign": "Spara Design (ctrl+s)",
     "saveDesignAs": "Spara Design som (ctrl+alt+s)",

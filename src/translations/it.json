@@ -13,7 +13,7 @@
     "connectedToP2P": "Sei ora connesso. Divertiti!",
     "totalBackupSize": "Dimensione totale della cartella di backup:",
     "inspector": "Ispettore",
-    "nothingToInspect": "Niente da ispezionare...",
+    "nothingToInspect": "Nessun componente selezionato, i dettagli del tuo componente dovrebbero apparire qui.",
     "toggleInspector": "Attiva/disattiva ispettore",
     "saveDesign": "Salva disegno (ctrl+s)",
     "saveDesignAs": "Salva disegno come (ctrl+alt+s)",
