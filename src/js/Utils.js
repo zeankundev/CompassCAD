@@ -165,15 +165,18 @@ document.getElementById('add-grid').onclick = async () => {
     }
 }
 
-function toggleInspector() {
+document.getElementById('inspector-collapse').onclick = () => {
     const inspector = document.getElementById('inspector');
+    if (inspector) {
+        inspector.classList.add('collapsed');
+        inspector.title = 'Double click to expand';
+    }
+}
 
-    if (inspector.style.display == 'block') {
-        inspector.style.display = 'none';
-        resizeWin()
-    } else {
-        inspector.style.display = 'block';
-        resizeWin()
+document.getElementById('inspector').ondblclick = () => {
+    const inspector = document.getElementById('inspector');
+    if (inspector) {
+        inspector.classList.remove('collapsed');
     }
 }
 
@@ -382,7 +385,12 @@ function objparse(obj) {
 const clearForm = async () => {
     const loc = new Localizator()
     const dynamicForm = document.getElementById("form");
-    dynamicForm.innerHTML = await loc.getLocalizedString('nothingToInspect');
+    dynamicForm.innerHTML = `
+    <div class="inspector-nothingtoinspect">
+        <img src="../../assets/icons/unselected-state.svg" width="64">
+        <p>${await loc.getLocalizedString('nothingToInspect')}</p>
+    </div>
+    `;
     dynamicForm.style.overflowY = 'hidden'
 }
 const openSettingsTab = (tabName) => {

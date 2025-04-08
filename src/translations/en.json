@@ -13,7 +13,7 @@
     "connectedToP2P": "You are now connected. Have fun!",
     "totalBackupSize": "Total backup folder size:",
     "inspector": "Inspector",
-    "nothingToInspect": "Nothing to inspect...",
+    "nothingToInspect": "Select a component then your component details should appear here.",
     "toggleInspector": "Toggle Inspector",
     "saveDesign": "Save Design (ctrl+s)",
     "saveDesignAs": "Save Design as (ctrl+alt+s)",

@@ -553,8 +553,8 @@ command-pallete input[type=text] {
 }
 
 .inspector {
-    padding: 10px;
-    min-width: 18%;
+    padding: 15px;
+    min-width: 20%;
     max-width: 20%;
     background-color: var(--primary);
     border: 0.5px solid var(--outline);
@@ -569,6 +569,65 @@ command-pallete input[type=text] {
     user-select: none;
     transition: all 0.3s ease;
     box-sizing: border-box; /* Added to include padding in dimensions */
+}
+
+.inspector-title-parent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inspector-title-parent button {
+    -webkit-appearance: none;
+    appearance: none;
+    text-align: center;
+    vertical-align: middle;
+    border: none;
+    background-color: var(--primary);
+    color: var(--text);
+    font-family: var(--main-font);
+    padding: 5px;
+    cursor: pointer;
+    border-radius: 10px;
+}
+
+.collapsed {
+    right: -17%;
+}
+
+.collapsed:hover {
+    right: -15.5%;
+}
+
+.inspector-nothingtoinspect {
+    margin-top: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-family: var(--main-font);
+}
+
+.inspector-nothingtoinspect img {
+    width: 64px;
+    -webkit-user-drag: none;
+}
+.inspector-nothingtoinspect p {
+    font-size: 12pt;
+    color: #3a3a3a;
+    text-align: center;
+    max-width: 75%;
+}
+
+.inspector-title-parent button:hover {
+    background-color: var(--secondary);
+    transition: all 0.3s ease;
+}
+
+.inspector-title-parent button img {
+    width: 20px;
+    -webkit-user-drag: none;
 }
 
 #form input[type=text] {
