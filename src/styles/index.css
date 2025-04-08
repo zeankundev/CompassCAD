@@ -600,12 +600,11 @@ command-pallete input[type=text] {
 }
 
 .inspector-nothingtoinspect {
-    margin-top: 50%;
+    min-height: 55vh; /* Use viewport height units */
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center; /* This now works properly with full height */
     align-items: center;
-    height: 100%;
     font-family: var(--main-font);
 }
 
@@ -713,6 +712,7 @@ command-pallete input[type=text] {
     padding: 10px;
     margin-bottom: 20px;
     margin-right: 20px;
+    z-index: 9999;
     background-color: var(--secondary);
     animation: toast 1s ease;
 }
