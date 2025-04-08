@@ -23,11 +23,11 @@
 }
 
 ::-webkit-scrollbar {
-    background-color: var(--primary);
+    background-color: rgba(0,0,0,0);
     padding: 5px;
 }
 ::-webkit-scrollbar-thumb {
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border-radius: 10px;
 }
 
@@ -211,7 +211,8 @@ small {
     z-index: 999;
     scroll-snap-type: y mandatory;
     -webkit-overflow-scrolling: touch;
-    background-color: var(--primary);
+    background-color: var(--primary-transparent);
+    backdrop-filter: blur(10px);
     border-radius: 10px;
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
@@ -241,11 +242,11 @@ small {
     margin-bottom: 5px;
     border: none;
     padding: 5px;
-    background-color: var(--primary);
+    background-color: rgba(0,0,0,0);
 }
 
 .quick-tool button:hover {
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
 }
 
 .quick-tool button img {
@@ -353,7 +354,8 @@ small {
     /* Adjust width if necessary */
     max-width: 80%;
     /* Limit width to prevent overflow */
-    background-color: var(--primary);
+    background-color: var(--primary-transparent);
+    backdrop-filter: blur(10px);
     padding: 10px;
     z-index: 1000;
     /* Ensure it stays on top */
@@ -373,7 +375,7 @@ small {
 .prompt input[type=text] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border: none;
     font-family: var(--main-font);
     padding: 10px;
@@ -389,7 +391,7 @@ small {
     resize: none;
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border: none;
     font-family: 'gsansmono', monospace;
     height: 200px;
@@ -411,7 +413,7 @@ small {
     color: var(--text);
     border: none;
     margin-top: 5px;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border-radius: 10px;
     font-family: var(--main-font);
     padding: 10px;
@@ -419,14 +421,14 @@ small {
 }
 
 .disabled {
-    background-color: var(--disabled-secondary) !important;
+    background-color: var(--primary-transparent) !important;
 }
 
 .tabcontent {
     display: none;
     margin-top: 5px;
     border-radius: 10px;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     padding: 10px;
 }
 
@@ -435,7 +437,7 @@ small {
 .tabcontent select {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--primary) !important;
+    background-color: var(--primary-transparent) !important;
     border-radius: 10px;
     box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.25);
     border: none;
@@ -510,7 +512,8 @@ small {
     transform: translate(-50%, -50%); /* Base centering transform */
     width: auto;
     max-width: 30vw; /* Use viewport units for better responsiveness */
-    background-color: var(--primary);
+    background-color: var(--primary-transparent);
+    backdrop-filter: blur(10px);
     padding: 15px;
     z-index: 1000;
     box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
@@ -526,7 +529,7 @@ small {
 .modal select {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border: none;
     font-family: var(--main-font);
     padding: 10px;
@@ -583,7 +586,8 @@ command-pallete input[type=text] {
     padding: 15px;
     min-width: 20%;
     max-width: 20%;
-    background-color: var(--primary);
+    background-color: var(--primary-transparent);
+    backdrop-filter: blur(10px);
     border: 0.5px solid var(--outline);
     border-radius: 10px;
     box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.5);
@@ -596,6 +600,11 @@ command-pallete input[type=text] {
     user-select: none;
     transition: all 0.3s ease;
     box-sizing: border-box; /* Added to include padding in dimensions */
+}
+
+#form {
+    max-height: 85%;
+    overflow-y: scroll;
 }
 
 #form input[type=checkbox] {
@@ -625,7 +634,7 @@ command-pallete input[type=text] {
 #form input[type=color] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--primary);
+    background-color: var(--secondary-transparent);
     border: 0.5px solid var(--outline);
     width: 20px;
     height: 20px;
@@ -651,7 +660,7 @@ command-pallete input[type=text] {
     text-align: center;
     vertical-align: middle;
     border: none;
-    background-color: var(--primary);
+    background-color: rgba(0,0,0,0);
     color: var(--text);
     font-family: var(--main-font);
     padding: 5px;
@@ -688,7 +697,7 @@ command-pallete input[type=text] {
 }
 
 .inspector-title-parent button:hover {
-    background-color: var(--secondary);
+    background-color: rgba(29,29,29,0,2);
     transition: all 0.3s ease;
 }
 
@@ -700,7 +709,7 @@ command-pallete input[type=text] {
 #form input[type=text] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--primary);
+    background-color: var(--secondary-transparent);
     border: none;
     font-family: var(--main-font);
     padding: 7.5px;
@@ -712,7 +721,7 @@ command-pallete input[type=text] {
 #form input[type=number] {
     -webkit-appearance: none;
     appearance: none;
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
     border: none;
     font-family: var(--main-font);
     padding: 7.5px;
@@ -757,10 +766,11 @@ command-pallete input[type=text] {
     display: flex;
     padding: 10px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
 .backup-list:hover {
-    background-color: var(--secondary);
+    background-color: var(--secondary-transparent);
 }
 
 .lister-leftcomp {

@@ -14,7 +14,9 @@
 }
 :root {
     --primary: #1d1d1d;
+    --primary-transparent: rgba(29, 29, 29, 0.85);
     --secondary: #2e2e2e;
+    --secondary-transparent: rgba(100, 100, 100, 0.3);
     --tertiary: #3f3f3f;
     --disabled-secondary: #242424;
     --outline: #636363;
