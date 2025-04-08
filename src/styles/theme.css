@@ -2,6 +2,16 @@
     font-family: 'OneUISans';
     src: url('../../assets/fonts/OneUISans.ttf') format('truetype');
 }
+@keyframes scale-down {
+    from {
+        transform: translate(-50%, -50%) scale(1.05); /* Start larger */
+        opacity: 0; /* Optional fade-in effect */
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1); /* End at normal size */
+        opacity: 1;
+    }
+}
 :root {
     --primary: #1d1d1d;
     --secondary: #2e2e2e;
@@ -9,5 +19,6 @@
     --disabled-secondary: #242424;
     --outline: #636363;
     --text: #efefef;
+    --theme: #0080FF;
     --main-font: 'OneUISans', sans-serif; 
 }

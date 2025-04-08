@@ -22,6 +22,15 @@
     margin: 0;
 }
 
+::-webkit-scrollbar {
+    background-color: var(--primary);
+    padding: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--secondary);
+    border-radius: 10px;
+}
+
 .spinner-absolute {
     display: inline-block;
     width: 24px;
@@ -351,6 +360,11 @@ small {
     overflow: hidden;
     /* Enable scrolling if content overflows */
     box-sizing: border-box;
+    animation: scale-down 0.5s ease;
+    box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    border: 0.5px solid var(--outline);
+    will-change: transform;
     /* Include padding in width/height calculations */
 }
 
@@ -363,6 +377,8 @@ small {
     border: none;
     font-family: var(--main-font);
     padding: 10px;
+    margin-top: 10px;
+    border-radius: 10px;
     color: var(--text);
     width: 95%;
     outline: none;
@@ -394,7 +410,9 @@ small {
     appearance: none;
     color: var(--text);
     border: none;
+    margin-top: 5px;
     background-color: var(--secondary);
+    border-radius: 10px;
     font-family: var(--main-font);
     padding: 10px;
     cursor: pointer;
@@ -406,6 +424,8 @@ small {
 
 .tabcontent {
     display: none;
+    margin-top: 5px;
+    border-radius: 10px;
     background-color: var(--secondary);
     padding: 10px;
 }
@@ -416,6 +436,8 @@ small {
     -webkit-appearance: none;
     appearance: none;
     background-color: var(--primary) !important;
+    border-radius: 10px;
+    box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.25);
     border: none;
     font-family: var(--main-font);
     padding: 10px;
@@ -454,13 +476,15 @@ small {
 
 .grid-config {
     background-color: var(--primary);
-    padding: 5px
+    padding: 5px;
+    border-radius: 10px;
 }
 
 .grid-settings-display {
     padding: 5px;
     background-color: var(--secondary);
     margin-bottom: 5px;
+    border-radius: 10px;
 }
 
 .selected {
@@ -483,15 +507,18 @@ small {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%); /* Base centering transform */
     width: auto;
-    /* Or set a specific percentage if needed */
-    max-width: 30%;
-    /* Limit width so it doesn't go out of screen bounds */
+    max-width: 30vw; /* Use viewport units for better responsiveness */
     background-color: var(--primary);
-    padding: 10px;
+    padding: 15px;
     z-index: 1000;
-    /* Ensure it appears on top */
+    box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    border: 0.5px solid var(--outline);
+    animation: scale-down 0.5s ease;
+    transition: all 0.3s ease;
+    will-change: transform; /* Optimize for transform animations */
 }
 
 .modal input[type=number],
@@ -569,6 +596,47 @@ command-pallete input[type=text] {
     user-select: none;
     transition: all 0.3s ease;
     box-sizing: border-box; /* Added to include padding in dimensions */
+}
+
+#form input[type=checkbox] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: 0.5px solid var(--outline);
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+#form input[type=checkbox]:active {
+    transform: scale(0.85);
+}
+
+#form input[type=checkbox]:checked {
+    background-color: var(--theme);
+    background-image: url('../../assets/icons/check.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 15px;
+    border: 0.5px solid var(--outline);
+}
+
+#form input[type=color] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: var(--primary);
+    border: 0.5px solid var(--outline);
+    width: 20px;
+    height: 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    width: 64px;
+    height: 32px;
+    padding: 5px;
+}
+#form input[type=color]:active {
+    transform: scale(0.85);
 }
 
 .inspector-title-parent {
@@ -672,7 +740,11 @@ command-pallete input[type=text] {
 }
 
 #backups-modal {
-    height: 65%;
+    height: 80%;
+}
+
+.backups-group {
+    margin-top: 10px;
 }
 
 .backup-lister {

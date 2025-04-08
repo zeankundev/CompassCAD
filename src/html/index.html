@@ -94,16 +94,16 @@
         <modal class="modal hidden" id="backups-modal">
             <h3 id="backups-headtext">Recover or open backups</h3>
             <div id="backup-lister" class="backup-lister"></div>
-            <span id="backup-size">Total backup folder size:  0 KB</span>
-            <br>
-            <button id="backups-clear">Clear ALL backups</button>
-            <button id="backups-close">Close</button>
+            <div class="backups-group">
+                <span id="backup-size">Total backup folder size:  0 KB</span>
+                <br>
+                <button id="backups-clear">Clear ALL backups</button>
+                <button id="backups-close">Close</button>
+            </div>
         </modal>
         <modal class="prompt hidden" id="prompt-container">
             <h3 id="prompt-message">Enter Prompt</h3>
-            <br>
             <input type="text" id="prompt-input" placeholder="Please enter text">
-            <br>
             <div class="prompt-answer">
                 <button id="prompt-ok">OK</button>
                 <button id="prompt-cancel">Cancel</button>
