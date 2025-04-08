@@ -750,7 +750,7 @@ command-pallete input[type=text] {
 }
 
 .collapsed {
-    right: -18.5%;
+    right: -19%;
 }
 
 .collapsed:hover {
