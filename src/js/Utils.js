@@ -169,14 +169,15 @@ document.getElementById('inspector-collapse').onclick = () => {
     const inspector = document.getElementById('inspector');
     if (inspector) {
         inspector.classList.add('collapsed');
-        inspector.title = 'Double click to expand';
+        document.getElementById('inspector-expand').style.display = 'block';
     }
 }
 
-document.getElementById('inspector').ondblclick = () => {
+document.getElementById('inspector-expand').onclick = () => {
     const inspector = document.getElementById('inspector');
     if (inspector) {
         inspector.classList.remove('collapsed');
+        document.getElementById('inspector-expand').style.display = 'none';
     }
 }
 
