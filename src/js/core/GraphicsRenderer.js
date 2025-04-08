@@ -254,21 +254,31 @@ GraphicsRenderer.prototype.execute = async function (e) {
 		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2);
 	}
 
-	if (this.selectedComponent != null) {
-		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
-		const handles = this.getComponentHandles(this.selectedComponent)
-		for (const handle of handles) {
-			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
-				this.drawPoint(handle.x, handle.y, '#fff', 2)
-			}
-		}
-	}
+	this.refreshSelectionTools();
+
 	// Draw rules and tooltips
 	this.drawRules();
 	this.drawToolTip();
 
 	// Update Rich Presence only when the component count changes
 	this.updateActivity();
+};
+
+GraphicsRenderer.prototype.refreshSelectionTools = function () {
+	if (this.selectedComponent != null && this.logicDisplay.components[this.selectedComponent]) {
+		// Always draw component size measurements
+		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
+		
+		// Draw handles for the selected component
+		const selectedComponent = this.logicDisplay.components[this.selectedComponent];
+		if (selectedComponent.isActive()) {
+			const handles = this.getComponentHandles(selectedComponent);
+			for (const handle of handles) {
+				// Draw handle point
+				this.drawPoint(handle.x, handle.y, '#fff', 2);
+			}
+		}
+	}
 };
 
 GraphicsRenderer.prototype.copy = function (e) {
@@ -365,6 +375,7 @@ GraphicsRenderer.prototype.saveState = function () {
 	  // Clear the redo stack when a new action is performed
 	  this.redoStack = [];
 	}
+	refreshHierarchy()
   };
 
 GraphicsRenderer.prototype.returnLatexInstance = async function(latex) {

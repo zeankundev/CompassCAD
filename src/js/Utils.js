@@ -106,6 +106,28 @@ const openInspectorTab = (tabName) => {
     }
 }
 openInspectorTab('properties')
+const refreshHierarchy = () => {
+    const search = document.getElementById('hierarchy-search').value;
+    const hierarchy = document.getElementById('hierarchy-list');
+    hierarchy.innerHTML = '';
+    let found = false;
+    renderer.logicDisplay.components.forEach((component, index) => {
+        if (component.name.toLowerCase().includes(search.toLowerCase())) {
+            found = true;
+            const element = document.createElement('div');
+            element.className = 'hierarchy-element';
+            element.innerHTML = component.name;
+            element.onclick = () => {
+                renderer.temporarySelectedComponent = index;
+                renderer.selectComponent(index)
+                createFormForSelection();
+                renderer.render();
+            }
+            hierarchy.appendChild(element);
+        }
+    });
+}
+document.getElementById('hierarchy-search').oninput = () => {refreshHierarchy()}
 document.onerror = function (msg, url, lineNo, columnNo, error) {
     if (!msg.includes("Could not connect")) {
         console.error(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);

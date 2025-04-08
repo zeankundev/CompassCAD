@@ -138,7 +138,7 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 		
 		switch (arrJSON[i].type) {
 			case COMPONENT_TYPES.POINT:
-				parent.push(new Point(arrJSON[i].x, arrJSON[i].y));
+				parent.push(new Point(arrJSON[i].x, arrJSON[i].y, arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.LINE:
 				parent.push(new Line(
@@ -147,7 +147,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x2,
 						arrJSON[i].y2,
 						arrJSON[i].radius,
-						arrJSON[i].color));
+						arrJSON[i].color,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.RECTANGLE:
 				parent.push(new Rectangle(
@@ -156,7 +157,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x2,
 						arrJSON[i].y2,
 						arrJSON[i].radius,
-						arrJSON[i].color));
+						arrJSON[i].color,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.CIRCLE:
 				parent.push(new Circle(
@@ -165,7 +167,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x2,
 						arrJSON[i].y2,
 						arrJSON[i].radius,
-						arrJSON[i].color));
+						arrJSON[i].color,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.ARC:
 				parent.push(new Arc(
@@ -176,7 +179,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x3,
 						arrJSON[i].y3,
 						arrJSON[i].radius,
-						arrJSON[i].color));
+						arrJSON[i].color,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.MEASURE:
 				parent.push(new Measure(
@@ -184,17 +188,19 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y1,
 						arrJSON[i].x2,
 						arrJSON[i].y2,
-						arrJSON[i].color));
+						arrJSON[i].color,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.LABEL:
 				parent.push(new Label(
 						arrJSON[i].x,
 						arrJSON[i].y,
 						arrJSON[i].text,
-						arrJSON[i].fontSize));
+						arrJSON[i].fontSize,
+						arrJSON[i].name));
 				break;
 			case COMPONENT_TYPES.SHAPE:
-				var s = new Shape(arrJSON[i].x, arrJSON[i].y);
+				var s = new Shape(arrJSON[i].x, arrJSON[i].y, arrJSON[i].name);
 				this.importJSON(arrJSON[i].components, s.components);
 				parent.push(s);
 				break;
@@ -202,7 +208,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 				parent.push(new Picture(
 					arrJSON[i].x,
 					arrJSON[i].y,
-					arrJSON[i].pictureSource));
+					arrJSON[i].pictureSource,
+					arrJSON[i].name));
 				break;
 		}
 	}
