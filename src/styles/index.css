@@ -626,7 +626,7 @@ command-pallete input[type=text] {
 
 .inspector-tabcontent {
     display: none;
-    max-height: 80%;
+    max-height: calc(100% - 100px);
     overflow-y: auto;
     margin-top: 10px;
 }
@@ -795,7 +795,7 @@ command-pallete input[type=text] {
     font-family: var(--main-font);
     padding: 7.5px;
     color: var(--text);
-    width: 50%;
+    width: 90%;
     outline: none;
 }
 

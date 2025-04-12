@@ -767,7 +767,7 @@ GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius
 
 	this.context.fillStyle = color;
 	var fontSize = fontSize || this.fontSize;
-	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, 'SECEmojis', Consolas, DejaVu Sans Mono, monospace`;
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
@@ -1258,7 +1258,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								parseInt(this.fontSize)));
 							this.saveState()
 							this.execute()
-							this.setMode(this.MODES.NAVIGATE)
+							this.setMode(this.MODES.SELECT)
 						}
 					})
 					.catch(e => { })
@@ -1302,7 +1302,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								url));
 							this.saveState()
 							this.execute()
-							this.setMode(this.MODES.NAVIGATE)
+							this.setMode(this.MODES.SELECT)
 						}
 					})
 					.catch(e => { })
