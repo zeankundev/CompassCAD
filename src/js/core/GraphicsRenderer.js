@@ -1426,6 +1426,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						// Update component based on type
 						switch (component.type) {
 							case COMPONENT_TYPES.LINE:
+							case COMPONENT_TYPES.MEASURE:
 							case COMPONENT_TYPES.CIRCLE:
 								if (this.dragHandle === 'start') {
 									component.x1 = localX;
@@ -1653,6 +1654,9 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 		case COMPONENT_TYPES.LINE:
 			displayText = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
 			break;
+		case COMPONENT_TYPES.MEASURE:
+			displayText = `L: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))} (${Number(this.getDistance(component.x1,component.y1,component.x2,component.y2) / 100).toFixed(2)}m)`;
+			break
 		case COMPONENT_TYPES.CIRCLE:
 			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
 			break;
@@ -1728,7 +1732,8 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 					cursor: 'se-resize'
 				});
 				break;
-				case COMPONENT_TYPES.LINE:
+			case COMPONENT_TYPES.LINE:
+			case COMPONENT_TYPES.MEASURE:
 			case COMPONENT_TYPES.CIRCLE:
 				handles.length = 0;
 				
