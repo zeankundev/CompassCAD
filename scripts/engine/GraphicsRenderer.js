@@ -1356,6 +1356,121 @@ GraphicDisplay.prototype.createNew = function() {
  */
 var initCAD = function(gd) {
 	gd.init();
+
+	// Touch handling variables
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let initialPinchDistance = 0;
+    let isPinching = false;
+    
+    // Get touch point coordinates
+    const getTouchPos = (e) => {
+        const touch = e.touches[0];
+        return {
+            x: touch.clientX,
+            y: touch.clientY
+        };
+    };
+
+    // Calculate distance between two touch points
+    const getPinchDistance = (e) => {
+        const touch1 = e.touches[0];
+        const touch2 = e.touches[1];
+        return Math.hypot(
+            touch2.clientX - touch1.clientX,
+            touch2.clientY - touch1.clientY
+        );
+    };
+
+    // Touch event handlers
+    gd.cvn[0].addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        
+        // Store initial touch position
+        const pos = getTouchPos(e);
+        touchStartX = pos.x;
+        touchStartY = pos.y;
+        
+        // Handle pinch start
+        if (e.touches.length === 2) {
+            isPinching = true;
+            initialPinchDistance = getPinchDistance(e);
+            return;
+        }
+
+        // Simulate mouse position for single touch
+        gd.mouse.cursorXGlobal = pos.x;
+        gd.mouse.cursorYGlobal = pos.y;
+
+        if (gd.mode === gd.MODES.NAVIGATE) {
+            gd.performAction(e, gd.MOUSEACTION.DOWN);
+        }
+    }, { passive: false });
+
+    gd.cvn[0].addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        
+        // Handle pinch zoom
+        if (e.touches.length === 2 && isPinching) {
+            const currentDistance = getPinchDistance(e);
+            const pinchDelta = currentDistance - initialPinchDistance;
+            
+            if (Math.abs(pinchDelta) > 10) { // Add threshold to prevent accidental zooms
+                if (pinchDelta > 0) {
+                    gd.zoomIn();
+                } else {
+                    gd.zoomOut();
+                }
+                initialPinchDistance = currentDistance;
+            }
+            return;
+        }
+
+        // Handle single touch movement
+        const pos = getTouchPos(e);
+        gd.mouse.cursorXGlobal = pos.x;
+        gd.mouse.cursorYGlobal = pos.y;
+
+        if (gd.mode === gd.MODES.NAVIGATE) {
+            gd.performAction(e, gd.MOUSEACTION.MOVE);
+        } else {
+            // For drawing tools, simulate mouse move without down state
+            gd.mouse.isDown = false;
+            gd.performAction(e, gd.MOUSEACTION.MOVE);
+        }
+    }, { passive: false });
+
+	gd.cvn[0].addEventListener('touchend', (e) => {
+		e.preventDefault();
+		
+		// Reset pinch state
+		if (isPinching) {
+			isPinching = false;
+			return;
+		}
+
+		// Handle touch end
+		const pos = e.changedTouches[0];
+		gd.mouse.cursorXGlobal = pos.clientX;
+		gd.mouse.cursorYGlobal = pos.clientY;
+
+		// For navigation mode, just end the action
+		if (gd.mode === gd.MODES.NAVIGATE) {
+			gd.performAction(e, gd.MOUSEACTION.UP);
+			return;
+		}
+
+		// For drawing tools, only confirm points with a tap if we're at point 1
+		if (gd.temporaryComponentType === COMPONENT_TYPES.POINT || 
+			(gd.temporaryComponentType === null && 
+			 [gd.MODES.ADDLINE, gd.MODES.ADDCIRCLE, gd.MODES.ADDARC, 
+			  gd.MODES.ADDRECTANGLE, gd.MODES.ADDMEASURE].includes(gd.mode))) {
+			gd.performAction(e, gd.MOUSEACTION.DOWN);
+		}
+		
+		// Always perform mouse up to clean states
+		gd.performAction(e, gd.MOUSEACTION.UP);
+	}, { passive: false });
 	
 	// Bind keyboard events
 	$(document).keyup(function(e) {
@@ -1376,15 +1491,20 @@ var initCAD = function(gd) {
 	let currentZoom = 1;
 	const zoomFactor = 0.0001; // Adjust zoom sensitivity
 	// Mouse event handlers
-	gd.cvn.mousemove(function(e) {
-		gd.mouse.onMouseMove(e);
-		
-		if (!gd.gridPointer) {
-			gd.gridPointer = true;
-		}
-		
-		gd.performAction(e, gd.MOUSEACTION.MOVE);
-	});
+	// Keep existing mouse event handlers for desktop
+    gd.cvn.mousemove(function(e) {
+        if (e.originalEvent.sourceCapabilities && e.originalEvent.sourceCapabilities.firesTouchEvents) {
+            return; // Ignore emulated mouse events from touch
+        }
+        
+        gd.mouse.onMouseMove(e);
+        
+        if (!gd.gridPointer) {
+            gd.gridPointer = true;
+        }
+        
+        gd.performAction(e, gd.MOUSEACTION.MOVE);
+    });
 
 	gd.cvn.mouseout(function(e) {
 		gd.gridPointer = false;
@@ -1410,119 +1530,7 @@ var initCAD = function(gd) {
 		}
 		console.log(`Zoom factor: ${event.originalEvent.deltaY < 0 ? 'Zoom In' : 'Zoom Out'}`);
 	});
-	function getDistance(touch1, touch2) {
-		const dx = touch1.clientX - touch2.clientX;
-		const dy = touch1.clientY - touch2.clientY;
-		return Math.sqrt(dx * dx + dy * dy);
-	}
-	let initialTouch = { x: 0, y: 0 }; // Store initial touch position
-	let isNavigating = false; // Flag to indicate navigation mode
-	let isTap = false; // Flag to detect a tap (quick touch without significant movement)
-	const tapThreshold = 10; // Threshold to distinguish between a tap and a swipe
-
-	gd.cvn.on('touchstart', function(e) {
-		console.log('[touch] touch started');
-		if (e.touches.length === 1) {
-			// Store the initial touch position
-			initialTouch.x = e.touches[0].clientX;
-			initialTouch.y = e.touches[0].clientY;
-			isNavigating = true;
-			isTap = true; // Assume it's a tap until proven otherwise
-		} else if (e.touches.length === 2) {
-			console.log('[touch] touchstart: length more than 2!');
-			initialDistance = getDistance(e.touches[0], e.touches[1]);
-			console.log(`[touch] initial distance: ${initialDistance}`);
-			e.preventDefault(); // Prevent default touch behavior
-		}
-	});
-
-	gd.cvn.on('touchmove', function(e) {
-		if (e.touches.length === 2) {
-			console.log('[touch] touchmove: length more than 2!');
-			const currentDistance = getDistance(e.touches[0], e.touches[1]);
-			const scaleChange = (currentDistance - initialDistance) * zoomFactor;
-
-			// Update zoom level
-			currentZoom += scaleChange;
-			currentZoom = Math.max(0.1, Math.min(currentZoom, 5)); // Limit zoom level
-
-			// Apply zoom to the canvas
-			gd.setZoom(currentZoom);
-			initialDistance = currentDistance; // Update initial distance for next move
-			e.preventDefault(); // Prevent default touch behavior
-		} else if (e.touches.length === 1 && isNavigating) {
-			console.log('[touch] touchmove: length is 1!');
-			const touch = e.touches[0];
-
-			// Calculate the offset
-			const offsetX = touch.clientX - initialTouch.x;
-			const offsetY = touch.clientY - initialTouch.y;
-
-			// Check if the movement exceeds the tap threshold
-			if (Math.abs(offsetX) > tapThreshold || Math.abs(offsetY) > tapThreshold) {
-				isTap = false; // It's a swipe, not a tap
-			}
-
-			if (!isTap) {
-				// Emulate touchpad-like behavior: translate touch movement into mouse movement
-				const mouseEvent = new MouseEvent('mousemove', {
-					clientX: touch.clientX,
-					clientY: touch.clientY,
-					bubbles: true,
-					cancelable: true
-				});
-				gd.cvn[0].dispatchEvent(mouseEvent); // Dispatch the mousemove event
-			}
-
-			// Apply the offset to the camera or viewport for navigation
-			gd.camX += offsetX / gd.zoom; // Adjust for zoom level
-			gd.camY += offsetY / gd.zoom; // Adjust for zoom level
-
-			// Update the initial touch position for the next move
-			initialTouch.x = touch.clientX;
-			initialTouch.y = touch.clientY;
-
-			e.preventDefault(); // Prevent default touch behavior
-		}
-	});
-
-	gd.cvn.on('touchend', function(e) {
-		console.log('[touch] touch end');
-		if (e.touches.length < 2) {
-			console.log('[touch] touch,len=2: end');
-			initialDistance = 0; // Reset initial distance
-			isNavigating = false; // Reset navigation flag
-
-			// If it was a tap, trigger mousedown and mouseup
-			if (isTap) {
-				const touch = e.changedTouches[0];
-				const mouseDownEvent = new MouseEvent('mousedown', {
-					clientX: touch.clientX,
-					clientY: touch.clientY,
-					bubbles: true,
-					cancelable: true
-				});
-				gd.cvn[0].dispatchEvent(mouseDownEvent); // Dispatch the mousedown event
-
-				const mouseUpEvent = new MouseEvent('mouseup', {
-					clientX: touch.clientX,
-					clientY: touch.clientY,
-					bubbles: true,
-					cancelable: true
-				});
-				gd.cvn[0].dispatchEvent(mouseUpEvent); // Dispatch the mouseup event
-			}
-		}
-	});
-
-	gd.cvn.on('touchcancel', function(e) {
-		console.log('[touch] touch: cancel');
-		initialDistance = 0; // Reset initial distance
-		isNavigating = false; // Reset navigation flag
-		isTap = false; // Reset tap flag
-	});
-		
-	// Start CAD
+	
 	// Start CAD
 	let animationFrameId;
 	let isWindowFocused = true;

@@ -1,6 +1,10 @@
 let renderer;
 $(document).ready(function() {
     renderer = new GraphicDisplay('canvas', window.innerWidth, window.innerHeight);
+    document.getElementById('canvas').style.width = window.innerWidth + 'px';
+    document.getElementById('canvas').style.height = window.innerHeight + 'px';
+    renderer.displayWidth = window.innerWidth;
+    renderer.displayHeight = window.innerHeight;
     initCAD(renderer);
     document.getElementById('sizing-debug-info').innerHTML = `
     Sizing information:<br>

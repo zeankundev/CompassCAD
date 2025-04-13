@@ -2,6 +2,10 @@
     max-width: 100vw;
     min-height: 100vh;
 }
+canvas {
+    display: flex;
+    flex: 1;
+}
 .overlay-misc {
     z-index: 999;
     position: absolute;
