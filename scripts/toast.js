@@ -42,7 +42,7 @@ const callToast = (message, type) => {
     console.log('Set toast display to flex')
     setTimeout(() => {
         console.log('Toast dismissed')
-        Toast.style.animation = 'ui-fall 1s ease forwards'
+        Toast.style.animation = 'ui-fall 0.2s ease forwards'
         console.log('Played animation')
         setTimeout(() => {
             Toast.style.display = 'none'

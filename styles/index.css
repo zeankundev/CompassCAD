@@ -1,18 +1,20 @@
 @keyframes ui-slidein {
     0% {
-        transform: translateX(1000px);
+        transform: translateY(30px) scale(0.75);
+        opacity: 0;
     }
     100% {
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
+        opacity: 1;
     }
 }
 @keyframes ui-fall {
     from {
-        transform: translateY(0px);
+        transform: translateY(0px) scale(1);
         opacity: 1;
       }
       to {
-        transform: translateY(100px); /* Slight 3-degree rotation at the end */
+        transform: translateY(30px) scale(0.75); /* Slight 3-degree rotation at the end */
         opacity: 0;
       }
   }
