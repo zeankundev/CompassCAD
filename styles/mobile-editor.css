@@ -223,7 +223,7 @@ canvas {
 }
 .main-view {
     overflow-y: scroll;
-    max-height: 92dvh;
+    max-height: 93dvh;
 }
 .home-screen {
     padding: 20px;
