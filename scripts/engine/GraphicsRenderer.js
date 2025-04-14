@@ -3,7 +3,7 @@ let frameCount = 0;
 let fps = 0;
 let fpsWarningThreshold = 20;
 let warningDisplayed = false;
-function GraphicDisplay(displayName, width, height) {
+function GraphicsRenderer(displayName, width, height) {
 	// Enumerate all available modes
 	this.MODES = {
 			ADDPOINT : 1,
@@ -117,7 +117,7 @@ function GraphicDisplay(displayName, width, height) {
 	this.mouse = null;
 }
 
-GraphicDisplay.prototype.init = async function(e) {
+GraphicsRenderer.prototype.init = async function(e) {
 	/*
 	 * INITIALIZE THE LOGIC
 	 */ 
@@ -140,10 +140,10 @@ GraphicDisplay.prototype.init = async function(e) {
 		await new Promise(resolve => setTimeout(resolve, 100));
 	}
 };
-GraphicDisplay.prototype.lerp = function(start, end, time) {
+GraphicsRenderer.prototype.lerp = function(start, end, time) {
     return start + (end - start) * time;
 }
-GraphicDisplay.prototype.execute = async function(e) {
+GraphicsRenderer.prototype.execute = async function(e) {
 	let deviceScale = window.devicePixelRatio || 1
 	this.offsetX = this.cvn.offset().left;
 	this.offsetY = this.cvn.offset().top;
@@ -170,7 +170,7 @@ GraphicDisplay.prototype.execute = async function(e) {
 	
 };
 
-GraphicDisplay.prototype.saveState = function() {
+GraphicsRenderer.prototype.saveState = function() {
     this.undoStack.push(JSON.stringify(this.logicDisplay.components));
 	console.log(this.undoStack)
     if (this.undoStack.length > this.maximumStack) { // Limit the undo stack size to 50
@@ -180,7 +180,7 @@ GraphicDisplay.prototype.saveState = function() {
     this.redoStack = [];
 };
 
-GraphicDisplay.prototype.clearGrid = function(e) {
+GraphicsRenderer.prototype.clearGrid = function(e) {
 	this.context.restore();
 	this.context.fillStyle = "#202020";
 	this.context.fillRect(0, 0, this.displayWidth, this.displayHeight);
@@ -191,7 +191,7 @@ GraphicDisplay.prototype.clearGrid = function(e) {
 	this.context.lineWidth = 0.15;
 };
 
-GraphicDisplay.prototype.drawAllComponents = function(components, moveByX, moveByY) {
+GraphicsRenderer.prototype.drawAllComponents = function(components, moveByX, moveByY) {
 	for (var i = 0; i < components.length; i++) {
 		if ( !components[i].isActive() )
 			continue;
@@ -200,7 +200,7 @@ GraphicDisplay.prototype.drawAllComponents = function(components, moveByX, moveB
 	}
 };
 
-GraphicDisplay.prototype.drawComponent = function(component, moveByX, moveByY) {
+GraphicsRenderer.prototype.drawComponent = function(component, moveByX, moveByY) {
 	switch (component.type) {
 		case COMPONENT_TYPES.POINT:
 			this.drawPoint(
@@ -281,7 +281,7 @@ GraphicDisplay.prototype.drawComponent = function(component, moveByX, moveByY) {
 /**
  * This method is used to draw current temporary component
  */
-GraphicDisplay.prototype.drawTemporaryComponent = function(e) {
+GraphicsRenderer.prototype.drawTemporaryComponent = function(e) {
 	switch (this.temporaryComponentType) {
 		case COMPONENT_TYPES.POINT:
 			this.drawPoint(
@@ -387,7 +387,7 @@ GraphicDisplay.prototype.drawTemporaryComponent = function(e) {
 	} 
 };
 
-GraphicDisplay.prototype.drawPoint = function(x, y, color, radius) {
+GraphicsRenderer.prototype.drawPoint = function(x, y, color, radius) {
 	this.context.lineWidth = 3 * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
@@ -400,7 +400,7 @@ GraphicDisplay.prototype.drawPoint = function(x, y, color, radius) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawLine = function(x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawLine = function(x1, y1, x2, y2, color, radius) {
 	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
@@ -415,7 +415,7 @@ GraphicDisplay.prototype.drawLine = function(x1, y1, x2, y2, color, radius) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawCircle = function(x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawCircle = function(x1, y1, x2, y2, color, radius) {
 	this.context.lineWidth = radius * this.zoom;
 	this.context.fillStyle = color;
 	this.context.strokeStyle = color;
@@ -429,14 +429,14 @@ GraphicDisplay.prototype.drawCircle = function(x1, y1, x2, y2, color, radius) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawRectangle = function(x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawRectangle = function(x1, y1, x2, y2, color, radius) {
 	this.drawLine(x1, y1, x2, y1, color, radius);
 	this.drawLine(x2, y1, x2, y2, color, radius);
 	this.drawLine(x2, y2, x1, y2, color, radius);
 	this.drawLine(x1, y2, x1, y1, color, radius);
 };
 
-GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
     // Calculate the distance between the two points
     var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
 
@@ -514,7 +514,7 @@ GraphicDisplay.prototype.drawMeasure = async function (x1, y1, x2, y2, color, ra
     this.context.restore();
 };
 
-GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
+GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
     var arrowX = x + length * Math.cos(angle);
     var arrowY = y + length * Math.sin(angle);
     var offsetX = offset * Math.cos(angle + Math.PI / 2);
@@ -526,7 +526,7 @@ GraphicDisplay.prototype.drawArrowhead = function (x, y, angle, length, offset, 
 };
 
 
-GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius, fontSize) {
+GraphicsRenderer.prototype.drawLabel = function(x, y, text, color, radius, fontSize) {
 	this.drawPoint(x, y, '#0ff', 2);
 	
 	var localZoom = this.zoom;
@@ -568,7 +568,7 @@ GraphicDisplay.prototype.drawLabel = function(x, y, text, color, radius, fontSiz
 			(this.cOutY + y) * this.zoom);
 };
 
-GraphicDisplay.prototype.drawArc = function(x1, y1, x2, y2, x3, y3, color, radius) {
+GraphicsRenderer.prototype.drawArc = function(x1, y1, x2, y2, x3, y3, color, radius) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
 	
@@ -585,12 +585,12 @@ GraphicDisplay.prototype.drawArc = function(x1, y1, x2, y2, x3, y3, color, radiu
 	
 };
 
-GraphicDisplay.prototype.drawShape = function(shape) {
+GraphicsRenderer.prototype.drawShape = function(shape) {
 	this.drawAllComponents(shape.components, shape.x, shape.y);
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
 
-GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
+GraphicsRenderer.prototype.drawPicture = function(x, y, basedURL) {
     this.drawPoint(x, y, '#0ff', 2);
 
     // Fallback image URL
@@ -615,7 +615,7 @@ GraphicDisplay.prototype.drawPicture = function(x, y, basedURL) {
     this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
 };
 
-GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
+GraphicsRenderer.prototype.drawOrigin = function(cx, cy) {
 	this.context.lineWidth = 1;
 	this.context.strokeStyle = "#fff";
 	
@@ -632,7 +632,7 @@ GraphicDisplay.prototype.drawOrigin = function(cx, cy) {
 	this.context.stroke();
 };
 
-GraphicDisplay.prototype.drawRules = function(e) {
+GraphicsRenderer.prototype.drawRules = function(e) {
 	if (!this.showRules)
 		return;
 	
@@ -656,7 +656,7 @@ GraphicDisplay.prototype.drawRules = function(e) {
 	// TODO Show rules!
 };
 
-GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
+GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 	// Base grid spacing adjusted by zoom
 	const gridSpacingAdjusted = this.gridSpacing * this.zoom;
 	
@@ -736,7 +736,7 @@ GraphicDisplay.prototype.drawGrid = function (camXoff, camYoff) {
 	}
 };
 
-GraphicDisplay.prototype.snapToGrid = function(x, y) {
+GraphicsRenderer.prototype.snapToGrid = function(x, y) {
     const gridSize = this.gridSpacing * this.zoom;
     const snappedX = Math.round(x / gridSize) * gridSize;
     const snappedY = Math.round(y / gridSize) * gridSize;
@@ -749,7 +749,7 @@ GraphicDisplay.prototype.snapToGrid = function(x, y) {
  * @param e
  * @param action
  */
-GraphicDisplay.prototype.performAction = async function(e, action) {
+GraphicsRenderer.prototype.performAction = async function(e, action) {
 	switch(this.mode) {
 		case this.MODES.ADDPOINT:
 			this.cvn.css('cursor', 'crosshair');
@@ -1055,7 +1055,7 @@ GraphicDisplay.prototype.performAction = async function(e, action) {
 			break;
 	}
 };
-GraphicDisplay.prototype.undo = function() {
+GraphicsRenderer.prototype.undo = function() {
     if (this.undoStack.length > 0) {
         // Remove the last state from the undoStack and push it to the redoStack
         const state = this.undoStack.pop();
@@ -1076,7 +1076,7 @@ GraphicDisplay.prototype.undo = function() {
 
 
 
-GraphicDisplay.prototype.redo = function() {
+GraphicsRenderer.prototype.redo = function() {
     if (this.redoStack.length > 0) {
         // Move the current state to the undoStack
         this.undoStack.push(JSON.stringify(this.logicDisplay.components));
@@ -1098,7 +1098,7 @@ GraphicDisplay.prototype.redo = function() {
 };
 
 
-GraphicDisplay.prototype.moveComponent = function(index, x, y) {
+GraphicsRenderer.prototype.moveComponent = function(index, x, y) {
 	if (index != null) {
 		switch ( this.logicDisplay.components[index].type ) {
 			case COMPONENT_TYPES.POINT:
@@ -1138,7 +1138,7 @@ GraphicDisplay.prototype.moveComponent = function(index, x, y) {
 	}
 };
 
-GraphicDisplay.prototype.selectComponent = function(index) {
+GraphicsRenderer.prototype.selectComponent = function(index) {
 	if (index != null) {
 		this.selectedComponent = index;
 		this.previousColor = this.logicDisplay.components[index].color;
@@ -1148,7 +1148,7 @@ GraphicDisplay.prototype.selectComponent = function(index) {
 	}
 };
 
-GraphicDisplay.prototype.unselectComponent = function(e) {
+GraphicsRenderer.prototype.unselectComponent = function(e) {
 	if ( this.selectedComponent != null ) {
 		this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
 		this.logicDisplay.components[this.selectedComponent].radius = this.previousRadius;
@@ -1156,7 +1156,7 @@ GraphicDisplay.prototype.unselectComponent = function(e) {
 	}
 };
 
-GraphicDisplay.prototype.updateCamera = function() {
+GraphicsRenderer.prototype.updateCamera = function() {
     this.cOutX = this.camX;
 	this.cOutY = this.camY;
 
@@ -1171,12 +1171,12 @@ GraphicDisplay.prototype.updateCamera = function() {
  * This method is used to set CAD in SHAPE mode
  * @param getShape : a function that return a shape
  */
-GraphicDisplay.prototype.setModeShape = function(getShape) {
+GraphicsRenderer.prototype.setModeShape = function(getShape) {
 	this.setMode(this.MODES.ADDSHAPE);
 	this.temporaryShape = getShape();
 };
 
-GraphicDisplay.prototype.setMode = function(mode) {
+GraphicsRenderer.prototype.setMode = function(mode) {
 	this.resetMode();
 	
 	if (this.readonly)
@@ -1185,7 +1185,7 @@ GraphicDisplay.prototype.setMode = function(mode) {
 		this.mode = mode;
 };
 
-GraphicDisplay.prototype.resetMode = function(e) {
+GraphicsRenderer.prototype.resetMode = function(e) {
 	this.temporaryComponentType = null;
 	this.temporaryShape = null;
 	
@@ -1196,7 +1196,7 @@ GraphicDisplay.prototype.resetMode = function(e) {
 	this.tooltip = this.tooltipDefault;
 };
 
-GraphicDisplay.prototype.setZoom = function(zoomFactor) {
+GraphicsRenderer.prototype.setZoom = function(zoomFactor) {
 	var newZoom = this.zoom * zoomFactor; 
 	console.log(newZoom)
 	
@@ -1207,21 +1207,21 @@ GraphicDisplay.prototype.setZoom = function(zoomFactor) {
 	this.targetZoom = newZoom;
 };
 
-GraphicDisplay.prototype.zoomIn = function(e) {
+GraphicsRenderer.prototype.zoomIn = function(e) {
 	this.setZoom(this.zoomin);
 };
 
-GraphicDisplay.prototype.zoomOut = function(e) {
+GraphicsRenderer.prototype.zoomOut = function(e) {
 	this.setZoom(this.zoomout);
 };
-GraphicDisplay.prototype.getCursorXRaw = function (e) {
+GraphicsRenderer.prototype.getCursorXRaw = function (e) {
 	return Math.floor(this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
 };
 
-GraphicDisplay.prototype.getCursorYRaw = function (e) {
+GraphicsRenderer.prototype.getCursorYRaw = function (e) {
 	return Math.floor(this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 };
-GraphicDisplay.prototype.getCursorXLocal = function (e) {
+GraphicsRenderer.prototype.getCursorXLocal = function (e) {
 	// Base grid spacing that remains constant across zoom levels
 	const baseGridSpacing = this.gridSpacing / 2;
 
@@ -1236,7 +1236,7 @@ GraphicDisplay.prototype.getCursorXLocal = function (e) {
 	return Math.round(rawXLocal / baseGridSpacing) * baseGridSpacing;
 };
 
-GraphicDisplay.prototype.getCursorYLocal = function (e) {
+GraphicsRenderer.prototype.getCursorYLocal = function (e) {
 	// Base grid spacing that remains constant across zoom levels
 	const baseGridSpacing = this.gridSpacing / 2;
 
@@ -1251,7 +1251,7 @@ GraphicDisplay.prototype.getCursorYLocal = function (e) {
 	return Math.round(rawYLocal / baseGridSpacing) * baseGridSpacing;
 };
 
-GraphicDisplay.prototype.getCursorXInFrame = function () {
+GraphicsRenderer.prototype.getCursorXInFrame = function () {
 	// Get cursor position relative to canvas center (0,0)
 	const screenX = this.mouse.cursorXGlobal - this.offsetX - this.displayWidth / 2;
 	
@@ -1266,7 +1266,7 @@ GraphicDisplay.prototype.getCursorXInFrame = function () {
 	return (snappedX + this.cOutX) * this.zoom;
 };
 
-GraphicDisplay.prototype.getCursorYInFrame = function () {
+GraphicsRenderer.prototype.getCursorYInFrame = function () {
 	// Get cursor position relative to canvas center (0,0) 
 	const screenY = this.mouse.cursorYGlobal - this.offsetY - this.displayHeight / 2;
 	
@@ -1280,24 +1280,24 @@ GraphicDisplay.prototype.getCursorYInFrame = function () {
 	// Convert back to screen coordinates while preserving origin reference
 	return (snappedY + this.cOutY) * this.zoom;
 };
-GraphicDisplay.prototype.setToolTip = function(text) {
+GraphicsRenderer.prototype.setToolTip = function(text) {
 	this.tooltip = text;
 };
 
-GraphicDisplay.prototype.getToolTip = function(e) {
+GraphicsRenderer.prototype.getToolTip = function(e) {
 	var text = this.tooltip;
 	return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
 };
 
 //TODO: Move in Utils.
-GraphicDisplay.prototype.getDistance = function(x1, y1, x2, y2) {
+GraphicsRenderer.prototype.getDistance = function(x1, y1, x2, y2) {
 	var distance = Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
 	
 	return distance.toFixed(2);
 };
 
 // TODO: Move in Utils.
-GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
+GraphicsRenderer.prototype.findIntersectionWith = function(x, y) {
 	for ( var i = this.logicDisplay.components.length - 1; i >= 0; i-- ) {
 		if (!this.logicDisplay.components[i].isActive())
 			continue;
@@ -1326,7 +1326,7 @@ GraphicDisplay.prototype.findIntersectionWith = function(x, y) {
 	return null;
 };
 
-GraphicDisplay.prototype.saveComponent = function() {
+GraphicsRenderer.prototype.saveComponent = function() {
 	console.warn(this.logicDisplay.exportJSON())
 }
 
@@ -1334,7 +1334,7 @@ GraphicDisplay.prototype.saveComponent = function() {
 /**
  * Return the angle in radiants
  */
-GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
+GraphicsRenderer.prototype.getAngle = function(x1, y1, x2, y2) {
     var PI = Math.PI;
     var dx = x2 - x1;
     var dy = y2 - y1;
@@ -1346,7 +1346,7 @@ GraphicDisplay.prototype.getAngle = function(x1, y1, x2, y2) {
     return scaledAngle;
 };
 
-GraphicDisplay.prototype.createNew = function() {
+GraphicsRenderer.prototype.createNew = function() {
 	this.logicDisplay.components = []
 	this.undoStack = []
 	this.redoStack = []
