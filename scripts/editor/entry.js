@@ -49,7 +49,7 @@ const saveLocally = () => {
 }
 
 $(document).ready(async () => {
-    renderer = new GraphicDisplay('working-canvas', 800, 600)
+    renderer = new GraphicsRenderer('working-canvas', 800, 600)
     const resizeWin = () => {
         const devicePixelRatio = window.devicePixelRatio || 1
         renderer.displayHeight = window.innerHeight;

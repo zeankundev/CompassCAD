@@ -40,30 +40,48 @@
                 </div>
             </div>
         </div>
-        <div class="header-mobile">
-            <img src="./assets/editor/back.svg">
-            <img src="./assets/editor/menu.svg" id="menu-button">
-        </div>
-        <div class="menu-list" id="menu-list" style="display: none;"></div>
-        <div class="overlay-misc">
-            <div class="swipable-toolbar">
-                <div class="swipable-safearea">
-                    <button id="navigate"><img src="./assets/editor/navigate.svg"></button>
-                    <button id="move-obj"><img src="./assets/editor/move.svg"></button>
-                    <button id="del-obj"><img src="./assets/editor/delete.svg"></button>
-                    <button id="add-point"><img src="./assets/editor/point.svg"></button>
-                    <button id="add-line"><img src="./assets/editor/line.svg"></button>
-                    <button id="add-circle"><img src="./assets/editor/circle.svg"></button>
-                    <button id="add-arc"><img src="./assets/editor/arc.svg"></button>
-                    <button id="add-rect"><img src="./assets/editor/rectangle.svg"></button>
-                    <button id="add-label"><img src="./assets/editor/text.svg"></button>
-                    <button id="add-picture"><img src="./assets/editor/image.svg"></button>
-                    <button id="ruler"><img src="./assets/editor/measure.svg"></button>
+        <div class="home-screen">
+            <h1>Welcome!</h1>
+            <br>
+            <h2>Quick Actions</h2>
+            <div class="quick-actions">
+                <div class="recents-card" id="new-design">
+                    <img src="./assets/editor/newLogic.svg">
+                    Create new design
+                </div>
+                <div class="recents-card" id="open-design">
+                    <img src="./assets/editor/openLogic.svg">
+                    Import design
                 </div>
             </div>
         </div>
-        <div class="canvas-container">
-            <canvas id="canvas"></canvas>
+        <div class="workspace" id="workspace">
+            <div class="header-mobile">
+                <img src="./assets/editor/back.svg" id="back-button">
+                <h3 contenteditable="true" placeholder="Design title" id="design-title"></h3>
+                <img src="./assets/editor/menu.svg" id="menu-button">
+            </div>
+            <div class="menu-list" id="menu-list" style="display: none;"></div>
+            <div class="overlay-misc">
+                <div class="swipable-toolbar">
+                    <div class="swipable-safearea">
+                        <button id="navigate"><img src="./assets/editor/navigate.svg"></button>
+                        <button id="move-obj"><img src="./assets/editor/move.svg"></button>
+                        <button id="del-obj"><img src="./assets/editor/delete.svg"></button>
+                        <button id="add-point"><img src="./assets/editor/point.svg"></button>
+                        <button id="add-line"><img src="./assets/editor/line.svg"></button>
+                        <button id="add-circle"><img src="./assets/editor/circle.svg"></button>
+                        <button id="add-arc"><img src="./assets/editor/arc.svg"></button>
+                        <button id="add-rect"><img src="./assets/editor/rectangle.svg"></button>
+                        <button id="add-label"><img src="./assets/editor/text.svg"></button>
+                        <button id="add-picture"><img src="./assets/editor/image.svg"></button>
+                        <button id="ruler"><img src="./assets/editor/measure.svg"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas-container">
+                <canvas id="canvas"></canvas>
+            </div>
         </div>
         <script src="./scripts/editor/mobile.js"></script>
         <script src="./scripts/toast.js"></script>

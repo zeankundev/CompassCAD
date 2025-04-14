@@ -105,16 +105,6 @@ const menuConfig = [
         title: 'File',
         contents: [
             {
-                title: 'New',
-                icon: 'assets/editor/newLogic.svg',
-                onselect: () => console.log('New file selected')
-            },
-            {
-                title: 'Open',
-                icon: 'assets/editor/openLogic.svg',
-                onselect: () => console.log('Open file selected')
-            },
-            {
                 title: 'Save',
                 icon: 'assets/editor/saveLogic.svg',
                 onselect: () => console.log('Save file selected')
@@ -156,11 +146,11 @@ let renderer;
 $(document).ready(async function() {
     document.getElementById('canvas').width = window.innerWidth;
     document.getElementById('canvas').height = window.innerHeight;
-    renderer = new GraphicDisplay('canvas', window.innerWidth, window.innerHeight);
+    /** @type {GraphicsRenderer} */
+    renderer = new GraphicsRenderer('canvas', window.innerWidth, window.innerHeight);
     renderer.displayWidth = window.innerWidth;
     renderer.displayHeight = window.innerHeight;
     await initCAD(renderer);
-    renderer.logicDisplay.importJSON(JSON.parse(`[{"active":true,"type":2,"color":"#fff","radius":2,"x1":-300,"y1":-300,"x2":-200,"y2":-200},{"active":true,"type":7,"color":"#eee","radius":5,"x":-299,"y":-323,"text":"Color test","fontSize":24},{"active":true,"type":7,"color":"#eee","radius":5,"x":-297,"y":-168,"text":"This should be white","fontSize":13},{"active":true,"type":2,"color":"#ff0000","radius":2,"x1":-300,"y1":-100,"x2":-200,"y2":0},{"active":true,"type":7,"color":"#ffffff","radius":2,"x":-300.5555555555556,"y":28.85185185185187,"text":"This should be red","fontSize":13},{"active":true,"type":2,"color":"#00ff00","radius":2,"x1":-300,"y1":100,"x2":-200,"y2":200},{"active":true,"type":7,"color":"#eee","radius":5,"x":-300.5555555555556,"y":228.51851851851853,"text":"This should be green","fontSize":13}]`), renderer.logicDisplay.components)
     document.getElementById('loading-overlay').style.display = 'none';
     document.getElementById('navigate').onclick = () => {
         console.log('Navigate button clicked');
@@ -222,5 +212,54 @@ $(document).ready(async function() {
         const currentDisplay = window.getComputedStyle(menuList).display;
         // Toggle between 'none' and 'block'
         menuList.style.display = currentDisplay === 'none' ? 'block' : 'none';
+    }
+    document.getElementById('new-design').onclick = () => {
+        const workspace = document.getElementById('workspace');
+        document.getElementById('design-title').innerText = 'New Design'
+        workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
+        workspace.style.display = 'block';
+        renderer.targetZoom = 1;
+        renderer.camX = 0;
+        renderer.camY = 0;
+        renderer.createNew()
+    }
+    document.getElementById('back-button').onclick = () => {
+        const workspace = document.getElementById('workspace');
+        const menuList = document.getElementById('menu-list')
+        menuList.style.display = 'none'
+        workspace.style.animation = 'slide-from-full-to-right 0.5s ease'
+        setTimeout(() => {
+            workspace.style.display = 'none'
+        }, 500)
+    }
+    document.getElementById('open-design').onclick = () => {
+        const filePicker = document.createElement('input');
+        filePicker.type = 'file';
+        filePicker.click();
+        filePicker.onchange = (e) => {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            let file = e.target.files[0];
+            const reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data != null || data != []) {
+                        renderer.targetZoom = 1;
+                        renderer.camX = 0;
+                        renderer.camY = 0;
+                        renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components);
+                        const workspace = document.getElementById('workspace');
+                        document.getElementById('design-title').innerText = file.name.replace(/\.[^/.]+$/, "");
+                        workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
+                        workspace.style.display = 'block';
+                        document.getElementById('loading-overlay').style.display = 'none';
+                    }
+                } catch (e) {
+                    document.getElementById('loading-overlay').style.display = 'none';
+                    console.error(e)
+                }
+            }
+        }
     }
 });
