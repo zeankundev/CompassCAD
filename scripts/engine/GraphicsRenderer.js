@@ -1381,64 +1381,59 @@ var initCAD = function(gd) {
             touch2.clientY - touch1.clientY
         );
     };
+	// Touch event handlers
+	gd.cvn[0].addEventListener('touchstart', (e) => {
+		e.preventDefault();
+		
+		// Store initial touch position
+		const pos = getTouchPos(e);
+		touchStartX = pos.x;
+		touchStartY = pos.y;
+		
+		// Handle pinch start
+		if (e.touches.length === 2) {
+			isPinching = true;
+			initialPinchDistance = getPinchDistance(e);
+			return;
+		}
 
-    // Touch event handlers
-    gd.cvn[0].addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        
-        // Store initial touch position
-        const pos = getTouchPos(e);
-        touchStartX = pos.x;
-        touchStartY = pos.y;
-        
-        // Handle pinch start
-        if (e.touches.length === 2) {
-            isPinching = true;
-            initialPinchDistance = getPinchDistance(e);
-            return;
-        }
+		// Simulate mouse position for single touch
+		gd.mouse.cursorXGlobal = pos.x;
+		gd.mouse.cursorYGlobal = pos.y;
 
-        // Simulate mouse position for single touch
-        gd.mouse.cursorXGlobal = pos.x;
-        gd.mouse.cursorYGlobal = pos.y;
+		// For navigation and move modes, start the action immediately 
+		if (gd.mode === gd.MODES.NAVIGATE) {
+			gd.performAction(e, gd.MOUSEACTION.DOWN);
+		}
+	}, { passive: false });
 
-        if (gd.mode === gd.MODES.NAVIGATE) {
-            gd.performAction(e, gd.MOUSEACTION.DOWN);
-        }
-    }, { passive: false });
+	gd.cvn[0].addEventListener('touchmove', (e) => {
+		e.preventDefault();
+		
+		// Handle pinch zoom
+		if (e.touches.length === 2 && isPinching) {
+			const currentDistance = getPinchDistance(e);
+			const pinchDelta = currentDistance - initialPinchDistance;
+			
+			if (Math.abs(pinchDelta) > 10) { // Add threshold to prevent accidental zooms
+				if (pinchDelta > 0) {
+					gd.zoomIn();
+				} else {
+					gd.zoomOut();
+				}
+				initialPinchDistance = currentDistance;
+			}
+			return;
+		}
 
-    gd.cvn[0].addEventListener('touchmove', (e) => {
-        e.preventDefault();
-        
-        // Handle pinch zoom
-        if (e.touches.length === 2 && isPinching) {
-            const currentDistance = getPinchDistance(e);
-            const pinchDelta = currentDistance - initialPinchDistance;
-            
-            if (Math.abs(pinchDelta) > 10) { // Add threshold to prevent accidental zooms
-                if (pinchDelta > 0) {
-                    gd.zoomIn();
-                } else {
-                    gd.zoomOut();
-                }
-                initialPinchDistance = currentDistance;
-            }
-            return;
-        }
+		// Handle single touch movement
+		const pos = getTouchPos(e);
+		gd.mouse.cursorXGlobal = pos.x;
+		gd.mouse.cursorYGlobal = pos.y;
 
-        // Handle single touch movement
-        const pos = getTouchPos(e);
-        gd.mouse.cursorXGlobal = pos.x;
-        gd.mouse.cursorYGlobal = pos.y;
-
-        if (gd.mode === gd.MODES.NAVIGATE) {
-            gd.performAction(e, gd.MOUSEACTION.MOVE);
-        } else {
-            // For drawing tools, simulate mouse move without down state
-            gd.mouse.isDown = false;
-            gd.performAction(e, gd.MOUSEACTION.MOVE);
-        }
-    }, { passive: false });
+		// Always update cursor position for all modes
+		gd.performAction(e, gd.MOUSEACTION.MOVE);
+	}, { passive: false });
 
 	gd.cvn[0].addEventListener('touchend', (e) => {
 		e.preventDefault();
@@ -1460,11 +1455,15 @@ var initCAD = function(gd) {
 			return;
 		}
 
-		// For drawing tools, only confirm points with a tap if we're at point 1
-		if (gd.temporaryComponentType === COMPONENT_TYPES.POINT || 
-			(gd.temporaryComponentType === null && 
-			 [gd.MODES.ADDLINE, gd.MODES.ADDCIRCLE, gd.MODES.ADDARC, 
-			  gd.MODES.ADDRECTANGLE, gd.MODES.ADDMEASURE].includes(gd.mode))) {
+		// For DELETE mode, trigger mouse down to perform deletion
+		if (gd.mode === gd.MODES.DELETE) {
+			gd.performAction(e, gd.MOUSEACTION.DOWN);
+			return;
+		}
+
+		// For MOVE mode and all drawing tools, trigger mouse down on tap
+		if ([gd.MODES.MOVE, gd.MODES.ADDPOINT, gd.MODES.ADDLINE, gd.MODES.ADDCIRCLE, gd.MODES.ADDARC, 
+			 gd.MODES.ADDRECTANGLE, gd.MODES.ADDMEASURE, gd.MODES.ADDLABEL].includes(gd.mode)) {
 			gd.performAction(e, gd.MOUSEACTION.DOWN);
 		}
 		

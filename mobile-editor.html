@@ -24,10 +24,23 @@
     </head>
     <body>
         <div class="overlay-misc">
-            <div id="sizing-debug-info"></div>
+            <div class="swipable-toolbar">
+                <div class="swipable-safearea">
+                    <button id="navigate"><img src="./assets/editor/navigate.svg"></button>
+                    <button id="move-obj"><img src="./assets/editor/move.svg"></button>
+                    <button id="del-obj"><img src="./assets/editor/delete.svg"></button>
+                    <button id="add-point"><img src="./assets/editor/point.svg"></button>
+                    <button id="add-line"><img src="./assets/editor/line.svg"></button>
+                    <button id="add-circle"><img src="./assets/editor/circle.svg"></button>
+                    <button id="add-arc"><img src="./assets/editor/arc.svg"></button>
+                    <button id="add-rect"><img src="./assets/editor/rectangle.svg"></button>
+                    <button id="add-label"><img src="./assets/editor/text.svg"></button>
+                    <button id="add-picture"><img src="./assets/editor/image.svg"></button>
+                </div>
+            </div>
         </div>
         <div class="canvas-container">
-            <canvas id="canvas" width="360" height="728"></canvas>
+            <canvas id="canvas"></canvas>
         </div>
         <script src="./scripts/editor/mobile.js"></script>
         <script src="./scripts/toast.js"></script>
