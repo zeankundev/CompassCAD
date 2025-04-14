@@ -2,7 +2,7 @@
     "name": "CompassCAD Mobile",
     "short_name": "CompassCAD",
     "description": "Create CAD sketches, now on the go.",
-    "start_url": "/mobile-editor.html",
+    "start_url": "mobile-editor.html",
     "display": "standalone",
     "background_color": "#1d1d1d",
     "theme_color": "#1d1d1d",
