@@ -156,6 +156,7 @@ canvas {
     top: 80px;
     right: 20px;
     animation: slidedown 0.3s ease-in-out;
+    z-index: 999;
 }
 .dropdown {
     animation: slidedown 0.3s ease-in-out;
