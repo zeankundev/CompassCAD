@@ -302,10 +302,10 @@ $(document).ready(async function() {
 });
 
 const refreshHistory = () => {
-    const history = JSON.parse(localStorage.getItem('history'))
+    const history = JSON.parse(localStorage.getItem('history') || '[]')
     const historyContainer = document.getElementById('history-container')
     historyContainer.innerHTML = '';
-    if (history.length > 0) {
+    if (history.length > 0 ) {
         history.forEach(data => {
             console.log(data)
             const recentsCard = document.createElement('div');
