@@ -152,6 +152,7 @@ $(document).ready(async function() {
     renderer.displayHeight = window.innerHeight;
     await initCAD(renderer);
     document.getElementById('loading-overlay').style.display = 'none';
+    refreshHistory();
     document.getElementById('navigate').onclick = () => {
         console.log('Navigate button clicked');
         renderer.setMode(renderer.MODES.NAVIGATE)
@@ -224,6 +225,8 @@ $(document).ready(async function() {
         renderer.createNew()
     }
     document.getElementById('back-button').onclick = () => {
+        refreshHistory();
+        renderer.logicDisplay.components = [];
         const workspace = document.getElementById('workspace');
         const menuList = document.getElementById('menu-list')
         menuList.style.display = 'none'
@@ -249,6 +252,37 @@ $(document).ready(async function() {
                         renderer.camX = 0;
                         renderer.camY = 0;
                         renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components);
+                        // Create a virtual canvas for thumbnail generation
+                        const virtualCanvas = document.createElement('canvas');
+                        virtualCanvas.width = 960;
+                        virtualCanvas.height = 480;
+                        virtualCanvas.id = 'virtual-canvas';
+                        virtualCanvas.style.zIndex = '-99999999';
+                        virtualCanvas.style.display = 'none'
+                        document.body.appendChild(virtualCanvas)
+                        const virtualRenderer = new GraphicsRenderer('virtual-canvas', 960, 480);
+                        virtualRenderer.init();
+                        virtualRenderer.execute();
+                        virtualRenderer.logicDisplay.importJSON(data, virtualRenderer.logicDisplay.components);
+                        virtualRenderer.execute();
+
+                        // Convert canvas to base64
+                        const thumbnail = virtualCanvas.toDataURL('image/png');
+
+                        // Create history entry
+                        const historyEntry = {
+                            name: file.name.replace(/\.[^/.]+$/, ""),
+                            date: new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+                            type: (file.name.includes('ccad') ? 'ccad' : (file.name.includes('qrocad') ? 'qrocad': 'undefined')),
+                            preview: thumbnail,
+                            data: JSON.stringify(data)
+                        };
+
+                        // Get existing history or initialize new array
+                        let history = JSON.parse(localStorage.getItem('history') || '[]');
+                        history.unshift(historyEntry); // Add new entry at the beginning
+                        if (history.length > 10) history.pop(); // Keep only last 10 entries
+                        localStorage.setItem('history', JSON.stringify(history));
                         const workspace = document.getElementById('workspace');
                         document.getElementById('design-title').innerText = file.name.replace(/\.[^/.]+$/, "");
                         workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
@@ -263,3 +297,40 @@ $(document).ready(async function() {
         }
     }
 });
+
+const refreshHistory = () => {
+    const history = JSON.parse(localStorage.getItem('history'))
+    const historyContainer = document.getElementById('history-container')
+    historyContainer.innerHTML = '';
+    history.forEach(data => {
+        console.log(data)
+        const recentsCard = document.createElement('div');
+        recentsCard.className = 'recents-card history';
+        recentsCard.onclick = () => {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            try {
+                renderer.logicDisplay.components = [];
+                renderer.logicDisplay.importJSON(JSON.parse(data.data), renderer.logicDisplay.components);
+                document.getElementById('design-title').innerText = data.name.replace(/\.[^/.]+$/, "");
+                workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
+                workspace.style.display = 'block';
+                document.getElementById('loading-overlay').style.display = 'none';
+            } catch (e) {
+                console.error(e);
+                document.getElementById('loading-overlay').style.display = 'none';
+            }
+        }
+        recentsCard.innerHTML = `
+        <div class="recents-image-container">
+            <img src="${data.preview}">
+        </div>
+        <div class="recents-details">
+            <span class="mini-heading">${data.name}&nbsp;&nbsp;&nbsp;<span class="timestamp">${data.date}</span></span>
+        </div>
+        <div class="recents-fileinfo">
+            <span><img src="${data.type === 'ccad' ? 'assets/editor/ccad.svg' : (data.type === 'qrocad' ? 'assets/editor/qrocad.svg' : 'undefined')}">${data.type === 'ccad' ? 'CompassCAD Design' : (data.type === 'qrocad' ? 'QroCAD Design' : 'Unknown')}</span>
+        </div>
+        `
+        historyContainer.appendChild(recentsCard);
+    })
+}
