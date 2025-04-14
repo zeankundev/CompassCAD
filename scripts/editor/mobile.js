@@ -227,6 +227,9 @@ $(document).ready(async function() {
     document.getElementById('back-button').onclick = () => {
         refreshHistory();
         renderer.logicDisplay.components = [];
+        renderer.targetZoom = 1;
+        renderer.camX = 0;
+        renderer.camY = 0;
         const workspace = document.getElementById('workspace');
         const menuList = document.getElementById('menu-list')
         menuList.style.display = 'none'
@@ -302,35 +305,39 @@ const refreshHistory = () => {
     const history = JSON.parse(localStorage.getItem('history'))
     const historyContainer = document.getElementById('history-container')
     historyContainer.innerHTML = '';
-    history.forEach(data => {
-        console.log(data)
-        const recentsCard = document.createElement('div');
-        recentsCard.className = 'recents-card history';
-        recentsCard.onclick = () => {
-            document.getElementById('loading-overlay').style.display = 'flex';
-            try {
-                renderer.logicDisplay.components = [];
-                renderer.logicDisplay.importJSON(JSON.parse(data.data), renderer.logicDisplay.components);
-                document.getElementById('design-title').innerText = data.name.replace(/\.[^/.]+$/, "");
-                workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
-                workspace.style.display = 'block';
-                document.getElementById('loading-overlay').style.display = 'none';
-            } catch (e) {
-                console.error(e);
-                document.getElementById('loading-overlay').style.display = 'none';
+    if (history.length > 0) {
+        history.forEach(data => {
+            console.log(data)
+            const recentsCard = document.createElement('div');
+            recentsCard.className = 'recents-card history';
+            recentsCard.onclick = () => {
+                document.getElementById('loading-overlay').style.display = 'flex';
+                try {
+                    renderer.logicDisplay.components = [];
+                    renderer.logicDisplay.importJSON(JSON.parse(data.data), renderer.logicDisplay.components);
+                    document.getElementById('design-title').innerText = data.name.replace(/\.[^/.]+$/, "");
+                    workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
+                    workspace.style.display = 'block';
+                    document.getElementById('loading-overlay').style.display = 'none';
+                } catch (e) {
+                    console.error(e);
+                    document.getElementById('loading-overlay').style.display = 'none';
+                }
             }
-        }
-        recentsCard.innerHTML = `
-        <div class="recents-image-container">
-            <img src="${data.preview}">
-        </div>
-        <div class="recents-details">
-            <span class="mini-heading">${data.name}&nbsp;&nbsp;&nbsp;<span class="timestamp">${data.date}</span></span>
-        </div>
-        <div class="recents-fileinfo">
-            <span><img src="${data.type === 'ccad' ? 'assets/editor/ccad.svg' : (data.type === 'qrocad' ? 'assets/editor/qrocad.svg' : 'undefined')}">${data.type === 'ccad' ? 'CompassCAD Design' : (data.type === 'qrocad' ? 'QroCAD Design' : 'Unknown')}</span>
-        </div>
-        `
-        historyContainer.appendChild(recentsCard);
-    })
+            recentsCard.innerHTML = `
+            <div class="recents-image-container">
+                <img src="${data.preview}">
+            </div>
+            <div class="recents-details">
+                <span class="mini-heading">${data.name}&nbsp;&nbsp;&nbsp;<span class="timestamp">${data.date}</span></span>
+            </div>
+            <div class="recents-fileinfo">
+                <span><img src="${data.type === 'ccad' ? 'assets/editor/ccad.svg' : (data.type === 'qrocad' ? 'assets/editor/qrocad.svg' : 'undefined')}">${data.type === 'ccad' ? 'CompassCAD Design' : (data.type === 'qrocad' ? 'QroCAD Design' : 'Unknown')}</span>
+            </div>
+            `
+            historyContainer.appendChild(recentsCard);
+        })
+    } else {
+        historyContainer.innerHTML = 'Nothing to show here'
+    }
 }
