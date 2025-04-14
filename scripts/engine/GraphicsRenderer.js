@@ -136,6 +136,9 @@ GraphicDisplay.prototype.init = async function(e) {
 	this.cvn.css('cursor','crosshair');
 	this.context = this.cvn[0].getContext('2d');
 	this.execute()
+	while (this.logicDisplay == null) {
+		await new Promise(resolve => setTimeout(resolve, 100));
+	}
 };
 GraphicDisplay.prototype.lerp = function(start, end, time) {
     return start + (end - start) * time;
@@ -1354,8 +1357,8 @@ GraphicDisplay.prototype.createNew = function() {
  * Helper function used to initialize the
  * graphic environment and behaviour (mainly input events)
  */
-var initCAD = function(gd) {
-	gd.init();
+var initCAD = async function(gd) {
+	await gd.init();
 
 	// Touch handling variables
     let touchStartX = 0;
