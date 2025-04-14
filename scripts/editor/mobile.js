@@ -255,37 +255,7 @@ $(document).ready(async function() {
                         renderer.camX = 0;
                         renderer.camY = 0;
                         renderer.logicDisplay.importJSON(data, renderer.logicDisplay.components);
-                        // Create a virtual canvas for thumbnail generation
-                        const virtualCanvas = document.createElement('canvas');
-                        virtualCanvas.width = 960;
-                        virtualCanvas.height = 480;
-                        virtualCanvas.id = 'virtual-canvas';
-                        virtualCanvas.style.zIndex = '-99999999';
-                        virtualCanvas.style.display = 'none'
-                        document.body.appendChild(virtualCanvas)
-                        const virtualRenderer = new GraphicsRenderer('virtual-canvas', 960, 480);
-                        virtualRenderer.init();
-                        virtualRenderer.execute();
-                        virtualRenderer.logicDisplay.importJSON(data, virtualRenderer.logicDisplay.components);
-                        virtualRenderer.execute();
-
-                        // Convert canvas to base64
-                        const thumbnail = virtualCanvas.toDataURL('image/png');
-
-                        // Create history entry
-                        const historyEntry = {
-                            name: file.name.replace(/\.[^/.]+$/, ""),
-                            date: new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                            type: (file.name.includes('ccad') ? 'ccad' : (file.name.includes('qrocad') ? 'qrocad': 'undefined')),
-                            preview: thumbnail,
-                            data: JSON.stringify(data)
-                        };
-
-                        // Get existing history or initialize new array
-                        let history = JSON.parse(localStorage.getItem('history') || '[]');
-                        history.unshift(historyEntry); // Add new entry at the beginning
-                        if (history.length > 10) history.pop(); // Keep only last 10 entries
-                        localStorage.setItem('history', JSON.stringify(history));
+                        takeSnapshotAndSave(data, file.name);
                         const workspace = document.getElementById('workspace');
                         document.getElementById('design-title').innerText = file.name.replace(/\.[^/.]+$/, "");
                         workspace.style.animation = 'slide-from-right-to-full 0.5s ease'
@@ -300,6 +270,40 @@ $(document).ready(async function() {
         }
     }
 });
+
+const takeSnapshotAndSave = (data, fileName) => {
+    // Create a virtual canvas for thumbnail generation
+    const virtualCanvas = document.createElement('canvas');
+    virtualCanvas.width = 960;
+    virtualCanvas.height = 480;
+    virtualCanvas.id = 'virtual-canvas';
+    virtualCanvas.style.zIndex = '-99999999';
+    virtualCanvas.style.display = 'none'
+    document.body.appendChild(virtualCanvas)
+    const virtualRenderer = new GraphicsRenderer('virtual-canvas', 960, 480);
+    virtualRenderer.init();
+    virtualRenderer.execute();
+    virtualRenderer.logicDisplay.importJSON(data, virtualRenderer.logicDisplay.components);
+    virtualRenderer.execute();
+
+    // Convert canvas to base64
+    const thumbnail = virtualCanvas.toDataURL('image/png');
+
+    // Create history entry
+    const historyEntry = {
+        name: fileName.replace(/\.[^/.]+$/, ""),
+        date: new Date().toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+        type: (fileName.includes('ccad') ? 'ccad' : (fileName.includes('qrocad') ? 'qrocad': 'undefined')),
+        preview: thumbnail,
+        data: JSON.stringify(data)
+    };
+
+    // Get existing history or initialize new array
+    let history = JSON.parse(localStorage.getItem('history') || '[]');
+    history.unshift(historyEntry); // Add new entry at the beginning
+    if (history.length > 10) history.pop(); // Keep only last 10 entries
+    localStorage.setItem('history', JSON.stringify(history));
+}
 
 const refreshHistory = () => {
     const history = JSON.parse(localStorage.getItem('history') || '[]')
