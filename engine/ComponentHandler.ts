@@ -54,8 +54,8 @@ export class Line extends Component {
         x2: number, 
         y1: number, 
         y2: number,
-        radius: number,
-        color: string
+        radius?: number,
+        color?: string
     ) {
         super();
         this.radius = radius != undefined ? radius : 2;
@@ -74,8 +74,8 @@ export class Circle extends Line {
         x2: number, 
         y1: number, 
         y2: number,
-        radius: number,
-        color: string
+        radius?: number,
+        color?: string
     ) {
         super(x1, x2, y1, y2, radius, color);
         this.type = componentTypes.circle;
@@ -88,8 +88,8 @@ export class Rectangle extends Line {
         x2: number, 
         y1: number, 
         y2: number,
-        radius: number,
-        color: string
+        radius?: number,
+        color?: string
     ) {
         super(x1, x2, y1, y2, radius, color);
         this.type = componentTypes.rectangle;
@@ -102,7 +102,7 @@ export class Measure extends Line {
         x2: number, 
         y1: number, 
         y2: number,
-        radius: number
+        radius?: number
     ) {
         super(x1, x2, y1, y2, radius, '#ff3');
         this.type = componentTypes.measure;
@@ -115,8 +115,8 @@ export class Label extends Point {
     constructor(
         x: number, 
         y: number, 
-        text: string,
-        fontSize: number
+        text?: string,
+        fontSize?: number
     ) {
         super(x, y);
         this.type = componentTypes.label;
@@ -143,8 +143,8 @@ export class Arc extends Component {
         y2: number,
         x3: number,
         y3: number,
-        radius: number,
-        color: string
+        radius?: number,
+        color?: string
     ) {
         super();
         this.radius = radius != undefined ? radius : 2;
@@ -184,7 +184,7 @@ export class Picture extends Point {
     constructor(
         x: number,
         y: number,
-        pictureSource: string
+        pictureSource?: string
     ) {
         super(x, y);
         this.type = componentTypes.picture;
