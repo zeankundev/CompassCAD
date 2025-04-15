@@ -12,10 +12,10 @@ export const componentTypes = {
 }
 
 class Component {
-    active: boolean
-    type: number
-    color: string
-    radius: number
+    active: boolean;
+    type: number;
+    color: string;
+    radius: number;
     constructor() {
         this.active = true;
         this.type = 0;
@@ -31,8 +31,8 @@ class Component {
 }
 
 class Point extends Component {
-    x: number
-    y: number
+    x: number;
+    y: number;
     constructor(x: number, y: number) {
         super();
         this.radius = 5;
@@ -43,12 +43,12 @@ class Point extends Component {
 }
 
 class Line extends Component {
-    x1: number
-    x2: number
-    y1: number
-    y2: number
-    radius: number
-    color: string
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+    radius: number;
+    color: string;
     constructor(
         x1: number, 
         x2: number, 
@@ -110,8 +110,8 @@ class Measure extends Line {
 }
 
 class Label extends Point {
-    text: string
-    fontSize: number
+    text: string;
+    fontSize: number;
     constructor(
         x: number, 
         y: number, 
@@ -127,14 +127,14 @@ class Label extends Point {
 }
 
 class Arc extends Component {
-    x1: number
-    x2: number
-    y1: number
-    y2: number
-    x3: number
-    y3: number
-    radius: number
-    color: string
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+    x3: number;
+    y3: number;
+    radius: number;
+    color: string;
 
     constructor(
         x1: number,
@@ -160,9 +160,9 @@ class Arc extends Component {
 }
 
 class Shape extends Component {
-    x: number
-    y: number
-    components: Array<Component>
+    x: number;
+    y: number;
+    components: Array<Component>;
 
     constructor(
         x: number,
@@ -180,7 +180,7 @@ class Shape extends Component {
 }
 
 class Picture extends Point {
-    pictureSource: string
+    pictureSource: string;
     constructor(
         x: number,
         y: number,
