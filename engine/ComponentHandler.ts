@@ -29,3 +29,165 @@ class Component {
         return this.active;
     }
 }
+
+class Point extends Component {
+    x: number
+    y: number
+    constructor(x: number, y: number) {
+        super();
+        this.radius = 5;
+        this.type = componentTypes.point;
+        this.x = x != undefined ? x : 0;
+        this.y = y != undefined ? y : 0;
+    }
+}
+
+class Line extends Component {
+    x1: number
+    x2: number
+    y1: number
+    y2: number
+    radius: number
+    color: string
+    constructor(
+        x1: number, 
+        x2: number, 
+        y1: number, 
+        y2: number,
+        radius: number,
+        color: string
+    ) {
+        super();
+        this.radius = radius != undefined ? radius : 2;
+        this.type = componentTypes.line;
+        this.color = color != undefined ? color : '#ffffff';
+        this.x1 = x1 != undefined ? x1 : 0;
+        this.x2 = x2 != undefined ? x2 : 0;
+        this.y1 = y1 != undefined ? y1 : 0;
+        this.y2 = y2 != undefined ? y2 : 0;
+    }
+}
+
+class Circle extends Line {
+    constructor(
+        x1: number, 
+        x2: number, 
+        y1: number, 
+        y2: number,
+        radius: number,
+        color: string
+    ) {
+        super(x1, x2, y1, y2, radius, color);
+        this.type = componentTypes.circle;
+    }
+}
+
+class Rectangle extends Line {
+    constructor(
+        x1: number, 
+        x2: number, 
+        y1: number, 
+        y2: number,
+        radius: number,
+        color: string
+    ) {
+        super(x1, x2, y1, y2, radius, color);
+        this.type = componentTypes.rectangle;
+    }
+}
+
+class Measure extends Line {
+    constructor(
+        x1: number, 
+        x2: number, 
+        y1: number, 
+        y2: number,
+        radius: number
+    ) {
+        super(x1, x2, y1, y2, radius, '#ff3');
+        this.type = componentTypes.measure;
+    }
+}
+
+class Label extends Point {
+    text: string
+    fontSize: number
+    constructor(
+        x: number, 
+        y: number, 
+        text: string,
+        fontSize: number
+    ) {
+        super(x, y);
+        this.type = componentTypes.label;
+        this.color = '#eee';
+        this.text = text != undefined ? text : 'Sample text';
+        this.fontSize = fontSize != undefined ? fontSize : 18;
+    }
+}
+
+class Arc extends Component {
+    x1: number
+    x2: number
+    y1: number
+    y2: number
+    x3: number
+    y3: number
+    radius: number
+    color: string
+
+    constructor(
+        x1: number,
+        x2: number,
+        y1: number,
+        y2: number,
+        x3: number,
+        y3: number,
+        radius: number,
+        color: string
+    ) {
+        super();
+        this.radius = radius != undefined ? radius : 2;
+        this.type = componentTypes.arc;
+        this.color = color != undefined ? color : '#ffffff';
+        this.x1 = x1 != undefined ? x1 : 0;
+        this.x2 = x2 != undefined ? x2 : 0;
+        this.x3 = x3 != undefined ? x3 : 0;
+        this.y1 = y1 != undefined ? y1 : 0;
+        this.y2 = y2 != undefined ? y2 : 0;
+        this.y3 = y3 != undefined ? y3 : 0;
+    }
+}
+
+class Shape extends Component {
+    x: number
+    y: number
+    components: Array<Component>
+
+    constructor(
+        x: number,
+        y: number
+    ) {
+        super();
+        this.type = componentTypes.shape;
+        this.x = x != undefined ? x : 0;
+        this.y = y != undefined ? y : 0;
+        this.components = new Array();
+    }
+    addComponent(component: Component) {
+        this.components.push(component);
+    }
+}
+
+class Picture extends Point {
+    pictureSource: string
+    constructor(
+        x: number,
+        y: number,
+        pictureSource: string
+    ) {
+        super(x, y);
+        this.type = componentTypes.picture;
+        this.pictureSource = pictureSource != undefined ? pictureSource : '';
+    }
+}
