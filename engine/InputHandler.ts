@@ -1,6 +1,6 @@
 // We'll skip the keyboard stuff: nobody uses them
 // in the mobile app. 
-class MouseHandler {
+export class MouseHandler {
     cursorXGlobal: number;
     cursorYGlobal: number;
     cLMB: boolean;

@@ -11,7 +11,7 @@ export const componentTypes = {
     picture: 9
 }
 
-class Component {
+export class Component {
     active: boolean;
     type: number;
     color: string;
@@ -30,7 +30,7 @@ class Component {
     }
 }
 
-class Point extends Component {
+export class Point extends Component {
     x: number;
     y: number;
     constructor(x: number, y: number) {
@@ -42,7 +42,7 @@ class Point extends Component {
     }
 }
 
-class Line extends Component {
+export class Line extends Component {
     x1: number;
     x2: number;
     y1: number;
@@ -68,7 +68,7 @@ class Line extends Component {
     }
 }
 
-class Circle extends Line {
+export class Circle extends Line {
     constructor(
         x1: number, 
         x2: number, 
@@ -82,7 +82,7 @@ class Circle extends Line {
     }
 }
 
-class Rectangle extends Line {
+export class Rectangle extends Line {
     constructor(
         x1: number, 
         x2: number, 
@@ -96,7 +96,7 @@ class Rectangle extends Line {
     }
 }
 
-class Measure extends Line {
+export class Measure extends Line {
     constructor(
         x1: number, 
         x2: number, 
@@ -109,7 +109,7 @@ class Measure extends Line {
     }
 }
 
-class Label extends Point {
+export class Label extends Point {
     text: string;
     fontSize: number;
     constructor(
@@ -126,7 +126,7 @@ class Label extends Point {
     }
 }
 
-class Arc extends Component {
+export class Arc extends Component {
     x1: number;
     x2: number;
     y1: number;
@@ -159,7 +159,7 @@ class Arc extends Component {
     }
 }
 
-class Shape extends Component {
+export class Shape extends Component {
     x: number;
     y: number;
     components: Array<Component>;
@@ -179,7 +179,7 @@ class Shape extends Component {
     }
 }
 
-class Picture extends Point {
+export class Picture extends Point {
     pictureSource: string;
     constructor(
         x: number,
