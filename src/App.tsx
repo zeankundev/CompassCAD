@@ -1,28 +1,24 @@
 import React, { JSX, useEffect, useRef } from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './styles/theme.css'
+import styles from './App.module.css';
 import { GraphicsRenderer, InitializeInstance } from './engine/GraphicsRenderer';
+import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
+import Home from './pages/Home';
+import Editor from './pages/Editor';
 
 function App() {
-  const canvas = useRef<HTMLCanvasElement>(null);
-  const renderer = useRef<GraphicsRenderer | null>(null);
-  useEffect(() => {
-    if (canvas.current && !renderer.current) {
-      renderer.current = new GraphicsRenderer(canvas.current, 800, 600);
-      InitializeInstance(renderer.current);
-      renderer.current.setMode(renderer.current.modes.Navigate);
-    }
-  }, []);
-  return (
-    <div className='app'>
-      <h1>CompassCAD on React</h1>
-      <canvas
-        width={800}
-        height={600}
-        ref={canvas}
-      />
-    </div>
-  );
+    return (
+      <div className={styles.app}>
+          <Router>
+                <Switch>
+                  <Route exact path='/' component={Home} />
+                  <Route path='/editor/:id' component={Editor} />
+                  <Route path='/editor' component={Editor} />
+                </Switch>
+          </Router>
+      </div>
+    )
 }
 
 export default App;

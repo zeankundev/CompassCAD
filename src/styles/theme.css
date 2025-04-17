@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'OneUISans';
+    src: url('../OneUISans.ttf') format('truetype');
+}
+:root {
+    --primary-background: #1d1d1d;
+    --primary: rgba(29, 29, 29, 0.85);
+    --secondary: rgba(100, 100, 100, 0.3);
+    --tertiary: #3f3f3f;
+    --outline: #636363;
+    --secondary-disabled: rgba(80, 80, 80, 0.3);
+    --font: 'OneUISans, system-ui, sans-serif';
+    --text: #efefef;
+    --theme: #0080ff;
+}
