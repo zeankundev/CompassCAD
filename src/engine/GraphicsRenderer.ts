@@ -1295,7 +1295,7 @@ export class GraphicsRenderer {
     }
     getTooltip() {
         var text = this.tooltip;
-	return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
+	    return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
     }
     update() {
         this.offsetX = this.displayRef!.offsetLeft;

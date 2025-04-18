@@ -19,24 +19,62 @@ import RectSymbol from '../assets/rectangle.svg'
 import PicSymbol from '../assets/image.svg'
 import LabelSymbol from '../assets/text.svg'
 import RulerSymbol from '../assets/measure.svg'
+import { useParams } from "react-router-dom";
+import { LZString } from "../components/LZString";
 
 const Editor = () => {
+    const { id } = useParams<{id: string}>();
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
+    const [tooltip, setTooltip] = useState('');
     useEffect(() => {
       if (canvas.current && !renderer.current) {
         setDevice(getDeviceType());
-        renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+        renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
         InitializeInstance(renderer.current);
         renderer.current.setMode(renderer.current.modes.Navigate);
       }
     }, [canvas.current, renderer.current]);
+    useEffect(() => {
+        if (id == "action=new" || id == undefined || id == null) {
+            renderer.current?.start()
+            renderer.current?.logicDisplay?.importJSON([], renderer.current!.logicDisplay?.components)
+        } else if (id !== null && id.length > 0) {
+            try {
+                renderer.current?.logicDisplay?.importJSON(
+                    JSON.parse(
+                        LZString.decompressFromEncodedURIComponent(id) || '[]'
+                    ),
+                    renderer.current!.logicDisplay.components
+                )
+            } catch (e) {
+                console.error(e)
+            }
+        }
+    })
+    useEffect(() => {
+        let animationFrameId: number;
+        
+        const updateTooltip = () => {
+            if (renderer.current?.tooltip != null && renderer.current?.tooltip !== '') {
+                setTooltip(renderer.current.getTooltip());
+            }
+            animationFrameId = requestAnimationFrame(updateTooltip);
+        };
+        
+        animationFrameId = requestAnimationFrame(updateTooltip);
+        
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, []);
     window.addEventListener('resize', () => {
-        renderer.current!.displayWidth = window.innerWidth * window.devicePixelRatio;
-        renderer.current!.displayHeight = window.innerHeight * window.devicePixelRatio;
-        canvas.current!.width = window.innerWidth * window.devicePixelRatio;
-        canvas.current!.height = window.innerHeight * window.devicePixelRatio;
+        renderer.current!.displayWidth = window.innerWidth;
+        renderer.current!.displayHeight = window.innerHeight;
+        canvas.current!.width = window.innerWidth;
+        canvas.current!.height = window.innerHeight;
+        console.log('[editor] resize is fired')
         setDevice(getDeviceType());
     })
     return (
@@ -74,6 +112,7 @@ const Editor = () => {
                         defaultValue='New Design'
                         placeholder='Design name'
                     />
+                    <p>{tooltip}</p>
                 </Fragment>
             )}
         </div>
