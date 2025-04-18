@@ -6,6 +6,7 @@ import { GraphicsRenderer, InitializeInstance } from './engine/GraphicsRenderer'
 import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Editor from './pages/Editor';
+import EditorHome from './pages/EditorHome';
 
 function App() {
     return (
@@ -14,7 +15,7 @@ function App() {
                 <Switch>
                   <Route exact path='/' component={Home} />
                   <Route path='/editor/:id' component={Editor} />
-                  <Route path='/editor' component={Editor} />
+                  <Route path='/editor' component={EditorHome} />
                 </Switch>
           </Router>
       </div>

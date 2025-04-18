@@ -128,3 +128,8 @@
     width: 28px;
     height: 28px;
 }
+/* Editor's home page */
+.editor-home {
+    color: var(--text);
+    padding: 20px;
+}
