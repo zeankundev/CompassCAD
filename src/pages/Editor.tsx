@@ -24,29 +24,19 @@ const Editor = () => {
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
-    const resizeWindow = () => {
-        renderer.current!.displayWidth = window.innerWidth;
-        renderer.current!.displayHeight = window.innerHeight;
-        canvas.current!.width = window.innerWidth * window.devicePixelRatio;
-        canvas.current!.height = window.innerHeight * window.devicePixelRatio;
-        canvas.current!.style.width = window.innerWidth + 'px';
-        canvas.current!.style.height = window.innerHeight + 'px';
-        const ctx = canvas.current?.getContext('2d');
-        if (ctx) {
-            ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-        }
-    }
     useEffect(() => {
       if (canvas.current && !renderer.current) {
         setDevice(getDeviceType());
-        renderer.current = new GraphicsRenderer(canvas.current, 800, 600);
+        renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
         InitializeInstance(renderer.current);
-        resizeWindow();
         renderer.current.setMode(renderer.current.modes.Navigate);
       }
     }, [canvas.current, renderer.current]);
     window.addEventListener('resize', () => {
-        resizeWindow();
+        renderer.current!.displayWidth = window.innerWidth * window.devicePixelRatio;
+        renderer.current!.displayHeight = window.innerHeight * window.devicePixelRatio;
+        canvas.current!.width = window.innerWidth * window.devicePixelRatio;
+        canvas.current!.height = window.innerHeight * window.devicePixelRatio;
         setDevice(getDeviceType());
     })
     return (
@@ -158,9 +148,90 @@ const Editor = () => {
                 />
             </div>
         )}
+        {device == 'mobile' && (
+            <div className={styles['mobile-toolbar']}>
+                <ToolbarButton
+                    svgImage={Navigate}
+                    mobile={true}
+                    title="Navigate (q)"
+                    keyCode={RendererTypes.KeyCodes.Q}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Navigate)}
+                />
+                <ToolbarButton
+                    svgImage={MoveSymbol}
+                    mobile={true}
+                    title="Move (e)"
+                    keyCode={RendererTypes.KeyCodes.E}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Move)}
+                />
+                <ToolbarButton
+                    svgImage={DeleteSymbol}
+                    mobile={true}
+                    title="Delete (t)"
+                    keyCode={RendererTypes.KeyCodes.T}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Delete)}
+                />
+                <ToolbarButton
+                    svgImage={PointSymbol}
+                    mobile={true}
+                    title="Add Point (a)"
+                    keyCode={RendererTypes.KeyCodes.A}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPoint)}
+                />
+                <ToolbarButton
+                    svgImage={LineSymbol}
+                    mobile={true}
+                    title="Add Line (s)"
+                    keyCode={RendererTypes.KeyCodes.S}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLine)}
+                />
+                <ToolbarButton
+                    svgImage={CircleSymbol}
+                    mobile={true}
+                    title="Add Circle (d)"
+                    keyCode={RendererTypes.KeyCodes.D}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddCircle)}
+                />
+                <ToolbarButton
+                    svgImage={ArcSymbol}
+                    mobile={true}
+                    title="Add Arc (f)"
+                    keyCode={RendererTypes.KeyCodes.F}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddArc)}
+                />
+                <ToolbarButton
+                    svgImage={RectSymbol}
+                    mobile={true}
+                    title="Add Rectangle (g)"
+                    keyCode={RendererTypes.KeyCodes.G}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddRectangle)}
+                />
+                <ToolbarButton
+                    svgImage={PicSymbol}
+                    mobile={true}
+                    title="Add Image (l)"
+                    keyCode={RendererTypes.KeyCodes.L}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
+                />
+                <ToolbarButton
+                    svgImage={LabelSymbol}
+                    mobile={true}
+                    title="Add Text (h)"
+                    keyCode={RendererTypes.KeyCodes.H}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLabel)}
+                />
+                <ToolbarButton
+                    svgImage={RulerSymbol}
+                    mobile={true}
+                    title="Measure (z)"
+                    keyCode={RendererTypes.KeyCodes.Z}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddMeasure)}
+                />
+            </div>
+        )}
         <canvas
-          width={window.innerWidth * window.devicePixelRatio}
-          height={window.innerHeight * window.devicePixelRatio}
+          width={window.innerWidth}
+          height={window.innerHeight}
           ref={canvas}
         />
       </div>

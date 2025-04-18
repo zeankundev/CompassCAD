@@ -4,6 +4,7 @@ interface HeaderButton {
     svgImage: string;
     title: string;
     keyCode?: number;
+    mobile?: boolean;
     func?: () => void;
 }
 const ToolbarButton = (props: HeaderButton) => {
@@ -14,14 +15,12 @@ const ToolbarButton = (props: HeaderButton) => {
     })
     return (
         <div 
-            className={style['toolbar-button']}
+            className={`${style['toolbar-button']} ${props.mobile ? style.mobile : ''}`}
             onClick={props.func}
             title={props.title}
         >
             <img 
                 src={props.svgImage} 
-                width={18}
-                height={18}
             />
         </div>
     )

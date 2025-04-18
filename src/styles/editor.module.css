@@ -83,6 +83,8 @@
     justify-content: center;
     align-items: center;
     border-radius: 10px;
+}
+.toolbar-button:not(.mobile) {
     margin-bottom: 5px;
 }
 .toolbar-button:hover {
@@ -90,4 +92,39 @@
 }
 .toolbar-button img {
     -webkit-user-drag: none;
+    width: 18px;
+    height: 18px;
+}
+.mobile-toolbar {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    overflow-x: scroll;
+    background-color: var(--primary);
+    border: 0.5px solid var(--outline);
+    padding: 5px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 13px 1px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.mobile-toolbar::-webkit-scrollbar {
+    display: none;
+}
+.toolbar-button.mobile {
+    padding: 5px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    margin-right: 10px;
+}
+.toolbar-button.mobile img {
+    width: 28px;
+    height: 28px;
 }
