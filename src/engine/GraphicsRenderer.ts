@@ -1370,9 +1370,9 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
             
             if (Math.abs(pinchDelta) > 10) { // Add threshold to prevent accidental zooms
                 if (pinchDelta > 0) {
-                    renderer.targetZoom *= renderer.zoomIn;
+                    renderer.setZoom(renderer.zoomIn)
                 } else {
-                    renderer.targetZoom *= renderer.zoomOut;
+                    renderer.setZoom(renderer.zoomOut)
                 }
                 initialPinchDistance = currentDistance;
             }

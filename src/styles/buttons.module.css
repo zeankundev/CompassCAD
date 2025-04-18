@@ -1,0 +1,14 @@
+.header-button {
+    padding: 10px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-button:hover {
+    background-color: var(--secondary);
+}
+.header-button:active {
+    background-color: var(--secondary-disabled);
+}
