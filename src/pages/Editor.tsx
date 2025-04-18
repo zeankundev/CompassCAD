@@ -51,6 +51,12 @@ const Editor = () => {
                         svgImage={Back}
                         title='Go back home'
                     />
+                    <div
+                        className={styles['design-name']}
+                        contentEditable={true}
+                    >
+                        New Design
+                    </div>
                 </Fragment>
             )}
         </div>
