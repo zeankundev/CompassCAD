@@ -44,15 +44,15 @@ export class Point extends Component {
 
 export class Line extends Component {
     x1: number;
-    x2: number;
     y1: number;
+    x2: number;
     y2: number;
     radius: number;
     color: string;
     constructor(
         x1: number, 
-        x2: number, 
         y1: number, 
+        x2: number, 
         y2: number,
         radius?: number,
         color?: string
@@ -71,13 +71,13 @@ export class Line extends Component {
 export class Circle extends Line {
     constructor(
         x1: number, 
-        x2: number, 
         y1: number, 
+        x2: number, 
         y2: number,
         radius?: number,
         color?: string
     ) {
-        super(x1, x2, y1, y2, radius, color);
+        super(x1, y1, x2, y2, radius, color);
         this.type = componentTypes.circle;
     }
 }
@@ -85,13 +85,13 @@ export class Circle extends Line {
 export class Rectangle extends Line {
     constructor(
         x1: number, 
-        x2: number, 
         y1: number, 
+        x2: number, 
         y2: number,
         radius?: number,
         color?: string
     ) {
-        super(x1, x2, y1, y2, radius, color);
+        super(x1, y1, x2, y2, radius, color);
         this.type = componentTypes.rectangle;
     }
 }
@@ -99,12 +99,12 @@ export class Rectangle extends Line {
 export class Measure extends Line {
     constructor(
         x1: number, 
-        x2: number, 
         y1: number, 
+        x2: number, 
         y2: number,
         radius?: number
     ) {
-        super(x1, x2, y1, y2, radius, '#ff3');
+        super(x1, y1, x2, y2, radius, '#ff3');
         this.type = componentTypes.measure;
     }
 }
@@ -128,8 +128,8 @@ export class Label extends Point {
 
 export class Arc extends Component {
     x1: number;
-    x2: number;
     y1: number;
+    x2: number;
     y2: number;
     x3: number;
     y3: number;

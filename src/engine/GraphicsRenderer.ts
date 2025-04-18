@@ -171,35 +171,25 @@ export class GraphicsRenderer {
         return Math.floor(this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
     }
     getCursorXLocal(): number {
-        // Get cursor position in screen coordinates
-        const screenX = this.mouse!.cursorXGlobal - this.offsetX;
-        
-        // Transform to world coordinates
-        const worldX = (screenX - this.displayWidth / 2) / this.zoom - this.camX;
-        
+        const baseGridSpacing = this.gridSpacing / 2;
+        const rawXLocal = (this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
+
         if (!this.snap) {
-            return worldX;
+            return rawXLocal;
         }
-        
-        // Apply snapping in world coordinates
-        const gridSize = this.gridSpacing / 2;
-        return Math.round(worldX / gridSize) * gridSize;
+
+        return Math.round(rawXLocal / baseGridSpacing) * baseGridSpacing;
     }
-    
+
     getCursorYLocal(): number {
-        // Get cursor position in screen coordinates
-        const screenY = this.mouse!.cursorYGlobal - this.offsetY;
-        
-        // Transform to world coordinates
-        const worldY = (screenY - this.displayHeight / 2) / this.zoom - this.camY;
-        
+        const baseGridSpacing = this.gridSpacing / 2;
+        const rawYLocal = (this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
+
         if (!this.snap) {
-            return worldY;
+            return rawYLocal;
         }
-        
-        // Apply snapping in world coordinates
-        const gridSize = this.gridSpacing / 2;
-        return Math.round(worldY / gridSize) * gridSize;
+
+        return Math.round(rawYLocal / baseGridSpacing) * baseGridSpacing;
     }
 
     getCursorXInFrame(): number {
@@ -479,21 +469,17 @@ export class GraphicsRenderer {
         radius: number
     ) {
         if (this.context) {
-            // Set line properties
             this.context.lineWidth = radius * this.zoom;
+            this.context.fillStyle = color;
             this.context.strokeStyle = color;
             this.context.lineCap = "round";
-            
-            // Transform coordinates
-            const sx1 = (x1 + this.cOutX) * this.zoom;
-            const sy1 = (y1 + this.cOutY) * this.zoom;
-            const sx2 = (x2 + this.cOutX) * this.zoom;
-            const sy2 = (y2 + this.cOutY) * this.zoom;
-            
-            // Draw the line
             this.context.beginPath();
-            this.context.moveTo(sx1, sy1);
-            this.context.lineTo(sx2, sy2);
+            this.context.moveTo(
+                    (x1 + this.cOutX) * this.zoom,
+                    (y1 + this.cOutY) * this.zoom);
+            this.context.lineTo(
+                    (x2 + this.cOutX) * this.zoom,
+                    (y2 + this.cOutY) * this.zoom);
             this.context.stroke();
         }
     }
@@ -996,8 +982,6 @@ export class GraphicsRenderer {
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
-                        this.temporaryPoints[0] = this.getCursorXLocal();
-                        this.temporaryPoints[1] = this.getCursorYLocal();
                     } else if (this.temporaryComponentType === componentTypes.point) {
                         this.temporaryPoints[0] = this.getCursorXLocal();
                         this.temporaryPoints[1] = this.getCursorYLocal();
@@ -1007,25 +991,18 @@ export class GraphicsRenderer {
                     }
                 } else if (action === this.mouseAction.Down) {
                     if (this.temporaryComponentType === componentTypes.point) {
-                        // First click - Start line from here
                         this.temporaryComponentType = componentTypes.line;
                         this.temporaryPoints[2] = this.getCursorXLocal();
                         this.temporaryPoints[3] = this.getCursorYLocal();
                     } else if (this.temporaryComponentType === componentTypes.line) {
-                        // Complete current line
                         this.logicDisplay?.addComponent(new Line(
                             this.temporaryPoints[0]!,
                             this.temporaryPoints[1]!,
                             this.temporaryPoints[2]!,
                             this.temporaryPoints[3]!
                         ));
-                        
-                        // Start next line from end point of current line
                         this.temporaryPoints[0] = this.temporaryPoints[2];
                         this.temporaryPoints[1] = this.temporaryPoints[3];
-                        this.temporaryPoints[2] = this.getCursorXLocal();
-                        this.temporaryPoints[3] = this.getCursorYLocal();
-                        
                         this.saveState();
                     }
                 }
