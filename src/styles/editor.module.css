@@ -15,6 +15,17 @@
     box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
     border-bottom: 0.5px solid var(--outline);
 }
+.header-button {
+    padding: 10px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.header-button:hover {
+    background-color: var(--secondary);
+}
 .header.mobile {
     display: flex;
     justify-content: space-between;
@@ -23,4 +34,38 @@
 .design-name {
     font-weight: 700;
     outline: none;
+}
+.toolbar {
+    position: absolute;
+    top: 70px;
+    bottom: 15px;
+    left: 15px;
+    overflow-y: scroll;
+    background-color: var(--primary);
+    border: 0.5px solid var(--outline);
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    border-radius: 15px;
+    box-shadow: 0px 0px 13px 1px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.toolbar::-webkit-scrollbar {
+    display: none;
+}
+.toolbar-button {
+    padding: 5px;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+.toolbar-button:hover {
+    background-color: var(--secondary);
+}
+.toolbar-button img {
+    -webkit-user-drag: none;
 }

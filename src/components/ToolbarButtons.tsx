@@ -5,19 +5,19 @@ interface HeaderButton {
     title: string;
     func?: () => void;
 }
-const HeaderButton = (props: HeaderButton) => {
+const ToolbarButton = (props: HeaderButton) => {
     return (
         <div 
-            className={style['header-button']}
+            className={style['toolbar-button']}
             onClick={props.func}
             title={props.title}
         >
             <img 
                 src={props.svgImage} 
-                width={24}
-                height={24}
+                width={18}
+                height={18}
             />
         </div>
     )
 }
-export default HeaderButton;
+export default ToolbarButton;

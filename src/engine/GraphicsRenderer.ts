@@ -1280,7 +1280,7 @@ export class GraphicsRenderer {
     clearGrid() {
         if (this.context) {
             this.context.restore();
-            this.context.fillStyle = '#202020';
+            this.context.fillStyle = '#1d1d1d';
             this.context.fillRect(
                 0,
                 0,

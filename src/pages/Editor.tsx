@@ -5,6 +5,8 @@ import { getDeviceType, DeviceType } from "../components/GetDevice";
 import HeaderButton from "../components/HeaderButtons";
 import Back from '../assets/back.svg'
 import MenuImg from '../assets/menu.svg'
+import ToolbarButton from "../components/ToolbarButtons";
+import Navigate from '../assets/navigate.svg'
 const Editor = () => {
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
@@ -32,6 +34,7 @@ const Editor = () => {
                     <HeaderButton 
                         svgImage={Back}
                         title='Go back home'
+                        func={() => window.history.back()}
                     />
                     <div
                         className={styles['design-name']}
@@ -50,16 +53,27 @@ const Editor = () => {
                     <HeaderButton 
                         svgImage={Back}
                         title='Go back home'
+                        func={() => window.history.back()}
                     />
                     <div
                         className={styles['design-name']}
                         contentEditable={true}
+                        style={{marginLeft: '10px'}}
                     >
                         New Design
                     </div>
                 </Fragment>
             )}
         </div>
+        {/* Toolbar */}
+        {device == 'desktop' && (
+            <div className={styles.toolbar}>
+                <ToolbarButton
+                    svgImage={Navigate}
+                    title="Navigate (q)"
+                />
+            </div>
+        )}
         <canvas
           width={window.innerWidth}
           height={window.innerHeight}
