@@ -19,6 +19,8 @@ import RectSymbol from '../assets/rectangle.svg'
 import PicSymbol from '../assets/image.svg'
 import LabelSymbol from '../assets/text.svg'
 import RulerSymbol from '../assets/measure.svg'
+import UndoSymbol from '../assets/undo.svg'
+import RedoSymbol from '../assets/redo.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 
@@ -37,22 +39,27 @@ const Editor = () => {
       }
     }, [canvas.current, renderer.current]);
     useEffect(() => {
-        if (id == "action=new" || id == undefined || id == null) {
-            renderer.current?.start()
-            renderer.current?.logicDisplay?.importJSON([], renderer.current!.logicDisplay?.components)
-        } else if (id !== null && id.length > 0) {
+        if (!renderer.current || !id) return;
+
+        if (id === "action=new" || id === undefined) {
+            renderer.current.start();
+            console.log('[editor] starting a new design');
+            renderer.current.logicDisplay?.importJSON([], renderer.current.logicDisplay?.components);
+        } else if (id.length > 0) {
+            console.log('[editor] ID is not null and len is > 0');
             try {
-                renderer.current?.logicDisplay?.importJSON(
+                console.log('[editor] opening up URI-encoded design');
+                renderer.current.logicDisplay?.importJSON(
                     JSON.parse(
                         LZString.decompressFromEncodedURIComponent(id) || '[]'
                     ),
-                    renderer.current!.logicDisplay.components
-                )
+                    renderer.current.logicDisplay.components
+                );
             } catch (e) {
-                console.error(e)
+                console.error('[editor] failed to open: ', e);
             }
         }
-    })
+    }, [id]);
     useEffect(() => {
         let animationFrameId: number;
         
@@ -85,7 +92,7 @@ const Editor = () => {
                     <HeaderButton 
                         svgImage={Back}
                         title='Go back home'
-                        func={() => window.history.back()}
+                        func={() => window.location.href = '/editor'}
                     />
                     <div
                         className={styles['design-name']}
@@ -104,7 +111,7 @@ const Editor = () => {
                     <HeaderButton 
                         svgImage={Back}
                         title='Go back home'
-                        func={() => window.history.back()}
+                        func={() => window.location.href = '/editor'}
                     />
                     <input 
                         className={styles['design-name']} 
@@ -112,7 +119,16 @@ const Editor = () => {
                         defaultValue='New Design'
                         placeholder='Design name'
                     />
-                    <p>{tooltip}</p>
+                    <HeaderButton 
+                        svgImage={UndoSymbol}
+                        title='Undo'
+                        func={() => renderer.current?.undo()}
+                    />
+                    <HeaderButton 
+                        svgImage={RedoSymbol}
+                        title='Redo'
+                        func={() => renderer.current?.redo()}
+                    />
                 </Fragment>
             )}
         </div>
@@ -272,6 +288,7 @@ const Editor = () => {
           width={window.innerWidth}
           height={window.innerHeight}
           ref={canvas}
+          onContextMenu={(e) => {e.preventDefault()}}
         />
       </div>
     );

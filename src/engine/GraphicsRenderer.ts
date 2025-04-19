@@ -1470,13 +1470,21 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
 
     let animationFrameId: number | null;
     let isWindowFocused = true;
+    let lastDrawTime = 0;
+    const TARGET_FPS = 60;
+    const FRAME_TIME = 1000 / TARGET_FPS;
+    const FPS_UPDATE_INTERVAL = 500;
 
+    // Use passive event listeners for better performance
     window.addEventListener('focus', () => {
-        isWindowFocused = true;
-        if (!animationFrameId) {
-            repeatInstance();
+        if (!isWindowFocused) {
+            isWindowFocused = true;
+            lastDrawTime = performance.now();
+            if (!animationFrameId) {
+                repeatInstance();
+            }
         }
-    });
+    }, { passive: true });
 
     window.addEventListener('blur', () => {
         isWindowFocused = false;
@@ -1484,23 +1492,35 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
         }
-    });
+    }, { passive: true });
 
-    function repeatInstance() {
-        if (isWindowFocused) {
-            const currentTime = performance.now();
+    function repeatInstance(timestamp: number = 0) {
+        if (!isWindowFocused) return;
+
+        // Throttle to target FPS
+        const deltaTime = timestamp - lastDrawTime;
+        if (deltaTime >= FRAME_TIME) {
             frameCount++;
-            
-            if (currentTime - lastTime >= 1000) {
-                fps = frameCount;
+            lastDrawTime = timestamp - (deltaTime % FRAME_TIME);
+
+            // Update FPS counter every 500ms instead of every second
+            if (timestamp - lastTime >= FPS_UPDATE_INTERVAL) {
+                fps = Math.round((frameCount * 1000) / (timestamp - lastTime));
                 frameCount = 0;
-                lastTime = currentTime;
+                lastTime = timestamp;
             }
 
-            renderer.update();
-            animationFrameId = requestAnimationFrame(repeatInstance);
+            // Use try-catch for robustness
+            try {
+                renderer.update();
+            } catch (error) {
+                console.error('Render error:', error);
+            }
         }
+
+        animationFrameId = requestAnimationFrame(repeatInstance);
     }
 
-    repeatInstance();
+    // Initial call with high-resolution timestamp
+    repeatInstance(performance.now());
 }
