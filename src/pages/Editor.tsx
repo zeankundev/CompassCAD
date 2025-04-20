@@ -42,6 +42,7 @@ const Editor = () => {
     const [designName, setDesignName] = useState<string>('New Design');
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
+    const [isLoading, setLoading] = useState<boolean>(true);
     useEffect(() => {
       if (canvas.current && !renderer.current) {
         setDevice(getDeviceType());
@@ -118,6 +119,7 @@ const Editor = () => {
                             ),
                             renderer.current!.logicDisplay.components
                         );
+                        setLoading(false);
                     }
                     if (param.startsWith('action=')) {
                         const actions = param.substring(7).split(',');
@@ -127,7 +129,8 @@ const Editor = () => {
                         if (actions.includes('new')) {
                             console.log('[editor] New design requested');
                             renderer.current?.start();
-                            renderer.current!.logicDisplay?.importJSON([], renderer.current!.logicDisplay.components)
+                            renderer.current!.logicDisplay?.importJSON([], renderer.current!.logicDisplay.components);
+                            setLoading(false);
                             return; // Skip data import for new designs
                         }
                     }
@@ -148,6 +151,7 @@ const Editor = () => {
                         'New Design',
                         DesignType.CCAD
                     );
+                    setLoading(false);
                 } catch (e) {
                     console.error('[editor] failed to open: ', e);
                 }
@@ -180,6 +184,14 @@ const Editor = () => {
     })
     return (
       <div className={styles.editor}>
+        {isLoading == true && (
+            <div className={styles.loader}>
+                <div className={styles.spinner}></div>
+                <br></br>
+                <h2>Loading CompassCAD...</h2>
+                <p>Just wait, you'll be ready in a sec.</p>
+            </div>
+        )}
         <div className={`${styles.header} ${device === 'mobile' ? styles.mobile : ''}`}>
             {device == 'mobile' && (
                 <Fragment>

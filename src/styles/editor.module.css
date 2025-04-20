@@ -14,10 +14,42 @@
     }
 }
 
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
 .editor {
     width: 100%;
     height: 100%;
     color: var(--text);
+}
+.loader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 9999;
+}
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 10px solid var(--outline);
+    border-top: 10px solid var(--theme);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
 .header {
     position: absolute;
