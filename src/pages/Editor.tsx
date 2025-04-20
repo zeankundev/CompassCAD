@@ -82,8 +82,19 @@ const Editor = () => {
             localStorage.setItem('history', JSON.stringify(history))
         }
     }
+    window.onbeforeunload = (e) => {
+        console.log(`[editor] before unload: design name: ${designName}`)
+        takeSnapshot(
+            renderer.current!.logicDisplay!.components,
+            designName,
+            DesignType.CCAD
+        );
+        return undefined;
+    }
+    const hasRun = useRef(false);
     useEffect(() => {
-        if (!renderer.current || !id) return;
+        if (hasRun.current || !renderer.current || !id) return;
+        hasRun.current = true; // Mark as executed
 
         if (id.length > 0) {
             console.log('[editor] ID is not null and len is > 0');
@@ -206,8 +217,8 @@ const Editor = () => {
                         style={{textAlign: 'center'}}
                         ref={nameInput}
                         defaultValue={designName}
-                        onChange={(e) => {
-                            setDesignName(e.target.value)
+                        onInput={(e) => {
+                            setDesignName(e.currentTarget.value)
                         }}
                         placeholder='Design name'
                     />
@@ -229,8 +240,8 @@ const Editor = () => {
                         type='text'
                         ref={nameInput}
                         defaultValue={designName}
-                        onChange={(e) => {
-                            setDesignName(e.target.value)
+                        onInput={(e) => {
+                            setDesignName(e.currentTarget.value)
                         }}
                         placeholder='Design name'
                     />
