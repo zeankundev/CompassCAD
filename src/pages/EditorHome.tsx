@@ -7,6 +7,7 @@ import { HistoryEntry } from './Editor';
 import NewSymbol from '../assets/newLogic.svg'
 import OpenSymbol from '../assets/openLogic.svg'
 import TrashSymbol from '../assets/trash.svg'
+import BluePrintIsFuckingSleeping from '../assets/idle.svg'
 
 interface MiniButtonClickableProps {
     icon: string,
@@ -159,24 +160,31 @@ const EditorHome = () => {
                         <div className={styles['editor-recents']}>
                             <h3>Recents</h3>
                             <br></br>
-                            <div className={styles['editor-recents-container']}>
-                                {history.map((data: HistoryEntry, index: number) => (
-                                    <div 
-                                        className={styles['editor-recents-entry']}
-                                        key={index}
-                                        onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
-                                    >
-                                        <img src={data.preview} />
-                                        <div className={styles['editor-recents-details']}>
-                                            <div className={styles['recents-details-title']}>
-                                                <h4>{data.name}</h4>
-                                                <span>{data.date}</span>
+                            {history.length > 0 ? (
+                                <div className={styles['editor-recents-container']}>
+                                    {history.map((data: HistoryEntry, index: number) => (
+                                        <div 
+                                            className={styles['editor-recents-entry']}
+                                            key={index}
+                                            onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
+                                        >
+                                            <img src={data.preview} />
+                                            <div className={styles['editor-recents-details']}>
+                                                <div className={styles['recents-details-title']}>
+                                                    <h4>{data.name}</h4>
+                                                    <span>{data.date}</span>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className={styles['editor-recents-none']}>
+                                    <img src={BluePrintIsFuckingSleeping} width={256}/>
+                                    <p>Well, you got nothing on your history list today. Make some drawings and your history will appear here.</p>
+                                </div>
+                            )}
                             </div>
-                        </div>
                     </div>
                 </div>
             )}
