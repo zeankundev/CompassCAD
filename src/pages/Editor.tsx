@@ -130,12 +130,17 @@ const Editor = () => {
                         title='Go back home'
                         func={() => window.location.href = '/editor'}
                     />
-                    <div
-                        className={styles['design-name']}
-                        contentEditable={true}
-                    >
-                        New Design
-                    </div>
+                    <input 
+                        className={styles['design-name']} 
+                        type='text'
+                        style={{textAlign: 'center'}}
+                        ref={nameInput}
+                        defaultValue={designName}
+                        onChange={(e) => {
+                            setDesignName(e.target.value)
+                        }}
+                        placeholder='Design name'
+                    />
                     <HeaderButton 
                         svgImage={MenuImg}
                         title='Menu'
