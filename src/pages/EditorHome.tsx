@@ -167,11 +167,12 @@ const EditorHome = () => {
                                             className={styles['editor-recents-entry']}
                                             key={index}
                                             onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
+                                            title={`${data.name} on ${data.date}`}
                                         >
                                             <img src={data.preview} />
                                             <div className={styles['editor-recents-details']}>
                                                 <div className={styles['recents-details-title']}>
-                                                    <h4>{data.name}</h4>
+                                                    <h4>{data.name.length > 20 ? data.name.substring(0, 20) + '...' : data.name}</h4>
                                                     <span>{data.date}</span>
                                                 </div>
                                             </div>
