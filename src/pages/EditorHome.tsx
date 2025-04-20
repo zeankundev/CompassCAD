@@ -1,7 +1,29 @@
 import { DeviceType, getDeviceType } from '../components/GetDevice';
 import styles from '../styles/editor.module.css'
 import CompassCADLogo from '../assets/logo.svg'
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import { HistoryEntry } from './Editor';
+import NewSymbol from '../assets/newLogic.svg'
+import OpenSymbol from '../assets/openLogic.svg'
+
+interface MiniButtonClickableProps {
+    icon: string,
+    children: React.ReactNode,
+    onPress?: () => void
+}
+
+const MiniButtonClickable = (props: MiniButtonClickableProps) => {
+    return (
+        <Fragment>
+            <div className={styles['clickable-button-mini']} onClick={props.onPress}>
+                <img src={props.icon} />
+                <div className={styles['clickable-button-mini-child']}>
+                    {props.children}
+                </div>
+            </div>
+        </Fragment>
+    )
+}
 const EditorHome = () => {
     const timeMessages = [
         {
@@ -71,7 +93,15 @@ const EditorHome = () => {
     };
 
     const [greeting, setGreeting] = useState(getCurrentTimeMessage());
-    const [device, setDevice] = useState<DeviceType>('desktop')
+    const [device, setDevice] = useState<DeviceType>('desktop');
+    const [history, setHistory] = useState<HistoryEntry[]>([]);
+
+    useEffect(() => {
+        const storedHistory = localStorage.getItem('history');
+        if (storedHistory !== null) {
+            setHistory(JSON.parse(storedHistory));
+        }
+    }, [])
 
     return (
         <Fragment>
@@ -83,6 +113,44 @@ const EditorHome = () => {
                     <br></br>
                     <div className={styles['editor-home-body']}>
                         <h2>{greeting}</h2>
+                        <br></br>
+                        <h3>Quick Actions</h3>
+                        <br></br>
+                        <div className={styles['editor-quicktool']}>
+                            <MiniButtonClickable 
+                                icon={NewSymbol}
+                                onPress={() => window.location.href = '/editor/action=new;'}
+                            >
+                                Create New
+                            </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={OpenSymbol}
+                            >
+                                Import existing
+                            </MiniButtonClickable>
+                        </div>
+                        <br></br>
+                        <div className={styles['editor-recents']}>
+                            <h3>Recents</h3>
+                            <br></br>
+                            <div className={styles['editor-recents-container']}>
+                                {history.map((data: HistoryEntry, index: number) => (
+                                    <div 
+                                        className={styles['editor-recents-entry']}
+                                        key={index}
+                                        onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
+                                    >
+                                        <img src={data.preview} />
+                                        <div className={styles['editor-recents-details']}>
+                                            <div className={styles['recents-details-title']}>
+                                                <h4>{data.name}</h4>
+                                                <span>{data.date}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}

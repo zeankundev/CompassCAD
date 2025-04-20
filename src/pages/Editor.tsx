@@ -3,6 +3,7 @@ import { useRef, useEffect, useState, Fragment } from "react";
 import styles from '../styles/editor.module.css'
 import { GraphicsRenderer, InitializeInstance } from "../engine/GraphicsRenderer";
 import { getDeviceType, DeviceType } from "../components/GetDevice";
+import { Component } from "../engine/ComponentHandler";
 import RendererTypes from '../components/RendererTypes'
 import HeaderButton from "../components/HeaderButtons";
 import Back from '../assets/back.svg'
@@ -24,10 +25,19 @@ import RedoSymbol from '../assets/redo.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 
+export interface HistoryEntry {
+    name: string;
+    date: string;
+    type: string;
+    preview: string;
+    data: string;
+}
+
 const Editor = () => {
     const { id } = useParams<{id: string}>();
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
+    const virtualCanvas = useRef<HTMLCanvasElement>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [designName, setDesignName] = useState<string>('New Design');
     const nameInput = useRef<HTMLInputElement>(null);
@@ -35,13 +45,41 @@ const Editor = () => {
     useEffect(() => {
       if (canvas.current && !renderer.current) {
         setDevice(getDeviceType());
+        document.body.style.overflowY = 'hidden';
         renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
         InitializeInstance(renderer.current);
         renderer.current.setMode(renderer.current.modes.Navigate);
       }
     }, [canvas.current, renderer.current]);
-    const takeSnapshot = () => {
+    enum DesignType {
+        CCAD = 'ccad',
+        QROCAD = 'qrocad',
+        UNKNOWN = 'unknown'
+    }
+    const takeSnapshot = (data: Component[], name: string, type: DesignType) => {
         if (!id) return;
+        if (!virtualCanvas.current) {
+            virtualCanvas.current = document.createElement('canvas');
+            virtualCanvas!.current.width = 960;
+            virtualCanvas!.current.height = 480;
+            const virtualRenderer = new GraphicsRenderer(virtualCanvas.current, 960, 480);
+            virtualRenderer.start();
+            virtualRenderer.update();
+            virtualRenderer.logicDisplay?.importJSON(data, virtualRenderer.logicDisplay!.components);
+            virtualRenderer.update();
+            const thumbnail = virtualCanvas.current?.toDataURL('image/png');
+            const entry: HistoryEntry = {
+                name: name.replace(/\.[^/.]+$/, ''),
+                date: new Date().toLocaleDateString('en-US',{ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+                type: type,
+                preview: thumbnail,
+                data: LZString.compressToEncodedURIComponent(JSON.stringify(data))
+            }
+            let history: HistoryEntry[] = JSON.parse(localStorage.getItem('history') || '[]');
+            history.unshift(entry);
+            if (history.length > 20) history.pop();
+            localStorage.setItem('history', JSON.stringify(history))
+        }
     }
     useEffect(() => {
         if (!renderer.current || !id) return;
@@ -63,13 +101,26 @@ const Editor = () => {
                 params.forEach(param => {
                     if (param.startsWith('designname=')) {
                         const name = param.substring(11).replace(/^"|"$/g, '');
-                            // Handle design name
-                            setDesignName(name);
-                            nameInput.current!.value = designName;
-                            console.log('[editor] design name:', designName);
-                        }
-                        if (param.startsWith('action=')) {
-                            const actions = param.substring(7).split(',');
+                        setDesignName(name);
+                        nameInput.current!.value = name;
+                        console.log('[editor] design name:', name);
+                        takeSnapshot(
+                            JSON.parse(
+                            LZString.decompressFromEncodedURIComponent(data) || '[]'
+                            ),
+                            name,
+                            DesignType.CCAD
+                        );
+                        console.log('[editor] opening up URI-encoded design');
+                        renderer.current!.logicDisplay?.importJSON(
+                            JSON.parse(
+                            LZString.decompressFromEncodedURIComponent(data) || '[]'
+                            ),
+                            renderer.current!.logicDisplay.components
+                        );
+                    }
+                    if (param.startsWith('action=')) {
+                        const actions = param.substring(7).split(',');
                         if (actions.includes('debug')) {
                             console.log('[editor] Debug mode enabled');
                         }
@@ -81,18 +132,25 @@ const Editor = () => {
                         }
                     }
                 });
-            }
-
-            try {
-                console.log('[editor] opening up URI-encoded design');
-                renderer.current.logicDisplay?.importJSON(
-                    JSON.parse(
-                    LZString.decompressFromEncodedURIComponent(data) || '[]'
-                    ),
-                    renderer.current.logicDisplay.components
-                );
-            } catch (e) {
-                console.error('[editor] failed to open: ', e);
+            } else {
+                try {
+                    console.log('[editor] opening up URI-encoded design');
+                    renderer.current.logicDisplay?.importJSON(
+                        JSON.parse(
+                        LZString.decompressFromEncodedURIComponent(data) || '[]'
+                        ),
+                        renderer.current.logicDisplay.components
+                    );
+                    takeSnapshot(
+                        JSON.parse(
+                        LZString.decompressFromEncodedURIComponent(data) || '[]'
+                        ),
+                        'New Design',
+                        DesignType.CCAD
+                    );
+                } catch (e) {
+                    console.error('[editor] failed to open: ', e);
+                }
             }
         }
     }, [id, designName]);
