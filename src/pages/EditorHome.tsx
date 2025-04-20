@@ -1,5 +1,6 @@
 import { DeviceType, getDeviceType } from '../components/GetDevice';
 import styles from '../styles/editor.module.css'
+import CompassCADLogo from '../assets/logo.svg'
 import { Fragment, useState } from 'react';
 const EditorHome = () => {
     const timeMessages = [
@@ -76,7 +77,13 @@ const EditorHome = () => {
         <Fragment>
             {device === 'desktop' && (
                 <div className={styles['editor-home']}>
-                    <h2>{greeting}</h2>
+                    <div className={styles['editor-home-header']}>
+                        <img src={CompassCADLogo} height={24} />
+                    </div>
+                    <br></br>
+                    <div className={styles['editor-home-body']}>
+                        <h2>{greeting}</h2>
+                    </div>
                 </div>
             )}
         </Fragment>

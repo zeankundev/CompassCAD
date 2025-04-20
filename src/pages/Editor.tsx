@@ -29,6 +29,8 @@ const Editor = () => {
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
+    const [designName, setDesignName] = useState<string>('New Design');
+    const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     useEffect(() => {
       if (canvas.current && !renderer.current) {
@@ -38,20 +40,54 @@ const Editor = () => {
         renderer.current.setMode(renderer.current.modes.Navigate);
       }
     }, [canvas.current, renderer.current]);
+    const takeSnapshot = () => {
+        if (!id) return;
+    }
     useEffect(() => {
         if (!renderer.current || !id) return;
 
-        if (id === "action=new" || id === undefined) {
-            renderer.current.start();
-            console.log('[editor] starting a new design');
-            renderer.current.logicDisplay?.importJSON([], renderer.current.logicDisplay?.components);
-        } else if (id.length > 0) {
+        if (id.length > 0) {
             console.log('[editor] ID is not null and len is > 0');
+            let params: string[] = [];
+            let data = id;
+
+            if (id.includes(';')) {
+                const parts = id.split(';');
+                params = parts[0].split(',');
+                data = parts.slice(1).join(';');
+            }
+
+            // Handle parameters
+            if (params.length > 0) {
+                console.log('[editor] params len is > 0')
+                params.forEach(param => {
+                    if (param.startsWith('designname=')) {
+                        const name = param.substring(11).replace(/^"|"$/g, '');
+                            // Handle design name
+                            setDesignName(name);
+                            nameInput.current!.value = designName;
+                            console.log('[editor] design name:', designName);
+                        }
+                        if (param.startsWith('action=')) {
+                            const actions = param.substring(7).split(',');
+                        if (actions.includes('debug')) {
+                            console.log('[editor] Debug mode enabled');
+                        }
+                        if (actions.includes('new')) {
+                            console.log('[editor] New design requested');
+                            renderer.current?.start();
+                            renderer.current!.logicDisplay?.importJSON([], renderer.current!.logicDisplay.components)
+                            return; // Skip data import for new designs
+                        }
+                    }
+                });
+            }
+
             try {
                 console.log('[editor] opening up URI-encoded design');
                 renderer.current.logicDisplay?.importJSON(
                     JSON.parse(
-                        LZString.decompressFromEncodedURIComponent(id) || '[]'
+                    LZString.decompressFromEncodedURIComponent(data) || '[]'
                     ),
                     renderer.current.logicDisplay.components
                 );
@@ -59,7 +95,7 @@ const Editor = () => {
                 console.error('[editor] failed to open: ', e);
             }
         }
-    }, [id]);
+    }, [id, designName]);
     useEffect(() => {
         let animationFrameId: number;
         
@@ -116,7 +152,11 @@ const Editor = () => {
                     <input 
                         className={styles['design-name']} 
                         type='text'
-                        defaultValue='New Design'
+                        ref={nameInput}
+                        defaultValue={designName}
+                        onChange={(e) => {
+                            setDesignName(e.target.value)
+                        }}
                         placeholder='Design name'
                     />
                     <HeaderButton 
