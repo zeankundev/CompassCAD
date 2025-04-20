@@ -96,6 +96,7 @@
 }
 .design-name {
     -webkit-appearance: none;
+    appearance: none;
     background-color: var(--primary-background);
     color: var(--text);
     border: none;
