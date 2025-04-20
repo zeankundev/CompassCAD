@@ -1,10 +1,12 @@
 import { DeviceType, getDeviceType } from '../components/GetDevice';
+import YesNoDialog from '../components/YesNoDialog';
 import styles from '../styles/editor.module.css'
 import CompassCADLogo from '../assets/logo.svg'
 import { Fragment, useEffect, useState } from 'react';
 import { HistoryEntry } from './Editor';
 import NewSymbol from '../assets/newLogic.svg'
 import OpenSymbol from '../assets/openLogic.svg'
+import TrashSymbol from '../assets/trash.svg'
 
 interface MiniButtonClickableProps {
     icon: string,
@@ -95,18 +97,36 @@ const EditorHome = () => {
     const [greeting, setGreeting] = useState(getCurrentTimeMessage());
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [history, setHistory] = useState<HistoryEntry[]>([]);
+    const [showWipeDialog, setShowWipeDialog] = useState(false);
 
-    useEffect(() => {
+    const refreshHistory = () => {
         const storedHistory = localStorage.getItem('history');
         if (storedHistory !== null) {
             setHistory(JSON.parse(storedHistory));
         }
+    }
+
+    useEffect(() => {
+        refreshHistory();
     }, [])
 
     return (
         <Fragment>
             {device === 'desktop' && (
                 <div className={styles['editor-home']}>
+                    {showWipeDialog == true && (
+                        <YesNoDialog
+                        title='Clear History'
+                        onYes={() => {
+                            localStorage.setItem('history', '[]');
+                            refreshHistory();
+                            setShowWipeDialog(false);
+                        }}
+                        onNo={() => setShowWipeDialog(false)}
+                        >
+                            Are you sure you want to clear your history? This <b>could not be undone</b>!
+                        </YesNoDialog>
+                    )}
                     <div className={styles['editor-home-header']}>
                         <img src={CompassCADLogo} height={24} />
                     </div>
@@ -127,6 +147,12 @@ const EditorHome = () => {
                                 icon={OpenSymbol}
                             >
                                 Import existing
+                            </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={TrashSymbol}
+                                onPress={() => setShowWipeDialog(true)}
+                            >
+                                Clear entire history
                             </MiniButtonClickable>
                         </div>
                         <br></br>
