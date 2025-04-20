@@ -57,9 +57,10 @@ const Editor = () => {
         QROCAD = 'qrocad',
         UNKNOWN = 'unknown'
     }
-    const takeSnapshot = (data: Component[], name: string, type: DesignType) => {
+    const takeSnapshot = async (data: Component[], name: string, type: DesignType): Promise<void> => {
         if (!id) return;
         if (!virtualCanvas.current) {
+            console.log(`[editor] snapshot taken with metadata name: ${name}, type ${type}`)
             virtualCanvas.current = document.createElement('canvas');
             virtualCanvas!.current.width = 960;
             virtualCanvas!.current.height = 480;
@@ -79,12 +80,14 @@ const Editor = () => {
             let history: HistoryEntry[] = JSON.parse(localStorage.getItem('history') || '[]');
             history.unshift(entry);
             if (history.length > 20) history.pop();
-            localStorage.setItem('history', JSON.stringify(history))
+            localStorage.setItem('history', JSON.stringify(history));
+            // Return promise that resolves when everything is done
+            return Promise.resolve();
         }
     }
-    window.onbeforeunload = (e) => {
-        console.log(`[editor] before unload: design name: ${designName}`)
-        takeSnapshot(
+    window.onunload = async (e) => {
+        e.preventDefault();
+        await takeSnapshot(
             renderer.current!.logicDisplay!.components,
             designName,
             DesignType.CCAD
@@ -116,13 +119,6 @@ const Editor = () => {
                         setDesignName(name);
                         nameInput.current!.value = name;
                         console.log('[editor] design name:', name);
-                        takeSnapshot(
-                            JSON.parse(
-                            LZString.decompressFromEncodedURIComponent(data) || '[]'
-                            ),
-                            name,
-                            DesignType.CCAD
-                        );
                         console.log('[editor] opening up URI-encoded design');
                         renderer.current!.logicDisplay?.importJSON(
                             JSON.parse(
@@ -154,13 +150,6 @@ const Editor = () => {
                         LZString.decompressFromEncodedURIComponent(data) || '[]'
                         ),
                         renderer.current.logicDisplay.components
-                    );
-                    takeSnapshot(
-                        JSON.parse(
-                        LZString.decompressFromEncodedURIComponent(data) || '[]'
-                        ),
-                        'New Design',
-                        DesignType.CCAD
                     );
                     setLoading(false);
                 } catch (e) {
@@ -241,6 +230,7 @@ const Editor = () => {
                         ref={nameInput}
                         defaultValue={designName}
                         onInput={(e) => {
+                            console.log('[editor] internal: oninput fired')
                             setDesignName(e.currentTarget.value)
                         }}
                         placeholder='Design name'
