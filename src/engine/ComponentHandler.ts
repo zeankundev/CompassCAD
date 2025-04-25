@@ -138,8 +138,8 @@ export class Arc extends Component {
 
     constructor(
         x1: number,
-        x2: number,
         y1: number,
+        x2: number,
         y2: number,
         x3: number,
         y3: number,

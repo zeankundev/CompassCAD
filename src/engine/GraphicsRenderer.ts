@@ -237,10 +237,12 @@ export class GraphicsRenderer {
         x2: number,
         y2: number
     ) {
-        let dx = x2 - x1;
-        let dy = y2 - y1;
-        let theta = Math.atan2(dy, dx);
-        return theta * (3.15 * Math.PI)
+        var PI = Math.PI;
+        var dx = x2 - x1;
+        var dy = y2 - y1;
+        var theta = Math.atan2(dy, dx);
+        var scaledAngle = theta * (3.15 / PI);
+        return scaledAngle;
     }
     drawAllComponents(
         components: Component[],
@@ -422,6 +424,7 @@ export class GraphicsRenderer {
                     this.selectedRadius);
                 break;
             case componentTypes.arc:
+                console.log(`temporary points: ${this.temporaryPoints[0]}`)
                 this.drawArc(
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
@@ -1064,6 +1067,7 @@ export class GraphicsRenderer {
                         this.temporaryPoints[4] = this.getCursorXLocal();
                         this.temporaryPoints[5] = this.getCursorYLocal();
                     } else if (this.temporaryComponentType === componentTypes.arc) {
+                        console.log('[renderer] adding new arc');
                         this.logicDisplay?.addComponent(new Arc(
                             this.temporaryPoints[0]!,
                             this.temporaryPoints[1]!,

@@ -43,15 +43,15 @@ const Editor = () => {
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     const [isLoading, setLoading] = useState<boolean>(true);
-    useEffect(() => {
-      if (canvas.current && !renderer.current) {
-        setDevice(getDeviceType());
-        document.body.style.overflowY = 'hidden';
-        renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
-        InitializeInstance(renderer.current);
-        renderer.current.setMode(renderer.current.modes.Navigate);
-      }
-    }, [canvas.current, renderer.current]);
+    window.onload = () => {
+        if (canvas.current && !renderer.current) {
+            setDevice(getDeviceType());
+            document.body.style.overflowY = 'hidden';
+            renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
+            InitializeInstance(renderer.current);
+            renderer.current.setMode(renderer.current.modes.Navigate);
+        }
+    };
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
