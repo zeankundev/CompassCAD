@@ -111,13 +111,13 @@ const refreshHierarchy = () => {
     const hierarchy = document.getElementById('hierarchy-list');
     hierarchy.innerHTML = '';
     let found = false;
-    renderer.logicDisplay.components.forEach((component, index) => {
+    renderer.logicDisplay.components.reverse().forEach((component, index) => {
         if (component.name.toLowerCase().includes(search.toLowerCase())) {
             found = true;
             const element = document.createElement('div');
             element.className = 'hierarchy-element';
             element.style.animation = 'slideup 0.3s ease';
-            element.style.animationDelay = `${index > 0 ? (renderer.logicDisplay.components.length - index) / 10 : renderer.logicDisplay.components.length / 10}s`
+            element.style.animationDelay = `${index > 0 ? index / 10 : 0}s`
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
             element.onclick = () => {
                 renderer.temporarySelectedComponent = index;
