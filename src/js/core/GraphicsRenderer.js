@@ -364,6 +364,8 @@ GraphicsRenderer.prototype.saveState = function () {
 		this.undoStack.shift();
 	  }
   
+	  console.log(this.undoStack);
+  
 	  if (doupdatestack) {
 		sendCurrentEditorState();
 	  } else {
@@ -1386,7 +1388,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					this.execute();
 				}
 				this.tooltip = await this.getLocal('move');
-				break;				
+				break;			
 		case this.MODES.EDIT:
 			// TODO: In the next release
 			this.tooltip = "Edit (press esc to cancel)";
@@ -2595,4 +2597,3 @@ var initCAD = function (gd) {
 		}
 	}, isWindowFocused ? 250 : 1000);
 };
-
