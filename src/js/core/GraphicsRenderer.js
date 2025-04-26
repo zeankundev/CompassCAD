@@ -136,7 +136,6 @@ function GraphicsRenderer(displayName, width, height) {
 	this.pcbEditor = {
 		radius: 1
 	}
-	this.enableWebGL = false;
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
 	this.enableZoomWarpingToCursor = false;
@@ -163,13 +162,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 
 	this.cvn = $('#' + this.displayName);
 	this.cvn.css('cursor', 'crosshair');
-	if (this.enableWebGL) {
-		console.log('[renderer] using WebGL')
-		this.context = enableWebGLCanvas(this.cvn[0]);
-	} else {
-		console.log('[renderer] using ctx2d')
-		this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
-	}
+	this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
 	this.execute()
 	this.gridSpacing = await this.config.getValueKey("gridSpacing")
 	this.fontSize = await this.config.getValueKey("fontSize");
@@ -254,31 +247,21 @@ GraphicsRenderer.prototype.execute = async function (e) {
 		this.drawLine(this.getCursorXRaw(), this.getCursorYRaw(), this.getCursorXLocal(), this.getCursorYLocal(), '#fff', 2);
 	}
 
-	this.refreshSelectionTools();
-
+	if (this.selectedComponent != null && this.mode == this.MODES.SELECT) {
+		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
+		const handles = this.getComponentHandles(this.selectedComponent)
+		for (const handle of handles) {
+			if (this.logicDisplay.components[this.selectedComponent].isActive()) {
+				this.drawPoint(handle.x, handle.y, '#fff', 2)
+			}
+		}
+	}
 	// Draw rules and tooltips
 	this.drawRules();
 	this.drawToolTip();
 
 	// Update Rich Presence only when the component count changes
 	this.updateActivity();
-};
-
-GraphicsRenderer.prototype.refreshSelectionTools = function () {
-	if (this.selectedComponent != null && this.logicDisplay.components[this.selectedComponent]) {
-		// Always draw component size measurements
-		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
-		
-		// Draw handles for the selected component
-		const selectedComponent = this.logicDisplay.components[this.selectedComponent];
-		if (selectedComponent.isActive()) {
-			const handles = this.getComponentHandles(selectedComponent);
-			for (const handle of handles) {
-				// Draw handle point
-				this.drawPoint(handle.x, handle.y, '#fff', 2);
-			}
-		}
-	}
 };
 
 GraphicsRenderer.prototype.copy = function (e) {
@@ -375,7 +358,6 @@ GraphicsRenderer.prototype.saveState = function () {
 	  // Clear the redo stack when a new action is performed
 	  this.redoStack = [];
 	}
-	refreshHierarchy()
   };
 
 GraphicsRenderer.prototype.returnLatexInstance = async function(latex) {
@@ -591,7 +573,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 };
 
 GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
-	if (this.temporarySelectedComponent != null) {
+	if (this.temporarySelectedComponent != null && this.mode == this.MODES.SELECT) {
 		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
 		this.context.strokeStyle = this.selectedColor;
@@ -767,7 +749,7 @@ GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius
 
 	this.context.fillStyle = color;
 	var fontSize = fontSize || this.fontSize;
-	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, 'SECEmojis', Consolas, DejaVu Sans Mono, monospace`;
+	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
 	var maxLength = 24; // 24 Characters per row
 	var tmpLength = 0;
@@ -882,8 +864,8 @@ GraphicsRenderer.prototype.drawToolTip = function (e) {
 	this.context.textAlign = 'left';
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
-    this.context.font = "13px 'OneUISans', sans-serif";
-    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 10);
+    this.context.font = "13px 'OneUISans', system-ui, sans-serif";
+    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 20);
 };
 
 
@@ -1258,7 +1240,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								parseInt(this.fontSize)));
 							this.saveState()
 							this.execute()
-							this.setMode(this.MODES.SELECT)
+							this.setMode(this.MODES.NAVIGATE)
 						}
 					})
 					.catch(e => { })
@@ -1302,7 +1284,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								url));
 							this.saveState()
 							this.execute()
-							this.setMode(this.MODES.SELECT)
+							this.setMode(this.MODES.NAVIGATE)
 						}
 					})
 					.catch(e => { })
@@ -1426,7 +1408,6 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						// Update component based on type
 						switch (component.type) {
 							case COMPONENT_TYPES.LINE:
-							case COMPONENT_TYPES.MEASURE:
 							case COMPONENT_TYPES.CIRCLE:
 								if (this.dragHandle === 'start') {
 									component.x1 = localX;
@@ -1654,9 +1635,6 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 		case COMPONENT_TYPES.LINE:
 			displayText = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
 			break;
-		case COMPONENT_TYPES.MEASURE:
-			displayText = `L: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))} (${Number(this.getDistance(component.x1,component.y1,component.x2,component.y2) / 100).toFixed(2)}m)`;
-			break
 		case COMPONENT_TYPES.CIRCLE:
 			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
 			break;
@@ -1668,7 +1646,7 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	}
 
 	// Unified rendering code
-	this.context.font = `18px 'OneUISans', sans-serif`;
+	this.context.font = '18px \'OneUISans\', system-ui, sans-serif';
 	const textWidth = this.context.measureText(displayText).width;
 	const boxWidth = textWidth + 20;
 	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
@@ -1732,8 +1710,7 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 					cursor: 'se-resize'
 				});
 				break;
-			case COMPONENT_TYPES.LINE:
-			case COMPONENT_TYPES.MEASURE:
+				case COMPONENT_TYPES.LINE:
 			case COMPONENT_TYPES.CIRCLE:
 				handles.length = 0;
 				
