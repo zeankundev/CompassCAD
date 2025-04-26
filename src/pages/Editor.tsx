@@ -43,15 +43,16 @@ const Editor = () => {
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     const [isLoading, setLoading] = useState<boolean>(true);
-    window.onload = () => {
+    useEffect(() => {
         if (canvas.current && !renderer.current) {
             setDevice(getDeviceType());
             document.body.style.overflowY = 'hidden';
             renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
             InitializeInstance(renderer.current);
             renderer.current.setMode(renderer.current.modes.Navigate);
+            setLoading(false);
         }
-    };
+    }, [])
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
@@ -96,8 +97,7 @@ const Editor = () => {
     }
     const hasRun = useRef(false);
     useEffect(() => {
-        if (hasRun.current || !renderer.current || !id) return;
-        hasRun.current = true; // Mark as executed
+        if (!renderer.current || !id) return;
 
         if (id.length > 0) {
             console.log('[editor] ID is not null and len is > 0');
@@ -156,6 +156,9 @@ const Editor = () => {
                     console.error('[editor] failed to open: ', e);
                 }
             }
+        }
+        else {
+            console.log('[editor] ID len is 0, unsafe to proceed');
         }
     }, [id, designName]);
     useEffect(() => {
