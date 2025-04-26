@@ -67,6 +67,16 @@
     }
 }
 
+@keyframes slideup {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    } to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
 body {
     background-color: var(--primary);
     font-family: var(--main-font);
