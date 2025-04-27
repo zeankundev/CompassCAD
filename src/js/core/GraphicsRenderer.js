@@ -865,7 +865,7 @@ GraphicsRenderer.prototype.drawToolTip = function (e) {
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
     this.context.font = "13px 'OneUISans', system-ui, sans-serif";
-    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 20);
+    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 10);
 };
 
 
