@@ -1052,7 +1052,8 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					this.temporaryPoints[0],
 					this.temporaryPoints[1]));
 				this.saveState()
-				this.execute()
+				this.execute();
+				refreshHierarchy();
 			}
 			break;
 		case this.MODES.ADDLINE:
@@ -1087,6 +1088,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					this.temporaryPoints[1] = this.temporaryPoints[3];
 					this.saveState()
 					this.execute()
+					refreshHierarchy();
 				}
 			}
 			break;
@@ -1116,6 +1118,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.temporaryPoints[3]));
 					this.saveState()
 					this.execute()
+					refreshHierarchy();
 				}
 			}
 			break;
@@ -1156,6 +1159,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.temporaryPoints[5]));
 					this.saveState()
 					this.execute()
+					refreshHierarchy();
 				}
 			}
 			break;
@@ -1185,6 +1189,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.temporaryPoints[3]));
 					this.saveState()
 					this.execute()
+					refreshHierarchy();
 				}
 			}
 			break;
@@ -1214,6 +1219,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.temporaryPoints[3]));
 					this.saveState()
 					this.execute()
+					refreshHierarchy();
 				}
 			}
 			break;
@@ -1241,6 +1247,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 							this.saveState()
 							this.execute()
 							this.setMode(this.MODES.NAVIGATE)
+							refreshHierarchy();
 						}
 					})
 					.catch(e => { })
@@ -1260,6 +1267,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 				this.resetMode()
 				this.saveState()
 				this.execute()
+				refreshHierarchy();
 			}
 			break;
 		case this.MODES.ADDPICTURE:
@@ -1285,6 +1293,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 							this.saveState()
 							this.execute()
 							this.setMode(this.MODES.NAVIGATE)
+							refreshHierarchy();
 						}
 					})
 					.catch(e => { })
