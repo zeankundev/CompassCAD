@@ -698,7 +698,7 @@ command-pallete input[type=text] {
     background-color: var(--secondary-transparent);
 }
 
-#form input[type=checkbox] {
+input[type=checkbox] {
     -webkit-appearance: none;
     appearance: none;
     background-color: var(--primary);
@@ -709,11 +709,11 @@ command-pallete input[type=text] {
     transition: all 0.3s ease;
 }
 
-#form input[type=checkbox]:active {
+input[type=checkbox]:active {
     transform: scale(0.85);
 }
 
-#form input[type=checkbox]:checked {
+input[type=checkbox]:checked {
     background-color: var(--theme);
     background-image: url('../../assets/icons/check.svg');
     background-repeat: no-repeat;
