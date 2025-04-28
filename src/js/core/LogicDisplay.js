@@ -213,4 +213,5 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 				break;
 		}
 	}
+	refreshHierarchy();
 };
