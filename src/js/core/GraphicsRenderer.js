@@ -1601,9 +1601,11 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					if (this.selectedComponent === this.temporarySelectedComponent) {
 						this.unselectComponent();
 						clearForm();
+						refreshHierarchy();
 					} else {
 						this.selectComponent(this.temporarySelectedComponent);
 						createFormForSelection();
+						refreshHierarchy();
 					}
 				} else {
 					this.unselectComponent();

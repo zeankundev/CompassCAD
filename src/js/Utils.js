@@ -111,11 +111,11 @@ const refreshHierarchy = () => {
     const hierarchy = document.getElementById('hierarchy-list');
     hierarchy.innerHTML = '';
     let found = false;
-    renderer.logicDisplay.components.reverse().forEach((component, index) => {
+    renderer.logicDisplay.components.forEach((component, index) => {
         if (component.name.toLowerCase().includes(search.toLowerCase())) {
             found = true;
             const element = document.createElement('div');
-            element.className = 'hierarchy-element';
+            element.className = `hierarchy-element ${renderer.selectedComponent == index ? 'selected' : ''}`;
             element.style.animation = 'slideup 0.3s ease';
             element.style.animationDelay = `${index > 0 ? index / 10 : 0}s`
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
@@ -123,6 +123,7 @@ const refreshHierarchy = () => {
                 renderer.temporarySelectedComponent = index;
                 renderer.selectComponent(index)
                 createFormForSelection();
+                refreshHierarchy();
             }
             hierarchy.appendChild(element);
         }
