@@ -208,12 +208,12 @@
                     <div class="inspector-tabcontent" id="properties">
                         <div id="form"></div>
                     </div>
-                    <div class="inspector-tabcontent" id="hierarchy">
+                    <div class="inspector-tabcontent" id="hierarchy" style="overflow-y: hidden;">
                         <div class="search-group">
                             <input type="text" id="hierarchy-search" placeholder="Search in hierarchy">
                             <button id="hierarchy-search-button"><img src="../../assets/icons/search.svg"></button>
                         </div>
-                        <div id="hierarchy-list"></div>
+                        <div id="hierarchy-list" style="overflow-y: scroll;"></div>
                     </div>
                     <div class="tab-controller">
                         <button id="properties-tab" class="inspector-tab" onclick="openInspectorTab('properties')">Properties</button>

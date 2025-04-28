@@ -652,23 +652,13 @@ command-pallete input[type=text] {
 
 .search-group {
     display: flex;
-    position: fixed;
-    top: 60px;
-    width: 90%;
-    right: 8px;
-    left: 12px;
     flex-direction: row;
     border-radius: 15px;
 }
 
 #hierarchy-list {
-    position: absolute;
-    top: 20%;
-    width: 90%;
-    left: 5%;
-    right: 5%;
     overflow-y: scroll;
-    max-height: 69.5%;
+    max-height: 55vh;
 }
 
 .search-group [type=text] {
