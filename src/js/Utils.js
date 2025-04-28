@@ -116,14 +116,15 @@ const refreshHierarchy = () => {
             found = true;
             const element = document.createElement('div');
             element.className = `hierarchy-element ${renderer.selectedComponent == index ? 'selected' : ''}`;
-            element.style.animation = 'slideup 0.3s ease';
-            element.style.animationDelay = `${index > 0 ? index / 10 : 0}s`
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
             element.onclick = () => {
                 renderer.temporarySelectedComponent = index;
                 renderer.selectComponent(index)
                 createFormForSelection();
                 refreshHierarchy();
+            }
+            element.ondblclick = () => {
+                openInspectorTab('properties')
             }
             hierarchy.appendChild(element);
         }
