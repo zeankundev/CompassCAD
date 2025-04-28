@@ -124,7 +124,34 @@ const refreshHierarchy = () => {
                 refreshHierarchy();
             }
             element.ondblclick = () => {
-                openInspectorTab('properties')
+                openInspectorTab('properties');
+                if (renderer.selectedComponent == index) {
+                    const component = renderer.logicDisplay.components[index];
+                    switch (component.type) {
+                        case COMPONENT_TYPES.POINT:
+                        case COMPONENT_TYPES.PICTURE:
+                        case COMPONENT_TYPES.SHAPE:
+                        case COMPONENT_TYPES.LABEL:
+                            const centerX = component.x;
+                            const centerY = component.y; 
+                            renderer.camX = -centerX;
+                            renderer.camY = -centerY;
+                            break;
+                        case COMPONENT_TYPES.RECTANGLE:
+                        case COMPONENT_TYPES.MEASURE:
+                        case COMPONENT_TYPES.LINE:
+                            const centerX2Pair = (component.x1 + component.x2) / 2; 
+                            const centerY2Pair = (component.y1 + component.y2) / 2;
+                            renderer.camX = -centerX2Pair;
+                            renderer.camY = -centerY2Pair;
+                            break;
+                        case COMPONENT_TYPES.CIRCLE:
+                        case COMPONENT_TYPES.ARC:
+                            renderer.camX = -component.x1;
+                            renderer.camY = -component.y1;
+                            break;
+                    }
+                }
             }
             hierarchy.appendChild(element);
         }
