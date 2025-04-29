@@ -77,6 +77,17 @@
     }
 }
 
+@keyframes scale-down {
+    from {
+        transform: translate(-50%, -50%) scale(1.05); /* Start larger */
+        opacity: 0; /* Optional fade-in effect */
+    }
+    to {
+        transform: translate(-50%, -50%) scale(1); /* End at normal size */
+        opacity: 1;
+    }
+}
+
 body {
     background-color: var(--primary);
     font-family: var(--main-font);
