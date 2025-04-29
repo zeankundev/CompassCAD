@@ -2297,7 +2297,8 @@ GraphicsRenderer.prototype.openDesign = function () {
 		]
 	}).then(res => {
 		if (res.filePaths && res.filePaths[0]) {
-			const fileName = path.basename(res.filePaths[0]);
+			const fileName = res.filePaths[0];
+			console.log(res.filePaths)
 			document.title = `${fileName} - CompassCAD`;
 			$('#titlething')[0].innerText = `${fileName} - CompassCAD`;
 
@@ -2351,6 +2352,8 @@ GraphicsRenderer.prototype.saveDesign = function () {
 		}).then(data => {
 			if (!data.canceled) {
 				this.filePath = data.filePath;
+				document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`
+				$('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`
 				fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 				this.setToolTip('Save success')
 				this.updateActivity(`Working on ${path.basename(this.filePath)}`, `On ${path.basename(this.filePath)}`);
@@ -2376,8 +2379,8 @@ GraphicsRenderer.prototype.saveDesignAs = function () {
 			fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
 			this.setToolTip('Save success')
 			this.temporaryObjectArray = this.logicDisplay.components
-			document.title = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`
-			$('#titlething')[0].innerText = `${data.filePath[0].replace(/\\/g, '/')} - CompassCAD`
+			document.title = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`
+			$('#titlething')[0].innerText = `${data.filePath.replace(/\\/g, '/')} - CompassCAD`
 		}
 	}).catch(err => {
 		console.error('Error during save:', err);
