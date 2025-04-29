@@ -503,6 +503,11 @@ small {
     border-radius: 10px;
 }
 
+#grid-settings {
+    max-height: 20vh;
+    overflow-y: scroll;
+}
+
 .grid-settings-display {
     padding: 5px;
     background-color: var(--secondary);
