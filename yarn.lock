@@ -956,10 +956,10 @@ electron-reloader@^1.2.3:
     electron-is-dev "^1.2.0"
     find-up "^5.0.0"
 
-electron@^35.2.0:
-  version "35.2.0"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-35.2.0.tgz#4701f455a2bc41c992cc529b42203c530223dcd8"
-  integrity sha512-GHda7oCkN0pA23qzah735DEbRa06IPwlzP3uvjAmf9af8gxdj5i93JEHeQVGVmSVpd7sSb1pfecs9nz7B1q5ag==
+electron@^35.2.1:
+  version "35.2.1"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-35.2.1.tgz#9aa91840e6f72c58cbccf7d17d52da0f479fc35c"
+  integrity sha512-LO4xXLpzkPPUVLvAbdHMlW7N9Z+Qqz+7QsmSWXluTIQMeJk+v7o36nUTZghyA2I1s//tlMvuaCtle6Qo2W0Ktg==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^22.7.7"
@@ -1842,10 +1842,10 @@ node-abi@^3.45.0:
   dependencies:
     semver "^7.3.5"
 
-node-abi@^4.2.0:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-4.2.0.tgz#cf74fb14584a420091723bbb3bb59b6bc4ea639c"
-  integrity sha512-admQxilhDcmFJbUl4LQzGu+QyEijW9rctKRH2P7LNavAvln1bdK9OcujM3yi2KysKI41dxTrDtp6QfGEZeCbkg==
+node-abi@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/node-abi/-/node-abi-4.3.0.tgz#b82f203d0b758c4127a69cf4c6df4bc1eeb9133b"
+  integrity sha512-N85L35K9jkdDip0fwVPH7fcSW63UiM9VcCEzgxRbKi6qpHOgyQ2Zv2KbPkGpmI6AIJ2IdFjlqgb/X5ZVjeIdvg==
   dependencies:
     semver "^7.6.3"
 
