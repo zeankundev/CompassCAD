@@ -127,6 +127,8 @@ const refreshHierarchy = () => {
                 openInspectorTab('properties');
                 if (renderer.selectedComponent == index) {
                     const component = renderer.logicDisplay.components[index];
+                    let targetX;
+                    let targetY;
                     switch (component.type) {
                         case COMPONENT_TYPES.POINT:
                         case COMPONENT_TYPES.PICTURE:
@@ -134,23 +136,42 @@ const refreshHierarchy = () => {
                         case COMPONENT_TYPES.LABEL:
                             const centerX = component.x;
                             const centerY = component.y; 
-                            renderer.camX = -centerX;
-                            renderer.camY = -centerY;
+                            targetX = -centerX;
+                            targetY = -centerY;
                             break;
                         case COMPONENT_TYPES.RECTANGLE:
                         case COMPONENT_TYPES.MEASURE:
                         case COMPONENT_TYPES.LINE:
                             const centerX2Pair = (component.x1 + component.x2) / 2; 
                             const centerY2Pair = (component.y1 + component.y2) / 2;
-                            renderer.camX = -centerX2Pair;
-                            renderer.camY = -centerY2Pair;
+                            targetX = -centerX2Pair;
+                            targetY = -centerY2Pair;
                             break;
                         case COMPONENT_TYPES.CIRCLE:
                         case COMPONENT_TYPES.ARC:
-                            renderer.camX = -component.x1;
-                            renderer.camY = -component.y1;
+                            targetX = -component.x1;
+                            targetY = -component.y1;
                             break;
                     }
+                    const startX = renderer.camX;
+                    const startY = renderer.camY;
+                    let startTime = null;
+                    const duration = 500;
+
+                    function animate(currentTime) {
+                        if (!startTime) startTime = currentTime;
+                        const elapsed = currentTime - startTime;
+                        const progress = 1 - Math.pow(1 - Math.min(elapsed / duration, 1), 2);
+
+                        renderer.camX = startX + (targetX - startX) * progress;
+                        renderer.camY = startY + (targetY - startY) * progress;
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animate);
+                        }
+                    }
+
+                    requestAnimationFrame(animate);
                 }
             }
             hierarchy.appendChild(element);
