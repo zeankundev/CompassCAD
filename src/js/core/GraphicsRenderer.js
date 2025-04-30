@@ -182,7 +182,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 	this.enableLegacyGridStyle = useOldGrid;
 	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
 	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
-	this.selectedColor = getComputedStyle(document.body).getPropertyValue('--theme');
+	this.selectedColor = getComputedStyle(document.body).getPropertyValue('--theme') != null ? getComputedStyle(document.body).getPropertyValue('--theme') : '#0080ff';
 };
 GraphicsRenderer.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
