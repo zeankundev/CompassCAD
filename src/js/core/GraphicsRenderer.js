@@ -263,6 +263,7 @@ GraphicsRenderer.prototype.execute = async function (e) {
 
 	// Update Rich Presence only when the component count changes
 	this.updateActivity();
+	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
 };
 
 GraphicsRenderer.prototype.refreshSelectionTools = function () {
@@ -1990,7 +1991,6 @@ GraphicsRenderer.prototype.setZoom = function (zoomFactor) {
 	}
 
 	// Display the zoom level
-	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
 };
 
 

@@ -182,9 +182,11 @@ const refreshHierarchy = () => {
                         if (!startTime) startTime = currentTime;
                         const elapsed = currentTime - startTime;
                         const progress = 1 - Math.pow(1 - Math.min(elapsed / duration, 1), 2);
+                        const initialZoom = renderer.targetZoom;
 
                         renderer.camX = startX + (targetX - startX) * progress;
                         renderer.camY = startY + (targetY - startY) * progress;
+                        renderer.targetZoom = initialZoom + (1 - initialZoom) * progress;
 
                         if (progress < 1) {
                             requestAnimationFrame(animate);
