@@ -182,6 +182,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 	this.enableLegacyGridStyle = useOldGrid;
 	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
 	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
+	this.selectedColor = getComputedStyle(document.body).getPropertyValue('--theme');
 };
 GraphicsRenderer.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
@@ -881,7 +882,7 @@ GraphicsRenderer.prototype.drawToolTip = function (e) {
 	this.context.textAlign = 'left';
     // Tooltip text
     this.context.fillStyle = "#fff"; // Set text color to white
-    this.context.font = "13px 'OneUISans', sans-serif";
+    this.context.font = `13px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
     this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 10);
 };
 
@@ -1678,7 +1679,7 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	}
 
 	// Unified rendering code
-	this.context.font = `18px 'OneUISans', sans-serif`;
+	this.context.font = `18px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
 	const textWidth = this.context.measureText(displayText).width;
 	const boxWidth = textWidth + 20;
 	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
