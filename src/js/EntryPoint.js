@@ -17,7 +17,9 @@ $(document).ready(async() => {
     document.getElementById('use-old-grid').checked = Array.isArray(flags) ? flags.includes('enable-old-grid') : false;
     document.getElementById('enable-warping').checked = Array.isArray(flags) ? flags.includes('enable-zoom-to-cursor-warping') : false;
     document.getElementById('language').value = await config.getValueKey('lang')
-    document.getElementById('workspace-font').value = await config.getValueKey('preferredFont')
+    document.getElementById('workspace-font').value = await config.getValueKey('preferredFont');
+    document.getElementById('theme-uri').href = await config.getValueKey('styleUri');
+    updateStyles();
     document.getElementById('undo-stack').onchange = () => {
         config.saveKey('maximumStack', document.getElementById('undo-stack').value);
     };

@@ -60,7 +60,7 @@ const init = () => {
   if (!fs.existsSync(`${userDataPath}/.compasscfg`)) {
     fs.writeFileSync(
       `${userDataPath}/.compasscfg`,
-      '{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"en","preferredFont":"gsansmono", "flags":[], "gridSettings": [100, 50, 25, 10]}',
+      `{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"${app.getLocale().slice(0,2) || 'en'}","preferredFont":"gsansmono", "flags":[], "gridSettings": [100, 50, 25, 10], "styleUri": "../styles/theme.css"}`,
       { encoding: 'utf-8' }
     );
   }
@@ -69,6 +69,9 @@ const init = () => {
   }
   if (!fs.existsSync(`${userDataPath}/plugins`)) {
     fs.mkdirSync(`${userDataPath}/plugins`);
+  }
+  if (!fs.existsSync(app.getPath('userData') + '/styles')) {
+    fs.mkdirSync(app.getPath('userData') + '/styles');
   }
 
   ipcMain.on('ragequit', () => {

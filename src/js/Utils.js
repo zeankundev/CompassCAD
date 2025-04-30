@@ -85,6 +85,23 @@ const checkForWebGL = () => {
         return false;
     }
 }
+const updateStyles = () => {
+    const cssDir = fs.readdirSync(path.join(remApp.getPath('userData'), 'styles'));
+    cssDir.forEach(style => {
+        console.warn('the folder contains: ' + style);
+        let cssOption = document.createElement('option');
+        cssOption.value = path.join(remApp.getPath('userData'), 'styles', style);
+        console.log(cssOption.value);
+        cssOption.innerText = style.slice(0, 15) + (style.length > 15 ? '...' : '');
+        document.getElementById('theme-selector').appendChild(cssOption);
+    });
+}
+const changeStyleInto = async () => {
+    const config = new ConfigHandler();
+    await config.loadConfig();
+    const selectedStyle = document.getElementById('theme-selector').value;
+    await config.saveKey('styleUri', selectedStyle);
+}
 const openInspectorTab = (tabName) => {
     // Hide all tab contents
     const tabContents = document.querySelectorAll(".inspector-tabcontent");
@@ -387,7 +404,7 @@ function parseBackupString(input) {
   
     return result;
   }
-  async function clearBackups() {
+async function clearBackups() {
     try {
       // Read all files in the directory
       const files = await fs.promises.readdir(path.join(remApp.getPath('userData'), 'backups'));
