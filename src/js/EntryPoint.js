@@ -20,6 +20,7 @@ $(document).ready(async() => {
     document.getElementById('workspace-font').value = await config.getValueKey('preferredFont');
     document.getElementById('theme-uri').href = await config.getValueKey('styleUri');
     updateStyles();
+    document.getElementById('theme-selector').value = await config.getValueKey('styleUri');
     document.getElementById('undo-stack').onchange = () => {
         config.saveKey('maximumStack', document.getElementById('undo-stack').value);
     };
