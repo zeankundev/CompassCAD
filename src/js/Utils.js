@@ -69,6 +69,9 @@ async function applyStringOnHTML(key, affected, type, additionalString) {
     } else if (type === 'title') {
         affected.title = await loc.getLocalizedString(key) + additionalString;
         console.log('Title affected');
+    } else if (type === 'placeholder') {
+        affected.placeholder = await loc.getLocalizedString(key) + additionalString;
+        console.log('Placeholder affected');
     } else {
         throw new Error('Unknown type');
     }

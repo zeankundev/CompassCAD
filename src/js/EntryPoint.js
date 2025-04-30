@@ -319,6 +319,9 @@ $(document).ready(async() => {
     applyStringOnHTML('general', document.getElementById('general-settings'), 'html', '');
     applyStringOnHTML('flags', document.getElementById('flags-settings'), 'html', '');
     applyStringOnHTML('about', document.getElementById('about-settings'), 'html', '');
+    applyStringOnHTML('properties', document.getElementById('properties-tab'), 'html', '');
+    applyStringOnHTML('hierarchy', document.getElementById('hierarchy-tab'), 'html', '');
+    applyStringOnHTML('searchInHierarchy', document.getElementById('hierarchy-search'), 'placeholder', '');
     window.onbeforeunload = (e) => {
         // Check if components is not null and is not empty
         if (renderer.logicDisplay.components && renderer.logicDisplay.components.length > 0) {
