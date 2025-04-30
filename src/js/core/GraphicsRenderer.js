@@ -1669,10 +1669,10 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 			displayText = `L: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))} (${Number(this.getDistance(component.x1,component.y1,component.x2,component.y2) / 100).toFixed(2)}m)`;
 			break
 		case COMPONENT_TYPES.CIRCLE:
-			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}`;
+			displayText = `RAD: ${Number(Math.abs(this.getDistance(component.x1, component.y1, component.x2, component.y2)).toFixed(2))}`;
 			break;
 		case COMPONENT_TYPES.ARC:
-			displayText = `RAD: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))}, COV: ${Math.round((Math.abs(this.getAngle(component.x1, component.y1, component.x3, component.y3)).toFixed(2) / Math.PI) * 180)}°`;
+			displayText = `RAD: ${Number(Math.abs(this.getDistance(component.x1, component.y1, component.x2, component.y2)).toFixed(2))}, COV: ${Math.round((Math.abs(this.getAngle(component.x1, component.y1, component.x3, component.y3)).toFixed(2) / Math.PI) * 180)}°`;
 			break;
 		default:
 			return; // Exit for unsupported types
