@@ -2645,7 +2645,7 @@ var initCAD = function (gd) {
 			if (event.originalEvent.deltaY < 0) {
 				// Basically a scroll up
 				if (shiftPressed) {
-					gd.camX -= 50;
+					gd.camX += 50;
 				} else if (ctrlPressed) {
 					gd.zoomIn();
 				} else {
@@ -2654,7 +2654,7 @@ var initCAD = function (gd) {
 			} else {
 				// This is a scroll down
 				if (shiftPressed) {
-					gd.camX += 50;
+					gd.camX -= 50;
 				} else if (ctrlPressed) {
 					gd.zoomOut();
 				} else {
