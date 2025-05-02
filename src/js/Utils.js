@@ -207,26 +207,6 @@ document.onerror = function (msg, url, lineNo, columnNo, error) {
         alert(`Error: ${msg}\nURL: ${url}\nLine: ${lineNo}\nColumn: ${columnNo}\nStack: ${error}`);
     }
 }
-/* document.getElementById("toolbar").addEventListener("wheel", (evt) => {
-    evt.preventDefault();
-    const toolbar = document.getElementById("toolbar");
-    let start = toolbar.scrollLeft;
-    let end = start + evt.deltaY;
-    let startTime = null;
-    let speed = 100;
-
-    function animateScroll(timestamp) {
-        if (!startTime) startTime = timestamp;
-        const progress = timestamp - startTime;
-        const scrollAmount = Math.min(progress / speed, 1) * (end - start);
-        toolbar.scrollLeft = start + scrollAmount;
-        if (progress < speed) {
-            requestAnimationFrame(animateScroll);
-        }
-    }
-
-    requestAnimationFrame(animateScroll);
-});*/
 async function openSettings() {
     const config = new ConfigHandler();
     await config.loadConfig();
