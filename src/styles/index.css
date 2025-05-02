@@ -18,6 +18,15 @@
     src: url('../../assets/fonts/notosansjp.ttf');
 }
 
+@font-face {
+    font-family: 'OneUISans';
+    src: url('../../assets/fonts/OneUISans.ttf') format('truetype');
+}
+@font-face {
+    font-family: 'SECEmojis';
+    src: url('../../assets/fonts/SamsungColorEmoji.ttf') format('truetype');
+}
+
 * {
     margin: 0;
 }

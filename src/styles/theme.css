@@ -1,11 +1,3 @@
-@font-face {
-    font-family: 'OneUISans';
-    src: url('../../assets/fonts/OneUISans.ttf') format('truetype');
-}
-@font-face {
-    font-family: 'SECEmojis';
-    src: url('../../assets/fonts/SamsungColorEmoji.ttf') format('truetype');
-}
 :root {
     --primary: #1d1d1d;
     --primary-transparent: rgba(29, 29, 29, 0.85);
