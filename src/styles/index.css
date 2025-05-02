@@ -575,6 +575,8 @@ p {
 
 #config-saved {
     display: none;
+    align-items: center;
+    margin-top: 10px;
 }
 
 command-pallete {
