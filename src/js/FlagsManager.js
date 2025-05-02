@@ -35,7 +35,8 @@ const updateFlagList = async () => {
             if (checked) {
                 await configHandler.appendFlag(flag.flag);
             } else {
-                await configHandler.removeFlag(flag.flag);
+                await configHandler.purgeFlag(flag.flag);
+                await configHandler.saveConfig();
             }
         }
         flagChild.appendChild(flagName);
