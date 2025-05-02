@@ -136,6 +136,7 @@ function GraphicsRenderer(displayName, width, height) {
 	this.pcbEditor = {
 		radius: 1
 	}
+	this.enableNewScrollControls = false;
 	this.enableWebGL = false;
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
@@ -183,6 +184,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
 	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
 	this.selectedColor = getComputedStyle(document.body).getPropertyValue('--theme') != null ? getComputedStyle(document.body).getPropertyValue('--theme') : '#0080ff';
+	this.enableNewScrollControls = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-new-scroll-controls') : false
 };
 GraphicsRenderer.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
@@ -2413,10 +2415,17 @@ GraphicsRenderer.prototype.exportDesign = function () {
  * graphic environment and behaviour (mainly input events)
  */
 var initCAD = function (gd) {
+	let shiftPressed = false;
+	let ctrlPressed = false;
 	gd.init();
 
 	// Bind keyboard events
 	$(document).keyup(function (e) {
+		if (e.key == 'Shift' || e.which == 16) {
+			shiftPressed = false;
+		} else if (e.key === 'Control' || e.which == 17) {
+			ctrlPressed = false;
+		}
 		if (document.querySelector("modal:not(.hidden)") == null)
 			gd.keyboard.onKeyUp(e);
 		else
@@ -2424,6 +2433,11 @@ var initCAD = function (gd) {
 	});
 
 	$(document).keydown(function (e) {
+		if (e.key == 'Shift' || e.which == 16) {
+			shiftPressed = true;
+		} else if (e.key === 'Control' || e.which == 17) {
+			ctrlPressed = true;
+		}
 		if (document.querySelector("modal:not(.hidden)") == null)
 			gd.keyboard.onKeyDown(e);
 		else
@@ -2543,16 +2557,40 @@ var initCAD = function (gd) {
 	gd.cvn.mouseleave(function (e) {
 		gd.mouse.onMouseLeave(e);
 		console.warn('Mouse left')
-	})
+	});
+	// enableNewScrollControls
 	gd.cvn.on('wheel', (event) => {
-		let zoomFactor = 1
-		if (event.originalEvent.deltaY < 0) {
-			gd.zoomIn()
+		if (gd.enableNewScrollControls == true) {
+			event.preventDefault();
+			if (event.originalEvent.deltaY < 0) {
+				// Basically a scroll up
+				if (shiftPressed) {
+					gd.camX -= 50;
+				} else if (ctrlPressed) {
+					gd.zoomIn();
+				} else {
+					gd.camY += 50;
+				}
+			} else {
+				// This is a scroll down
+				if (shiftPressed) {
+					gd.camX += 50;
+				} else if (ctrlPressed) {
+					gd.zoomOut();
+				} else {
+					gd.camY -= 50;
+				}
+			}
 		} else {
-			gd.zoomOut()
+			let zoomFactor = 1
+			if (event.originalEvent.deltaY < 0) {
+				gd.zoomIn()
+			} else {
+				gd.zoomOut()
+			}
+			console.log(`Zoom factor: ${zoomFactor}`);
+			event.preventDefault();
 		}
-		console.log(`Zoom factor: ${zoomFactor}`);
-		event.preventDefault();
 	});
 
 	// Start CAD
