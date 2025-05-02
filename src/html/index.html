@@ -70,12 +70,7 @@
                 </select>
             </div>
             <div id="flags" class="tabcontent">
-                <label id="use-old-grid-text">Use legacy grid (older than v1.5.0)</label>&nbsp;
-                <input type="checkbox" id="use-old-grid">
-                <br><br>
-                <label id="enable-warping-text">Enable zoom-to-cursor warping</label>
-                <input type="checkbox" id="enable-warping">
-                <br><br>
+                <div id="flags-container"></div>
             </div>
             <div id="about" class="tabcontent">
                 <img src="../../assets/logos/512x512.png" width="50" alt="CCAD Logo" id="ccadlogo">
@@ -241,6 +236,7 @@
         <script src="../js/EntryPoint.js"></script>
         <script src="../js/core/SVGExporter.js"></script>
         <script src="../js/CodeEditor.js"></script>
+        <script src="../js/FlagsManager.js"></script>
         <!-- Experimental: use WebGL if possible -->
         <script src="../js/deps/webgl/gl-matrix.min.js"></script>
         <script src="../js/deps/webgl/litegl.min.js"></script>

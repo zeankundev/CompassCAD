@@ -895,3 +895,13 @@ input[type=checkbox]:checked {
     background-color: var(--secondary);
     animation: toast 1s ease;
 }
+.flag-child {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+.flag-child input[type=checkbox] {
+    margin-left: 10px;
+}

@@ -13,9 +13,6 @@ $(document).ready(async() => {
     document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');
     document.getElementById('undo-stack').value = await config.getValueKey('maximumStack')
     document.getElementById('font-size').value = await config.getValueKey('fontSize')
-    const flags = await config.getFlags();
-    document.getElementById('use-old-grid').checked = Array.isArray(flags) ? flags.includes('enable-old-grid') : false;
-    document.getElementById('enable-warping').checked = Array.isArray(flags) ? flags.includes('enable-zoom-to-cursor-warping') : false;
     document.getElementById('language').value = await config.getValueKey('lang')
     document.getElementById('workspace-font').value = await config.getValueKey('preferredFont');
     document.getElementById('theme-uri').href = await config.getValueKey('styleUri');
@@ -28,21 +25,7 @@ $(document).ready(async() => {
     document.getElementById('font-size').onchange = () => {
         config.saveKey('fontSize', document.getElementById('font-size').value);
     };
-    document.getElementById('use-old-grid').onchange = () => {
-        if (document.getElementById('use-old-grid').checked) {
-            config.appendFlag('enable-old-grid')
-        } else {
-            config.purgeFlag('enable-old-grid')
-        }
-    };
-    document.getElementById('enable-warping').onchange = () => {
-        if (document.getElementById('enable-warping').checked) {
-            config.appendFlag('enable-zoom-to-cursor-warping')
-        } else {
-            config.purgeFlag('enable-zoom-to-cursor-warping')
-        }
-    }
-
+    // Line 28-41 was here and is deleted because it is deprecated. Consider using updateFlagList()
     document.getElementById('workspace-font').onchange = () => {
         console.log('font changed');
         config.saveKey('preferredFont', document.getElementById('workspace-font').value)

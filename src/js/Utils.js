@@ -230,7 +230,8 @@ document.onerror = function (msg, url, lineNo, columnNo, error) {
 async function openSettings() {
     const config = new ConfigHandler();
     await config.loadConfig();
-    openSettingsTab('workspace')
+    openSettingsTab('workspace');
+    await updateFlagList();
     const setModal = document.getElementById('set-modal');
     const peerConnected = document.getElementById('peer-connected');
 
