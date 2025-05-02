@@ -2487,6 +2487,86 @@ var initCAD = function (gd) {
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.C, function (e) {
 		gd.copy()
 	}, { ctrl: true });
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.APOSTROPHE, async function (e) {
+		console.log('[bootstrapper] ctrl+apostrophe pressed, firing NOW')
+		const config = new ConfigHandler();
+    	await config.loadConfig();
+		// Default grid spacings array from largest to smallest
+		const gridSpacings = await config.getGridSettings() || [100, 50, 25, 10];
+		console.log(gridSpacings)
+		
+		// Get current grid spacing
+		let currentSpacing = gd.gridSpacing;
+		
+		// Find the next grid spacing
+		let nextSpacing;
+		
+		// Find current index in grid spacings
+		let currentIndex = gridSpacings.indexOf(currentSpacing);
+		
+		if (currentIndex === -1) {
+			// Current spacing not in array, find nearest larger spacing
+			for (let i = 0; i < gridSpacings.length; i++) {
+				if (gridSpacings[i] <= currentSpacing) {
+					currentIndex = i;
+					break;
+				}
+			}
+			if (currentIndex === -1) {
+				currentIndex = gridSpacings.length - 1;
+			}
+		}
+		
+		// Get next smaller grid spacing
+		nextSpacing = currentIndex < gridSpacings.length - 1 ? 
+			gridSpacings[currentIndex + 1] : 
+			gridSpacings[0];
+		
+		// Update grid spacing
+		gd.gridSpacing = nextSpacing;
+		document.getElementById('grid-selector').value = nextSpacing;
+		console.log('[bootstrap] next spacing: ' + nextSpacing);
+	}, {ctrl: true});
+	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.SEMICOLON_CHROME, async function (e) {
+		console.log('[bootstrapper] ctrl+semicolon (chrome) pressed, firing NOW')
+		const config = new ConfigHandler();
+		await config.loadConfig();
+		// Default grid spacings array from largest to smallest
+		const gridSpacings = await config.getGridSettings() || [100, 50, 25, 10]; 
+		console.log(gridSpacings)
+
+		// Get current grid spacing
+		let currentSpacing = gd.gridSpacing;
+
+		// Find the next grid spacing
+		let nextSpacing;
+
+		// Find current index in grid spacings
+		let currentIndex = gridSpacings.indexOf(currentSpacing);
+
+		if (currentIndex === -1) {
+			// Current spacing not in array, find nearest smaller spacing
+			for (let i = gridSpacings.length - 1; i >= 0; i--) {
+				if (gridSpacings[i] >= currentSpacing) {
+					currentIndex = i;
+					break;
+				}
+			}
+			if (currentIndex === -1) {
+				currentIndex = 0;
+			}
+		}
+
+		// Get next larger grid spacing (opposite direction)
+		nextSpacing = currentIndex > 0 ? 
+			gridSpacings[currentIndex - 1] : 
+			gridSpacings[gridSpacings.length - 1];
+
+		// Update grid spacing
+		gd.gridSpacing = nextSpacing;
+		document.getElementById('grid-selector').value = nextSpacing;
+		console.log('[bootstrap] next spacing: ' + nextSpacing);
+	}, {ctrl: true})
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.V, function (e) {
 		console.log('[clipboard] paste event fired.')
 		navigator.clipboard.readText().then(clipText => {

@@ -15,6 +15,7 @@ function KeyboardHandler() {
         LESSTHAN: 188,
         GREATERTHAN: 190,
         SEMICOLON: 59,
+        SEMICOLON_CHROME: 186,
         APOSTROPHE: 222,
         OPENBRACKET: 219,
         CLOSEBRACKET: 221,
