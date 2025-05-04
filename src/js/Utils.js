@@ -115,14 +115,24 @@ const openInspectorTab = (tabName) => {
         selectedTabContent.style.display = "block";
     }
 
-    // Remove the disabled class of that button
+    // Add disabled class to all buttons and tab contents
     const buttons = document.querySelectorAll(".inspector-tab");
+    const tabs = document.querySelectorAll(".inspector-tabcontent");
     buttons.forEach((button) => {
         button.classList.add('disabled');
     });
-    const selectedButton = document.getElementById(tabName + '-tab');
+    tabs.forEach((tab) => {
+        tab.classList.add('disabled');
+    });
+
+    // Enable the clicked button and tab content - handle both static and dynamic buttons
+    const selectedButton = document.querySelector(`.inspector-tab[onclick*="${tabName}"]`) || 
+                         document.getElementById(`${tabName.replace('-tabcontent', '')}-tab`);
     if (selectedButton) {
-        selectedButton.classList.remove('disabled')
+        selectedButton.classList.remove('disabled');
+    }
+    if (selectedTabContent) {
+        selectedTabContent.classList.remove('disabled');
     }
 }
 openInspectorTab('properties')
