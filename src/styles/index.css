@@ -243,7 +243,7 @@ small {
     -webkit-overflow-scrolling: touch;
     background-color: var(--primary-transparent);
     backdrop-filter: blur(10px);
-    border-radius: 10px;
+    border-radius: 15px;
     box-shadow: 0px 0px 10px 3px rgba(0, 0, 0, 0.25);
     transition: all 0.3s ease;
     border: 0.5px solid var(--outline);
@@ -267,9 +267,8 @@ small {
     align-items: center;
     outline: none;
     user-select: none;
-    border-radius: 5px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    border-radius: 10px;
+    margin-bottom: 10px;
     border: none;
     padding: 5px;
     background-color: rgba(0,0,0,0);
@@ -626,7 +625,7 @@ command-pallete input[type=text] {
     background-color: var(--primary-transparent);
     backdrop-filter: blur(10px);
     border: 0.5px solid var(--outline);
-    border-radius: 10px;
+    border-radius: 15px;
     box-shadow: 0px 0px 13px 3px rgba(0,0,0,0.5);
     z-index: 999;
     position: fixed; /* Changed from absolute to fixed */
