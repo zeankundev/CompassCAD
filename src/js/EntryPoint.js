@@ -224,10 +224,21 @@ $(document).ready(async() => {
         const jsFiles = files.filter(file => path.extname(file) === '.js');
       
         jsFiles.forEach(jsFile => {
-          const scriptTag = document.createElement('script');
-          scriptTag.src = path.join(remApp.getPath('userData') + '/plugins', jsFile);
-          document.body.appendChild(scriptTag)
-          console.log(scriptTag);
+            const scriptTag = document.createElement('script');
+            scriptTag.src = path.join(remApp.getPath('userData') + '/plugins', jsFile);
+            
+            // Add error handler
+            scriptTag.onerror = () => {
+                console.error(`Plugin ${jsFile} failed to load, removing it`);
+                scriptTag.remove();
+            };
+
+            // Sandbox the script
+            scriptTag.setAttribute('sandbox', 'allow-scripts');
+            
+            // Add script to document
+            document.body.appendChild(scriptTag);
+            console.log(`[entry] loaded plugin: ${jsFile}`);
         });
     });
     isReady = true;
