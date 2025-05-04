@@ -7,6 +7,7 @@ class InspectorTab {
     constructor(name) {
         if (name && typeof name === 'string') {
             this.name = name;
+            this.codicName = name.toLowerCase().replace(/\s+/g, '-');
         } else {
             throw new SyntaxError(`Invalid name provided. You should provide a string.`);
         }
@@ -15,16 +16,16 @@ class InspectorTab {
         if (html && html instanceof HTMLElement) {
             const tab = document.createElement('div');
             tab.className = 'inspector-tabcontent';
-            tab.id = `${this.name}-tabcontent`;
+            tab.id = `${this.codicName}-tabcontent`;
             tab.appendChild(html);
             tabContent.appendChild(tab);
             const tabButton = document.createElement('button');
             tabButton.classList.add('inspector-tab');
             tabButton.classList.add('disabled');
-            tabButton.id = `${this.name}-tab`;
+            tabButton.id = `${this.codicName}-tab`;
             tabButton.innerText = this.name;
             tabButton.onclick = () => {
-                openInspectorTab(this.name + '-tabcontent');
+                openInspectorTab(this.codicName + '-tabcontent');
             }
             tabController.appendChild(tabButton);
         } else if (!html instanceof HTMLElement) {
