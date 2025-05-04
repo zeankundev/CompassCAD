@@ -340,16 +340,33 @@ function openMultiEditor() {
 
 
 function callToast(text) {
-    document.getElementById('toast').style.animation = 'toast 0.3s ease'
-    document.getElementById('toast-text').innerHTML = text
-    document.getElementById('toast').style.display = 'block'
+    // Create a new toast element
+    const toast = document.createElement('div');
+    toast.className = 'toast hide';
+    
+    // Create the text span
+    const toastText = document.createElement('span');
+    toastText.textContent = text;
+    
+    // Add text to toast
+    toast.appendChild(toastText);
+    
+    // Add toast to document body
+    document.getElementById('toast-container').appendChild(toast);
+
+    // Show and animate the toast
     setTimeout(() => {
-        document.getElementById('toast').style.animation = 'toast-cancel 0.3s ease'
+        toast.classList.remove('hide');
+        toast.style.animation = 'toast 0.3s ease';
+    }, 100);
+
+    // Remove the toast after delay
+    setTimeout(() => {
+        toast.style.animation = 'toast-cancel 0.3s ease';
         setTimeout(() => {
-            document.getElementById('toast').style.display = 'none'
-            document.getElementById('toast-text').innerHTML = ''
-        }, 300)
-    }, 3000)
+            document.getElementById('toast-container').removeChild(toast);
+        }, 250);
+    }, 3000);
 }
 
 document.getElementById('prompt-close').onclick = () => {document.getElementById('set-modal').classList.add('hidden')}

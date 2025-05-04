@@ -903,24 +903,24 @@ input[type=checkbox]:checked {
     margin-left: 10px;
     flex-direction: column;
 }
-
-.toast {
+#toast-container {
     position: absolute;
     bottom: 0;
-    /*make sure it goes in the middle of the page but the padding must not do anything to affect*/
     right: 0;
-    display: none;
-    text-align: center;
-    padding: 10px;
     margin-bottom: 20px;
     margin-right: 20px;
     z-index: 9999;
+}
+.toast {
+    text-align: center;
+    padding: 10px;
     background-color: var(--primary-transparent);
     box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
     border-radius: 10px;
     border: 0.5px solid var(--outline);
     animation: toast 1s ease;
+    margin-top: 0.5rem;
 }
 .flag-child {
     display: flex;
