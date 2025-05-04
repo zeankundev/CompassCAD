@@ -643,6 +643,11 @@ command-pallete input[type=text] {
     display: flex;
     position: fixed;
     bottom: 15px;
+    width: 90%;
+    overflow-x: scroll;
+}
+.tab-controller::-webkit-scrollbar {
+    display: none;
 }
 
 .tab-controller button {

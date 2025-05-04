@@ -28,7 +28,9 @@ function detectFilePath() {
 const init = () => {
   const window = new BrowserWindow({
     width: 1200,
-    height: 675,
+    height: 600,
+    minWidth: 800,
+    minHeight: 480,
     icon: appLogo,
     frame: false,
     autoHideMenuBar: true,
