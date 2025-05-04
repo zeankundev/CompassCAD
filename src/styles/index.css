@@ -58,21 +58,25 @@
 
 @keyframes toast {
     0% {
-        transform: translateY(200px);
+        transform: translateY(10px) scale(0.95);
+        opacity: 0;
     }
 
     100% {
-        transform: translateY(0px);
+        transform: translateY(0px) scale(1);
+        opacity: 1;
     }
 }
 
 @keyframes toast-cancel {
     0% {
-        transform: translateY(0px);
+        transform: translateY(0px) scale(1);
+        opacity: 1;
     }
 
     100% {
-        transform: translateY(200px);
+        transform: translateY(10px) scale(0.95);
+        opacity: 0;
     }
 }
 
@@ -638,6 +642,10 @@ command-pallete input[type=text] {
     box-sizing: border-box; /* Added to include padding in dimensions */
 }
 
+#inspector-tab-content {
+    height: calc(100% - 20px);
+}
+
 .tab-controller {
     display: flex;
     position: fixed;
@@ -649,7 +657,7 @@ command-pallete input[type=text] {
     display: none;
 }
 
-.tab-controller button, .inspector-tabcontent button {
+.tab-controller button, .inspector-tabcontent button:not(.search-group button) {
     -webkit-appearance: none;
     appearance: none;
     border: none;
@@ -907,7 +915,11 @@ input[type=checkbox]:checked {
     margin-bottom: 20px;
     margin-right: 20px;
     z-index: 9999;
-    background-color: var(--secondary);
+    background-color: var(--primary-transparent);
+    box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 0.5px solid var(--outline);
     animation: toast 1s ease;
 }
 .flag-child {
