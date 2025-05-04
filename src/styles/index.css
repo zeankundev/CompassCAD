@@ -39,6 +39,22 @@
     background-color: var(--secondary-transparent);
     border-radius: 10px;
 }
+::-webkit-scrollbar-button:increment {
+    background-image: url('../../assets/icons/arrow-down.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px;
+    width: 20px;
+    height: 20px;
+}
+::-webkit-scrollbar-button:decrement {
+    background-image: url('../../assets/icons/arrow-up.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 16px;
+    width: 20px;
+    height: 20px;
+}
 
 .spinner-absolute {
     display: inline-block;
@@ -643,7 +659,7 @@ command-pallete input[type=text] {
 }
 
 #inspector-tab-content {
-    height: calc(100% - 20px);
+    height: calc(100% - 15px);
 }
 
 .tab-controller {
