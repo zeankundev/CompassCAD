@@ -650,7 +650,7 @@ command-pallete input[type=text] {
     display: none;
 }
 
-.tab-controller button {
+.tab-controller button, .inspector-tabcontent button {
     -webkit-appearance: none;
     appearance: none;
     border: none;
