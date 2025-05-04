@@ -14,6 +14,14 @@ class InspectorTab {
     }
     assembleTab(html) {
         if (html && html instanceof HTMLElement) {
+            // Check for duplicates in tabContent and tabController
+            const existingContent = document.getElementById(`${this.codicName}-tabcontent`);
+            const existingTab = document.getElementById(`${this.codicName}-tab`);
+            
+            if (existingContent || existingTab) {
+            throw new Error(`A tab with name "${this.name}" already exists.`);
+            }
+
             const tab = document.createElement('div');
             tab.className = 'inspector-tabcontent';
             tab.id = `${this.codicName}-tabcontent`;
@@ -25,16 +33,16 @@ class InspectorTab {
             tabButton.id = `${this.codicName}-tab`;
             tabButton.innerText = this.name;
             tabButton.onclick = () => {
-                openInspectorTab(this.codicName + '-tabcontent');
+            openInspectorTab(this.codicName + '-tabcontent');
             }
             tabController.appendChild(tabButton);
         } else if (!html instanceof HTMLElement) {
             throw new Error(`
-                You are providing a wrong HTML. Assemble the HTML with HTMLElement, not with stringified HTML.
+            You are providing a wrong HTML. Assemble the HTML with HTMLElement, not with stringified HTML.
             `);
         } else {
             throw new Error(`
-                Cannot assemble tab. Provide a valid HTML element.
+            Cannot assemble tab. Provide a valid HTML element.
             `);
         }
     }
