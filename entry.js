@@ -60,7 +60,7 @@ const init = () => {
   if (!fs.existsSync(`${userDataPath}/.compasscfg`)) {
     fs.writeFileSync(
       `${userDataPath}/.compasscfg`,
-      `{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"${app.getLocale().slice(0,2) || 'en'}","preferredFont":"gsansmono", "flags":[], "gridSettings": [100, 50, 25, 10], "styleUri": "../styles/theme.css"}`,
+      `{"maximumStack":50,"fontSize":24,"autosaveEvery":60,"enableAutosave":false,"gridSpacing":100,"disableLerp": false,"useOldGrid": false,"lang":"${app.getLocale().slice(0,2) || 'en'}","preferredFont":"gsansmono", "flags":["enable-new-scroll-controls","enable-zoom-to-cursor-warping"], "gridSettings": [100, 50, 25, 10], "styleUri": "../styles/theme.css"}`,
       { encoding: 'utf-8' }
     );
   }
