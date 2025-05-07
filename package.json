@@ -10,7 +10,8 @@
     "start": "set NODE_ENV=development && electron .",
     "start:no-sandbox": "set NODE_ENV=development && electron . --no-sandbox",
     "start:wl-no-sandbox": "set NODE_ENV=development && electron . --no-sandbox --enable-features=UseOzonePlatform --ozone-platform=wayland",
-    "instant-build": "electron-builder && electron-builder --win"
+    "instant-build": "electron-builder && electron-builder --win",
+    "cleanup": "rm yarn.lock && rm -rf node_modules && rm -rf dist && yarn"
   },
   "private": false,
   "dependencies": {
