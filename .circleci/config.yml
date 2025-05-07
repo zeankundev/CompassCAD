@@ -12,9 +12,6 @@ jobs:
           name: Cleanup dependency mess
           command: yarn run cleanup
       - run:
-          name: Install dependencies
-          command: yarn
-      - run:
           name: Install dpkg and fakeroot
           command: |
             sudo apt-get update -y
