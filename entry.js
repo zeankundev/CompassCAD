@@ -44,6 +44,7 @@ const init = () => {
   require('@electron/remote/main').initialize();
   require('@electron/remote/main').enable(window.webContents);
   app.commandLine.appendSwitch('ignore-gpu-blacklist');
+  app.commandLine.appendSwitch('gtk-version', '3');
   window.loadFile('src/html/index.html');
   window.setMenuBarVisibility(false);
 
