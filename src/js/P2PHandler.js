@@ -57,6 +57,11 @@ class P2PNetwork {
     
     conn.on('open', () => {
       this.addConnection(conn);
+
+      document.getElementById('peer-connected').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('peer-connected').style.display = 'none';
+      }, 2000);
       
       // Show connection notification
       this.showConnectionNotification(conn.peer);
@@ -254,6 +259,10 @@ class P2PNetwork {
       this.addConnection(conn);
       this.setupConnectionListeners(conn);
       this.sendQueuedMessages(peerId);
+      document.getElementById('peer-connected').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('peer-connected').style.display = 'none';
+      }, 2000);
     });
     
     conn.on('error', (err) => {
@@ -374,10 +383,6 @@ class P2PNetwork {
 
   showConnectionNotification(peerId) {
     callToast('A new participant has joined!');
-    document.getElementById('peer-connected').style.display = 'block';
-    setTimeout(() => {
-      document.getElementById('peer-connected').style.display = 'none';
-    }, 2000);
     
     if (typeof client !== 'undefined') {
       client.setActivity({
