@@ -9,6 +9,9 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
+          name: Cleanup dependency mess
+          command: yarn run cleanup
+      - run:
           name: Install dependencies
           command: yarn
       - run:
@@ -23,8 +26,7 @@ jobs:
             - ./node_modules
       - run:
           name: Generate Builds
-          command: yarn run instant-build
-          
+          command: yarn run instant-build 
       - run:
           name: Delete foreign artifacts
           command: cd dist && rm -rf win-unpacked && rm -rf linux-unpacked && cd ..
