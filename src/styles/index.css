@@ -659,7 +659,7 @@ command-pallete input[type=text] {
 }
 
 #inspector-tab-content {
-    height: calc(100% - 15px);
+    height: calc(100% + 10px);
 }
 
 .tab-controller {
@@ -713,7 +713,9 @@ command-pallete input[type=text] {
 
 #hierarchy-list {
     overflow-y: scroll;
-    max-height: 55vh;
+    height: 54vh;
+    padding-right: 5px;
+    margin-top: 5px;
 }
 
 .search-group [type=text] {
