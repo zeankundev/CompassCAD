@@ -13,6 +13,11 @@ const flags = [
         flag: 'enable-new-scroll-controls',
         name: 'Enable new scroll controls',
         description: 'Enable new scroll controls, much like Figma\'s'
+    },
+    {
+        flag: 'enable-tutoring-mode',
+        name: 'Enable tutoring mode',
+        description: 'Enable tutoring mode, which CompassCAD provides tools to create tutorials for others'
     }
 ]
 const updateFlagList = async () => {

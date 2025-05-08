@@ -81,10 +81,39 @@ function KeyboardHandler() {
     this.defaultPreventionList = [];
     this.keyEvents = [];
     this.ctrlPressed = false;
+
+    // Add tracking of currently pressed keys
+    this.pressedKeys = new Set();
+    this.keyToString = {
+        16: 'Shift',
+        17: 'Ctrl',
+        18: 'Alt',
+        27: 'Esc',
+        32: 'Space',
+        37: '←',
+        38: '↑',
+        39: '→',
+        40: '↓'
+    };
 }
 
 KeyboardHandler.prototype.setLastKey = function (k) {
     this.lastKey = k;
+};
+
+KeyboardHandler.prototype.getDisplayText = function() {
+    if (this.pressedKeys.size === 0) return '';
+    
+    const keyNames = Array.from(this.pressedKeys).map(keyCode => {
+        // For letter keys, use the character
+        if (keyCode >= 65 && keyCode <= 90) {
+            return String.fromCharCode(keyCode);
+        }
+        // For known special keys, use the mapping
+        return this.keyToString[keyCode] || keyCode;
+    });
+    
+    return keyNames.join('+');
 };
 
 KeyboardHandler.prototype.defaultKeyDownAction = function (key) {
@@ -97,6 +126,7 @@ KeyboardHandler.prototype.addKeyEvent = function (keyDown, key, fx, modifiers) {
 };
 
 KeyboardHandler.prototype.onKeyUp = function (e) {
+    this.pressedKeys.delete(e.which);
     if (e.which === this.KEYS.CONTROL) {
         this.ctrlPressed = false;
     }
@@ -109,6 +139,7 @@ KeyboardHandler.prototype.onKeyUp = function (e) {
 };
 
 KeyboardHandler.prototype.onKeyDown = function (e) {
+    this.pressedKeys.add(e.which);
     if (e.which === this.KEYS.CONTROL) {
         this.ctrlPressed = true;
     }

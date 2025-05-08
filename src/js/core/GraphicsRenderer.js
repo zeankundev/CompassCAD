@@ -94,6 +94,7 @@ function GraphicsRenderer(displayName, width, height) {
 
 	this.inFocus = false;
 	this.initResize = false;
+	this.isKeyDown = false;
 
 	this.showGrid = true;
 	this.showOrigin = true;
@@ -141,6 +142,7 @@ function GraphicsRenderer(displayName, width, height) {
 	this.enableLegacyGridStyle = false;
 	this.enableSnap = true;
 	this.enableZoomWarpingToCursor = false;
+	this.enableTutoringMode = false;
 	this.configFlags = [];
 }
 
@@ -184,7 +186,8 @@ GraphicsRenderer.prototype.init = async function (e) {
 	const enableZoomToCursorWarping = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-zoom-to-cursor-warping') : false;
 	this.enableZoomWarpingToCursor = enableZoomToCursorWarping;
 	this.selectedColor = getComputedStyle(document.body).getPropertyValue('--theme') != null ? getComputedStyle(document.body).getPropertyValue('--theme') : '#0080ff';
-	this.enableNewScrollControls = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-new-scroll-controls') : false
+	this.enableNewScrollControls = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-new-scroll-controls') : false;
+	this.enableTutoringMode = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-tutoring-mode') : false;
 };
 GraphicsRenderer.prototype.updateActivity = function (details = null) {
 	// Use the last details if none are provided
@@ -266,6 +269,15 @@ GraphicsRenderer.prototype.execute = async function (e) {
 	// Update Rich Presence only when the component count changes
 	this.updateActivity();
 	document.getElementById('zoom-level').innerText = `${this.targetZoom.toFixed(3)}x`;
+	this.isKeyDown = this.keyboard.pressedKeys.size > 0;
+	if (this.enableTutoringMode) {
+		if (this.isKeyDown) {
+			let keys = this.keyboard.getDisplayText();
+			this.context.fillStyle = "#fff";
+			this.context.font = `bold 42px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
+			this.context.fillText(keys, - this.displayWidth / 2 + 80, this.displayHeight / 2 - 50);
+		}
+	}
 };
 
 GraphicsRenderer.prototype.refreshSelectionTools = function () {
@@ -2070,7 +2082,7 @@ GraphicsRenderer.prototype.setToolTip = function (text) {
 
 GraphicsRenderer.prototype.getToolTip = function (e) {
 	var text = this.tooltip;
-	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${(this.enableSnap ? "snapping" : "not snapping")}, ${fps.toFixed(0)} FPS)`;
+	return text + ` (dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())}, ${(this.enableSnap ? "snapping" : "not snapping")}, ${fps.toFixed(0)} FPS`;
 };
 
 //TODO: Move in Utils.
@@ -2426,8 +2438,10 @@ var initCAD = function (gd) {
 		} else if (e.key === 'Control' || e.which == 17) {
 			ctrlPressed = false;
 		}
-		if (document.querySelector("modal:not(.hidden)") == null)
+		if (document.querySelector("modal:not(.hidden)") == null) {
 			gd.keyboard.onKeyUp(e);
+			gd.isKeyDown = false;
+		}
 		else
 			return
 	});
@@ -2438,8 +2452,10 @@ var initCAD = function (gd) {
 		} else if (e.key === 'Control' || e.which == 17) {
 			ctrlPressed = true;
 		}
-		if (document.querySelector("modal:not(.hidden)") == null)
+		if (document.querySelector("modal:not(.hidden)") == null) {
 			gd.keyboard.onKeyDown(e);
+			gd.isKeyDown = true;
+		}	
 		else
 			return
 	});
@@ -2627,7 +2643,7 @@ var initCAD = function (gd) {
 		if (e.which === 2) { // Middle mouse button
 			gd.camMoving = false;
 			gd.camX += gd.getCursorXRaw() - gd.xCNaught;
-			gd.camY += gd.getCursorYRaw() - gd.yCNaught;
+			gd.camY += gd.getCursorYRaw();
 			gd.updateCamera();
 		} else {
 			gd.mouse.onMouseUp(e);
