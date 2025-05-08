@@ -189,6 +189,7 @@ small {
     overflow-x: scroll;
     margin-bottom: 10px;
     align-items: center;
+    user-select: none;
 }
 
 .group {
