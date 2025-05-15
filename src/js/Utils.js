@@ -148,7 +148,8 @@ const refreshHierarchy = () => {
             element.className = `hierarchy-element ${renderer.selectedComponent == index ? 'selected' : ''}`;
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
             element.onclick = () => {
-                renderer.setMode(renderer.MODES.SELECT);
+                renderer.mode = renderer.MODES.SELECT;
+                refreshToolSelection(renderer.MODES.SELECT);
                 renderer.temporarySelectedComponent = index;
                 renderer.selectComponent(index)
                 createFormForSelection();
@@ -156,6 +157,7 @@ const refreshHierarchy = () => {
             }
             element.ondblclick = () => {
                 openInspectorTab('properties');
+                createFormForSelection();
                 if (renderer.selectedComponent == index) {
                     const component = renderer.logicDisplay.components[index];
                     let targetX;
