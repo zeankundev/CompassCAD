@@ -813,7 +813,7 @@ const updateBattery = () => {
             batteryDisplay.src = `../../assets/icons/battery/100-${iconState}.svg`;
         } else if (batteryPercentage > 75) {
             batteryDisplay.src = `../../assets/icons/battery/100-${iconState}.svg`;
-        } else if (batteryPercentage > 55) {
+        } else if (batteryPercentage > 60) {
             batteryDisplay.src = `../../assets/icons/battery/75-${iconState}.svg`;
         } else if (batteryPercentage > 25) {
             batteryDisplay.src = `../../assets/icons/battery/50-${iconState}.svg`;
