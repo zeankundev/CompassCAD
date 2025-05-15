@@ -178,7 +178,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 	this.fontSize = await this.config.getValueKey("fontSize");
 	this.maximumStack = await this.config.getValueKey("maximumStack");
 	this.updateActivity('Starting a new design', 'On New Design 1');
-	clearForm()
+	clearForm();
 	this.configFlags = await this.config.getFlags();
 	console.log(this.configFlags)
 	const useOldGrid = Array.isArray(this.configFlags) ? this.configFlags.includes('enable-old-grid') : false;
@@ -1956,8 +1956,10 @@ GraphicsRenderer.prototype.setMode = function (mode) {
 
 	if (this.readonly)
 		this.mode = this.MODES.NAVIGATE;
-	else
+	else {
 		this.mode = mode;
+		refreshToolSelection(this.mode);
+	}
 };
 
 GraphicsRenderer.prototype.resetMode = function (e) {

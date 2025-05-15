@@ -102,12 +102,7 @@ $(document).ready(async() => {
         if (element) {
             element.onclick = () => {
                 console.log(`${id} button clicked`);
-                // Remove active class from all tools
-                Object.keys(tools).forEach(toolId => {
-                    document.getElementById(toolId)?.classList.remove('active-tool');
-                });
-                // Add active class to clicked tool
-                element.classList.add('active-tool');
+                refreshToolSelection(tool.mode);
                 renderer.setMode(tool.mode);
             };
         }

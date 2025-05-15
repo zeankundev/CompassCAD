@@ -135,7 +135,7 @@ const openInspectorTab = (tabName) => {
         selectedTabContent.classList.remove('disabled');
     }
 }
-openInspectorTab('properties')
+openInspectorTab('properties');
 const refreshHierarchy = () => {
     const search = document.getElementById('hierarchy-search').value;
     const hierarchy = document.getElementById('hierarchy-list');
@@ -148,6 +148,7 @@ const refreshHierarchy = () => {
             element.className = `hierarchy-element ${renderer.selectedComponent == index ? 'selected' : ''}`;
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
             element.onclick = () => {
+                renderer.setMode(renderer.MODES.SELECT);
                 renderer.temporarySelectedComponent = index;
                 renderer.selectComponent(index)
                 createFormForSelection();
@@ -767,3 +768,33 @@ targetElement.addEventListener('click', () => {
     clickCount = 0; // Reset click count after function is executed
   }
 });
+
+// Define tools mapping with their properties
+const tools = {
+    'select': { mode: 25, key: 'q' },
+    'navigate': { mode: 22, key: 'w' },
+    'move-obj': { mode: 23, key: 'e' },
+    'del-obj': { mode: 20, key: 't' },
+    'add-point': { mode: 1, key: 'a' },
+    'add-line': { mode: 2, key: 's' },
+    'add-circle': { mode: 3, key: 'd' },
+    'add-arc': { mode: 5, key: 'f' },
+    'add-rect': { mode: 4, key: 'g' },
+    'add-label': { mode: 7, key: 'h' },
+    'add-picture': { mode: 9, key: 'l' },
+    'ruler': { mode: 6, key: 'z' }
+};
+
+// Create a function to refresh tool selection
+const refreshToolSelection = (mode) => {
+    Object.entries(tools).forEach(([id, tool]) => {
+        const element = document.getElementById(id);
+        if (element) {
+            if (tool.mode === mode) {
+                element.classList.add('active-tool');
+            } else {
+                element.classList.remove('active-tool');
+            }
+        }
+    });
+};
