@@ -18,6 +18,7 @@ $(document).ready(async() => {
     document.getElementById('theme-uri').href = await config.getValueKey('styleUri');
     updateStyles();
     document.getElementById('theme-selector').value = await config.getValueKey('styleUri');
+
     document.getElementById('undo-stack').onchange = () => {
         config.saveKey('maximumStack', document.getElementById('undo-stack').value);
     };
@@ -25,7 +26,7 @@ $(document).ready(async() => {
     document.getElementById('font-size').onchange = () => {
         config.saveKey('fontSize', document.getElementById('font-size').value);
     };
-    // Line 28-41 was here and is deleted because it is deprecated. Consider using updateFlagList()
+    
     document.getElementById('workspace-font').onchange = () => {
         console.log('font changed');
         config.saveKey('preferredFont', document.getElementById('workspace-font').value)
@@ -44,126 +45,92 @@ $(document).ready(async() => {
                              document.getElementById('toolbar').offsetHeight + 10;
 
         const inspector = document.getElementById('inspector');
-        let inspectorWidth = 0; // Default to 0 if inspector is not present or not visible
+        let inspectorWidth = 0;
         if (inspector && (getComputedStyle(inspector).display === 'block' || 
                           getComputedStyle(inspector).display === 'flex')) {
             inspectorWidth = inspector.offsetWidth;
         }
     
-        // Set the display dimensions of the canvas
         const displaySafeArea = window.innerWidth - 
                              document.getElementById('quick-tool').offsetWidth - 
                              inspectorWidth;
     
         const displayHeight = window.innerHeight - resultedHeight;
     
-        // Set the renderer's display dimensions (scaled by the device pixel ratio)
         renderer.displayWidth = window.innerWidth;
         renderer.displayHeight = displayHeight;
         renderer.xSafeArea = displaySafeArea;
     
-        // Set the canvas dimensions (scaled for the higher DPI)
         const canvas = document.getElementById('canvas');
         canvas.width = window.innerWidth * dpr;
         canvas.height = displayHeight * dpr;
     
-        // Adjust the canvas style dimensions to match the display size
         canvas.style.width = `${window.innerWidth}px`;
         canvas.style.height = `${displayHeight}px`;
     
-        // Resize the bounding rectangle if needed
         const boundingRect = document.getElementById('bounding-rect');
         if (boundingRect) {
             boundingRect.style.width = `${window.innerWidth}px`;
             boundingRect.style.height = `${displayHeight}px`;
         }
     
-        // Optionally: if using a rendering context (2D or WebGL), scale it to match the pixel ratio
-        const ctx = canvas.getContext('2d');  // or 'webgl', depending on what you're using
+        const ctx = canvas.getContext('2d');
         if (ctx) {
-            ctx.scale(dpr, dpr);  // Scale the context to account for the higher pixel density
+            ctx.scale(dpr, dpr);
         }
     };    
-    const keyBindings = {
-        'q': 'select',
-        'w': 'navigate',
-        'Escape': 'select',
-        'e': 'move-obj',
-        't': 'del-obj',
-        'a': 'add-point',
-        's': 'add-line',
-        'd': 'add-circle',
-        'f': 'add-arc',
-        'g': 'add-rect',
-        'h': 'add-label',
-        'l': 'add-picture',
-        'z': 'ruler'
+
+    // Define tools mapping with their properties
+    const tools = {
+        'select': { mode: renderer.MODES.SELECT, key: 'q' },
+        'navigate': { mode: renderer.MODES.NAVIGATE, key: 'w' },
+        'move-obj': { mode: renderer.MODES.MOVE, key: 'e' },
+        'del-obj': { mode: renderer.MODES.DELETE, key: 't' },
+        'add-point': { mode: renderer.MODES.ADDPOINT, key: 'a' },
+        'add-line': { mode: renderer.MODES.ADDLINE, key: 's' },
+        'add-circle': { mode: renderer.MODES.ADDCIRCLE, key: 'd' },
+        'add-arc': { mode: renderer.MODES.ADDARC, key: 'f' },
+        'add-rect': { mode: renderer.MODES.ADDRECTANGLE, key: 'g' },
+        'add-label': { mode: renderer.MODES.ADDLABEL, key: 'h' },
+        'add-picture': { mode: renderer.MODES.ADDPICTURE, key: 'l' },
+        'ruler': { mode: renderer.MODES.ADDMEASURE, key: 'z' }
     };
+
+    // Set up click handlers for each tool
+    Object.entries(tools).forEach(([id, tool]) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.onclick = () => {
+                console.log(`${id} button clicked`);
+                // Remove active class from all tools
+                Object.keys(tools).forEach(toolId => {
+                    document.getElementById(toolId)?.classList.remove('active-tool');
+                });
+                // Add active class to clicked tool
+                element.classList.add('active-tool');
+                renderer.setMode(tool.mode);
+            };
+        }
+    });
+
+    // Make sure the select tool is active by default
+    document.getElementById('select')?.classList.add('active-tool');
+
+    // Create key bindings mapping
+    const keyBindings = Object.entries(tools).reduce((bindings, [id, tool]) => {
+        bindings[tool.key] = id;
+        return bindings;
+    }, {});
+    keyBindings['Escape'] = 'select'; // Add escape key binding
+
     document.getElementById('inspector').style.display = 'block';
     resizeWin()
     window.onresize = resizeWin
     renderer.unitMeasure = 'm'
     renderer.unitConversionFactor = 1/100
     renderer.showOrigin = false
-    document.getElementById('select').onclick = () => {
-        console.log('Select button clicked');
-        renderer.setMode(renderer.MODES.SELECT)
-    };
 
-    document.getElementById('navigate').onclick = () => {
-        console.log('Navigate button clicked');
-        renderer.setMode(renderer.MODES.NAVIGATE)
-    };
-
-    document.getElementById('move-obj').onclick = () => {
-        console.log('Move Object button clicked');
-        renderer.setMode(renderer.MODES.MOVE)
-    };
-
-    document.getElementById('del-obj').onclick = () => {
-        console.log('Delete Object button clicked');
-        renderer.setMode(renderer.MODES.DELETE)
-    };
-
-    document.getElementById('add-point').onclick = () => {
-        console.log('Add Point button clicked');
-        renderer.setMode(renderer.MODES.ADDPOINT)
-    };
-
-    document.getElementById('add-line').onclick = () => {
-        console.log('Add Line button clicked');
-        renderer.setMode(renderer.MODES.ADDLINE)
-    };
-
-    document.getElementById('add-circle').onclick = () => {
-        console.log('Add Circle button clicked');
-        renderer.setMode(renderer.MODES.ADDCIRCLE)
-    };
-
-    document.getElementById('add-arc').onclick = () => {
-        console.log('Add Arc button clicked');
-        renderer.setMode(renderer.MODES.ADDARC)
-    };
-
-    document.getElementById('add-rect').onclick = () => {
-        console.log('Add Rectangle button clicked');
-        renderer.setMode(renderer.MODES.ADDRECTANGLE)
-    };
-
-    document.getElementById('add-label').onclick = () => {
-        console.log('Add Text button clicked');
-        renderer.setMode(renderer.MODES.ADDLABEL)
-    };
-
-    document.getElementById('add-picture').onclick = () => {
-        console.log('Add Picture button clicked');
-        renderer.setMode(renderer.MODES.ADDPICTURE)
-    };
-
-    document.getElementById('ruler').onclick = () => {
-        console.log('Measure button clicked');
-        renderer.setMode(renderer.MODES.ADDMEASURE)
-    };
+    // Regular buttons
     document.getElementById('new-design').onclick = () => {
         if (confirm('Are you sure? You are going to lose your design!') == true)
             renderer.createNew()
@@ -190,24 +157,25 @@ $(document).ready(async() => {
     }
 
     document.addEventListener('keydown', (event) => {
-        // Check if the active element is an input or textarea
         const activeElement = document.activeElement;
-        console.log(`[keydown] active elem: ${activeElement.tagName}`);
         if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
-            return; // Do nothing if an input or textarea is focused
+            return;
         }
 
-        // Don't process if any modifier keys are pressed
         if (event.ctrlKey || event.altKey || event.shiftKey) {
             return;
         }
 
-        console.log('Key down');
         const elementId = keyBindings[event.key];
         if (elementId) {
             const element = document.getElementById(elementId);
             if (element) {
                 console.log(`Key "${event.key}" pressed, emulating click on ${elementId}`);
+                // Update active tool state
+                Object.keys(tools).forEach(toolId => {
+                    document.getElementById(toolId)?.classList.remove('active-tool');
+                });
+                element.classList.add('active-tool');
                 element.click();
             }
         }
