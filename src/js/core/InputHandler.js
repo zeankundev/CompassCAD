@@ -123,6 +123,7 @@ function KeyboardHandler() {
         56: '8',
         57: '9',
         48: '0',
+        225: 'AltGr'
     };
 }
 
