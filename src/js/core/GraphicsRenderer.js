@@ -2744,6 +2744,7 @@ var initCAD = function (gd) {
 	setInterval(() => {
 		if (isWindowFocused) {
 			gd.checkForAnyPeerChanges();
+			updateBattery();
 		}
 	}, isWindowFocused ? 250 : 1000);
 };

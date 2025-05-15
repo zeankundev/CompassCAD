@@ -961,3 +961,10 @@ input[type=checkbox]:checked {
 .flag-child input[type=checkbox] {
     margin-left: 10px;
 }
+#battery-level {
+    color: var(--text);
+    font-family: var(--main-font);
+}
+#battery-level.charging {
+    color: #43FF78;
+}

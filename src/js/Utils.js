@@ -798,3 +798,29 @@ const refreshToolSelection = (mode) => {
         }
     });
 };
+
+const updateBattery = () => {
+    navigator.getBattery().then((battery) => {
+        // ../../assets/icons/battery/100-charging.svg
+        /** @type {BatteryManager} **/const isCharging = battery.charging;
+        const iconState = battery.charging ? 'charging': 'default';
+        const batteryPercentage = Math.floor(battery.level * 100);
+        const batteryDisplay = document.getElementById('battery-display');
+        const batteryLevel = document.getElementById('battery-level');
+        if (batteryPercentage > 90) {
+            batteryDisplay.src = `../../assets/icons/battery/100-${iconState}.svg`;
+        } else if (batteryPercentage > 75) {
+            batteryDisplay.src = `../../assets/icons/battery/100-${iconState}.svg`;
+        } else if (batteryPercentage > 55) {
+            batteryDisplay.src = `../../assets/icons/battery/75-${iconState}.svg`;
+        } else if (batteryPercentage > 25) {
+            batteryDisplay.src = `../../assets/icons/battery/50-${iconState}.svg`;
+        } else if (batteryPercentage > 10) {
+            batteryDisplay.src = `../../assets/icons/battery/25-${iconState}.svg`;
+        } else if (batteryPercentage <= 10) {
+            batteryDisplay.src = `../../assets/icons/battery/10-${iconState}.svg`;
+        }
+        batteryLevel.innerText = `${batteryPercentage}%`;
+        document.getElementById('battery-status').title = `${batteryPercentage}%, ${battery.charging ? 'Charging' : 'Discharging'}`;
+    })
+}

@@ -4,7 +4,8 @@ let resizeWin;
 $(document).ready(async() => {
     const config = new ConfigHandler()
     await config.loadConfig()
-    renderer = new GraphicsRenderer('canvas', 800,600)
+    renderer = new GraphicsRenderer('canvas', 800,600);
+    updateBattery()
     // detect if the device supports WebGL by default
     // fixme: WebGL not working in some instances
     /* renderer.enableWebGL = checkForWebGL() */
