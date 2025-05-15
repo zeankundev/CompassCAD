@@ -2645,7 +2645,7 @@ var initCAD = function (gd) {
 		if (e.which === 2) { // Middle mouse button
 			gd.camMoving = false;
 			gd.camX += gd.getCursorXRaw() - gd.xCNaught;
-			gd.camY += gd.getCursorYRaw();
+			gd.camY += gd.getCursorYRaw() - gd.yCNaught;
 			gd.updateCamera();
 		} else {
 			gd.mouse.onMouseUp(e);
