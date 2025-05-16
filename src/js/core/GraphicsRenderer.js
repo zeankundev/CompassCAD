@@ -242,8 +242,8 @@ GraphicsRenderer.prototype.execute = async function (e) {
 	this.clearGrid();
 	if (this.pcbEditorMode) {
 		this.showGrid = false;
-		this.gridSpacing = 2;
-		this.maxZoomFactor = 12;
+		this.gridSpacing = 0.5;
+		this.maxZoomFactor = 30;
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
 	}
@@ -606,7 +606,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 };
 
 GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
-	if (this.temporarySelectedComponent != null) {
+	if (this.temporarySelectedComponent != null || this.MODES.MOVE) {
 		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
 		this.context.strokeStyle = this.selectedColor;
@@ -684,12 +684,21 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
     var angle = Math.atan2(y2 - y1, x2 - x1);
 
     // Adjust zoom levels
-    var localZoom = this.zoom;
-    var localDiff = 0;
-    if (this.zoom <= 0.25) {
-        localZoom = 0.5;
-        localDiff = 20;
-    }
+    if (this.pcbEditorMode) {
+		var localZoom = 1;
+		var localDiff = 0;
+		if (this.zoom <= 0.25) {
+			localZoom = 0.5;
+			localDiff = 20;
+		}
+	} else {
+		var localZoom = this.zoom;
+		var localDiff = 0;
+		if (this.zoom <= 0.25) {
+			localZoom = 0.5;
+			localDiff = 20;
+		}
+	}
 
     // Format the distance text
     const distanceText = distance.toFixed(2) + "" + this.unitMeasure;
@@ -728,13 +737,23 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
         const halfGapX = (labelGap / 2) * Math.cos(angle);
         const halfGapY = (labelGap / 2) * Math.sin(angle);
 
-        this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); 
-        this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
+        if (this.pcbEditorMode) {
+			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, 0.25);
+			this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, 0.25);
+		} else {
+			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); 
+        	this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
+		}
     }
 
     // Draw arrowheads
-    this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
-    this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
+    if (this.pcbEditorMode) {
+		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, 0.25);
+		this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, 0.25);
+	} else {
+		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
+    	this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
+	}
 
 	this.context.save();
 	const centerOffsetX = midX * this.zoom + this.cOutX * this.zoom;
