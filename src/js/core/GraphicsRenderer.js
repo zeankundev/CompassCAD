@@ -246,6 +246,7 @@ GraphicsRenderer.prototype.execute = async function (e) {
 		this.maxZoomFactor = 30;
 		this.conversionFactor = 2.7;
 		this.unitMeasure = 'mm';
+		document.getElementById('add-point').style.display = 'none';
 	}
 	if (this.showGrid) this.drawGrid(this.cOutX, this.cOutY);
 	if (this.showOrigin) this.drawOrigin(this.cOutX, this.cOutY);
@@ -606,7 +607,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 };
 
 GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
-	if (this.temporarySelectedComponent != null || this.MODES.MOVE) {
+	if (this.temporarySelectedComponent != null || this.mode == this.MODES.MOVE) {
 		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
 		this.context.strokeStyle = this.selectedColor;
@@ -620,6 +621,8 @@ GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
 		this.context.closePath();
 		this.context.fill();
 		this.context.stroke();
+	} else if (this.pcbEditorMode) {
+		return;
 	} else {
 		this.context.lineWidth = 3 * this.zoom;
 		this.context.fillStyle = color;
