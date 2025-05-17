@@ -569,112 +569,108 @@ const createFormForSelection = () => {
     // Iterate through each property of the selected component
     Object.keys(component).forEach((key) => {
         // Skip 'type' field
-        if (key === 'type') return;
+        if (key === 'type' || key === 'y1' || key === 'y2' || key === 'x2' || key === 'y3') return;
 
         let label, input;
 
         // Handle Position, Size, and Arc Coverage specifically
         if (key === 'x' && 'y' in component) {
             // Position (for single x and y)
+            const positionDiv = document.createElement("div");
+            positionDiv.className = "input-container";
+            
             const positionLabel = document.createElement("label");
             positionLabel.textContent = "Position";
-            dynamicForm.appendChild(positionLabel);
+            positionDiv.appendChild(positionLabel);
 
             // Position inputs
             ['x', 'y'].forEach((posKey) => {
-                const posInput = document.createElement("input");
-                posInput.type = "number";
-                posInput.value = component[posKey];
-                posInput.addEventListener("input", (e) => {
-                    component[posKey] = parseFloat(e.target.value);
-                    updateSizeIfNeeded(component); // Update size when position changes
-                    renderer.saveState()
-                });
-                dynamicForm.appendChild(posInput);
+            const posInput = document.createElement("input");
+            posInput.type = "number";
+            posInput.value = component[posKey];
+            posInput.addEventListener("input", (e) => {
+                component[posKey] = parseFloat(e.target.value);
+                updateSizeIfNeeded(component);
+                renderer.saveState()
             });
-            // Add line break after Position set
-            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Position set
+            positionDiv.appendChild(posInput);
+            });
+            dynamicForm.appendChild(positionDiv);
         } else if (key === 'x1' && 'x2' in component && 'y1' in component && 'y2' in component) {
-            // Multiple coordinate sets: Position and Size
+            // Position div
+            const positionDiv = document.createElement("div");
+            positionDiv.className = "input-container";
+            
             const positionLabel = document.createElement("label");
             positionLabel.textContent = "Position";
-            dynamicForm.appendChild(positionLabel);
+            positionDiv.appendChild(positionLabel);
 
-            // Position inputs for x1, y1 only (hide x2, y2)
+            // Position inputs for x1, y1
             ['x1', 'y1'].forEach((posKey) => {
-                const posInput = document.createElement("input");
-                posInput.type = "number";
-                posInput.value = component[posKey];
-                posInput.addEventListener("input", (e) => {
-                    component[posKey] = parseFloat(e.target.value);
-                    updateSizeIfNeeded(component); // Update size when position changes
-                    renderer.saveState()
-                });
-                dynamicForm.appendChild(posInput);
+            const posInput = document.createElement("input");
+            posInput.type = "number";
+            posInput.value = component[posKey];
+            posInput.addEventListener("input", (e) => {
+                component[posKey] = parseFloat(e.target.value);
+                updateSizeIfNeeded(component);
+                renderer.saveState()
             });
+            positionDiv.appendChild(posInput);
+            });
+            dynamicForm.appendChild(positionDiv);
 
-            // Size (width and height based on x1, x2, y1, y2)
+            // Size div
+            const sizeDiv = document.createElement("div");
+            sizeDiv.className = "input-container";
+            
             const sizeLabel = document.createElement("label");
             sizeLabel.textContent = "Size";
-            dynamicForm.appendChild(sizeLabel);
+            sizeDiv.appendChild(sizeLabel);
 
-            // Width (x2 - x1)
+            // Width and height inputs
             const widthInput = document.createElement("input");
             widthInput.type = "number";
-            widthInput.value = component.x2 - component.x1; // Initial width calculation
+            widthInput.value = component.x2 - component.x1;
             widthInput.addEventListener("input", (e) => {
-                const value = parseFloat(e.target.value);
-                component.x2 = component.x1 + value; // Update x2 based on width
+            const value = parseFloat(e.target.value);
+            component.x2 = component.x1 + value;
             });
-            dynamicForm.appendChild(widthInput);
+            sizeDiv.appendChild(widthInput);
 
-            // Height (y2 - y1)
             const heightInput = document.createElement("input");
             heightInput.type = "number";
-            heightInput.value = component.y2 - component.y1; // Initial height calculation
+            heightInput.value = component.y2 - component.y1;
             heightInput.addEventListener("input", (e) => {
-                const value = parseFloat(e.target.value);
-                component.y2 = component.y1 + value; // Update y2 based on height
+            const value = parseFloat(e.target.value);
+            component.y2 = component.y1 + value;
             });
-            dynamicForm.appendChild(heightInput);
+            sizeDiv.appendChild(heightInput);
+            dynamicForm.appendChild(sizeDiv);
 
-            // Hide x2 and y2 from the form (as we are using Size now)
-            dynamicForm.querySelectorAll("input[type='number']").forEach((inputElement) => {
-                if (inputElement.value === component.x2 || inputElement.value === component.y2) {
-                    inputElement.style.display = 'none'; // Hide x2 and y2 inputs
-                }
-            });
-
-            // Add line break after Position and Size set
-            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Position and Size set
         } else if (key === 'x3' && 'y3' in component) {
-            // Arc Coverage (with x3 and y3)
+            // Arc Coverage div
+            const arcDiv = document.createElement("div");
+            arcDiv.className = "input-container";
+            
             const arcLabel = document.createElement("label");
             arcLabel.textContent = "Arc Coverage";
-            dynamicForm.appendChild(arcLabel);
+            arcDiv.appendChild(arcLabel);
 
-            // Arc inputs for x3 and y3
             ['x3', 'y3'].forEach((arcKey) => {
-                const arcInput = document.createElement("input");
-                arcInput.type = "number";
-                arcInput.value = component[arcKey];
-                arcInput.addEventListener("input", (e) => {
-                    component[arcKey] = parseFloat(e.target.value);
-                    renderer.saveState()
-                });
-                dynamicForm.appendChild(arcInput);
+            const arcInput = document.createElement("input");
+            arcInput.type = "number";
+            arcInput.value = component[arcKey];
+            arcInput.addEventListener("input", (e) => {
+                component[arcKey] = parseFloat(e.target.value);
+                renderer.saveState()
             });
-
-            // Add line break after Arc Coverage set
-            dynamicForm.appendChild(document.createElement("br")); // Line break after the whole Arc Coverage set
+            arcDiv.appendChild(arcInput);
+            });
+            dynamicForm.appendChild(arcDiv);
         } else {
             // Default input for other fields
             label = document.createElement("label");
             label.textContent = key.charAt(0).toUpperCase() + key.slice(1);
-            dynamicForm.appendChild(label);
-
-            dynamicForm.appendChild(document.createElement("br")); // Line break after label
-
             if (typeof component[key] === 'boolean') {
                 input = document.createElement("input");
                 input.type = "checkbox";
@@ -713,8 +709,12 @@ const createFormForSelection = () => {
             }
 
             if (input) {
-                dynamicForm.appendChild(input);
-                dynamicForm.appendChild(document.createElement("br")); // Line break after each input
+                const containerDiv = document.createElement("div");
+                containerDiv.className = "input-container";
+                containerDiv.appendChild(label);
+                containerDiv.appendChild(input);
+                dynamicForm.appendChild(containerDiv);
+                // dynamicForm.appendChild(document.createElement("br")); // Line break after each input
             }
         }
     });

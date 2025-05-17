@@ -863,7 +863,8 @@ input[type=checkbox]:checked {
     font-family: var(--main-font);
     padding: 7.5px;
     color: var(--text);
-    width: 90%;
+    max-width: 60%;
+    border-radius: 5px;
     outline: none;
 }
 
@@ -967,4 +968,11 @@ input[type=checkbox]:checked {
 }
 #battery-level.charging {
     color: #43FF78;
+}
+.input-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap;
+    margin-bottom: 5px;
 }
