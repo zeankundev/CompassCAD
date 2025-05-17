@@ -653,7 +653,7 @@ const createFormForSelection = () => {
             arcDiv.className = "input-container";
             
             const arcLabel = document.createElement("label");
-            arcLabel.textContent = "Arc Coverage";
+            arcLabel.textContent = "Coverage";
             arcDiv.appendChild(arcLabel);
 
             ['x3', 'y3'].forEach((arcKey) => {
