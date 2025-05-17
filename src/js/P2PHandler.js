@@ -242,7 +242,7 @@ class P2PNetwork {
     if (this.connections.has(peerId) || peerId === this.peer.id) return;
     
     console.log(`Connecting to peer ${peerId}`);
-    document.getElementById('peer-connecting').style.display = 'block';
+    document.getElementById('peer-connecting').style.display = 'flex';
     
     const conn = this.peer.connect(peerId, {
       reliable: true,
@@ -433,7 +433,7 @@ class P2PNetwork {
   }
 
   joinSession(id) {
-    document.getElementById('peer-connecting').style.display = 'block';
+    document.getElementById('peer-connecting').style.display = 'flex';
     this.connectToPeer(id);
   }
 

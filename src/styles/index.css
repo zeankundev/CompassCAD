@@ -618,6 +618,12 @@ p {
     margin-top: 10px;
 }
 
+#peer-connecting {
+    display: none;
+    align-items: center;
+    margin-top: 10px;
+}
+
 command-pallete {
     position: absolute;
     margin-top: 5%;
