@@ -559,7 +559,6 @@ const openSettingsTab = (tabName) => {
 const createFormForSelection = () => {
     const dynamicForm = document.getElementById("form");
     dynamicForm.innerHTML = '';
-    dynamicForm.style.overflowY = 'scroll'
 
     // Get the selected component
     const selectedIndex = renderer.selectedComponent;
