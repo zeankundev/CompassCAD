@@ -8,6 +8,7 @@ import NewSymbol from '../assets/newLogic.svg'
 import OpenSymbol from '../assets/openLogic.svg'
 import TrashSymbol from '../assets/trash.svg'
 import BluePrintIsFuckingSleeping from '../assets/idle.svg'
+import { LZString } from '../components/LZString';
 
 interface MiniButtonClickableProps {
     icon: string,
@@ -95,6 +96,27 @@ const EditorHome = () => {
         return timeSlot.messages[randomIndex];
     };
 
+    const importDesign = () => {
+        console.log('[home] importing design with dialog')
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.ccad';
+        input.click();
+        input.onchange = (event) => {
+            const file = (event.target as HTMLInputElement).files?.[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const content = e.target?.result;
+                    if (content) {
+                        window.location.href = `/editor/designname="${file.name}";${LZString.compressToEncodedURIComponent(content as string)}`;
+                    }
+                };
+                reader.readAsText(file);
+            }
+        };
+    }
+
     const [greeting, setGreeting] = useState(getCurrentTimeMessage());
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [history, setHistory] = useState<HistoryEntry[]>([]);
@@ -146,6 +168,7 @@ const EditorHome = () => {
                             </MiniButtonClickable>
                             <MiniButtonClickable 
                                 icon={OpenSymbol}
+                                onPress={importDesign}
                             >
                                 Import existing
                             </MiniButtonClickable>
