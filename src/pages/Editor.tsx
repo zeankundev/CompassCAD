@@ -312,6 +312,7 @@ const Editor = () => {
                     title="Navigate (w)"
                     isActive={tool == RendererTypes.NavigationTypes.Navigate}
                     keyCode={RendererTypes.KeyCodes.W}
+                    alternativeKeyCode={RendererTypes.KeyCodes.ESC}
                     func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Navigate)}
                 />
                 <ToolbarButton

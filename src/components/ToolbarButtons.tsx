@@ -4,13 +4,14 @@ interface HeaderButton {
     svgImage: string;
     title: string;
     keyCode?: number;
+    alternativeKeyCode?: number;
     mobile?: boolean;
     isActive?: boolean;
     func?: () => void;
 }
 const ToolbarButton = (props: HeaderButton) => {
     document.addEventListener('keydown', (e: KeyboardEvent) => {
-        if (e.which === props.keyCode && props.func) {
+        if ((e.which === props.keyCode || e.which === props.alternativeKeyCode) && props.func) {
             props.func();
         }
     })
