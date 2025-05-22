@@ -76,6 +76,7 @@ export class GraphicsRenderer {
     mouse: MouseHandler | null;
     handles: HandleProperties[];
     dragHandle: string | null;
+    lastSelectedComponent: number| null;
 
     constructor(
         displayRef: HTMLCanvasElement | null,
@@ -161,6 +162,7 @@ export class GraphicsRenderer {
         this.logicDisplay = null;
         this.handles = [];
         this.dragHandle = '';
+        this.lastSelectedComponent = null;
     }
 
     start() {
@@ -182,6 +184,7 @@ export class GraphicsRenderer {
             const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
             if (selectedComponent.isActive()) {
                 const handles = this.getComponentHandles(selectedComponent);
+                console.log(handles)
                 for (const handle of handles) {
                     this.drawPoint(handle.x, handle.y, '#fff', 2);
                 }
@@ -236,7 +239,7 @@ export class GraphicsRenderer {
         }
     }
     getComponentHandles(component: Component) {
-        if (!this.selectedComponent || !this.logicDisplay?.components[this.selectedComponent].isActive()) {
+        if (this.selectedComponent != null) {
             switch (component.type) {
                 case componentTypes.rectangle:
                     this.handles = []
@@ -1596,6 +1599,7 @@ export class GraphicsRenderer {
                         console.log('[renderer] selected component', this.temporarySelectedComponent)
                         if (this.selectedComponent === this.temporarySelectedComponent) {
                             this.unselectComponent();
+                            this.handles = [];
                         } else {
                             this.selectComponent(this.temporarySelectedComponent);
                         }
@@ -1605,6 +1609,19 @@ export class GraphicsRenderer {
                 } else if (action == this.mouseAction.Up) {
                     this.dragHandle = null;
                     this.displayRef!.style.cursor = 'default';
+                }
+
+                if (this.selectedComponent !== null) {
+                    const selectedComponent = this.logicDisplay!.components[this.selectedComponent];
+                    if (selectedComponent.type !== componentTypes.point &&
+                        selectedComponent.type !== componentTypes.label &&
+                        selectedComponent.type !== componentTypes.picture) {
+                        const handlePoints = this.getComponentHandles(selectedComponent);
+                        if (this.lastSelectedComponent !== this.selectedComponent) {
+                            this.dragHandle = null;
+                            this.lastSelectedComponent = this.selectedComponent;
+                        }
+                    }
                 }
 
                 this.tooltip = "Select (click to select/deselect)";
