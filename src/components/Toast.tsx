@@ -18,26 +18,14 @@ let showToast: (message: string) => void;
 
 export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose, id }) => {
     const [isPaused, setIsPaused] = useState(false);
-    const [isLeaving, setIsLeaving] = useState(false);
-    const [isEntering, setIsEntering] = useState(true);
     let remainingTime = duration;
     let startTime: number;
 
     useEffect(() => {
-        setIsEntering(true);
-        const enterTimeout = setTimeout(() => setIsEntering(false), 300);
-
         if (!isPaused && message) {
             startTime = Date.now();
-            const timeout = setTimeout(() => {
-                setIsLeaving(true);
-                // Add a small delay for the animation to complete
-                setTimeout(onClose, 300);
-            }, remainingTime);
-            return () => {
-                clearTimeout(timeout);
-                clearTimeout(enterTimeout);
-            };
+            const timeout = setTimeout(onClose, remainingTime);
+            return () => clearTimeout(timeout);
         }
     }, [message, isPaused]);
 
@@ -50,16 +38,9 @@ export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose,
         setIsPaused(false);
     };
 
-    const getAnimation = () => {
-        if (isLeaving) return 'toast-leave 0.3s ease';
-        if (isEntering) return 'toast-enter 0.3s ease';
-        return 'none';
-    };
-
     return (
         <div
             className={style.toast}
-            style={{animation: getAnimation()}}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
