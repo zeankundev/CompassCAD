@@ -1064,46 +1064,149 @@ export class GraphicsRenderer {
     findIntersectionWith(x: number, y: number) {
         if (!this.logicDisplay) return null;
 
+        // Track all intersections with their distances
+        interface Intersection {
+            index: number;
+            distance: number; 
+            type: number;
+            pointType: string;
+        }
+
+        const intersections: Intersection[] = [];
+        const snapBox = this.snapTolerance / this.zoom;
+
+        // First pass: collect all intersections
         for (let i = this.logicDisplay.components.length - 1; i >= 0; i--) {
             if (!this.logicDisplay.components[i].isActive()) continue;
 
-            switch (this.logicDisplay.components[i].type) {
-                case componentTypes.point:
-                case componentTypes.label:
-                case componentTypes.picture:
-                case componentTypes.shape:
-                    const dummyVector = this.logicDisplay.components[i] as Point;
-                    const singlePointDelta = this.getDistance(
-                        x,
-                        y,
-                        dummyVector.x,
-                        dummyVector.y
-                    );
-                    if (singlePointDelta >= 0 && singlePointDelta <= this.snapTolerance / this.zoom) {
-                        return i;
-                    }
-                    break;
-
-                case componentTypes.line:
-                case componentTypes.circle:
-                case componentTypes.arc:
-                case componentTypes.rectangle:
-                case componentTypes.measure:
-                    const dummyFirstVectorPair = this.logicDisplay.components[i] as Line;
-                    const multiPointDelta = this.getDistance(
-                        x,
-                        y,
-                        dummyFirstVectorPair.x1,
-                        dummyFirstVectorPair.y1
-                    );
-                    if (multiPointDelta >= 0 && multiPointDelta <= this.snapTolerance / this.zoom) {
-                        return i;
-                    }
-                    break;
+            // Calculate intersection data 
+            const intersection = this.calculateIntersection(i, x, y);
+            if (intersection) {
+                intersections.push({
+                    index: i,
+                    distance: intersection.distance,
+                    type: this.logicDisplay.components[i].type,
+                    pointType: intersection.pointType
+                });
             }
         }
 
+        // If no intersections found, return null
+        if (intersections.length === 0) return null;
+
+        // Sort intersections by priority rules
+        return this.getPrioritizedIntersection(intersections);
+    }
+
+    private calculateIntersection(index: number, x: number, y: number): {distance: number, pointType: string} | null {
+        const component = this.logicDisplay!.components[index];
+        const tolerance = this.snapTolerance / this.zoom;
+
+        switch (component.type) {
+            case componentTypes.point:
+            case componentTypes.label: 
+            case componentTypes.picture:
+            case componentTypes.shape:
+                const pointComponent = component as Point;
+                const delta = this.getDistance(x, y, pointComponent.x, pointComponent.y);
+                if (delta <= tolerance) {
+                    return { distance: delta, pointType: 'center' };
+                }
+                break;
+
+            case componentTypes.line:
+            case componentTypes.circle:
+            case componentTypes.measure:
+                const lineComponent = component as Line;
+                const delta1 = this.getDistance(x, y, lineComponent.x1, lineComponent.y1);
+                const delta2 = this.getDistance(x, y, lineComponent.x2, lineComponent.y2);
+                if (delta1 <= tolerance || delta2 <= tolerance) {
+                    return {
+                        distance: Math.min(delta1, delta2),
+                        pointType: delta1 < delta2 ? 'start' : 'end'
+                    };
+                }
+                break;
+
+            case componentTypes.rectangle:
+                const rectComponent = component as Rectangle;
+                // Check all 4 corners of rectangle
+                const nw = this.getDistance(x, y, rectComponent.x1, rectComponent.y1);
+                const ne = this.getDistance(x, y, rectComponent.x2, rectComponent.y1);
+                const sw = this.getDistance(x, y, rectComponent.x1, rectComponent.y2);
+                const se = this.getDistance(x, y, rectComponent.x2, rectComponent.y2);
+                
+                const minDist = Math.min(nw, ne, sw, se);
+                if (minDist <= tolerance) {
+                    let pointType;
+                    if (minDist === nw) pointType = 'nw';
+                    else if (minDist === ne) pointType = 'ne';
+                    else if (minDist === sw) pointType = 'sw';
+                    else pointType = 'se';
+                    
+                    return {
+                        distance: minDist,
+                        pointType: pointType
+                    };
+                }
+                break;
+
+            case componentTypes.arc:
+                const arcComponent = component as Arc;
+                const deltaCenter = this.getDistance(x, y, arcComponent.x1, arcComponent.y1);
+                const deltaStart = this.getDistance(x, y, arcComponent.x2, arcComponent.y2);
+                const deltaEnd = this.getDistance(x, y, arcComponent.x3, arcComponent.y3);
+                
+                if (deltaCenter <= tolerance || deltaStart <= tolerance || deltaEnd <= tolerance) {
+                    const minDelta = Math.min(deltaCenter, deltaStart, deltaEnd);
+                    return {
+                        distance: minDelta,
+                        pointType: minDelta === deltaCenter ? 'center' : 
+                                  minDelta === deltaStart ? 'start' : 'end'
+                    };
+                }
+                break;
+        }
         return null;
+    }
+
+    private getPrioritizedIntersection(intersections: Array<{index: number, distance: number, type: number, pointType: string}>): number {
+        // Sort by priority rules
+        intersections.sort((a, b) => {
+            // 1. First priority: Distance (closer = higher priority)
+            if (Math.abs(a.distance - b.distance) > 0.1) {
+                return a.distance - b.distance;
+            }
+
+            // 2. Second priority: Component type
+            const typePriority: {[key: number]: number} = {
+                [componentTypes.point]: 1,
+                [componentTypes.label]: 2,
+                [componentTypes.picture]: 2,
+                [componentTypes.shape]: 3,
+                [componentTypes.line]: 4,
+                [componentTypes.circle]: 5,
+                [componentTypes.rectangle]: 6,
+                [componentTypes.arc]: 7,
+                [componentTypes.measure]: 8
+            };
+
+            if (typePriority[a.type] !== typePriority[b.type]) {
+                return typePriority[a.type] - typePriority[b.type];
+            }
+
+            // 3. Third priority: Point type within component
+            const pointTypePriority: {[key: string]: number} = {
+                'center': 1,
+                'start': 2,
+                'end': 3
+            };
+            
+            return (pointTypePriority[a.pointType] || 0) - (pointTypePriority[b.pointType] || 0);
+        });
+
+        // Return the index of the highest priority intersection
+        return intersections[0].index;
     }
     undo() {
         if (this.undoStack.length > 0) {
