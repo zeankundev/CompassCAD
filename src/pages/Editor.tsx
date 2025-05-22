@@ -24,8 +24,10 @@ import RulerSymbol from '../assets/measure.svg'
 import UndoSymbol from '../assets/undo.svg'
 import RedoSymbol from '../assets/redo.svg'
 import ExportSymbol from '../assets/export.svg'
+import CopyLink from '../assets/copylink.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
+import { toast, ToastContainer } from "../components/Toast";
 
 export interface HistoryEntry {
     name: string;
@@ -57,6 +59,7 @@ const Editor = () => {
             InitializeInstance(renderer.current);
             renderer.current.setMode(renderer.current.modes.Navigate);
             setLoading(false);
+            toast('Hey there! I am a toast!')
         }
     }, [])
     useEffect(() => {
@@ -233,6 +236,7 @@ const Editor = () => {
     })
     return (
       <div className={styles.editor}>
+        <div><ToastContainer /></div>
         {isLoading == true && (
             <div className={styles.loader}>
                 <div className={styles.spinner}></div>
@@ -313,6 +317,13 @@ const Editor = () => {
                 <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                     <h4>Share/Export Design</h4>
                     <p onClick={() => setExportDialog(false)}>&times;</p>
+                </div>
+                <div>
+                    <div className={`${styles['export-option']} ${styles.special}`}>
+                        <img src={CopyLink} />
+                        &nbsp;&nbsp;
+                        <p>Copy Link</p>
+                    </div>
                 </div>
             </div>
         )}

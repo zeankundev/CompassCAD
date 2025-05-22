@@ -2,3 +2,9 @@
   width: 100vw;
   height: 100dvh;
 }
+.toast-container {
+  position: absolute;
+  z-index: 9999;
+  bottom: 20px;
+  right: 20px
+}
