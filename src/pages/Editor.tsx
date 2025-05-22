@@ -319,7 +319,7 @@ const Editor = () => {
                     <p onClick={() => setExportDialog(false)}>&times;</p>
                 </div>
                 <div>
-                    <div className={`${styles['export-option']} ${styles.special}`}>
+                    <div className={`${styles['export-option']} ${styles.special}`} onClick={() => {toast('Copied link to clipboard')}}>
                         <img src={CopyLink} />
                         &nbsp;&nbsp;
                         <p>Copy Link</p>

@@ -1,3 +1,21 @@
+@keyframes toast {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+  } to  {
+    opacity: 1;
+    transform: scale(1) translateY(0px);
+  }
+}
+@keyframes toast-leave {
+  from {
+    opacity: 0;
+    transform: scale(1) translateY(0px);
+  } to  {
+    opacity: 1;
+    transform: scale(0.8) translateY(10px);
+  }
+}
 .app {
   width: 100vw;
   height: 100dvh;
@@ -7,4 +25,14 @@
   z-index: 9999;
   bottom: 20px;
   right: 20px
+}
+.toast {
+  background-color: var(--primary);
+  padding: 10px;
+  border: 0.5px solid var(--outline);
+  margin-top: 10px;
+  border-radius: 10px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 3px 13px 3px rgba(0, 0, 0, 0.5);
+  animation: toast 0.3s ease;
 }

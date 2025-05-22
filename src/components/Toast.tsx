@@ -1,36 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import style from '../App.module.css';
+import '../styles/theme.css'
 
 interface ToastProps {
     message: string;
     duration?: number;
     onClose: () => void;
+    id: string; // Add id to identify each toast
 }
 
 interface ToastState {
+    id: string;
     message: string;
-    isVisible: boolean;
 }
 
-let toastTimeout: NodeJS.Timeout;
 let showToast: (message: string) => void;
 
-export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose }) => {
+export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose, id }) => {
     const [isPaused, setIsPaused] = useState(false);
+    const [isLeaving, setIsLeaving] = useState(false);
+    const [isEntering, setIsEntering] = useState(true);
     let remainingTime = duration;
     let startTime: number;
 
     useEffect(() => {
+        setIsEntering(true);
+        const enterTimeout = setTimeout(() => setIsEntering(false), 300);
+
         if (!isPaused && message) {
             startTime = Date.now();
-            toastTimeout = setTimeout(onClose, remainingTime);
+            const timeout = setTimeout(() => {
+                setIsLeaving(true);
+                // Add a small delay for the animation to complete
+                setTimeout(onClose, 300);
+            }, remainingTime);
+            return () => {
+                clearTimeout(timeout);
+                clearTimeout(enterTimeout);
+            };
         }
-        return () => clearTimeout(toastTimeout);
     }, [message, isPaused]);
 
     const handleMouseEnter = () => {
-        clearTimeout(toastTimeout);
-        remainingTime -= Date.now() - startTime;
+        startTime = Date.now();
         setIsPaused(true);
     };
 
@@ -38,46 +50,56 @@ export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose 
         setIsPaused(false);
     };
 
-    return message ? (
+    const getAnimation = () => {
+        if (isLeaving) return 'toast-leave 0.3s ease';
+        if (isEntering) return 'toast-enter 0.3s ease';
+        return 'none';
+    };
+
+    return (
         <div
             className={style.toast}
+            style={{animation: getAnimation()}}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
             {message}
         </div>
-    ) : null;
+    );
 };
 
-// Toast Container Component
 export const ToastContainer: React.FC = () => {
-    const [toastState, setToastState] = useState<ToastState>({
-        message: '',
-        isVisible: false,
-    });
+    const [toasts, setToasts] = useState<ToastState[]>([]);
 
-    // Assign the showToast function
     showToast = (message: string) => {
-        setToastState({ message, isVisible: true });
+        const newToast = {
+            id: Date.now().toString(),
+            message
+        };
+        setToasts(prev => [...prev, newToast]);
     };
 
-    const handleClose = () => {
-        setToastState({ message: '', isVisible: false });
+    const handleClose = (id: string) => {
+        setToasts(prev => prev.filter(toast => toast.id !== id));
     };
 
     return (
         <div className={style['toast-container']}>
-            {toastState.isVisible && (
-                <Toast message={toastState.message} onClose={handleClose} />
-            )}
+            {toasts.map((toast) => (
+                <Toast
+                    key={toast.id}
+                    id={toast.id}
+                    message={toast.message}
+                    onClose={() => handleClose(toast.id)}
+                />
+            ))}
         </div>
     );
 };
 
-// Export the toast function
 export const toast = (message: string): Promise<void> => {
     return new Promise((resolve) => {
         showToast(message);
-        setTimeout(resolve, 3000);
+        setTimeout(resolve, 5000);
     });
 };
