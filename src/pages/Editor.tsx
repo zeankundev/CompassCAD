@@ -23,6 +23,7 @@ import LabelSymbol from '../assets/text.svg'
 import RulerSymbol from '../assets/measure.svg'
 import UndoSymbol from '../assets/undo.svg'
 import RedoSymbol from '../assets/redo.svg'
+import ExportSymbol from '../assets/export.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 
@@ -45,6 +46,7 @@ const Editor = () => {
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     const [component, setComponent] = useState<Component | null>(null);
+    const [exportDialog, setExportDialog] = useState(false);
     const [zoom, setZoom] = useState<number>(1);
     const [isLoading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -265,38 +267,55 @@ const Editor = () => {
                 </Fragment>
             )}
             {device == 'desktop' && (
-                <Fragment>
-                    <HeaderButton 
-                        svgImage={Back}
-                        title='Go back home'
-                        func={() => window.location.href = '/editor'}
-                    />
-                    <input 
-                        className={styles['design-name']} 
-                        type='text'
-                        ref={nameInput}
-                        defaultValue={designName}
-                        onInput={(e) => {
-                            console.log('[editor] internal: oninput fired')
-                            setDesignName(e.currentTarget.value)
-                        }}
-                        placeholder='Design name'
-                    />
-                    <HeaderButton 
-                        svgImage={UndoSymbol}
-                        title='Undo'
-                        func={() => renderer.current?.undo()}
-                    />
-                    <HeaderButton 
-                        svgImage={RedoSymbol}
-                        title='Redo'
-                        func={() => renderer.current?.redo()}
-                    />
-                    &nbsp;
-                    <p>{zoom.toFixed(3)}x</p>
-                </Fragment>
+                <div className={styles['desktop-header']}>
+                    <div className={styles['header-left']}>
+                        <HeaderButton 
+                            svgImage={Back}
+                            title='Go back home'
+                            func={() => window.location.href = '/editor'}
+                        />
+                        <input 
+                            className={styles['design-name']} 
+                            type='text'
+                            ref={nameInput}
+                            defaultValue={designName}
+                            onInput={(e) => {
+                                console.log('[editor] internal: oninput fired')
+                                setDesignName(e.currentTarget.value)
+                            }}
+                            placeholder='Design name'
+                        />
+                        <HeaderButton 
+                            svgImage={UndoSymbol}
+                            title='Undo'
+                            func={() => renderer.current?.undo()}
+                        />
+                        <HeaderButton 
+                            svgImage={RedoSymbol}
+                            title='Redo'
+                            func={() => renderer.current?.redo()}
+                        />
+                        &nbsp;
+                        <p>{zoom.toFixed(3)}x</p>
+                    </div>
+                    <div className={styles['header-right']}>
+                        <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}}>
+                            <img src={ExportSymbol} width={20} />
+                            &nbsp;
+                            <p>Share/Export</p>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
+        {exportDialog && (
+            <div className={styles['export-dialog']}>
+                <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                    <h4>Share/Export Design</h4>
+                    <p onClick={() => setExportDialog(false)}>&times;</p>
+                </div>
+            </div>
+        )}
         {/* Toolbar */}
         {device == 'desktop' && (
             <div className={styles.toolbar}>
