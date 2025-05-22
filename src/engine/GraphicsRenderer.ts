@@ -184,7 +184,6 @@ export class GraphicsRenderer {
             const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
             if (selectedComponent.isActive()) {
                 const handles = this.getComponentHandles(selectedComponent);
-                console.log(handles)
                 for (const handle of handles) {
                     this.drawPoint(handle.x, handle.y, '#fff', 2);
                 }
