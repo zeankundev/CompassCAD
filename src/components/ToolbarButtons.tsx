@@ -5,6 +5,7 @@ interface HeaderButton {
     title: string;
     keyCode?: number;
     mobile?: boolean;
+    isActive?: boolean;
     func?: () => void;
 }
 const ToolbarButton = (props: HeaderButton) => {
@@ -15,7 +16,7 @@ const ToolbarButton = (props: HeaderButton) => {
     })
     return (
         <div 
-            className={`${style['toolbar-button']} ${props.mobile ? style.mobile : ''}`}
+            className={`${style['toolbar-button']} ${props.mobile ? style.mobile : ''} ${props.isActive ? style.active : ''}`}
             onClick={props.func}
             title={props.title}
         >

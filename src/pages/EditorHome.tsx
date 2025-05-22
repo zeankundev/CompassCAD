@@ -16,6 +16,13 @@ interface MiniButtonClickableProps {
     onPress?: () => void
 }
 
+interface YesNoProp {
+    title: string,
+    onYes: () => void,
+    onNo: () => void,
+    children: React.ReactNode
+}
+
 const MiniButtonClickable = (props: MiniButtonClickableProps) => {
     return (
         <Fragment>
@@ -120,7 +127,8 @@ const EditorHome = () => {
     const [greeting, setGreeting] = useState(getCurrentTimeMessage());
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [history, setHistory] = useState<HistoryEntry[]>([]);
-    const [showWipeDialog, setShowWipeDialog] = useState(false);
+    const [dialog, setDialog] = useState<YesNoProp | null>(null);
+    const [showDialog, setshowDialog] = useState(false);
 
     const refreshHistory = () => {
         const storedHistory = localStorage.getItem('history');
@@ -137,17 +145,13 @@ const EditorHome = () => {
         <Fragment>
             {device === 'desktop' && (
                 <div className={styles['editor-home']}>
-                    {showWipeDialog == true && (
+                    {showDialog == true && (
                         <YesNoDialog
-                        title='Clear History'
-                        onYes={() => {
-                            localStorage.setItem('history', '[]');
-                            refreshHistory();
-                            setShowWipeDialog(false);
-                        }}
-                        onNo={() => setShowWipeDialog(false)}
+                        title={dialog?.title}
+                        onYes={dialog?.onYes}
+                        onNo={dialog?.onNo}
                         >
-                            Are you sure you want to clear your history? This <b>could not be undone</b>!
+                            {dialog?.children}
                         </YesNoDialog>
                     )}
                     <div className={styles['editor-home-header']}>
@@ -174,7 +178,20 @@ const EditorHome = () => {
                             </MiniButtonClickable>
                             <MiniButtonClickable 
                                 icon={TrashSymbol}
-                                onPress={() => setShowWipeDialog(true)}
+                                onPress={() => {
+                                    setDialog(
+                                        {
+                                            title: 'Clear History', 
+                                            onYes: () => {
+                                                localStorage.setItem('history', '[]');
+                                                refreshHistory();
+                                                setshowDialog(false);
+                                            },
+                                            onNo: () => setshowDialog(false),
+                                            children: <p>Are you sure you want to clear the entire history? <b>This action cannot be undone.</b></p>
+                                        }
+                                    );
+                                    setshowDialog(true);}}
                             >
                                 Clear entire history
                             </MiniButtonClickable>

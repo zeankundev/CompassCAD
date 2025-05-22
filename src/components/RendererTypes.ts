@@ -12,7 +12,8 @@ export default {
         AddPicture: 9,
         Delete: 20,
         Navigate: 22,
-        Move: 23
+        Move: 23,
+        Select: 25
     },
     KeyCodes: {
         SHIFT: 16,

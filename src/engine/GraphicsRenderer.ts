@@ -11,6 +11,13 @@ interface GenericDefiner {
     [key: string]: number;
 }
 
+interface HandleProperties {
+    x: number;
+    y: number;
+    id: string,
+    cursor: string
+}
+
 export class GraphicsRenderer {
     modes: GenericDefiner;
     mouseAction: GenericDefiner;
@@ -67,6 +74,8 @@ export class GraphicsRenderer {
     tooltip: string;
     keyboard: KeyboardHandler | null;
     mouse: MouseHandler | null;
+    handles: HandleProperties[];
+    dragHandle: string | null;
 
     constructor(
         displayRef: HTMLCanvasElement | null,
@@ -85,7 +94,8 @@ export class GraphicsRenderer {
             AddPicture: 9,
             Delete: 20,
             Navigate: 22,
-            Move: 23
+            Move: 23,
+            Select: 25
         }
         this.mouseAction = {
             Move: 0,
@@ -118,8 +128,8 @@ export class GraphicsRenderer {
         this.camX = 0;
         this.camY = 0;
         this.zoom = 1;
-        this.zoomIn = 3/2;
-        this.zoomOut = 2/3;
+        this.zoomIn = 3 / 2;
+        this.zoomOut = 2 / 3;
         this.currentZoom = 1;
         this.targetZoom = 1;
         this.zoomSpeed = 0.05;
@@ -137,7 +147,7 @@ export class GraphicsRenderer {
         this.unitName = "px";
         this.unitMeasure = "m";
         this.unitFactor = 1;
-        this.unitConversionFactor = 1/100;
+        this.unitConversionFactor = 1 / 100;
         this.snap = true;
         this.snapTolerance = 10;
         this.fontSize = 18;
@@ -149,6 +159,8 @@ export class GraphicsRenderer {
         this.mouse = null;
         this.context = null;
         this.logicDisplay = null;
+        this.handles = [];
+        this.dragHandle = '';
     }
 
     start() {
@@ -163,6 +175,153 @@ export class GraphicsRenderer {
             throw new Error('Failed to get 2D context');
         }
         this.context = context;
+    }
+    refreshSelectionTools() {
+        if (this.selectedComponent !== null && this.logicDisplay?.components[this.selectedComponent]) {
+            this.drawComponentSize(this.logicDisplay?.components[this.selectedComponent]);
+            const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
+            if (selectedComponent.isActive()) {
+                const handles = this.getComponentHandles(selectedComponent);
+                for (const handle of handles) {
+                    this.drawPoint(handle.x, handle.y, '#fff', 2);
+                }
+            }
+        }
+    }
+    drawComponentSize(component: Component) {
+        if (!component || !component.type) return;
+        let displayText = '';
+        switch (component.type) {
+            case componentTypes.rectangle:
+            case componentTypes.line:
+                const line = component as Line;
+                displayText = `${Number(Math.abs(line.x2 - line.x1).toFixed(2))}×${Number(Math.abs(line.y2 - line.y1).toFixed(2))}`;
+                break;
+            case componentTypes.measure:
+                const measure = component as Measure;
+                displayText = `L: ${Number(Math.abs(measure.x2 - measure.x1).toFixed(2))} (${Number(this.getDistance(measure.x1, measure.y1, measure.x2, measure.y2) / 100).toFixed(2)}m)`;
+                break;
+            case componentTypes.circle:
+                const circle = component as Circle;
+                displayText = `RAD: ${Number(Math.abs(this.getDistance(circle.x1, circle.y1, circle.x2, circle.y2)).toFixed(2))}`;
+                break;
+            case componentTypes.arc:
+                const arc = component as Arc;
+                displayText = `RAD: ${Number(Math.abs(this.getDistance(arc.x1, arc.y1, arc.x2, arc.y2)).toFixed(2))}, COV: ${Math.round((Number(Math.abs(this.getAngle(arc.x1, arc.y1, arc.x3, arc.y3)).toFixed(2)) / Math.PI) * 180)}°`;
+                break;
+            default:
+                return;
+        }
+        if (this.context) {
+            this.context.font = `18px 'OneUISans', sans-serif`;
+            const textWidth = this.context.measureText(displayText).width;
+            const boxWidth = textWidth + 20;
+            const dummyLine = component as Line;
+            const boxX = (((dummyLine.x2 - dummyLine.x1) / 2 + dummyLine.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+	        const boxY = ((dummyLine.y2 + this.cOutY) * this.zoom) + 7.5;
+            this.context.fillStyle = this.selectedColor;
+            this.context.beginPath();
+            this.context.roundRect(boxX, boxY, boxWidth, 25, 5);
+            this.context.fill();
+            this.context.closePath();
+            this.context.fillStyle = '#fff';
+            this.context.textBaseline = 'middle';
+            this.context.textAlign = 'center';
+            const secondDummyLine = component as Line;
+            this.context.fillText(
+                displayText,
+                (((secondDummyLine.x2 - secondDummyLine.x1) / 2 + secondDummyLine.x1) + this.cOutX) * this.zoom,
+                boxY + 15
+            );
+        }
+    }
+    getComponentHandles(component: Component) {
+        if (!this.selectedComponent || !this.logicDisplay?.components[this.selectedComponent].isActive()) {
+            switch (component.type) {
+                case componentTypes.rectangle:
+                    this.handles = []
+                    const rect = component as Rectangle;
+                    this.handles.push({
+                        x: rect.x1,
+                        y: rect.y1,
+                        id: 'start',
+                        cursor: 'nw-resize'
+                    })
+                    this.handles.push({
+                        x: rect.x2,
+                        y: rect.y1,
+                        id: 'top-right',
+                        cursor: 'ne-resize'
+                    })
+                    this.handles.push({
+                        x: rect.x2,
+                        y: rect.y2,
+                        id: 'bottom-right',
+                        cursor: 'se-resize'
+                    })
+                    this.handles.push({
+                        x: rect.x1,
+                        y: rect.y2,
+                        id: 'bottom-left',
+                        cursor: 'sw-resize'
+                    })
+                    break;
+                case componentTypes.line:
+                case componentTypes.measure:
+                case componentTypes.circle:
+                    this.handles = []
+                    const lineComponent = component as Line;
+                    this.handles.push({
+                        x: lineComponent.x1,
+                        y: lineComponent.y1,
+                        id: 'start',
+                        cursor: 'move'
+                    });
+                    this.handles.push({
+                        x: lineComponent.x2,
+                        y: lineComponent.y2,
+                        id: 'end',
+                        cursor: 'move'
+                    });
+                    break;
+                case componentTypes.arc:
+                    this.handles = []
+                    const arcComponent = component as Arc;
+                    this.handles.push({
+                        x: arcComponent.x1,
+                        y: arcComponent.y1,
+                        id: 'start',
+                        cursor: 'nw-resize'
+                    });
+                    this.handles.push({
+                        x: arcComponent.x2,
+                        y: arcComponent.y2,
+                        id: 'mid',
+                        cursor: 'se-resize'
+                    });
+                    this.handles.push({
+                        x: arcComponent.x3,
+                        y: arcComponent.y3,
+                        id: 'end',
+                        cursor: 'move'
+                    });
+                    break;
+                case componentTypes.point:
+                case componentTypes.label:
+                case componentTypes.picture:
+                case componentTypes.shape:
+                    this.handles = []
+                    const singlePointComponent = component as Point;
+                    this.handles.push({
+                        x: singlePointComponent.x,
+                        y: singlePointComponent.y,
+                        id: 'miscellaneous',
+                        cursor: 'move'
+                    });
+                    break;
+            }
+        }
+        return this.handles;
     }
     getCursorXRaw() {
         return Math.floor(this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
@@ -218,7 +377,7 @@ export class GraphicsRenderer {
     saveState() {
         this.undoStack.push(JSON.stringify(this.logicDisplay?.components));
         console.log(this.undoStack)
-        if (this.undoStack.length > this.maximumStack) { 
+        if (this.undoStack.length > this.maximumStack) {
             this.undoStack.shift();
         }
         this.redoStack = [];
@@ -247,7 +406,7 @@ export class GraphicsRenderer {
     drawAllComponents(
         components: Component[],
         moveByX: number,
-        moveByY: number 
+        moveByY: number
     ) {
         for (let i = 0; i < components.length; i++) {
             if (!components[i].isActive())
@@ -259,7 +418,7 @@ export class GraphicsRenderer {
     drawComponent(
         component: Component,
         moveByX: number,
-        moveByY: number 
+        moveByY: number
     ) {
         switch (component.type) {
             case componentTypes.point:
@@ -275,42 +434,42 @@ export class GraphicsRenderer {
                 const l = component as Line;
                 this.drawLine(
                     l.x1 + moveByX,
-					l.y1 + moveByY,
-					l.x2 + moveByX,
-					l.y2 + moveByY,
-					l.color,
-					l.radius
+                    l.y1 + moveByY,
+                    l.x2 + moveByX,
+                    l.y2 + moveByY,
+                    l.color,
+                    l.radius
                 )
                 break;
             case componentTypes.circle:
                 const c = component as Circle;
                 this.drawCircle(
-					c.x1 + moveByX,
-					c.y1 + moveByY,
-					c.x2 + moveByX,
-					c.y2 + moveByY,
-					c.color,
-					c.radius);
+                    c.x1 + moveByX,
+                    c.y1 + moveByY,
+                    c.x2 + moveByX,
+                    c.y2 + moveByY,
+                    c.color,
+                    c.radius);
                 break;
             case componentTypes.rectangle:
                 const r = component as Rectangle;
                 this.drawRectangle(
-					r.x1 + moveByX,
-					r.y1 + moveByY,
-					r.x2 + moveByX,
-					r.y2 + moveByY,
-					r.color,
-					r.radius);
-			    break;
+                    r.x1 + moveByX,
+                    r.y1 + moveByY,
+                    r.x2 + moveByX,
+                    r.y2 + moveByY,
+                    r.color,
+                    r.radius);
+                break;
             case componentTypes.measure:
                 const m = component as Measure;
                 this.drawMeasure(
                     m.x1 + moveByX,
-					m.y1 + moveByY,
-					m.x2 + moveByX,
-					m.y2 + moveByY,
-					m.color,
-					m.radius
+                    m.y1 + moveByY,
+                    m.x2 + moveByX,
+                    m.y2 + moveByY,
+                    m.color,
+                    m.radius
                 )
                 break;
             case componentTypes.label:
@@ -451,16 +610,32 @@ export class GraphicsRenderer {
     }
     drawPoint(x: number, y: number, color: string, radius?: number) {
         if (this.context) {
-            this.context.lineWidth = 3 * this.zoom;
-            this.context.fillStyle = color;
-            this.context.strokeStyle = color;
-            this.context.beginPath();
-            this.context.arc(
-                    (x + this.cOutX) * this.zoom, 
-                    (y + this.cOutY) * this.zoom, 
-                    2 * this.zoom, 0, 3.14159*2, false);
-            this.context.closePath();
-            this.context.stroke();
+            if (this.temporarySelectedComponent != null || this.mode == this.modes.Move) {
+                this.context.lineWidth = 2;
+                this.context.fillStyle = '#fff';
+                this.context.strokeStyle = this.selectedColor;
+                this.context.beginPath();
+                this.context.rect(
+                    (x + this.cOutX) * this.zoom - 4,
+                    (y + this.cOutY) * this.zoom - 4,
+                    8,
+                    8
+                )
+                this.context.closePath();
+                this.context.fill();
+                this.context.stroke();
+            } else {
+                this.context.lineWidth = 3 * this.zoom;
+                this.context.fillStyle = color;
+                this.context.strokeStyle = color;
+                this.context.beginPath();
+                this.context.arc(
+                    (x + this.cOutX) * this.zoom,
+                    (y + this.cOutY) * this.zoom,
+                    2 * this.zoom, 0, 3.14159 * 2, false);
+                this.context.closePath();
+                this.context.stroke();
+            }
         }
     }
     drawLine(
@@ -478,11 +653,11 @@ export class GraphicsRenderer {
             this.context.lineCap = "round";
             this.context.beginPath();
             this.context.moveTo(
-                    (x1 + this.cOutX) * this.zoom,
-                    (y1 + this.cOutY) * this.zoom);
+                (x1 + this.cOutX) * this.zoom,
+                (y1 + this.cOutY) * this.zoom);
             this.context.lineTo(
-                    (x2 + this.cOutX) * this.zoom,
-                    (y2 + this.cOutY) * this.zoom);
+                (x2 + this.cOutX) * this.zoom,
+                (y2 + this.cOutY) * this.zoom);
             this.context.stroke();
         }
     }
@@ -500,10 +675,10 @@ export class GraphicsRenderer {
             this.context.strokeStyle = color;
             this.context.beginPath();
             this.context.arc(
-                    (x1 + this.cOutX) * this.zoom, 
-                    (y1 + this.cOutY) * this.zoom, 
-                    this.getDistance(x1, y1, x2, y2) * this.zoom,
-                    0, 3.14159*2, false);
+                (x1 + this.cOutX) * this.zoom,
+                (y1 + this.cOutY) * this.zoom,
+                this.getDistance(x1, y1, x2, y2) * this.zoom,
+                0, 3.14159 * 2, false);
             this.context.closePath();
             this.context.stroke();
         }
@@ -572,14 +747,14 @@ export class GraphicsRenderer {
         const midY = (y1 + y2) / 2;
         const textOffsetY = isShortDistance ? (750 / 100) * this.zoom : 0;
         if (!isShortDistance) {
-            const basePadding = 20; 
-            const adaptivePadding = basePadding * this.zoom; 
+            const basePadding = 20;
+            const adaptivePadding = basePadding * this.zoom;
             const labelGap = (textWidth + adaptivePadding) / this.zoom;
-    
+
             const halfGapX = (labelGap / 2) * Math.cos(angle);
             const halfGapY = (labelGap / 2) * Math.sin(angle);
-    
-            this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); 
+
+            this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius);
             this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
         }
         this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
@@ -603,45 +778,45 @@ export class GraphicsRenderer {
     ) {
         if (this.context) {
             this.drawPoint(x, y, '#0ff', 2);
-	
+
             var localZoom = this.zoom;
             var localDiff = 0;
-            
-            if ( this.zoom <= 0.25 ) {
+
+            if (this.zoom <= 0.25) {
                 localZoom = 0.5;
                 localDiff = 20;
                 y += localDiff;
             }
-            
+
             this.context.fillStyle = color;
-            this.context.font =  (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
-            
+            this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
+
             var maxLength = 24; // 24 Characters per row
             var tmpLength = 0;
             var tmpText = "";
             var arrText = text.split(" ");
-            
+
             for (var i = 0; i < arrText.length; i++) {
                 tmpLength += arrText[i].length + 1;
                 tmpText += " " + arrText[i];
-                
-                if ( tmpLength > maxLength ) {
+
+                if (tmpLength > maxLength) {
                     this.context.fillText(
-                            tmpText,
-                            (this.cOutX + x - 5) * this.zoom,
-                            (this.cOutY + y) * this.zoom);
+                        tmpText,
+                        (this.cOutX + x - 5) * this.zoom,
+                        (this.cOutY + y) * this.zoom);
                     y += 25 + localDiff;
                     tmpLength = 0;
                     tmpText = "";
                 }
             }
-            
+
             // Print the remainig text
             this.context.fillText(
-                    tmpText,
-                    (this.cOutX + x - 5) * this.zoom,
-                    (this.cOutY + y) * this.zoom);
-                }
+                tmpText,
+                (this.cOutX + x - 5) * this.zoom,
+                (this.cOutY + y) * this.zoom);
+        }
     }
     drawArc(
         x1: number,
@@ -656,16 +831,16 @@ export class GraphicsRenderer {
         if (this.context) {
             var firstAngle = this.getAngle(x1, y1, x2, y2);
             var secondAngle = this.getAngle(x1, y1, x3, y3);
-            
+
             this.context.lineWidth = radius * this.zoom;
             this.context.fillStyle = color;
             this.context.strokeStyle = color;
             this.context.beginPath();
             this.context.arc(
-                    (x1 + this.cOutX) * this.zoom, 
-                    (y1 + this.cOutY) * this.zoom, 
-                    this.getDistance(x1, y1, x2, y2) * this.zoom,
-                    firstAngle, secondAngle, false);
+                (x1 + this.cOutX) * this.zoom,
+                (y1 + this.cOutY) * this.zoom,
+                this.getDistance(x1, y1, x2, y2) * this.zoom,
+                firstAngle, secondAngle, false);
             this.context.stroke();
         }
     }
@@ -684,8 +859,8 @@ export class GraphicsRenderer {
         const img = new Image();
         img.crossOrigin = 'anonymous';
         img.src = imageURL;
-        const width = img.naturalWidth * this.zoom || 100; 
-        const height = img.naturalHeight * this.zoom || 100; 
+        const width = img.naturalWidth * this.zoom || 100;
+        const height = img.naturalHeight * this.zoom || 100;
         img.onerror = () => {
             img.src = fallbackURL
         }
@@ -697,13 +872,13 @@ export class GraphicsRenderer {
         if (this.context) {
             this.context.lineWidth = 1;
             this.context.strokeStyle = "#fff";
-            
+
             this.context.beginPath();
             this.context.moveTo(cx * this.zoom, -this.displayHeight);
             this.context.lineTo(cx * this.zoom, this.displayHeight);
             this.context.closePath();
             this.context.stroke();
-            
+
             this.context.beginPath();
             this.context.moveTo(-this.displayWidth, cy * this.zoom);
             this.context.lineTo(this.displayWidth, cy * this.zoom);
@@ -715,17 +890,17 @@ export class GraphicsRenderer {
         if (this.context) {
             if (!this.showRules)
                 return;
-            
+
             if (this.gridPointer) {
                 this.context.lineWidth = 0.2;
                 this.context.strokeStyle = "#ccc";
-                
+
                 this.context.beginPath();
                 this.context.moveTo(this.getCursorXInFrame(), -this.displayHeight);
                 this.context.lineTo(this.getCursorXInFrame(), this.displayHeight);
                 this.context.closePath();
                 this.context.stroke();
-                
+
                 this.context.beginPath();
                 this.context.moveTo(-this.displayWidth, this.getCursorYInFrame());
                 this.context.lineTo(this.displayWidth, this.getCursorYInFrame());
@@ -774,10 +949,10 @@ export class GraphicsRenderer {
             }
         }
         const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
-        const leftBound = -this.displayWidth/2;
-        const rightBound = this.displayWidth/2;
-        const topBound = -this.displayHeight/2;
-        const bottomBound = this.displayHeight/2;
+        const leftBound = -this.displayWidth / 2;
+        const rightBound = this.displayWidth / 2;
+        const topBound = -this.displayHeight / 2;
+        const bottomBound = this.displayHeight / 2;
         const startX = Math.floor((leftBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
         const startY = Math.floor((topBound - camYoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
         const endX = Math.ceil((rightBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
@@ -796,7 +971,7 @@ export class GraphicsRenderer {
     moveComponent(index: number, x: number, y: number) {
         if (index !== null && this.logicDisplay) {
             const component = this.logicDisplay.components[index];
-            
+
             switch (component.type) {
                 case componentTypes.point:
                 case componentTypes.label:
@@ -811,7 +986,7 @@ export class GraphicsRenderer {
 
                 case componentTypes.line:
                 case componentTypes.circle:
-                case componentTypes.rectangle: 
+                case componentTypes.rectangle:
                 case componentTypes.measure:
                     const twoPointComponent = component as Line | Circle | Rectangle | Measure;
                     const dx2 = x - twoPointComponent.x1;
@@ -839,17 +1014,23 @@ export class GraphicsRenderer {
     selectComponent(index: number) {
         if (index != null) {
             this.selectedComponent = index;
-            this.previousColor = this.logicDisplay!.components[index].color;
-            this.previousRadius = this.logicDisplay!.components[index].radius;
-            this.logicDisplay!.components[index].color = this.selectedColor;
-            this.logicDisplay!.components[index].radius = this.selectedRadius;
+            if (this.mode === this.modes.Move) {
+                this.previousColor = this.logicDisplay!.components[index].color;
+                this.previousRadius = this.logicDisplay!.components[index].radius;
+                this.logicDisplay!.components[index].color = this.selectedColor;
+                this.logicDisplay!.components[index].radius = this.selectedRadius;
+            }
         }
     }
     unselectComponent() {
-        if (this.selectedComponent != null && this.logicDisplay && this.previousColor) {
-            this.logicDisplay.components[this.selectedComponent].color = this.previousColor;
-            if (this.previousRadius) {
-                this.logicDisplay.components[this.selectedComponent].radius = this.previousRadius;
+        if (this.selectedComponent != null) {
+            if (this.mode === this.modes.Move && this.previousColor) {
+                this.logicDisplay!.components[this.selectedComponent].color = this.previousColor;
+                if (this.previousRadius !== null) {
+                    this.logicDisplay!.components[this.selectedComponent].radius = this.previousRadius;
+                }
+                this.previousColor = null;
+                this.previousRadius = null;
             }
             this.selectedComponent = null;
         }
@@ -857,16 +1038,17 @@ export class GraphicsRenderer {
     resetMode() {
         this.temporaryComponentType = null;
         this.temporaryShape = null;
-        
+
         for (var i = 0; i < this.temporaryPoints.length; i++)
             delete this.temporaryPoints[i];
-        
+
         this.mode = -1;
         this.tooltip = this.defaultTooltip;
     }
     setMode(mode: number) {
+        this.unselectComponent();
         this.resetMode();
-	
+
         if (this.readonly)
             this.mode = this.modes.Navigate;
         else
@@ -889,9 +1071,9 @@ export class GraphicsRenderer {
                 case componentTypes.shape:
                     const dummyVector = this.logicDisplay.components[i] as Point;
                     const singlePointDelta = this.getDistance(
-                        x, 
-                        y, 
-                        dummyVector.x, 
+                        x,
+                        y,
+                        dummyVector.x,
                         dummyVector.y
                     );
                     if (singlePointDelta >= 0 && singlePointDelta <= this.snapTolerance / this.zoom) {
@@ -927,16 +1109,16 @@ export class GraphicsRenderer {
             if (state) {
                 this.redoStack.push(state);
             }
-    
+
             // Get the new last state from the undoStack (if any) to apply to the logicDisplay
             const lastState = this.undoStack.length > 0 ? this.undoStack[this.undoStack.length - 1] : null;
-    
+
             if (lastState) {
                 this.logicDisplay!.components = []
                 this.logicDisplay?.importJSON(JSON.parse(lastState), this.logicDisplay.components);
             } else
                 return
-    
+
             this.update(); // Re-render the canvas
         }
     }
@@ -944,17 +1126,17 @@ export class GraphicsRenderer {
         if (this.redoStack.length > 0) {
             // Move the current state to the undoStack
             this.undoStack.push(JSON.stringify(this.logicDisplay!.components));
-    
+
             // Get the last state from the redoStack
             const state = this.redoStack.pop();
             console.log('upcoming state');
             console.log(state); // Log the state (optional)
             console.log('parsed state');
             console.log(JSON.parse(state != null ? state : '[]')); // Log the parsed state (optional)
-    
+
             // Clear the current components
             this.logicDisplay!.components = [];
-    
+
             // Update the display with the next state
             this.logicDisplay?.importJSON(JSON.parse(state != null ? state : '[]'), this.logicDisplay.components);
             this.update(); // Re-render the canvas
@@ -1269,16 +1451,174 @@ export class GraphicsRenderer {
                 }
                 this.tooltip = "Delete (click a node point to delete, esc to cancel)";
                 break;
+            case this.modes.Select:
+                this.displayRef!.style.cursor = 'default';
+                if (action == this.mouseAction.Move) {
+                    console.log('[renderer] moused moved during select')
+                    if (this.selectedComponent == null) {
+                        this.temporarySelectedComponent = this.findIntersectionWith(
+                            this.getCursorXRaw(),
+                            this.getCursorYRaw()
+                        )
+                    } else {
+                        // Get the selected component
+                        const component = this.logicDisplay?.components[this.selectedComponent];
+                        
+                        // If actively dragging a handle
+                        if (this.dragHandle) {
+                            // Get cursor position in world coordinates
+                            let localX, localY;
+                            if (this.snap) {
+                                // Use uniform grid snapping regardless of grid spacing
+                                const snapToUniformGrid = (value: number) => {
+                                    const baseGridSize = this.gridSpacing / 2;
+                                    return Math.round(value / baseGridSize) * baseGridSize;
+                                };
+                                localX = snapToUniformGrid(this.getCursorXLocal());
+                                localY = snapToUniformGrid(this.getCursorYLocal());
+                            } else {
+                                // Allow free movement when snap is disabled
+                                localX = this.getCursorXLocal();
+                                localY = this.getCursorYLocal(); 
+                            }
+                            
+                            // Update component based on type
+                            if (component) {
+                                switch (component.type) {
+                                    case componentTypes.line:
+                                    case componentTypes.measure:
+                                    case componentTypes.circle:
+                                        if (this.dragHandle === 'start') {
+                                            const lineComponent = component as Line;
+                                            lineComponent.x1 = localX;
+                                            lineComponent.y1 = localY;
+                                        } else if (this.dragHandle === 'end') {
+                                            const lineComponent = component as Line;
+                                            lineComponent.x2 = localX; 
+                                            lineComponent.y2 = localY;
+                                        }
+                                        break;
+                                    case componentTypes.rectangle:
+                                        const rectComponent = component as Rectangle;
+                                        if (this.dragHandle === 'start') {
+                                            // NW resize
+                                            rectComponent.x1 = localX;
+                                            rectComponent.y1 = localY;
+                                        } else if (this.dragHandle === 'top-right') {
+                                            // NE resize 
+                                            rectComponent.x2 = localX;
+                                            rectComponent.y1 = localY;
+                                        } else if (this.dragHandle === 'bottom-left') {
+                                            // SW resize
+                                            rectComponent.x1 = localX;
+                                            rectComponent.y2 = localY;
+                                        } else if (this.dragHandle === 'bottom-right') {
+                                            // SE resize
+                                            rectComponent.x2 = localX;
+                                            rectComponent.y2 = localY;
+                                        }
+                                        break;
+                                    case componentTypes.arc:
+                                        const arcComponent = component as Arc;
+                                        if (this.dragHandle === 'start') {
+                                            arcComponent.x1 = localX;
+                                            arcComponent.y1 = localY;
+                                        } else if (this.dragHandle === 'mid') {
+                                            arcComponent.x2 = localX;
+                                            arcComponent.y2 = localY;
+                                        } else if (this.dragHandle === 'end') {
+                                            arcComponent.x3 = localX;
+                                            arcComponent.y3 = localY;
+                                        }
+                                        break;
+                                    case componentTypes.point:
+                                    case componentTypes.label:
+                                    case componentTypes.picture:
+                                        const pointComponent = component as Point;
+                                        pointComponent.x = localX;
+                                        pointComponent.y = localY;
+                                        break;
+                                }
+                                this.saveState();
+                            }
+                        } else {
+                            // Enhanced handle detection
+                            const handleSize = 5 / this.zoom; // Consistent handle size in world units
+                            const handles = component ? this.getComponentHandles(component) : [];
+                            let isOverHandle = false;
+                            
+                            for (const handle of handles) {
+                                // Calculate distance in world coordinates
+                                const dx = this.getCursorXLocal() - handle.x;
+                                const dy = this.getCursorYLocal() - handle.y;
+                                const distSquared = dx * dx + dy * dy;
+                                
+                                // Check if cursor is over handle using world coordinates
+                                if (distSquared < (handleSize * handleSize)) {
+                                    this.displayRef!.style.cursor = handle.cursor;
+                                    isOverHandle = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (!isOverHandle) {
+                                this.displayRef!.style.cursor = 'default';
+                            }
+                        }
+                    }
+                } else if (action == this.mouseAction.Down) {
+                    console.log('[renderer] moused down during select')
+                    if (this.selectedComponent !== null) {
+                        console.log('[renderer] selected component', this.selectedComponent)
+                        const component = this.logicDisplay?.components[this.selectedComponent];
+                        if (component && component.type !== componentTypes.point && 
+                            component.type !== componentTypes.label &&
+                            component.type !== componentTypes.picture) {
+                            
+                            const handles = component ? this.getComponentHandles(component) : [];
+                            const handleSize = 5 / this.zoom;
+
+                            for (const handle of handles) {
+                                // Check collision in world coordinates
+                                const dx = this.getCursorXLocal() - handle.x;
+                                const dy = this.getCursorYLocal() - handle.y;
+                                const distSquared = dx * dx + dy * dy;
+                                
+                                if (distSquared < (handleSize * handleSize)) {
+                                    this.dragHandle = handle.id;
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    
+                    if (this.temporarySelectedComponent != null) {
+                        console.log('[renderer] selected component', this.temporarySelectedComponent)
+                        if (this.selectedComponent === this.temporarySelectedComponent) {
+                            this.unselectComponent();
+                        } else {
+                            this.selectComponent(this.temporarySelectedComponent);
+                        }
+                    } else {
+                        this.unselectComponent();
+                    }
+                } else if (action == this.mouseAction.Up) {
+                    this.dragHandle = null;
+                    this.displayRef!.style.cursor = 'default';
+                }
+
+                this.tooltip = "Select (click to select/deselect)";
+                break
         }
     }
     setZoom(zoomFactor: number) {
-        var newZoom = this.zoom * zoomFactor; 
+        var newZoom = this.zoom * zoomFactor;
         console.log(newZoom)
-        
+
         // Zoom interval control
-        if ( newZoom <= 0.4 || newZoom >= 15 )
+        if (newZoom <= 0.4 || newZoom >= 15)
             return;
-        
+
         this.targetZoom = newZoom;
     }
     clearGrid() {
@@ -1299,7 +1639,7 @@ export class GraphicsRenderer {
     }
     getTooltip() {
         var text = this.tooltip;
-	    return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
+        return text + ` (${fps} FPS, dx=${Math.floor(this.getCursorXLocal())};dy=${Math.floor(this.getCursorYLocal())})`;
     }
     update() {
         this.offsetX = this.displayRef!.offsetLeft;
@@ -1312,6 +1652,8 @@ export class GraphicsRenderer {
 
         if (this.showOrigin)
             this.drawOrigin(this.cOutX, this.cOutY);
+
+        this.refreshSelectionTools();
 
         this.drawAllComponents(this.logicDisplay!.components, 0, 0);
         if (this.temporaryComponentType != null)
@@ -1341,37 +1683,37 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
         );
     };
     renderer.displayRef?.addEventListener('touchstart', (e: any) => {
-		e.preventDefault();
-		
-		// Store initial touch position
-		const pos = getTouchPos(e);
-		touchStartX = pos.x;
-		touchStartY = pos.y;
-		
-		// Handle pinch start
-		if (e.touches.length === 2) {
-			isPinching = true;
-			initialPinchDistance = getPinchDistance(e);
-			return;
-		}
+        e.preventDefault();
 
-		// Simulate mouse position for single touch
-		renderer.mouse!.cursorXGlobal = pos.x;
-		renderer.mouse!.cursorYGlobal = pos.y;
+        // Store initial touch position
+        const pos = getTouchPos(e);
+        touchStartX = pos.x;
+        touchStartY = pos.y;
 
-		// For navigation and move modes, start the action immediately 
-		if (renderer.mode === renderer.modes.Navigate) {
-			renderer.performAction(e, renderer.mouseAction.Down);
-		}
-	}, { passive: false });
+        // Handle pinch start
+        if (e.touches.length === 2) {
+            isPinching = true;
+            initialPinchDistance = getPinchDistance(e);
+            return;
+        }
+
+        // Simulate mouse position for single touch
+        renderer.mouse!.cursorXGlobal = pos.x;
+        renderer.mouse!.cursorYGlobal = pos.y;
+
+        // For navigation and move modes, start the action immediately 
+        if (renderer.mode === renderer.modes.Navigate) {
+            renderer.performAction(e, renderer.mouseAction.Down);
+        }
+    }, { passive: false });
     renderer.displayRef?.addEventListener('touchmove', (e: any) => {
         e.preventDefault();
-        
+
         // Handle pinch zoom
         if (e.touches.length === 2 && isPinching) {
             const currentDistance = getPinchDistance(e);
             const pinchDelta = currentDistance - initialPinchDistance;
-            
+
             if (Math.abs(pinchDelta) > 10) { // Add threshold to prevent accidental zooms
                 if (pinchDelta > 0) {
                     renderer.setZoom(renderer.zoomIn)
@@ -1394,7 +1736,7 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
 
     renderer.displayRef?.addEventListener('touchend', (e: any) => {
         e.preventDefault();
-        
+
         // Reset pinch state
         if (isPinching) {
             isPinching = false;
@@ -1419,12 +1761,12 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
         }
 
         // For Move mode and all drawing tools, trigger mouse down on tap
-        if ([renderer.modes.Move, renderer.modes.AddPoint, renderer.modes.AddLine, 
-             renderer.modes.AddCircle, renderer.modes.AddArc, renderer.modes.AddRectangle, 
-             renderer.modes.AddMeasure, renderer.modes.AddLabel].includes(renderer.mode)) {
+        if ([renderer.modes.Move, renderer.modes.AddPoint, renderer.modes.AddLine,
+        renderer.modes.AddCircle, renderer.modes.AddArc, renderer.modes.AddRectangle,
+        renderer.modes.AddMeasure, renderer.modes.AddLabel].includes(renderer.mode)) {
             renderer.performAction(e, renderer.mouseAction.Down);
         }
-        
+
         // Always perform mouse up to clean states
         renderer.performAction(e, renderer.mouseAction.Up);
     }, { passive: false });
@@ -1441,11 +1783,11 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
         }
 
         renderer.mouse?.onMouseMove(e);
-        
+
         if (!renderer.gridPointer) {
             renderer.gridPointer = true;
         }
-        
+
         renderer.performAction(e, renderer.mouseAction.Move);
     });
 

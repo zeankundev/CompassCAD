@@ -140,6 +140,9 @@
     align-items: center;
     border-radius: 10px;
 }
+.toolbar-button.active {
+    background-color: var(--theme);
+}
 .toolbar-button:not(.mobile) {
     margin-bottom: 5px;
 }
