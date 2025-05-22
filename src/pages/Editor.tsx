@@ -44,6 +44,7 @@ const Editor = () => {
     const [designName, setDesignName] = useState<string>('New Design');
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
+    const [component, setComponent] = useState<Component | null>(null);
     const [zoom, setZoom] = useState<number>(1);
     const [isLoading, setLoading] = useState<boolean>(true);
     useEffect(() => {
@@ -72,6 +73,25 @@ const Editor = () => {
             cancelAnimationFrame(animationFrameId);
         };
     }, []);
+    useEffect(() => {
+        let animationFrameId: number;
+
+        const checkComponent = () => {
+            if (renderer.current?.logicDisplay && renderer.current.selectedComponent !== null) {
+                const currentComponent = renderer.current.logicDisplay.components[renderer.current.selectedComponent];
+                setComponent(currentComponent || null);
+                animationFrameId = requestAnimationFrame(checkComponent);
+            } else {
+                setComponent(null);
+            }
+        };
+
+        checkComponent();
+
+        return () => {
+            cancelAnimationFrame(animationFrameId);
+        };
+    }, [renderer.current?.selectedComponent]);
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
