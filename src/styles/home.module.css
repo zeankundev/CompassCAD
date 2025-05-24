@@ -1,0 +1,70 @@
+.home-container {
+    color: var(--text);
+}
+.header {
+    padding: 20px;
+    padding-right: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--primary-background);
+}
+.app-content {
+    word-wrap: break-word;
+    margin-top: 64.5px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.header-leftside-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.header-leftside-links {
+    margin-left: 20px;
+}
+.hero-biggiewrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+.hero-biggiewrapper.mobile {
+    flex-direction: column-reverse;
+}
+.hero-biggiewrapper.mobile .hero-left {
+    width: 100%;
+}
+.hero-left {
+    width: 50%;
+}
+.hero-left > * {
+    margin-bottom: 5px;
+}
+.startpage-button {
+    appearance: none;
+    background-color: var(--secondary);
+    border: none;
+    font-weight: bold;
+    font-family: var(--font);
+    color: var(--theme);
+    font-size: 14pt;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 10px;
+    margin-right: 15px;
+}
+.startpage-button:hover {
+    transition: all 0.2s ease;
+    filter: brightness(1.3);
+}
+.startpage-button.important {
+    background-color: var(--theme);
+    color: var(--text);
+}
