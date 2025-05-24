@@ -15,6 +15,18 @@
     z-index: 999999;
     background-color: var(--primary-background);
 }
+.footer {
+    margin-top: 50px;
+    padding: 20px;
+    display: flex;
+    background-color: var(--secondary);
+}
+.footer div {
+    margin-right: 40px;
+}
+a {
+    color: var(--text);
+}
 .app-content {
     word-wrap: break-word;
     margin-top: 64.5px;

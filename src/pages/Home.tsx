@@ -9,6 +9,7 @@ import '../styles/theme.css'
 import { getDeviceType } from '../components/GetDevice'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import ReusableFooter from '../components/ReusableFooter'
 interface HomeButtonInterface {
     important?: boolean,
     onInteract?: () => void,
@@ -86,6 +87,7 @@ const Home = () => {
                     <small>*Images may appear different than the actual software</small>
                 </div>
             </div>
+            <ReusableFooter />
         </div>
     )
 }
