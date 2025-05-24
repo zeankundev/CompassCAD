@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import CompassCADLogo from '../assets/general/logo.svg'
 import styles from '../styles/home.module.css'
 const ReusableHeader = () => {
@@ -7,7 +8,9 @@ const ReusableHeader = () => {
                 className={styles['header-leftside-group']}
                 aria-label='leftside-group'
             >
-                <img src={CompassCADLogo} height={24}/>
+                <Link to='/'>
+                    <img src={CompassCADLogo} height={24}/>
+                </Link>
                 <div aria-label='leftside-links' className={styles['header-leftside-links']}>
                     <p>Sample link</p>
                 </div>

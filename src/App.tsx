@@ -7,6 +7,7 @@ import { Route, BrowserRouter as Router, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Editor from './pages/Editor';
 import EditorHome from './pages/EditorHome';
+import DownloadPage from './pages/Download';
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
           <Router>
                 <Switch>
                   <Route exact path='/' component={Home} />
+                  <Route path='/download' component={DownloadPage} />
                   <Route path='/editor/:id' component={Editor} />
                   <Route path='/editor' component={EditorHome} />
                 </Switch>

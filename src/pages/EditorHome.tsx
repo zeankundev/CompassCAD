@@ -9,6 +9,7 @@ import OpenSymbol from '../assets/openLogic.svg'
 import TrashSymbol from '../assets/trash.svg'
 import BluePrintIsFuckingSleeping from '../assets/idle.svg'
 import { LZString } from '../components/LZString';
+import ReusableFooter from '../components/ReusableFooter';
 
 interface MiniButtonClickableProps {
     icon: string,
@@ -227,6 +228,7 @@ const EditorHome = () => {
                             )}
                             </div>
                     </div>
+                    <ReusableFooter />
                 </div>
             )}
         </Fragment>
