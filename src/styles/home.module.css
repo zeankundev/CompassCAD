@@ -35,7 +35,7 @@
     justify-content: space-between;
     margin-bottom: 20px;
 }
-.hero-biggiewrapper.mobile {
+.hero-biggiewrapper.mobile{
     flex-direction: column-reverse;
 }
 .hero-biggiewrapper.mobile .hero-left {

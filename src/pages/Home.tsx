@@ -9,6 +9,10 @@ interface HomeButtonInterface {
     onInteract?: () => void,
     children: React.ReactNode
 }
+const isCrammed = () => {
+    const minWidthForText = 1360; // adjust this value based on your needs
+    return window.innerWidth < minWidthForText;
+}
 const HomeButton = (props: HomeButtonInterface) => {
     return (
         <button onClick={props.onInteract} className={`${styles['startpage-button']} ${props.important ? styles.important: ''}`}>
@@ -18,9 +22,12 @@ const HomeButton = (props: HomeButtonInterface) => {
 }
 const Home = () => {
     const [deviceType, setDeviceType] = useState(getDeviceType());
+    const [crammed, setCrammed] = useState(isCrammed())
     useEffect(() => {
         const handleResize = () => {
-        setDeviceType(getDeviceType());
+            setDeviceType(getDeviceType());
+            setCrammed(isCrammed());
+            console.log(crammed)
         };
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -29,7 +36,7 @@ const Home = () => {
         <div className={styles['home-container']}>
         <ReusableHeader />
         <div className={styles['app-content']}>
-            <div className={`${styles['hero-biggiewrapper']} ${deviceType === 'mobile' ? styles.mobile : ''}`}>
+            <div className={`${styles['hero-biggiewrapper']} ${crammed ? styles.mobile : ''}`}>
                 <div className={styles['hero-left']}>
                     <h1>
                     Build your dreams without wasting time to learn complex tools. It's time to simplify your "dream building" design
@@ -47,8 +54,8 @@ const Home = () => {
                         </HomeButton>
                     </div>
                 </div>
-                <div style={{marginRight: '40px'}}>
-                    <img src={Illustration1} height={360}/>
+                <div className={`${styles['hero-right']} ${crammed ? styles.crammed : ''}`}>
+                    <img src={Illustration1} height={crammed ? 360 : 510}/>
                 </div>
             </div>
             <div>
