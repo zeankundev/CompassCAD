@@ -47,6 +47,9 @@
 .hero-left > * {
     margin-bottom: 5px;
 }
+.hero-left div a {
+    text-decoration: none;
+}
 .startpage-button {
     appearance: none;
     background-color: var(--secondary);
@@ -54,6 +57,11 @@
     font-weight: bold;
     font-family: var(--font);
     color: var(--theme);
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    text-decoration: none;
+    justify-content: space-between;
     font-size: 14pt;
     cursor: pointer;
     padding: 12px;

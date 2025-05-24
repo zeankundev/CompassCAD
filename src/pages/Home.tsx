@@ -1,16 +1,19 @@
 import ReusableHeader from '../components/ReusableHeader'
 import styles from '../styles/home.module.css'
 import Illustration1 from '../assets/general/architect-dream.svg'
+import TryIt from '../assets/general/try.svg'
+import InvertedExportButton from '../assets/export.svg'
 import '../styles/theme.css'
 import { getDeviceType } from '../components/GetDevice'
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 interface HomeButtonInterface {
     important?: boolean,
     onInteract?: () => void,
     children: React.ReactNode
 }
 const isCrammed = () => {
-    const minWidthForText = 1360; // adjust this value based on your needs
+    const minWidthForText = 1000; // adjust this value based on your needs
     return window.innerWidth < minWidthForText;
 }
 const HomeButton = (props: HomeButtonInterface) => {
@@ -45,13 +48,19 @@ const Home = () => {
                     Imagine if CAD went as simple as the power tools we use today like Notion or even Figma. Except that, we can redefine what "power tools" means for architecture design.
                     </p>
                     <br></br>
-                    <div>
+                    <div style={{display: 'flex', flexDirection: 'row'}}>
                         <HomeButton important={true}>
+                            <img src={InvertedExportButton} width={24} style={{transform: 'rotate(180deg)'}} />
+                            &nbsp;
                             Download for platform
                         </HomeButton>
-                        <HomeButton>
-                            Try it out
-                        </HomeButton>
+                        <Link to='/editor'>
+                            <HomeButton>
+                                <img src={TryIt} width={24}/>
+                                &nbsp;
+                                Try it out
+                            </HomeButton>
+                        </Link>
                     </div>
                 </div>
                 <div className={`${styles['hero-right']} ${crammed ? styles.crammed : ''}`}>
