@@ -59,7 +59,7 @@ const Editor = () => {
             InitializeInstance(renderer.current);
             renderer.current.setMode(renderer.current.modes.Navigate);
             setLoading(false);
-            toast('Hey there! I am a toast!')
+            toast('Hey there! Just a heads up that this editor is still in beta, so expect broken buttons and non-functioning UI')
         }
     }, [])
     useEffect(() => {
