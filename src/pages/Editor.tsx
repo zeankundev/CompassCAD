@@ -45,6 +45,7 @@ const Editor = () => {
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [tool, setTool] = useState<number>(RendererTypes.NavigationTypes.Navigate);
     const [designName, setDesignName] = useState<string>('New Design');
+    const [menu, setMenu] = useState<boolean>(false);
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     const [component, setComponent] = useState<Component | null>(null);
@@ -236,7 +237,6 @@ const Editor = () => {
     })
     return (
       <div className={styles.editor}>
-        <div><ToastContainer /></div>
         {isLoading == true && (
             <div className={styles.loader}>
                 <div className={styles.spinner}></div>
@@ -244,6 +244,18 @@ const Editor = () => {
                 <h2>Loading CompassCAD...</h2>
                 <p>Just wait, you'll be ready in a sec.</p>
             </div>
+        )}
+        {device === 'desktop' && (
+            <div><ToastContainer /></div>
+        )}
+        {device === 'mobile' && (
+            <Fragment>
+                {menu === true && (
+                    <div className={styles['mobile-menu']}>
+                        <p>a</p>
+                    </div>
+                )}
+            </Fragment>
         )}
         <div className={`${styles.header} ${device === 'mobile' ? styles.mobile : ''}`}>
             {device == 'mobile' && (
@@ -267,6 +279,7 @@ const Editor = () => {
                     <HeaderButton 
                         svgImage={MenuImg}
                         title='Menu'
+                        func={() => setMenu(menu ? false : true)}
                     />
                 </Fragment>
             )}
