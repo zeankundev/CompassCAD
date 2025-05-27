@@ -182,7 +182,7 @@ export class GraphicsRenderer {
         if (this.selectedComponent !== null && this.logicDisplay?.components[this.selectedComponent]) {
             this.drawComponentSize(this.logicDisplay?.components[this.selectedComponent]);
             const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
-            if (selectedComponent.isActive()) {
+            if (selectedComponent.active == true) {
                 const handles = this.getComponentHandles(selectedComponent);
                 for (const handle of handles) {
                     this.drawPoint(handle.x, handle.y, '#fff', 2);
@@ -411,7 +411,7 @@ export class GraphicsRenderer {
         moveByY: number
     ) {
         for (let i = 0; i < components.length; i++) {
-            if (!components[i].isActive())
+            if (components[i].active == false)
                 continue;
 
             this.drawComponent(components[i], moveByX, moveByY)
@@ -1076,7 +1076,7 @@ export class GraphicsRenderer {
 
         // First pass: collect all intersections
         for (let i = this.logicDisplay.components.length - 1; i >= 0; i--) {
-            if (!this.logicDisplay.components[i].isActive()) continue;
+            if (this.logicDisplay.components[i].active == false) continue;
 
             // Calculate intersection data 
             const intersection = this.calculateIntersection(i, x, y);

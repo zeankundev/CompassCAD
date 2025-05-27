@@ -7,9 +7,17 @@ import { HistoryEntry } from './Editor';
 import NewSymbol from '../assets/newLogic.svg'
 import OpenSymbol from '../assets/openLogic.svg'
 import TrashSymbol from '../assets/trash.svg'
+import BluePrintSymbol from '../assets/blueprint.svg'
+import SendSymbol from '../assets/send.svg'
 import BluePrintIsFuckingSleeping from '../assets/idle.svg'
 import { LZString } from '../components/LZString';
 import ReusableFooter from '../components/ReusableFooter';
+import { GoogleGenAI } from '@google/genai';
+
+interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+}
 
 interface MiniButtonClickableProps {
     icon: string,
@@ -126,10 +134,97 @@ const EditorHome = () => {
     }
 
     const [greeting, setGreeting] = useState(getCurrentTimeMessage());
+    const [isBluePrintMode, setIsBluePrintMode] = useState(false);
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [history, setHistory] = useState<HistoryEntry[]>([]);
     const [dialog, setDialog] = useState<YesNoProp | null>(null);
     const [showDialog, setshowDialog] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [currentMessage, setCurrentMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    console.log(`[home] api key: ${process.env.REACT_APP_BLUEPRINT_API_KEY || 'not set'}`);
+
+    const genAI = new GoogleGenAI({apiKey: process.env.REACT_APP_BLUEPRINT_API_KEY || ''});
+
+    const sendMessage = async () => {
+        if (!currentMessage.trim()) return;
+        
+        setIsLoading(true);
+        const newMessages: Message[] = [...messages, { role: 'user', content: currentMessage }];
+        setMessages(newMessages);
+        setCurrentMessage('');
+
+        try {
+            const config = { responseMimeType: 'text/plain' };
+            const contents = [
+              {
+                role: 'user',
+                parts: [
+                  {
+                    text: `
+                        You are Blueprint, an AI assistant for CompassCAD, a web-based CAD editor.
+                        You are designed to help users with their CAD designs, provide suggestions, and answer questions related to CompassCAD.
+                        You are in a conversation with a user who is using CompassCAD.
+                        
+                        When generating designs, output them in code blocks using the ccad language identifier:
+                        \`\`\`ccad
+                        [design elements here]
+                        \`\`\`
+
+                        The design format is a JSON array of objects where each object represents a component with these types:
+                        - point: {type: 1, x: number, y: number, color: string, radius: number}
+                        - line: {type: 2, x1: number, y1: number, x2: number, y2: number, color: string, radius: number}
+                        - circle: {type: 3, x1: number, y1: number, x2: number, y2: number, color: string, radius: number}
+                        - rectangle: {type: 4, x1: number, y1: number, x2: number, y2: number, color: string, radius: number}
+                        - arc: {type: 5, x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string, radius: number}
+                        - measure: {type: 6, x1: number, y1: number, x2: number, y2: number, color: "#ff3", radius: number}
+                        - label: {type: 7, x: number, y: number, text: string, fontSize: number, color: string}
+                        - shape: {type: 8, x: number, y: number, components: Component[]}
+                        - picture: {type: 9, x: number, y: number, pictureSource: string}
+
+                        Example of a simple design with a point and line:
+                        \`\`\`ccad
+                        [
+                          {"type": 1, "x": 100, "y": 100, "color": "#ffffff", "radius": 5},
+                          {"type": 2, "x1": 100, "y1": 100, "x2": 200, "y2": 200, "color": "#ffffff", "radius": 2}
+                        ]
+                        \`\`\`
+
+                        Example of a rectangle with a label:
+                        \`\`\`ccad
+                        [
+                          {"type": 4, "x1": 50, "y1": 50, "x2": 150, "y2": 150, "color": "#ffffff", "radius": 2},
+                          {"type": 7, "x": 100, "y": 175, "text": "My Rectangle", "fontSize": 18, "color": "#eee"}
+                        ]
+                        \`\`\`
+                        In the JSON data, you are not allowed to provide comments, or else the parser will fail to parse your generated design.
+                    `
+                  },
+                  {
+                    text: currentMessage,
+                  },
+                ],
+              },
+            ];
+
+            const result = await genAI.models.generateContent({
+                model: 'gemini-2.0-flash',
+                config,
+                contents,
+            });
+
+            setMessages([...newMessages, { role: 'assistant', content: result.text || '' }]);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setMessages([...newMessages, { 
+                role: 'assistant', 
+                content: 'Sorry, I encountered an error. Please try again.' 
+            }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const refreshHistory = () => {
         const storedHistory = localStorage.getItem('history');
@@ -141,6 +236,44 @@ const EditorHome = () => {
     useEffect(() => {
         refreshHistory();
     }, [])
+
+    const parseMessageContent = (content: string) => {
+        const ccadRegex = /```ccad\n([\s\S]*?)```/g;
+        let lastIndex = 0;
+        const parts = [];
+        let match;
+
+        while ((match = ccadRegex.exec(content)) !== null) {
+            // Add text before the code block
+            if (match.index > lastIndex) {
+                parts.push(content.slice(lastIndex, match.index));
+            }
+            
+            // Handle CCAD code block
+            const designData = match[1].trim();
+            const encodedData = LZString.compressToEncodedURIComponent(designData);
+            const designUrl = `/editor/designname="Blueprint-generated Design";${encodedData}`;
+            
+            parts.push(
+                <a 
+                    href={designUrl}
+                    target="_blank"
+                    className={styles['blueprint-design-link']}
+                >
+                    🔗 View/Edit this design in editor
+                </a>
+            );
+
+            lastIndex = match.index + match[0].length;
+        }
+
+        // Add remaining text
+        if (lastIndex < content.length) {
+            parts.push(content.slice(lastIndex));
+        }
+
+        return parts;
+    };
 
     return (
         <Fragment>
@@ -196,7 +329,56 @@ const EditorHome = () => {
                             >
                                 Clear entire history
                             </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={BluePrintSymbol}
+                                onPress={() => {setIsBluePrintMode(isBluePrintMode ? false : true)}}
+                            >
+                                Ask Blueprint
+                            </MiniButtonClickable>
                         </div>
+                        <br></br>
+                        {isBluePrintMode && (
+                            <>
+                                <div className={styles['blueprint-container']}>
+                                    {messages.length > 0 && (
+                                        <div className={styles['blueprint-messages']}>
+                                            {messages.map((message, index) => (
+                                                <div key={index} className={`${styles.message} ${message.role === 'user' ? styles.user : ''}`}>
+                                                    <img 
+                                                        src={message.role === 'user' ? BluePrintIsFuckingSleeping : BluePrintSymbol} 
+                                                        alt={message.role}
+                                                    />
+                                                    <div className={styles['message-content']}>
+                                                        {parseMessageContent(message.content)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {messages.length > 0 && <br></br>}
+                                    <div className={styles['blueprint-childcontainer']}>
+                                        <img src={BluePrintSymbol} width={24} style={{display: 'flex', alignSelf: 'flex-start'}}/>
+                                        <div className={styles['blueprint-textarea']}>
+                                            <textarea
+                                                placeholder='Ask or create with Blueprint AI'
+                                                value={currentMessage}
+                                                onChange={(e) => setCurrentMessage(e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                                        e.preventDefault();
+                                                        sendMessage();
+                                                    }
+                                                }}
+                                            ></textarea>
+                                            <small>AI-generated content may be false or inaccurate. Powered by Google AI's Gemini</small>
+                                        </div>
+                                        <div className={styles['blueprint-button']} onClick={sendMessage}>
+                                            {isLoading ? <span>Loading...</span> : <img src={SendSymbol} width={24} />}
+                                        </div>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                         <br></br>
                         <div className={styles['editor-recents']}>
                             <h3>Recents</h3>

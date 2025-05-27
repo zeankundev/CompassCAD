@@ -52,6 +52,21 @@
     width: 100%;
     height: 100%;
 }
+.mobile-menu-button {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    user-select: none;
+}
+.mobile-menu-button.nomargin {
+    margin-bottom: 0;
+}
+.mobile-menu-button:hover {
+    background-color: var(--theme);
+}
 .loader {
     position: absolute;
     top: 0;
@@ -377,7 +392,7 @@ body::-webkit-scrollbar-thumb:hover {
     display: flex;
 }
 body {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 .dialog {
     position: absolute;
@@ -420,4 +435,74 @@ body {
 }
 .editor-recents-none p {
     color: #676767;
+}
+.blueprint-container {
+    background-color: var(--secondary);
+    padding: 20px;
+    animation: slidein-from-bottom-special 0.2s ease;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+}
+.blueprint-childcontainer {
+    display: flex;
+}
+.blueprint-childcontainer .blueprint-textarea {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 10px;
+}
+.blueprint-container textarea {
+    -webkit-appearance: none;
+    background-color: transparent;
+    color: var(--text);
+    font-family: var(--font);
+    resize: none;
+    border: none;
+    height: 100%;
+    display: flex;
+    outline: none;
+    width: 100%;
+}
+.blueprint-button {
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 50%;
+    background-color: var(--theme);
+    cursor: pointer;
+    margin-top: 10px;
+}
+.blueprint-messages {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.blueprint-messages .message {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 20px;
+    justify-content: flex-end;
+}
+.blueprint-messages .message.user {
+    align-self: flex-end;
+    background-color: var(--primary);
+    flex-direction: row-reverse;
+}
+.blueprint-messages .message:not(.user) {
+    background-color: var(--secondary);
+    flex-direction: row;
+}
+.blueprint-messages .message:not(.user) img {
+    margin-right: 10px;
+}
+.blueprint-messages .message.user img {
+    margin-left: 10px;
 }

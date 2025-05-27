@@ -165,12 +165,37 @@ const Editor = () => {
                         nameInput.current!.value = name;
                         console.log('[editor] design name:', name);
                         console.log('[editor] opening up URI-encoded design');
-                        renderer.current!.logicDisplay?.importJSON(
-                            JSON.parse(
-                            LZString.decompressFromEncodedURIComponent(data) || '[]'
-                            ),
-                            renderer.current!.logicDisplay.components
-                        );
+                        let decompressed = LZString.decompressFromEncodedURIComponent(data);
+                        console.log('[editor] data:', decompressed);
+                        let parsedData: any;
+                        if (decompressed && decompressed !== '[]') {
+                            console.debug('[editor] Decompressed data:', decompressed);
+                            try {
+                                parsedData = JSON.parse(decompressed);
+                                console.debug('[editor] Initial parsed data:', parsedData);
+                                if (Array.isArray(parsedData) && parsedData.length === 0) {
+                                    const errorMsg = '[editor] Error: Parsed data is an empty array. Forcing re-parse using trimmed data.';
+                                    console.error(errorMsg);
+                                    // Force re-parse by trimming the decompressed string and trying again
+                                    parsedData = JSON.parse(decompressed.trim());
+                                    console.debug('[editor] Parsed data after re-parse:', parsedData);
+                                    if (Array.isArray(parsedData) && parsedData.length === 0)
+                                        throw new Error('[editor] Error: Re-parsed data is still an empty array.');
+                                }
+                            } catch (error) {
+                                console.error('[editor] Failed to parse decompressed data:', error);
+                                throw error;
+                            }
+                        } else {
+                            parsedData = [];
+                        }
+                        // Insert the components brutally without any mercy
+                        renderer.current!.logicDisplay!.components = parsedData;
+                        console.log(renderer.current!.logicDisplay!.components);
+                        if (renderer.current!.logicDisplay!.components.length === 0) {
+                            console.error('[editor] No components found in the design, initializing with an empty array');
+                        }
+
                         setLoading(false);
                     }
                     if (param.startsWith('action=')) {
@@ -190,12 +215,14 @@ const Editor = () => {
             } else {
                 try {
                     console.log('[editor] opening up URI-encoded design');
+                    console.log('[editor] data:', LZString.decompressFromEncodedURIComponent(data));
                     renderer.current.logicDisplay?.importJSON(
                         JSON.parse(
                         LZString.decompressFromEncodedURIComponent(data) || '[]'
                         ),
-                        renderer.current.logicDisplay.components
+                        renderer.current!.logicDisplay!.components
                     );
+                    console.log(renderer.current!.logicDisplay!.components);
                     setLoading(false);
                 } catch (e) {
                     console.error('[editor] failed to open: ', e);
@@ -252,7 +279,16 @@ const Editor = () => {
             <Fragment>
                 {menu === true && (
                     <div className={styles['mobile-menu']}>
-                        <p>a</p>
+                        <div className={styles['mobile-menu-button']} onClick={() => renderer.current?.undo()}>
+                            <img src={UndoSymbol}></img>
+                            &nbsp;
+                            <p>Undo</p>
+                        </div>
+                        <div className={`${styles['mobile-menu-button']} ${styles.nomargin}`} onClick={() => renderer.current?.redo()}>
+                            <img src={RedoSymbol}></img>
+                            &nbsp;
+                            <p>Redo</p>
+                        </div>
                     </div>
                 )}
             </Fragment>
