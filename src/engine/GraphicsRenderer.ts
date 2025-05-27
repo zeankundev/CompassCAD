@@ -182,11 +182,9 @@ export class GraphicsRenderer {
         if (this.selectedComponent !== null && this.logicDisplay?.components[this.selectedComponent]) {
             this.drawComponentSize(this.logicDisplay?.components[this.selectedComponent]);
             const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
-            if (selectedComponent.active == true) {
-                const handles = this.getComponentHandles(selectedComponent);
-                for (const handle of handles) {
-                    this.drawPoint(handle.x, handle.y, '#fff', 2);
-                }
+            const handles = this.getComponentHandles(selectedComponent);
+            for (const handle of handles) {
+                this.drawPoint(handle.x, handle.y, '#fff', 2);
             }
         }
     }
