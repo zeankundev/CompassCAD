@@ -770,6 +770,14 @@ targetElement.addEventListener('click', () => {
   }
 });
 
+function num2hex(num) {
+    const clampedNum = Math.max(0, Math.min(100, num));
+    const scaledValue = Math.round(clampedNum * 2.55);
+    let hexString = scaledValue.toString(16);
+    hexString = hexString.padStart(2, '0');
+    return hexString.toUpperCase();
+}
+
 // Define tools mapping with their properties
 const tools = {
     'select': { mode: 25, key: 'q' },
@@ -816,9 +824,9 @@ const updateBattery = () => {
             batteryDisplay.src = `../../assets/icons/battery/75-${iconState}.svg`;
         } else if (batteryPercentage > 25) {
             batteryDisplay.src = `../../assets/icons/battery/50-${iconState}.svg`;
-        } else if (batteryPercentage > 10) {
+        } else if (batteryPercentage > 15) {
             batteryDisplay.src = `../../assets/icons/battery/25-${iconState}.svg`;
-        } else if (batteryPercentage <= 10) {
+        } else if (batteryPercentage <= 15) {
             batteryDisplay.src = `../../assets/icons/battery/10-${iconState}.svg`;
         }
         batteryLevel.innerText = `${batteryPercentage}%`;

@@ -426,7 +426,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x + moveByX,
 				component.y + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.LINE:
 			this.drawLine(
@@ -435,7 +436,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x2 + moveByX,
 				component.y2 + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.CIRCLE:
 			this.drawCircle(
@@ -444,7 +446,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x2 + moveByX,
 				component.y2 + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.RECTANGLE:
 			this.drawRectangle(
@@ -453,7 +456,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x2 + moveByX,
 				component.y2 + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.MEASURE:
 			this.drawMeasure(
@@ -462,7 +466,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x2 + moveByX,
 				component.y2 + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.LABEL:
 			this.drawLabel(
@@ -471,7 +476,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.text,
 				component.color,
 				component.radius,
-				component.fontSize);
+				component.fontSize,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -482,7 +488,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.x3 + moveByX,
 				component.y3 + moveByY,
 				component.color,
-				component.radius);
+				component.radius,
+				component.opacity);
 			break;
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(component);
@@ -491,7 +498,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 			this.drawPicture(
 				component.x + moveByX,
 				component.y + moveByY,
-				component.pictureSource
+				component.pictureSource,
+				component.opacity
 			);
 			break;
 	}
@@ -507,7 +515,8 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.LINE:
 			this.drawLine(
@@ -516,7 +525,8 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.pcbEditorMode ? this.pcbEditor.radius : this.selectedRadius);
+				this.pcbEditorMode ? this.pcbEditor.radius : this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.CIRCLE:
 			this.drawCircle(
@@ -525,14 +535,16 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			this.drawMeasure(
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.RECTANGLE:
 			this.drawRectangle(
@@ -541,28 +553,32 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			this.drawMeasure(
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			this.drawMeasure(
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.temporaryPoints[2],
 				this.temporaryPoints[1],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			this.drawMeasure(
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.temporaryPoints[0],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.MEASURE:
 			this.drawMeasure(
@@ -571,7 +587,8 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[2],
 				this.temporaryPoints[3],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.LABEL:
 			this.drawLabel(
@@ -580,7 +597,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryText,
 				this.selectedColor,
 				this.selectedRadius,
-				this.fontSize);
+				100);
 			break;
 		case COMPONENT_TYPES.ARC:
 			this.drawArc(
@@ -591,7 +608,8 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[4],
 				this.temporaryPoints[5],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 		case COMPONENT_TYPES.SHAPE:
 			this.drawShape(this.temporaryShape);
@@ -601,12 +619,13 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.temporaryPoints[0],
 				this.temporaryPoints[1],
 				this.selectedColor,
-				this.selectedRadius);
+				this.selectedRadius,
+				100);
 			break;
 	}
 };
 
-GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
+GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius, opacity) {
 	if (this.temporarySelectedComponent != null || this.mode == this.MODES.MOVE) {
 		this.context.lineWidth = 2;
 		this.context.fillStyle = '#fff';
@@ -625,8 +644,8 @@ GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
 		return;
 	} else {
 		this.context.lineWidth = 3 * this.zoom;
-		this.context.fillStyle = color;
-		this.context.strokeStyle = color;
+		this.context.fillStyle = color + num2hex(opacity);
+		this.context.strokeStyle = color + num2hex(opacity);;
 		this.context.beginPath();
 		this.context.arc(
 			(x + this.cOutX) * this.zoom,
@@ -638,10 +657,10 @@ GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius) {
 	}
 };
 
-GraphicsRenderer.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawLine = function (x1, y1, x2, y2, color, radius, opacity) {
     this.context.lineWidth = radius * this.zoom;
-    this.context.fillStyle = color;
-    this.context.strokeStyle = color;
+    this.context.fillStyle = color + num2hex(opacity);
+    this.context.strokeStyle = color + num2hex(opacity);
     this.context.lineCap = "round"; // Ensure rounded ends for the line
     this.context.beginPath();
     this.context.moveTo(
@@ -655,10 +674,10 @@ GraphicsRenderer.prototype.drawLine = function (x1, y1, x2, y2, color, radius) {
     this.context.stroke();
 };
 
-GraphicsRenderer.prototype.drawCircle = function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawCircle = function (x1, y1, x2, y2, color, radius, opacity) {
 	this.context.lineWidth = radius * this.zoom;
-	this.context.fillStyle = color;
-	this.context.strokeStyle = color;
+	this.context.fillStyle = color + num2hex(opacity);
+	this.context.strokeStyle = color + num2hex(opacity);;
 	this.context.beginPath();
 	this.context.arc(
 		(x1 + this.cOutX) * this.zoom,
@@ -669,14 +688,14 @@ GraphicsRenderer.prototype.drawCircle = function (x1, y1, x2, y2, color, radius)
 	this.context.stroke();
 };
 
-GraphicsRenderer.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius) {
-	this.drawLine(x1, y1, x2, y1, color, radius);
-	this.drawLine(x2, y1, x2, y2, color, radius);
-	this.drawLine(x2, y2, x1, y2, color, radius);
-	this.drawLine(x1, y2, x1, y1, color, radius);
+GraphicsRenderer.prototype.drawRectangle = function (x1, y1, x2, y2, color, radius, opacity) {
+	this.drawLine(x1, y1, x2, y1, color, radius, opacity);
+	this.drawLine(x2, y1, x2, y2, color, radius, opacity);
+	this.drawLine(x2, y2, x1, y2, color, radius, opacity);
+	this.drawLine(x1, y2, x1, y1, color, radius, opacity);
 };
 
-GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius) {
+GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius, opacity) {
     // Calculate the distance between the two points
 	if (this.pcbEditorMode)
     	var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
@@ -744,18 +763,18 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
 			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, 0.25);
 			this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, 0.25);
 		} else {
-			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius); 
-        	this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
+			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius, opacity); 
+        	this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius, opacity);
 		}
     }
 
     // Draw arrowheads
     if (this.pcbEditorMode) {
-		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, 0.25);
-		this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, 0.25);
+		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, 0.25, 100);
+		this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, 0.25, 100);
 	} else {
-		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
-    	this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
+		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius, opacity);
+    	this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius, opacity);
 	}
 
 	this.context.save();
@@ -769,7 +788,7 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
     // Set text alignment to center
     this.context.textAlign = 'center';
     this.context.textBaseline = isShortDistance ? 'top' : 'middle';
-    this.context.fillStyle = color;
+    this.context.fillStyle = color + num2hex(opacity);
     this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
     // Draw the text slightly above the line if distance is short
@@ -779,18 +798,18 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
     this.context.restore();
 };
 
-GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius) {
+GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius, opacity) {
     var arrowX = x + length * Math.cos(angle);
     var arrowY = y + length * Math.sin(angle);
     var offsetX = offset * Math.cos(angle + Math.PI / 2);
     var offsetY = offset * Math.sin(angle + Math.PI / 2);
 
-    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius);
-    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius);
-    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
+    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color + num2hex(opacity), radius);
+    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color + num2hex(opacity), radius);
+    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color + num2hex(opacity), radius);
 };
 
-GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize) {
+GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize, opacity) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	var localZoom = this.zoom;
@@ -833,7 +852,7 @@ GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius
 		(this.cOutY + y) * this.zoom);
 };
 
-GraphicsRenderer.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius) {
+GraphicsRenderer.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius, opacity) {
 	var firstAngle = this.getAngle(x1, y1, x2, y2);
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
 
@@ -853,7 +872,7 @@ GraphicsRenderer.prototype.drawShape = function (shape) {
 	this.drawAllComponents(shape.components, shape.x, shape.y);
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
-GraphicsRenderer.prototype.drawPicture = function (x, y, basedURL) {
+GraphicsRenderer.prototype.drawPicture = function (x, y, basedURL, opacity) {
 	this.drawPoint(x, y, '#0ff', 2);
 
 	if (!this.imageCache[basedURL]) {

@@ -20,6 +20,7 @@ function Component() {
     this.color = "#ffffff";
     this.name = "Component"; // Adjustable names for the designer's convenience
     this.radius = 2;
+    this.opacity = 100;
 }
 
 Component.prototype.setActive = function(active) {
@@ -36,7 +37,7 @@ Component.prototype.isActive = function() {
 * @param x
 * @param y
 */
-function Point(x, y, name) {
+function Point(x, y, name, opacity) {
     Component.call(this);
 
     this.radius = 5;
@@ -44,6 +45,7 @@ function Point(x, y, name) {
     this.name = name || "Point";
     this.x = 0;
     this.y = 0;
+    this.opacity = opacity !== undefined ? opacity : 100;
 
     if ( x != undefined && y != undefined) {
         this.x = x;
@@ -61,7 +63,7 @@ Point.prototype.constructor = Point;
 * @param x2
 * @param y2
 */
-function Line(x1, y1, x2, y2, radius, color, name) {
+function Line(x1, y1, x2, y2, radius, color, name, opacity) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.LINE;
@@ -80,6 +82,8 @@ function Line(x1, y1, x2, y2, radius, color, name) {
     if (color != undefined) {
         this.color = color
     }
+
+    this.opacity = opacity !== undefined ? opacity : 100;
 
     if ( x1 != undefined
         && y1 != undefined
@@ -103,16 +107,10 @@ Line.prototype.constructor = Line;
 * @param x2
 * @param y2
 */
-function Circle(x1, y1, x2, y2, radius, color, name) {
-    Line.call(this, x1, y1, x2, y2);
-    if (radius != undefined) {
-        this.radius = radius
-    } else {
-        this.radius = 2
-    }
-    if (color != undefined) {
-        this.color = color
-    }
+function Circle(x1, y1, x2, y2, radius, color, name, opacity) {
+    Line.call(this, x1, y1, x2, y2, radius, color, name, opacity);
+    this.radius = radius !== undefined ? radius : 2;
+    this.color = color !== undefined ? color : this.color;
     this.name = name || "Circle";
     this.type = COMPONENT_TYPES.CIRCLE;
 }
@@ -127,11 +125,8 @@ Circle.prototype.constructor = Circle;
 * @param x2
 * @param y2
 */
-function Rectangle(x1, y1, x2, y2, radius, color, name) {
-    Line.call(this, x1, y1, x2, y2, radius);
-    if (color != undefined) {
-        this.color = color
-    }
+function Rectangle(x1, y1, x2, y2, radius, color, name, opacity) {
+    Line.call(this, x1, y1, x2, y2, radius, color, name, opacity);
     this.name = name || "Rectangle";
     this.type = COMPONENT_TYPES.RECTANGLE;
 }
@@ -146,14 +141,11 @@ Rectangle.prototype.constructor = Rectangle;
 * @param x2
 * @param y2
 */
-function Measure(x1, y1, x2, y2, color, name) {
-    Line.call(this, x1, y1, x2, y2);
-    if (color != undefined) {
-        this.color = color
-    }
+function Measure(x1, y1, x2, y2, color, name, opacity) {
+    Line.call(this, x1, y1, x2, y2, 2, color, name, opacity);
     this.name = name || "Measure";
     this.type = COMPONENT_TYPES.MEASURE;
-    this.color = "#ff3";
+    this.color = "#ffff33";
 }
 Measure.prototype = new Line();
 Measure.prototype.constructor = Measure;
@@ -165,12 +157,12 @@ Measure.prototype.constructor = Measure;
 * @param y
 * @param text
 */
-function Label(x, y, text, fontSize, name) {
-    Point.call(this, x, y);
+function Label(x, y, text, fontSize, name, opacity) {
+    Point.call(this, x, y, name, opacity);
 
     this.type = COMPONENT_TYPES.LABEL;
     this.name = name || "Label";
-    this.color = "#eee";
+    this.color = "#eeeeee";
     this.text = text;
     this.fontSize = fontSize;
 }
@@ -187,7 +179,7 @@ Label.prototype.constructor = Label;
 * @param x3
 * @param y3
 */
-function Arc(x1, y1, x2, y2, x3, y3, radius, color, name) {
+function Arc(x1, y1, x2, y2, x3, y3, radius, color, name, opacity) {
     Component.call(this);
 
     this.type = COMPONENT_TYPES.ARC;
@@ -204,6 +196,7 @@ function Arc(x1, y1, x2, y2, x3, y3, radius, color, name) {
     } else {
         this.radius = 2
     }
+    this.opacity = opacity !== undefined ? opacity : 100;
 
     if (color != undefined) {
         this.color = color
@@ -251,13 +244,14 @@ function Shape(x, y, name) {
 Shape.prototype = new Component();
 Shape.prototype.constructor = Shape;
 
-function Picture(x, y, basedURL, name) {
-    Component.call(this)
+function Picture(x, y, basedURL, name, opacity) {
+    Component.call(this);
     
     this.type = COMPONENT_TYPES.PICTURE;
     this.name = name || "Picture";
     this.x = 0;
     this.y = 0;
+    this.opacity = opacity !== undefined ? opacity : 100;
     this.pictureSource = ''
     if ( x != undefined && y != undefined && basedURL != undefined) {
         this.x = x;

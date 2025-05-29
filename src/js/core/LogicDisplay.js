@@ -149,7 +149,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y2,
 						arrJSON[i].radius,
 						arrJSON[i].color,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.RECTANGLE:
 				parent.push(new Rectangle(
@@ -159,7 +160,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y2,
 						arrJSON[i].radius,
 						arrJSON[i].color,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.CIRCLE:
 				parent.push(new Circle(
@@ -169,7 +171,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y2,
 						arrJSON[i].radius,
 						arrJSON[i].color,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.ARC:
 				parent.push(new Arc(
@@ -181,7 +184,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y3,
 						arrJSON[i].radius,
 						arrJSON[i].color,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.MEASURE:
 				parent.push(new Measure(
@@ -190,7 +194,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].x2,
 						arrJSON[i].y2,
 						arrJSON[i].color,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.LABEL:
 				parent.push(new Label(
@@ -198,7 +203,8 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 						arrJSON[i].y,
 						arrJSON[i].text,
 						arrJSON[i].fontSize,
-						arrJSON[i].name));
+						arrJSON[i].name,
+						arrJSON[i].opacity));
 				break;
 			case COMPONENT_TYPES.SHAPE:
 				var s = new Shape(arrJSON[i].x, arrJSON[i].y, arrJSON[i].name);
@@ -210,8 +216,18 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 					arrJSON[i].x,
 					arrJSON[i].y,
 					arrJSON[i].pictureSource,
-					arrJSON[i].name));
+					arrJSON[i].name,
+					arrJSON[i].opacity));
 				break;
+			default:
+				parent.push(new Label(
+					0,
+					0,
+					"Unknown component type, index no: " + i,
+					18,
+					"Error Label",
+					100
+				))
 		}
 	}
 	refreshHierarchy();
