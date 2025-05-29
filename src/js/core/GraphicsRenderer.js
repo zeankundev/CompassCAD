@@ -898,11 +898,11 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 		const errorShape = {
 			components: [
 				// Rectangle borders
-				new Circle(0, 0, 10, 10, opacity),
+				new Circle(0, 0, 10, 10, 2, '#ff0000', opacity),
 				
 				// X cross
-				new Line(-7, -7, 7, 7, 2, opacity),
-				new Line(-7, 7, 7, -7, 2, opacity),
+				new Line(-7, -7, 7, 7, 2, '#ff0000', opacity),
+				new Line(-7, 7, 7, -7, 2, '#ff0000', opacity),
 				
 				// Error text
 				new Label(17, 6, "Image Error", this.fontSize, opacity)
