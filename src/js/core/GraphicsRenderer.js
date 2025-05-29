@@ -810,7 +810,7 @@ GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset
 };
 
 GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize, opacity) {
-	this.drawPoint(x, y, '#0ff', 2);
+	this.drawPoint(x, y, '#00ffff', 2, opacity);
 
 	var localZoom = this.zoom;
 	var localDiff = 0;
@@ -821,7 +821,7 @@ GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius
 		y += localDiff;
 	}
 
-	this.context.fillStyle = color;
+	this.context.fillStyle = color + num2hex(opacity);
 	var fontSize = fontSize || this.fontSize;
 	this.context.font = (fontSize * localZoom) + `px ${this.preferredFont}, 'SECEmojis', Consolas, DejaVu Sans Mono, monospace`;
 
@@ -857,8 +857,8 @@ GraphicsRenderer.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, ra
 	var secondAngle = this.getAngle(x1, y1, x3, y3);
 
 	this.context.lineWidth = radius * this.zoom;
-	this.context.fillStyle = color;
-	this.context.strokeStyle = color;
+	this.context.fillStyle = color + num2hex(opacity);
+	this.context.strokeStyle = color + num2hex(opacity);
 	this.context.beginPath();
 	this.context.arc(
 		(x1 + this.cOutX) * this.zoom,
@@ -873,7 +873,7 @@ GraphicsRenderer.prototype.drawShape = function (shape) {
 	this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
 };
 GraphicsRenderer.prototype.drawPicture = function (x, y, basedURL, opacity) {
-	this.drawPoint(x, y, '#0ff', 2);
+	this.drawPoint(x, y, '#0ff', 2, opacity);
 
 	if (!this.imageCache[basedURL]) {
 		const img = new Image();
@@ -888,24 +888,24 @@ GraphicsRenderer.prototype.drawPicture = function (x, y, basedURL, opacity) {
 			this.renderImage(x, y, img);
 		};
 	} else {
-		this.renderImage(x, y, this.imageCache[basedURL]);
+		this.renderImage(x, y, this.imageCache[basedURL], opacity);
 	}
 };
 
-GraphicsRenderer.prototype.renderImage = function (x, y, img) {
+GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 	if (img == true) {
 		// Draw a placeholder shape with X when image fails to load
 		const errorShape = {
 			components: [
 				// Rectangle borders
-				new Circle(0, 0, 10, 10),
+				new Circle(0, 0, 10, 10, opacity),
 				
 				// X cross
-				new Line(-7, -7, 7, 7, 2),
-				new Line(-7, 7, 7, -7, 2),
+				new Line(-7, -7, 7, 7, 2, opacity),
+				new Line(-7, 7, 7, -7, 2, opacity),
 				
 				// Error text
-				new Label(17, 6, "Image Error", this.fontSize)
+				new Label(17, 6, "Image Error", this.fontSize, opacity)
 			],
 			x: x,
 			y: y,
@@ -920,6 +920,8 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img) {
 	const width = img.naturalWidth * this.zoom || 100;
 	const height = img.naturalHeight * this.zoom || 100;
 
+	this.context.globalAlpha = opacity / 100; // Set opacity
+
 	this.context.drawImage(
 		img,
 		(x + this.cOutX) * this.zoom,
@@ -927,6 +929,8 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img) {
 		width,
 		height
 	);
+
+	this.context.globalAlpha = 1;
 };
 
 GraphicsRenderer.prototype.drawToolTip = function (e) {
