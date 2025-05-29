@@ -804,9 +804,9 @@ GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset
     var offsetX = offset * Math.cos(angle + Math.PI / 2);
     var offsetY = offset * Math.sin(angle + Math.PI / 2);
 
-    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color + num2hex(opacity), radius);
-    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color + num2hex(opacity), radius);
-    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color + num2hex(opacity), radius);
+    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius, opacity);
+    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
 };
 
 GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize, opacity) {

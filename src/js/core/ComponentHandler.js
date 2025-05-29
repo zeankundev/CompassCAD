@@ -143,9 +143,9 @@ Rectangle.prototype.constructor = Rectangle;
 */
 function Measure(x1, y1, x2, y2, color, name, opacity) {
     Line.call(this, x1, y1, x2, y2, 2, color, name, opacity);
+    this.color = "#ffff33";
     this.name = name || "Measure";
     this.type = COMPONENT_TYPES.MEASURE;
-    this.color = "#ffff33";
 }
 Measure.prototype = new Line();
 Measure.prototype.constructor = Measure;
