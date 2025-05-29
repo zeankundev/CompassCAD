@@ -155,6 +155,7 @@ $(document).ready(async() => {
     document.addEventListener('keydown', (event) => {
         const activeElement = document.activeElement;
         if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+            console.log('[keydown] text field is focused, ignoring')
             return;
         }
 
