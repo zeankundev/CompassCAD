@@ -969,16 +969,34 @@ GraphicsRenderer.prototype.drawRules = function (e) {
 		return;
 
 	if (this.gridPointer) {
-		this.context.lineWidth = 0.2;
-		this.context.globalCompositeOperation='source-atop';
-		this.context.strokeStyle = "#ccc";
-
+		// Vertical rule: outer (for contrast) then inner
+		this.context.lineWidth = 2;
+		this.context.strokeStyle = '#2e2e2e'; // Outer contrasting color
 		this.context.beginPath();
 		this.context.moveTo(this.getCursorXInFrame(), -this.displayHeight);
 		this.context.lineTo(this.getCursorXInFrame(), this.displayHeight);
 		this.context.closePath();
 		this.context.stroke();
 
+		// Horizontal rule: outer (for contrast) then inner
+		this.context.lineWidth = 2;
+		this.context.strokeStyle = '#2e2e2e';
+		this.context.beginPath();
+		this.context.moveTo(-this.displayWidth, this.getCursorYInFrame());
+		this.context.lineTo(this.displayWidth, this.getCursorYInFrame());
+		this.context.closePath();
+		this.context.stroke();
+
+		this.context.lineWidth = 1;
+		this.context.strokeStyle = '#cccccc'; // Inner rule color
+		this.context.beginPath();
+		this.context.moveTo(this.getCursorXInFrame(), -this.displayHeight);
+		this.context.lineTo(this.getCursorXInFrame(), this.displayHeight);
+		this.context.closePath();
+		this.context.stroke();
+
+		this.context.lineWidth = 1;
+		this.context.strokeStyle = '#cccccc';
 		this.context.beginPath();
 		this.context.moveTo(-this.displayWidth, this.getCursorYInFrame());
 		this.context.lineTo(this.displayWidth, this.getCursorYInFrame());
