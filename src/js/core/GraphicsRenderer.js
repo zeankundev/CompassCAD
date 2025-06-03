@@ -1016,43 +1016,18 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 		// Dynamically adjust density based on zoom level
 		let densityDivisor;
 		// For very small grid spacing (<5), be more aggressive with density reduction
-		if (this.gridSpacing < 5) {
-			if (this.zoom <= 1) {
-				densityDivisor = 50; // Very sparse at low zoom
-			} else if (this.zoom <= 2) {
-				densityDivisor = 25; // Sparse at normal zoom
-			} else {
-				densityDivisor = 20; // Show full density only at high zoom
-			}
-		}
-		// For small grid spacing (5-10), moderate density reduction
-		else if (this.gridSpacing < 10) {
-			if (this.zoom < 1) {
-				densityDivisor = 6; // Very sparse at low zoom
-			} else if (this.zoom <= 2) {
-				densityDivisor = 3; // Normal density
-			} else {
-				densityDivisor = 1; // Dense at high zoom
-			}
-		}
-		// For medium grid spacing (10-15), light density reduction 
-		else if (this.gridSpacing < 20) {
-			if (this.zoom < 1) {
-				densityDivisor = 3; // Slightly sparse at low zoom
-			} else {
-				densityDivisor = 1.5; // Normal density at all other zooms
-			}
-		}
-		else if (this.gridSpacing < 50) {
-			if (this.zoom < 1) densityDivisor = 2;
-			else densityDivisor = 1;
-		}
-		else {
-			if (this.zoom < 0.75) {
-				densityDivisor = 1.5
-			} else {
-				densityDivisor = 0.5;
-			}
+		// Dynamically calculate densityDivisor as an even integer for optimal performance
+		const minDivisor = 2;
+		const maxDivisor = 50;
+		// If zoom is very low, use a fixed low divisor to avoid heavy drawing
+		if (this.zoom < 0.2 || gridSpacingAdjusted < 5) {
+			densityDivisor = 50;
+		} else {
+			// The divisor increases as zoom decreases and gridSpacing decreases (more sparse at low zoom/small grid)
+			let base = Math.max(1, (2 / (this.zoom / 2)) * (10 / Math.max(1, this.gridSpacing)));
+			densityDivisor = Math.round(Math.min(maxDivisor, Math.max(minDivisor, base)));
+			// Ensure it's always even for performance
+			if (densityDivisor % 2 !== 0) densityDivisor += 1;
 		}
 
 		// Adjust spacing based on density
@@ -2041,7 +2016,7 @@ GraphicsRenderer.prototype.setZoom = function (zoomFactor) {
 	var newZoom = this.zoom * zoomFactor;
 	
 	// Ensure zoom does not go beyond limits
-	if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
+	if (newZoom <= 0.1 || newZoom >= this.maxZoomFactor) {
 		return;
 	}
 
