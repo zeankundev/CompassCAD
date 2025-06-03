@@ -1019,16 +1019,11 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 		// Dynamically calculate densityDivisor as an even integer for optimal performance
 		const minDivisor = 2;
 		const maxDivisor = 50;
-		// If zoom is very low, use a fixed low divisor to avoid heavy drawing
-		if (this.zoom < 0.2 || gridSpacingAdjusted < 5) {
-			densityDivisor = 50;
-		} else {
-			// The divisor increases as zoom decreases and gridSpacing decreases (more sparse at low zoom/small grid)
-			let base = Math.max(1, (2 / (this.zoom / 2)) * (10 / Math.max(1, this.gridSpacing)));
-			densityDivisor = Math.round(Math.min(maxDivisor, Math.max(minDivisor, base)));
-			// Ensure it's always even for performance
-			if (densityDivisor % 2 !== 0) densityDivisor += 1;
-		}
+		// The divisor increases as zoom decreases and gridSpacing decreases (more sparse at low zoom/small grid)
+		let base = Math.max(1, (2 / this.zoom) * (10 / Math.max(1, this.gridSpacing)));
+		densityDivisor = Math.round(Math.min(maxDivisor, Math.max(minDivisor, base)));
+		// Ensure it's always even for performance
+		if (densityDivisor % 2 !== 0) densityDivisor += 1;
 
 		// Adjust spacing based on density
 		const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
