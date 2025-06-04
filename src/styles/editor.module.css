@@ -470,11 +470,9 @@ body {
     display: flex;
     align-items: center;
     align-self: flex-end;
-    width: 20px;
-    height: 20px;
     justify-content: center;
     padding: 10px;
-    border-radius: 50%;
+    border-radius: 10000px;
     background-color: var(--theme);
     cursor: pointer;
     margin-top: 10px;
@@ -524,4 +522,18 @@ body {
 }
 .blueprint-design-link:hover {
     background-color: var(--primary);
+}
+/* HTML: <div class="loader"></div> */
+.spinner2 {
+  width: 24px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: 
+    radial-gradient(farthest-side,#ffffff 94%,#0000) top/6px 6px no-repeat,
+    conic-gradient(#0000 30%,#ffffff);
+  -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 6px),#000 0);
+  animation: l13 0.5s infinite linear;
+}
+@keyframes l13{ 
+  100%{transform: rotate(1turn)}
 }
