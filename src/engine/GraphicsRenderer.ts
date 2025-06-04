@@ -1770,12 +1770,11 @@ export class GraphicsRenderer {
         if (this.showOrigin)
             this.drawOrigin(this.cOutX, this.cOutY);
 
-        this.refreshSelectionTools();
-
         this.drawAllComponents(this.logicDisplay!.components, 0, 0);
         if (this.temporaryComponentType != null)
             this.drawTemporaryComponent();
         this.drawRules();
+        this.refreshSelectionTools();
     }
 }
 export const InitializeInstance = (renderer: GraphicsRenderer) => {

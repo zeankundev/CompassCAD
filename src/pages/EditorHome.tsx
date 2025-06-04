@@ -13,6 +13,7 @@ import BluePrintIsFuckingSleeping from '../assets/idle.svg'
 import { LZString } from '../components/LZString';
 import ReusableFooter from '../components/ReusableFooter';
 import { GoogleGenAI } from '@google/genai';
+import Markdown from 'react-markdown';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -199,6 +200,7 @@ const EditorHome = () => {
                         ]
                         \`\`\`
                         In the JSON data, you are not allowed to provide comments, or else the parser will fail to parse your generated design.
+                        However, outside of the ccad block, you can provide comments and explanations, such as what you have added or what you have changed.
                     `
                   },
                   {
@@ -213,6 +215,8 @@ const EditorHome = () => {
                 config,
                 contents,
             });
+
+            console.log('[home] AI response:', result.text);
 
             setMessages([...newMessages, { role: 'assistant', content: result.text || '' }]);
         } catch (error) {
@@ -349,7 +353,13 @@ const EditorHome = () => {
                                                         alt={message.role}
                                                     />
                                                     <div className={styles['message-content']}>
-                                                        {parseMessageContent(message.content)}
+                                                        <div>
+                                                            {message.content.includes('```ccad') ? (
+                                                                parseMessageContent(message.content)
+                                                            ) : (
+                                                                <Markdown>{message.content}</Markdown>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
