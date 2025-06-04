@@ -244,24 +244,30 @@ const EditorHome = () => {
     const parseMessageContent = (content: string) => {
         const ccadRegex = /```ccad\n([\s\S]*?)```/g;
         let lastIndex = 0;
-        const parts = [];
+        const parts: (string | React.ReactElement)[] = [];
         let match;
 
         while ((match = ccadRegex.exec(content)) !== null) {
-            // Add text before the code block
+            // Add markdown text before the code block
             if (match.index > lastIndex) {
-                parts.push(content.slice(lastIndex, match.index));
+                const textSegment = content.slice(lastIndex, match.index);
+                parts.push(
+                    <Markdown key={`text-${lastIndex}`}>
+                        {textSegment}
+                    </Markdown>
+                );
             }
             
-            // Handle CCAD code block
+            // Handle CCAD code block and provide a link to open the design
             const designData = match[1].trim();
             const encodedData = LZString.compressToEncodedURIComponent(designData);
             const designUrl = `/editor/designname="Blueprint-generated Design";${encodedData}`;
-            
             parts.push(
                 <a 
+                    key={`ccad-${match.index}`}
                     href={designUrl}
                     target="_blank"
+                    rel="noreferrer"
                     className={styles['blueprint-design-link']}
                 >
                     🔗 View/Edit this design in editor
@@ -271,9 +277,14 @@ const EditorHome = () => {
             lastIndex = match.index + match[0].length;
         }
 
-        // Add remaining text
+        // Add any remaining markdown text content
         if (lastIndex < content.length) {
-            parts.push(content.slice(lastIndex));
+            const remainingText = content.slice(lastIndex);
+            parts.push(
+                <Markdown key={`text-${lastIndex}`}>
+                    {remainingText}
+                </Markdown>
+            );
         }
 
         return parts;
@@ -353,13 +364,7 @@ const EditorHome = () => {
                                                         alt={message.role}
                                                     />
                                                     <div className={styles['message-content']}>
-                                                        <div>
-                                                            {message.content.includes('```ccad') ? (
-                                                                parseMessageContent(message.content)
-                                                            ) : (
-                                                                <Markdown>{message.content}</Markdown>
-                                                            )}
-                                                        </div>
+                                                        {parseMessageContent(message.content)}
                                                     </div>
                                                 </div>
                                             ))}
