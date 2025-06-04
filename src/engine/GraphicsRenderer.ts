@@ -1548,7 +1548,7 @@ export class GraphicsRenderer {
                     }
                 } else if (action === this.mouseAction.Down) {
                     if (this.temporarySelectedComponent !== null && this.logicDisplay?.components[this.temporarySelectedComponent]) {
-                        this.logicDisplay.components[this.temporarySelectedComponent].setActive(false);
+                        this.logicDisplay.components[this.temporarySelectedComponent].active = false;
                         this.saveState();
                     }
                 }
