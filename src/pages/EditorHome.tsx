@@ -425,7 +425,7 @@ However, outside of the ccad block, you can provide comments and explanations, s
                                             <img src={data.preview} />
                                             <div className={styles['editor-recents-details']}>
                                                 <div className={styles['recents-details-title']}>
-                                                    <h4>{data.name.length > 20 ? data.name.substring(0, 20) + '...' : data.name}</h4>
+                                                    <h4>{data.name.length > 16 ? data.name.substring(0, 16) + '...' : data.name}</h4>
                                                     <span>{data.date}</span>
                                                 </div>
                                             </div>
