@@ -2425,7 +2425,8 @@ GraphicsRenderer.prototype.checkForAnyPeerChanges = function () {
 GraphicsRenderer.prototype.saveDesign = function () {
 	if (this.filePath) {
 		fs.writeFileSync(this.filePath, JSON.stringify(this.logicDisplay.components));
-		this.setToolTip('Save success')
+		this.setToolTip('Save success');
+		callToast('Save successful!')
 	} else {
 		diag.showSaveDialog({
 			title: 'Save CompassCAD file',
