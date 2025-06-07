@@ -300,6 +300,7 @@ const Editor = () => {
                         svgImage={Back}
                         title='Go back home'
                         func={() => window.location.href = '/editor'}
+                        tabIndex={0}
                     />
                     <input 
                         className={styles['design-name']} 
@@ -316,6 +317,7 @@ const Editor = () => {
                         svgImage={MenuImg}
                         title='Menu'
                         func={() => setMenu(menu ? false : true)}
+                        tabIndex={2}
                     />
                 </Fragment>
             )}
@@ -326,6 +328,7 @@ const Editor = () => {
                             svgImage={Back}
                             title='Go back home'
                             func={() => window.location.href = '/editor'}
+                            tabIndex={0}
                         />
                         <input 
                             className={styles['design-name']} 
@@ -342,17 +345,19 @@ const Editor = () => {
                             svgImage={UndoSymbol}
                             title='Undo'
                             func={() => renderer.current?.undo()}
+                            tabIndex={2}
                         />
                         <HeaderButton 
                             svgImage={RedoSymbol}
                             title='Redo'
                             func={() => renderer.current?.redo()}
+                            tabIndex={3}
                         />
                         &nbsp;
                         <p>{zoom.toFixed(3)}x</p>
                     </div>
                     <div className={styles['header-right']}>
-                        <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}}>
+                        <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}} tabIndex={4}>
                             <img src={ExportSymbol} width={20} />
                             &nbsp;
                             <p>Share/Export</p>

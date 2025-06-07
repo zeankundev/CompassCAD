@@ -3,6 +3,7 @@ import style from '../styles/editor.module.css'
 interface HeaderButton {
     svgImage: string;
     title: string;
+    tabIndex?: number;
     func?: () => void;
 }
 const HeaderButton = (props: HeaderButton) => {
@@ -11,6 +12,7 @@ const HeaderButton = (props: HeaderButton) => {
             className={style['header-button']}
             onClick={props.func}
             title={props.title}
+            tabIndex={props.tabIndex}
         >
             <img 
                 src={props.svgImage} 
