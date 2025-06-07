@@ -199,6 +199,20 @@ Example of a rectangle with a label:
   {"type": 7, "x": 100, "y": 175, "text": "My Rectangle", "fontSize": 18, "color": "#eee"}
 ]
 \`\`\`
+This is not good practice and you will break the JSON parser.
+\`\`\`ccad
+[
+  {"type": 4, "x1": 50, "y1": 50, "x2": 150, "y2": 150, "color": "#ffffff", "radius": 2}, // A comment
+  {"type": 7, "x": 100, "y": 175, "text": "My Rectangle", "fontSize": 18, "color": "#eee"} // Another comment
+]
+\`\`\`
+You must do it like this, instead of adding comments:
+\`\`\`ccad
+[
+  {"type": 4, "x1": 50, "y1": 50, "x2": 150, "y2": 150, "color": "#ffffff", "radius": 2},
+  {"type": 7, "x": 100, "y": 175, "text": "My Rectangle", "fontSize": 18, "color": "#eee"}
+]
+\`\`\`
 In the JSON data, you are not allowed to provide comments, or else the parser will fail to parse your generated design.
 However, outside of the ccad block, you can provide comments and explanations, such as what you have added or what you have changed.
                     `
@@ -225,15 +239,33 @@ However, outside of the ccad block, you can provide comments and explanations, s
               },
             ];
 
-            const result = await genAI.models.generateContent({
+            // Call the streaming API to load response chunks
+            const stream = await genAI.models.generateContentStream({
                 model: 'gemini-2.0-flash',
                 config,
                 contents,
             });
 
-            console.log('[home] AI response:', result.text);
+            let assistantContent = '';
+            // Add an empty assistant message immediately for live updates
+            setMessages([...newMessages, { role: 'assistant', content: '' }]);
 
-            setMessages([...newMessages, { role: 'assistant', content: result.text || '' }]);
+            // Process and display streaming chunks as they arrive
+            for await (const chunk of stream) {
+                // Extract text from the first candidate's content parts
+                const newText = chunk.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                assistantContent += newText;
+                console.log(newText);
+                setMessages((prevMessages) => {
+                    const updatedMessages = [...prevMessages];
+                    const lastMessageIndex = updatedMessages.length - 1;
+                    updatedMessages[lastMessageIndex] = {
+                        role: 'assistant',
+                        content: assistantContent,
+                    };
+                    return updatedMessages;
+                });
+            }
         } catch (error) {
             console.error('Error sending message:', error);
             setMessages([...newMessages, { 

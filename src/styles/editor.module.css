@@ -487,7 +487,7 @@ body {
     align-items: center;
     padding: 10px;
     border-radius: 20px;
-    justify-content: flex-end;
+    justify-content: flex-start;
     animation: slidein-from-bottom-special 0.2s ease;
 }
 .blueprint-messages .message.user {
