@@ -21,7 +21,7 @@
     "discord-rpc": "^4.0.1",
     "jquery": "^3.7.1",
     "mathjax-electron": "^3.0.0",
-    "peerjs": "^1.5.4"
+    "peerjs": "^1.5.5"
   },
   "build": {
     "appId": "dev.zeankun.compasscad",

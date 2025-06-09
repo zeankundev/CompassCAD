@@ -1983,10 +1983,10 @@ peerjs-js-binarypack@^2.1.0:
   resolved "https://registry.yarnpkg.com/peerjs-js-binarypack/-/peerjs-js-binarypack-2.1.0.tgz#f0fc822d3cb54ab1022f4bd580308475e8f77b70"
   integrity sha512-YIwCC+pTzp3Bi8jPI9UFKO0t0SLo6xALnHkiNt/iUFmUUZG0fEEmEyFKvjsDKweiFitzHRyhuh6NvyJZ4nNxMg==
 
-peerjs@^1.5.4:
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/peerjs/-/peerjs-1.5.4.tgz#bcf933406d07fad9b2a34ae2e8215ba3f1878672"
-  integrity sha512-yFsoLMnurJKlQbx6kVSBpOp+AlNldY1JQS2BrSsHLKCZnq6t7saHleuHM5svuLNbQkUJXHLF3sKOJB1K0xulOw==
+peerjs@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/peerjs/-/peerjs-1.5.5.tgz#71095595151961566688b9b79eafcb0ab93bcfc2"
+  integrity sha512-viMUCPDL6CSfOu0ZqVcFqbWRXNHIbv2lPqNbrBIjbFYrflebOjItJ4hPfhjnuUCstqciHVu9vVJ7jFqqKi/EuQ==
   dependencies:
     "@msgpack/msgpack" "^2.8.0"
     eventemitter3 "^4.0.7"
