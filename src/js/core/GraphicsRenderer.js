@@ -1,7 +1,7 @@
 const $ = require('jquery')
 const rpc = require('discord-rpc')
-const client = new rpc.Client({transport: 'ipc'})
-client.login({clientId: '1309147585130397736'}).catch(console.error)
+const client = new rpc.Client({ transport: 'ipc' })
+client.login({ clientId: '1309147585130397736' }).catch(console.error)
 const diag = require('@electron/remote').dialog
 const fs = require('fs');
 const { BrowserWindow } = require('@electron/remote');
@@ -80,8 +80,8 @@ function GraphicsRenderer(displayName, width, height) {
 	this.camX = 0;
 	this.camY = 0;
 	this.zoom = 1;
-	this.zoomin = 3/2;
-	this.zoomout = 2/3;
+	this.zoomin = 3 / 2;
+	this.zoomout = 2 / 3;
 	this.currentZoom = 1; // Add this to your initialization
 	this.targetZoom = 1;  // Add this to your initialization
 	this.zoomSpeed = 0.4 // Adjust the speed of the zoom transition
@@ -285,7 +285,7 @@ GraphicsRenderer.prototype.refreshSelectionTools = function () {
 	if (this.selectedComponent != null && this.logicDisplay.components[this.selectedComponent]) {
 		// Always draw component size measurements
 		this.drawComponentSize(this.logicDisplay.components[this.selectedComponent]);
-		
+
 		// Draw handles for the selected component
 		const selectedComponent = this.logicDisplay.components[this.selectedComponent];
 		if (selectedComponent.isActive()) {
@@ -319,7 +319,7 @@ GraphicsRenderer.prototype.cut = function (e) {
 }
 
 GraphicsRenderer.prototype.paste = function (e) {
-    if (this.selectedComponent == null) {
+	if (this.selectedComponent == null) {
 		navigator.clipboard.readText().then(data => {
 			this.unselectComponent()
 			try {
@@ -328,16 +328,16 @@ GraphicsRenderer.prototype.paste = function (e) {
 					console.error("Pasted data is not an array");
 					return;
 				}
-				
+
 				// Merge existing components with the new ones
 				const currentComponents = this.logicDisplay.components;
 				const initialLength = currentComponents.length;
 
 				clearForm()
-				
+
 				this.unselectComponent(); // Ensure no previous selection before pasting
 				this.logicDisplay.importJSON(pastedComponents, currentComponents);
-				
+
 				// Ensure correct selection of the newly pasted object
 				this.unselectComponent();
 				this.setMode(this.MODES.SELECT);
@@ -346,7 +346,7 @@ GraphicsRenderer.prototype.paste = function (e) {
 				this.setMode(this.MODES.MOVE);
 				this.unselectComponent()
 				this.selectComponent(newComponentIndex);
-				
+
 				// Ensure mode switches back to SELECT if mouse is down
 				const handleMouseDown = () => {
 					this.setMode(this.MODES.SELECT);
@@ -368,36 +368,36 @@ GraphicsRenderer.prototype.paste = function (e) {
 GraphicsRenderer.prototype.saveState = function () {
 	let hasChanged = false;
 	for (let i = 0; i < this.logicDisplay.components.length; i++) {
-	  if (JSON.stringify(this.logicDisplay.components[i]) !== JSON.stringify(this.lastArray[i])) {
-		hasChanged = true;
-		break;
-	  }
+		if (JSON.stringify(this.logicDisplay.components[i]) !== JSON.stringify(this.lastArray[i])) {
+			hasChanged = true;
+			break;
+		}
 	}
-  
-	if (hasChanged) {
-	  this.undoStack.push(JSON.stringify(this.logicDisplay.components));
-	  this.lastArray = [...this.logicDisplay.components];
-	  if (this.undoStack.length > this.maximumStack) {
-		this.undoStack.shift();
-	  }
-  
-	  console.log(this.undoStack);
-  
-	  if (doupdatestack) {
-		sendCurrentEditorState();
-	  } else {
-		doupdatestack = true;
-	  }
-  
-	  // Clear the redo stack when a new action is performed
-	  this.redoStack = [];
-	}
-  };
 
-GraphicsRenderer.prototype.returnLatexInstance = async function(latex) {
+	if (hasChanged) {
+		this.undoStack.push(JSON.stringify(this.logicDisplay.components));
+		this.lastArray = [...this.logicDisplay.components];
+		if (this.undoStack.length > this.maximumStack) {
+			this.undoStack.shift();
+		}
+
+		console.log(this.undoStack);
+
+		if (doupdatestack) {
+			sendCurrentEditorState();
+		} else {
+			doupdatestack = true;
+		}
+
+		// Clear the redo stack when a new action is performed
+		this.redoStack = [];
+	}
+};
+
+GraphicsRenderer.prototype.returnLatexInstance = async function (latex) {
 	const MathJaxInstance = await MathJax;
 
-    return MathJaxInstance.tex2svg(latex, {display: true});
+	return MathJaxInstance.tex2svg(latex, { display: true });
 }
 GraphicsRenderer.prototype.clearGrid = function (e) {
 	this.context.restore();
@@ -658,20 +658,20 @@ GraphicsRenderer.prototype.drawPoint = function (x, y, color, radius, opacity) {
 };
 
 GraphicsRenderer.prototype.drawLine = function (x1, y1, x2, y2, color, radius, opacity) {
-    this.context.lineWidth = radius * this.zoom;
-    this.context.fillStyle = color + num2hex(opacity);
-    this.context.strokeStyle = color + num2hex(opacity);
-    this.context.lineCap = "round"; // Ensure rounded ends for the line
-    this.context.beginPath();
-    this.context.moveTo(
-        (x1 + this.cOutX) * this.zoom,
-        (y1 + this.cOutY) * this.zoom
-    );
-    this.context.lineTo(
-        (x2 + this.cOutX) * this.zoom,
-        (y2 + this.cOutY) * this.zoom
-    );
-    this.context.stroke();
+	this.context.lineWidth = radius * this.zoom;
+	this.context.fillStyle = color + num2hex(opacity);
+	this.context.strokeStyle = color + num2hex(opacity);
+	this.context.lineCap = "round"; // Ensure rounded ends for the line
+	this.context.beginPath();
+	this.context.moveTo(
+		(x1 + this.cOutX) * this.zoom,
+		(y1 + this.cOutY) * this.zoom
+	);
+	this.context.lineTo(
+		(x2 + this.cOutX) * this.zoom,
+		(y2 + this.cOutY) * this.zoom
+	);
+	this.context.stroke();
 };
 
 GraphicsRenderer.prototype.drawCircle = function (x1, y1, x2, y2, color, radius, opacity) {
@@ -696,17 +696,17 @@ GraphicsRenderer.prototype.drawRectangle = function (x1, y1, x2, y2, color, radi
 };
 
 GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, radius, opacity) {
-    // Calculate the distance between the two points
+	// Calculate the distance between the two points
 	if (this.pcbEditorMode)
-    	var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
+		var distance = (this.getDistance(x1, y1, x2, y2) * this.unitFactor * (this.unitConversionFactor / 0.37)) * 10;
 	else
-	var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
+		var distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
 
-    // Calculate the angle of the line in radians
-    var angle = Math.atan2(y2 - y1, x2 - x1);
+	// Calculate the angle of the line in radians
+	var angle = Math.atan2(y2 - y1, x2 - x1);
 
-    // Adjust zoom levels
-    if (this.pcbEditorMode) {
+	// Adjust zoom levels
+	if (this.pcbEditorMode) {
 		var localZoom = 1;
 		var localDiff = 0;
 		if (this.zoom <= 0.25) {
@@ -722,59 +722,59 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
 		}
 	}
 
-    // Format the distance text
-    const distanceText = distance.toFixed(2) + "" + this.unitMeasure;
+	// Format the distance text
+	const distanceText = distance.toFixed(2) + "" + this.unitMeasure;
 
-    // Measure the text width to create an adaptive gap
-    this.context.save();
-    this.context.font = (24 * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
-    const textWidth = this.context.measureText(distanceText).width;
-    this.context.restore();
+	// Measure the text width to create an adaptive gap
+	this.context.save();
+	this.context.font = (24 * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+	const textWidth = this.context.measureText(distanceText).width;
+	this.context.restore();
 
-    // Default length and offset for the arrowhead lines
-    var defaultArrowLength = 25;
-    var arrowOffset = 5;
-    let arrowLength = defaultArrowLength;
+	// Default length and offset for the arrowhead lines
+	var defaultArrowLength = 25;
+	var arrowOffset = 5;
+	let arrowLength = defaultArrowLength;
 
-    // Minimum distance to display the full measure line and gap
-    const minDistanceForFullArrow = defaultArrowLength * 3 / 100; // 0.5 meters
-    if (distance < minDistanceForFullArrow) {
-        arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
-    }
-    const isShortDistance = distance < minDistanceForFullArrow * 2;
+	// Minimum distance to display the full measure line and gap
+	const minDistanceForFullArrow = defaultArrowLength * 3 / 100; // 0.5 meters
+	if (distance < minDistanceForFullArrow) {
+		arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
+	}
+	const isShortDistance = distance < minDistanceForFullArrow * 2;
 
-    // Calculate the midpoint
-    const midX = (x1 + x2) / 2;
-    const midY = (y1 + y2) / 2;
+	// Calculate the midpoint
+	const midX = (x1 + x2) / 2;
+	const midY = (y1 + y2) / 2;
 
-    // If short distance, set text position to above the midpoint
-    const textOffsetY = isShortDistance ? (750 / 100) * this.zoom : 0;
+	// If short distance, set text position to above the midpoint
+	const textOffsetY = isShortDistance ? (750 / 100) * this.zoom : 0;
 
-    // Draw line segments only if distance is above threshold
-    if (!isShortDistance) {
-        const basePadding = 20; 
-        const adaptivePadding = basePadding * this.zoom; 
-        const labelGap = (textWidth + adaptivePadding) / this.zoom;
+	// Draw line segments only if distance is above threshold
+	if (!isShortDistance) {
+		const basePadding = 20;
+		const adaptivePadding = basePadding * this.zoom;
+		const labelGap = (textWidth + adaptivePadding) / this.zoom;
 
-        const halfGapX = (labelGap / 2) * Math.cos(angle);
-        const halfGapY = (labelGap / 2) * Math.sin(angle);
+		const halfGapX = (labelGap / 2) * Math.cos(angle);
+		const halfGapY = (labelGap / 2) * Math.sin(angle);
 
-        if (this.pcbEditorMode) {
+		if (this.pcbEditorMode) {
 			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, 0.25);
 			this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, 0.25);
 		} else {
-			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius, opacity); 
-        	this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius, opacity);
+			this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius, opacity);
+			this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius, opacity);
 		}
-    }
+	}
 
-    // Draw arrowheads
-    if (this.pcbEditorMode) {
+	// Draw arrowheads
+	if (this.pcbEditorMode) {
 		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, 0.25, 100);
 		this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, 0.25, 100);
 	} else {
 		this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius, opacity);
-    	this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius, opacity);
+		this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius, opacity);
 	}
 
 	this.context.save();
@@ -785,28 +785,28 @@ GraphicsRenderer.prototype.drawMeasure = async function (x1, y1, x2, y2, color, 
 	this.context.translate(-centerOffsetX, -centerOffsetY);
 	this.context.translate(centerOffsetX, centerOffsetY + textOffsetY * 2);
 
-    // Set text alignment to center
-    this.context.textAlign = 'center';
-    this.context.textBaseline = isShortDistance ? 'top' : 'middle';
-    this.context.fillStyle = color + num2hex(opacity);
-    this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
+	// Set text alignment to center
+	this.context.textAlign = 'center';
+	this.context.textBaseline = isShortDistance ? 'top' : 'middle';
+	this.context.fillStyle = color + num2hex(opacity);
+	this.context.font = (this.fontSize * localZoom) + `px ${this.preferredFont}, Consolas, DejaVu Sans Mono, monospace`;
 
-    // Draw the text slightly above the line if distance is short
-    this.context.fillText(distanceText, 0, localDiff);
+	// Draw the text slightly above the line if distance is short
+	this.context.fillText(distanceText, 0, localDiff);
 
-    // Restore the context to avoid affecting subsequent drawings
-    this.context.restore();
+	// Restore the context to avoid affecting subsequent drawings
+	this.context.restore();
 };
 
 GraphicsRenderer.prototype.drawArrowhead = function (x, y, angle, length, offset, color, radius, opacity) {
-    var arrowX = x + length * Math.cos(angle);
-    var arrowY = y + length * Math.sin(angle);
-    var offsetX = offset * Math.cos(angle + Math.PI / 2);
-    var offsetY = offset * Math.sin(angle + Math.PI / 2);
+	var arrowX = x + length * Math.cos(angle);
+	var arrowY = y + length * Math.sin(angle);
+	var offsetX = offset * Math.cos(angle + Math.PI / 2);
+	var offsetY = offset * Math.sin(angle + Math.PI / 2);
 
-    this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius, opacity);
-    this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
-    this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+	this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius, opacity);
+	this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+	this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
 };
 
 GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius, fontSize, opacity) {
@@ -899,11 +899,11 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 			components: [
 				// Rectangle borders
 				new Circle(0, 0, 10, 10, 2, '#ff0000', opacity),
-				
+
 				// X cross
 				new Line(-7, -7, 7, 7, 2, '#ff0000', opacity),
 				new Line(-7, 7, 7, -7, 2, '#ff0000', opacity),
-				
+
 				// Error text
 				new Label(17, 6, "Image Error", this.fontSize, opacity)
 			],
@@ -934,16 +934,16 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 };
 
 GraphicsRenderer.prototype.drawToolTip = function (e) {
-    // Shadow effect (black text offset by 5px to the right and bottom)
+	// Shadow effect (black text offset by 5px to the right and bottom)
 	this.context.shadowColor = "black";
 	this.context.shadowOffsetX = 2;
 	this.context.shadowOffsetY = 2;
 	this.context.textBaseline = 'alphabetic'
 	this.context.textAlign = 'left';
-    // Tooltip text
-    this.context.fillStyle = "#fff"; // Set text color to white
-    this.context.font = `13px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
-    this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 10);
+	// Tooltip text
+	this.context.fillStyle = "#fff"; // Set text color to white
+	this.context.font = `13px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
+	this.context.fillText(this.getToolTip(), -this.displayWidth / 2 + 80, this.displayHeight / 2 - 10);
 };
 
 
@@ -1012,7 +1012,7 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 		// Modern dot grid style
 		// Base grid spacing adjusted by zoom
 		const gridSpacingAdjusted = (this.gridSpacing * 2) * this.zoom;
-		
+
 		// Dynamically adjust density based on zoom level
 		let densityDivisor;
 		// For very small grid spacing (<5), be more aggressive with density reduction
@@ -1059,12 +1059,12 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 
 		// Adjust spacing based on density
 		const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
-		
+
 		// Calculate grid boundaries
-		const leftBound = -this.displayWidth/2;
-		const rightBound = this.displayWidth/2;
-		const topBound = -this.displayHeight/2;
-		const bottomBound = this.displayHeight/2;
+		const leftBound = -this.displayWidth / 2;
+		const rightBound = this.displayWidth / 2;
+		const topBound = -this.displayHeight / 2;
+		const bottomBound = this.displayHeight / 2;
 
 		// Calculate grid start/end positions
 		const startX = Math.floor((leftBound - camXoff * this.zoom) / effectiveSpacing) * effectiveSpacing;
@@ -1086,12 +1086,12 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 	} else {
 		// Legacy cartesian grid style
 		const gridSpacing = this.gridSpacing * this.zoom;
-		
+
 		// Calculate grid boundaries
-		const leftBound = -this.displayWidth/2;
-		const rightBound = this.displayWidth/2;
-		const topBound = -this.displayHeight/2;
-		const bottomBound = this.displayHeight/2;
+		const leftBound = -this.displayWidth / 2;
+		const rightBound = this.displayWidth / 2;
+		const topBound = -this.displayHeight / 2;
+		const bottomBound = this.displayHeight / 2;
 
 		// Calculate grid lines start/end positions
 		const startX = Math.floor((leftBound - camXoff * this.zoom) / gridSpacing) * gridSpacing;
@@ -1103,7 +1103,7 @@ GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 		this.context.beginPath();
 		this.context.strokeStyle = "#cccccc40";
 		this.context.lineWidth = 0.5;
-		
+
 		for (let x = startX; x <= endX; x += gridSpacing) {
 			const adjustedX = x + camXoff * this.zoom;
 			this.context.moveTo(adjustedX, topBound);
@@ -1410,74 +1410,74 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 				this.camY += this.getCursorYRaw() - this.yCNaught;
 			}
 			break;
-			case this.MODES.MOVE:
-				this.cvn.css('cursor', 'default');
-				if (action == this.MOUSEACTION.MOVE) {
-					if (this.selectedComponent == null) {
-						// Cache cursor positions to avoid recalculation
-						const cursorX = this.getCursorXRaw();
-						const cursorY = this.getCursorYRaw();
-						
-						// Only check for intersection every other frame to reduce overhead
-						if (frameCount % 2 === 0) {
-							this.temporarySelectedComponent = this.findIntersectionWith(cursorX, cursorY);
-						}
-					} else {
-						// Cache local cursor positions
-						const localX = this.getCursorXLocal();
-						const localY = this.getCursorYLocal();
+		case this.MODES.MOVE:
+			this.cvn.css('cursor', 'default');
+			if (action == this.MOUSEACTION.MOVE) {
+				if (this.selectedComponent == null) {
+					// Cache cursor positions to avoid recalculation
+					const cursorX = this.getCursorXRaw();
+					const cursorY = this.getCursorYRaw();
 
-						// Move component every frame for smooth motion 
-						this.moveComponent(this.selectedComponent, localX, localY);
-
-						// Update handles live during movement
-						const component = this.logicDisplay.components[this.selectedComponent];
-						// Skip handle drawing during move mode - handles are only for select mode
-
-						// Throttle state saves and form updates to every 6 frames
-						if (frameCount % 6 === 0) {
-							// Use requestAnimationFrame for better performance
-							requestAnimationFrame(() => {
-								this.saveState();
-								// Defer form updates to next idle period
-								if ('requestIdleCallback' in window) {
-									requestIdleCallback(() => {
-										sendCurrentEditorState()
-										createFormForSelection()
-									});
-								} else {
-									setTimeout(() => {
-										sendCurrentEditorState()
-										createFormForSelection()
-									}, 0);
-								}
-							});
-						}
+					// Only check for intersection every other frame to reduce overhead
+					if (frameCount % 2 === 0) {
+						this.temporarySelectedComponent = this.findIntersectionWith(cursorX, cursorY);
 					}
-					} else if (action == this.MOUSEACTION.DOWN) {
-					// Select the temporary component if one exists
-					if (this.temporarySelectedComponent != null) {
-						if (this.selectedComponent === this.temporarySelectedComponent) {
-							// If clicking the already selected component, unselect it
-							this.unselectComponent();
-							sendCurrentEditorState();
-							clearForm();
-						} else {
-							// Select the component under the cursor
-							this.selectComponent(this.temporarySelectedComponent);
-							sendCurrentEditorState();
-							createFormForSelection();
-						}
-					} else {
-						// No component under the cursor; deselect the currently selected component
-						this.unselectComponent();
-						clearForm();
+				} else {
+					// Cache local cursor positions
+					const localX = this.getCursorXLocal();
+					const localY = this.getCursorYLocal();
+
+					// Move component every frame for smooth motion 
+					this.moveComponent(this.selectedComponent, localX, localY);
+
+					// Update handles live during movement
+					const component = this.logicDisplay.components[this.selectedComponent];
+					// Skip handle drawing during move mode - handles are only for select mode
+
+					// Throttle state saves and form updates to every 6 frames
+					if (frameCount % 6 === 0) {
+						// Use requestAnimationFrame for better performance
+						requestAnimationFrame(() => {
+							this.saveState();
+							// Defer form updates to next idle period
+							if ('requestIdleCallback' in window) {
+								requestIdleCallback(() => {
+									sendCurrentEditorState()
+									createFormForSelection()
+								});
+							} else {
+								setTimeout(() => {
+									sendCurrentEditorState()
+									createFormForSelection()
+								}, 0);
+							}
+						});
 					}
-					this.saveState();
-					this.execute();
 				}
-				this.tooltip = await this.getLocal('move');
-				break;			
+			} else if (action == this.MOUSEACTION.DOWN) {
+				// Select the temporary component if one exists
+				if (this.temporarySelectedComponent != null) {
+					if (this.selectedComponent === this.temporarySelectedComponent) {
+						// If clicking the already selected component, unselect it
+						this.unselectComponent();
+						sendCurrentEditorState();
+						clearForm();
+					} else {
+						// Select the component under the cursor
+						this.selectComponent(this.temporarySelectedComponent);
+						sendCurrentEditorState();
+						createFormForSelection();
+					}
+				} else {
+					// No component under the cursor; deselect the currently selected component
+					this.unselectComponent();
+					clearForm();
+				}
+				this.saveState();
+				this.execute();
+			}
+			this.tooltip = await this.getLocal('move');
+			break;
 		case this.MODES.EDIT:
 			// TODO: In the next release
 			this.tooltip = "Edit (press esc to cancel)";
@@ -1493,7 +1493,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 				} else {
 					// Get the selected component
 					const component = this.logicDisplay.components[this.selectedComponent];
-					
+
 					// If actively dragging a handle
 					if (this.dragHandle) {
 						// Get cursor position in world coordinates
@@ -1509,9 +1509,9 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						} else {
 							// Allow free movement when snap is disabled
 							localX = this.getCursorXLocal();
-							localY = this.getCursorYLocal(); 
+							localY = this.getCursorYLocal();
 						}
-						
+
 						// Update component based on type
 						switch (component.type) {
 							case COMPONENT_TYPES.LINE:
@@ -1521,7 +1521,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 									component.x1 = localX;
 									component.y1 = localY;
 								} else if (this.dragHandle === 'end') {
-									component.x2 = localX; 
+									component.x2 = localX;
 									component.y2 = localY;
 								}
 								break;
@@ -1556,9 +1556,9 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 									component.x3 = localX;
 									component.y3 = localY;
 								}
-								break; 
+								break;
 							case COMPONENT_TYPES.POINT:
-							case COMPONENT_TYPES.LABEL:  
+							case COMPONENT_TYPES.LABEL:
 							case COMPONENT_TYPES.PICTURE:
 								component.x = localX;
 								component.y = localY;
@@ -1579,13 +1579,13 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						const handleSize = 5 / this.zoom; // Consistent handle size in world units
 						const handles = this.getComponentHandles(component);
 						let isOverHandle = false;
-						
+
 						for (const handle of handles) {
 							// Calculate distance in world coordinates
 							const dx = this.getCursorXLocal() - handle.x;
 							const dy = this.getCursorYLocal() - handle.y;
 							const distSquared = dx * dx + dy * dy;
-							
+
 							if (this.drawDebugPoint) {
 								// Draw handle visualization (in screen space)
 								const screenX = (handle.x + this.cOutX) * this.zoom;
@@ -1595,7 +1595,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								this.context.strokeStyle = this.colliderColor;
 								this.context.stroke();
 							}
-							
+
 							// Check if cursor is over handle using world coordinates
 							if (distSquared < (handleSize * handleSize)) {
 								this.cvn.css('cursor', handle.cursor || 'pointer');
@@ -1603,7 +1603,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								break;
 							}
 						}
-						
+
 						if (!isOverHandle) {
 							this.cvn.css('cursor', 'default');
 						}
@@ -1612,10 +1612,10 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 			} else if (action == this.MOUSEACTION.DOWN) {
 				if (this.selectedComponent !== null) {
 					const component = this.logicDisplay.components[this.selectedComponent];
-					if (component.type !== COMPONENT_TYPES.POINT && 
+					if (component.type !== COMPONENT_TYPES.POINT &&
 						component.type !== COMPONENT_TYPES.LABEL &&
 						component.type !== COMPONENT_TYPES.PICTURE) {
-						
+
 						const handles = this.getComponentHandles(component);
 						const handleSize = 5 / this.zoom;
 
@@ -1624,10 +1624,10 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 							const dx = this.getCursorXLocal() - handle.x;
 							const dy = this.getCursorYLocal() - handle.y;
 							const distSquared = dx * dx + dy * dy;
-							
+
 							if (distSquared < (handleSize * handleSize)) {
 								this.dragHandle = handle.id;
-								
+
 								// Handle resizing based on handle type
 								switch (handle.id) {
 									case 'start':
@@ -1641,7 +1641,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 										break;
 
 									case 'anchor-handle-1':
-									case 'mid': 
+									case 'mid':
 										if (component.type === COMPONENT_TYPES.ARC) {
 											component.x2 = this.getCursorXLocal();
 											component.y2 = this.getCursorYLocal();
@@ -1666,18 +1666,18 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 											component.y3 = this.getCursorYLocal();
 										} else {
 											component.x2 = this.getCursorXLocal();
-											component.y2 = this.getCursorYLocal(); 
+											component.y2 = this.getCursorYLocal();
 										}
 										break;
 								}
-								
+
 								this.saveState();
 								return;
 							}
 						}
 					}
 				}
-				
+
 				if (this.temporarySelectedComponent != null) {
 					if (this.selectedComponent === this.temporarySelectedComponent) {
 						this.unselectComponent();
@@ -1710,7 +1710,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					}
 				}
 			}
-			
+
 			this.tooltip = await this.getLocal('select');
 			break;
 		case this.MODES.DELETE:
@@ -1746,7 +1746,7 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 			displayText = `${Number(Math.abs(component.x2 - component.x1).toFixed(2))}×${Number(Math.abs(component.y2 - component.y1).toFixed(2))}`;
 			break;
 		case COMPONENT_TYPES.MEASURE:
-			displayText = `L: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))} (${Number(this.getDistance(component.x1,component.y1,component.x2,component.y2) / 100).toFixed(2)}m)`;
+			displayText = `L: ${Number(Math.abs(component.x2 - component.x1).toFixed(2))} (${Number(this.getDistance(component.x1, component.y1, component.x2, component.y2) / 100).toFixed(2)}m)`;
 			break
 		case COMPONENT_TYPES.CIRCLE:
 			displayText = `RAD: ${Number(Math.abs(this.getDistance(component.x1, component.y1, component.x2, component.y2)).toFixed(2))}`;
@@ -1762,7 +1762,7 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	this.context.font = `18px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
 	const textWidth = this.context.measureText(displayText).width;
 	const boxWidth = textWidth + 20;
-	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth/2);
+	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth / 2);
 	const boxY = ((component.y2 + this.cOutY) * this.zoom) + 7.5;
 
 	// Draw background
@@ -1789,13 +1789,13 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	);
 }
 const handles = []
-GraphicsRenderer.prototype.getComponentHandles = function(component) {
+GraphicsRenderer.prototype.getComponentHandles = function (component) {
 	if (this.selectedComponent != null || !this.logicDisplay.components[this.selectedComponent].isActive()) {
-		switch(component.type) {
+		switch (component.type) {
 			case COMPONENT_TYPES.RECTANGLE:
 				// Clear any existing handles first
 				handles.length = 0;
-				
+
 				// Start handle
 				handles.push({
 					x: component.x1,
@@ -1815,19 +1815,19 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 					id: 'anchor-handle-2',
 					cursor: 'sw-resize'
 				}),
-				// End handle 
-				handles.push({
-					x: component.x2,
-					y: component.y2, 
-					id: 'end',
-					cursor: 'se-resize'
-				});
+					// End handle 
+					handles.push({
+						x: component.x2,
+						y: component.y2,
+						id: 'end',
+						cursor: 'se-resize'
+					});
 				break;
 			case COMPONENT_TYPES.LINE:
 			case COMPONENT_TYPES.MEASURE:
 			case COMPONENT_TYPES.CIRCLE:
 				handles.length = 0;
-				
+
 				// Start handle
 				handles.push({
 					x: component.x1,
@@ -1837,7 +1837,7 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 				});
 				handles.push({
 					x: component.x2,
-					y: component.y2, 
+					y: component.y2,
 					id: 'end',
 					cursor: 'move'
 				});
@@ -1845,21 +1845,21 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 			case COMPONENT_TYPES.ARC:
 				// Clear any existing handles first
 				handles.length = 0;
-				
+
 				handles.push({
 					x: component.x1,
 					y: component.y1,
 					id: 'start',
 					cursor: 'nw-resize'
 				});
-				
+
 				handles.push({
 					x: component.x2,
-					y: component.y2, 
+					y: component.y2,
 					id: 'mid',
 					cursor: 'se-resize'
 				});
-	
+
 				handles.push({
 					x: component.x3,
 					y: component.y3,
@@ -1873,7 +1873,7 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 			case COMPONENT_TYPES.SHAPE:
 				// Clear any existing handles first
 				handles.length = 0;
-				
+
 				handles.push({
 					x: component.x,
 					y: component.y,
@@ -1883,7 +1883,7 @@ GraphicsRenderer.prototype.getComponentHandles = function(component) {
 				break;
 		}
 	}
-	
+
 	return handles;
 };
 GraphicsRenderer.prototype.undo = function () {
@@ -2041,7 +2041,7 @@ GraphicsRenderer.prototype.resetMode = function (e) {
 GraphicsRenderer.prototype.setZoom = function (zoomFactor) {
 	// Calculate the new zoom based on the current zoom and zoomFactor
 	var newZoom = this.zoom * zoomFactor;
-	
+
 	// Ensure zoom does not go beyond limits
 	if (newZoom <= 0.4 || newZoom >= this.maxZoomFactor) {
 		return;
@@ -2192,7 +2192,7 @@ GraphicsRenderer.prototype.findIntersectionWith = function (x, y) {
 	return this.getPrioritizedIntersection(intersections);
 };
 
-GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
+GraphicsRenderer.prototype.calculateIntersection = function (index, x, y) {
 	const component = this.logicDisplay.components[index];
 	const tolerance = this.snapTolerance / this.zoom;
 
@@ -2226,7 +2226,7 @@ GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
 			const ne = this.getDistance(x, y, component.x2, component.y1); // Northeast
 			const sw = this.getDistance(x, y, component.x1, component.y2); // Southwest
 			const se = this.getDistance(x, y, component.x2, component.y2); // Southeast
-			
+
 			const minDist = Math.min(nw, ne, sw, se);
 			if (minDist <= tolerance) {
 				let pointType;
@@ -2234,7 +2234,7 @@ GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
 				else if (minDist === ne) pointType = 'ne';
 				else if (minDist === sw) pointType = 'sw';
 				else pointType = 'se';
-				
+
 				return {
 					distance: minDist,
 					pointType: pointType
@@ -2245,13 +2245,13 @@ GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
 			const deltaCenter = this.getDistance(x, y, component.x1, component.y1);
 			const deltaStart = this.getDistance(x, y, component.x2, component.y2);
 			const deltaEnd = this.getDistance(x, y, component.x3, component.y3);
-			
+
 			if (deltaCenter <= tolerance || deltaStart <= tolerance || deltaEnd <= tolerance) {
 				const minDelta = Math.min(deltaCenter, deltaStart, deltaEnd);
 				return {
 					distance: minDelta,
-					pointType: minDelta === deltaCenter ? 'center' : 
-							  minDelta === deltaStart ? 'start' : 'end'
+					pointType: minDelta === deltaCenter ? 'center' :
+						minDelta === deltaStart ? 'start' : 'end'
 				};
 			}
 			break;
@@ -2259,7 +2259,7 @@ GraphicsRenderer.prototype.calculateIntersection = function(index, x, y) {
 	return null;
 };
 
-GraphicsRenderer.prototype.getPrioritizedIntersection = function(intersections) {
+GraphicsRenderer.prototype.getPrioritizedIntersection = function (intersections) {
 	// Sort by priority rules
 	intersections.sort((a, b) => {
 		// 1. First priority: Distance (closer = higher priority)
@@ -2290,7 +2290,7 @@ GraphicsRenderer.prototype.getPrioritizedIntersection = function(intersections) 
 			'start': 2,
 			'end': 3
 		};
-		
+
 		return pointTypePriority[a.pointType] - pointTypePriority[b.pointType];
 	});
 
@@ -2298,9 +2298,9 @@ GraphicsRenderer.prototype.getPrioritizedIntersection = function(intersections) 
 	return intersections[0].index;
 };
 
-GraphicsRenderer.prototype.visualizeColliders = function(index, snapBox) {
+GraphicsRenderer.prototype.visualizeColliders = function (index, snapBox) {
 	const component = this.logicDisplay.components[index];
-	
+
 	this.context.strokeStyle = this.colliderColor;
 	this.context.lineWidth = 1;
 
@@ -2328,7 +2328,7 @@ GraphicsRenderer.prototype.visualizeColliders = function(index, snapBox) {
 	}
 };
 
-GraphicsRenderer.prototype.drawCollisionBox = function(x, y, size) {
+GraphicsRenderer.prototype.drawCollisionBox = function (x, y, size) {
 	this.drawRectangle(
 		x - size,
 		y - size,
@@ -2523,7 +2523,7 @@ var initCAD = function (gd) {
 		if (document.querySelector("modal:not(.hidden)") == null) {
 			gd.keyboard.onKeyDown(e);
 			gd.isKeyDown = true;
-		}	
+		}
 		else
 			return
 	});
@@ -2574,20 +2574,20 @@ var initCAD = function (gd) {
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.APOSTROPHE, async function (e) {
 		console.log('[bootstrapper] ctrl+apostrophe pressed, firing NOW')
 		const config = new ConfigHandler();
-    	await config.loadConfig();
+		await config.loadConfig();
 		// Default grid spacings array from largest to smallest
 		const gridSpacings = await config.getGridSettings() || [100, 50, 25, 10];
 		console.log(gridSpacings)
-		
+
 		// Get current grid spacing
 		let currentSpacing = gd.gridSpacing;
-		
+
 		// Find the next grid spacing
 		let nextSpacing;
-		
+
 		// Find current index in grid spacings
 		let currentIndex = gridSpacings.indexOf(currentSpacing);
-		
+
 		if (currentIndex === -1) {
 			// Current spacing not in array, find nearest larger spacing
 			for (let i = 0; i < gridSpacings.length; i++) {
@@ -2600,23 +2600,23 @@ var initCAD = function (gd) {
 				currentIndex = gridSpacings.length - 1;
 			}
 		}
-		
+
 		// Get next smaller grid spacing
-		nextSpacing = currentIndex < gridSpacings.length - 1 ? 
-			gridSpacings[currentIndex + 1] : 
+		nextSpacing = currentIndex < gridSpacings.length - 1 ?
+			gridSpacings[currentIndex + 1] :
 			gridSpacings[0];
-		
+
 		// Update grid spacing
 		gd.gridSpacing = nextSpacing;
 		document.getElementById('grid-selector').value = nextSpacing;
 		console.log('[bootstrap] next spacing: ' + nextSpacing);
-	}, {ctrl: true});
+	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.SEMICOLON_CHROME, async function (e) {
 		console.log('[bootstrapper] ctrl+semicolon (chrome) pressed, firing NOW')
 		const config = new ConfigHandler();
 		await config.loadConfig();
 		// Default grid spacings array from largest to smallest
-		const gridSpacings = await config.getGridSettings() || [100, 50, 25, 10]; 
+		const gridSpacings = await config.getGridSettings() || [100, 50, 25, 10];
 		console.log(gridSpacings)
 
 		// Get current grid spacing
@@ -2642,31 +2642,60 @@ var initCAD = function (gd) {
 		}
 
 		// Get next larger grid spacing (opposite direction)
-		nextSpacing = currentIndex > 0 ? 
-			gridSpacings[currentIndex - 1] : 
+		nextSpacing = currentIndex > 0 ?
+			gridSpacings[currentIndex - 1] :
 			gridSpacings[gridSpacings.length - 1];
 
 		// Update grid spacing
 		gd.gridSpacing = nextSpacing;
 		document.getElementById('grid-selector').value = nextSpacing;
 		console.log('[bootstrap] next spacing: ' + nextSpacing);
-	}, {ctrl: true})
+	}, { ctrl: true })
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.V, function (e) {
-		console.log('[clipboard] paste event fired.')
-		navigator.clipboard.readText().then(clipText => {
-			console.log('[clipboard] checking if pasted is an object')
-			console.log(clipText)
-			try {
-				console.log('[clipboard] parse successful')
-				if (clipText.includes('active') && clipText.includes('type')) {
-					console.log('[clipboard] object detected, pasting on canvas')
-					gd.paste()
+		navigator.clipboard.read().then(clipboardItems => {
+			clipboardItems.forEach(async clipboardItem => {
+				// Get available types from clipboard item
+				const types = clipboardItem.types;
+				
+				for (const type of types) {
+					try {
+						if (type === 'text/plain') {
+							const textBlob = await clipboardItem.getType('text/plain');
+							const text = await textBlob.text();
+							if (text.includes('active') || text.includes('type')) {
+								gd.paste();
+								refreshHierarchy();
+							} else {
+								gd.logicDisplay.addComponent(
+									new Label(
+										gd.getCursorXLocal(),
+										gd.getCursorYLocal(),
+										text
+									)
+								)
+								refreshHierarchy();
+							}
+						}
+						else if (type.startsWith('image/')) {
+							const imageBlob = await clipboardItem.getType(type);
+							const imageUrl = URL.createObjectURL(imageBlob);
+							gd.logicDisplay.addComponent(
+								new Picture(
+									gd.getCursorXLocal(),
+									gd.getCursorYLocal(), 
+									imageUrl
+								)
+							);
+							refreshHierarchy();
+						}
+					} catch (err) {
+						console.error('Error reading clipboard:', err);
+					}
 				}
-			} catch (e) {
-				console.log('[clipboard] not an object, pasting like normal...')
-				document.execCommand('paste')
-			}
-		})
+			});
+		}).catch(err => {
+			console.error('Failed to read clipboard contents:', err);
+		});
 	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.X, function (e) {
 		gd.cut()
@@ -2703,7 +2732,7 @@ var initCAD = function (gd) {
 			gd.yCNaught = gd.getCursorYRaw();
 		} else {
 			gd.mouse.onMouseDown(e);
-			gd.performAction(e, gd.MOUSEACTION.DOWN); 
+			gd.performAction(e, gd.MOUSEACTION.DOWN);
 		}
 	});
 
@@ -2784,12 +2813,12 @@ var initCAD = function (gd) {
 		if (isWindowFocused) {
 			const currentTime = performance.now();
 			frameCount++;
-			
+
 			if (currentTime - lastTime >= 1000) {
 				fps = frameCount;
 				frameCount = 0;
 				lastTime = currentTime;
-				
+
 				if (fps < fpsWarningThreshold && !warningDisplayed) {
 					console.warn('FPS dropped below 20!');
 					document.getElementById('fps-warner').style.display = 'inline-flex';
