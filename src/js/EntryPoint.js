@@ -82,12 +82,7 @@ $(document).ready(async() => {
         const ctx = renderer.context;
         console.log(ctx)
         if (ctx) {
-            if (renderer.enableWebGL == false) {
-                ctx.scale(dpr, dpr);
-            } else {
-                renderer.displayWidth = window.innerWidth * dpr;
-                renderer.displayHeight = window.innerHeight * dpr;
-            }
+            ctx.scale(dpr, dpr);
         }
     };    
 
