@@ -1043,52 +1043,80 @@ GraphicsRenderer.prototype.drawPeerCursors = function () {
 		this.context.beginPath();
 		const screenX = (cursor.x + this.cOutX) * this.zoom;
 		const screenY = (cursor.y + this.cOutY) * this.zoom;
+
+		const mouseShapeVectors = [
+			{
+				x: 0,
+				y: 0
+			},
+			{
+				x: 4,
+				y: 16
+			},
+			{
+				x: 8,
+				y: 10
+			},
+			{
+				x: 14,
+				y: 8
+			},
+			{
+				x: 0,
+				y: 0
+			}
+		]
 		
 		// Draw a custom cursor shape
 		this.context.beginPath();
-		this.context.moveTo(screenX, screenY);
-		this.context.lineTo(screenX + 12, screenY + 4);
-		this.context.lineTo(screenX + 6, screenY + 10);
+		this.context.moveTo(screenX + mouseShapeVectors[0].x, screenY + mouseShapeVectors[0].y);
+
+		// Draw path through all points
+		mouseShapeVectors.forEach((point, index) => {
+			if (index > 0) { // Skip first point since we already moved there
+				this.context.lineTo((screenX + point.x), (screenY + point.y));
+			}
+		});
+
 		this.context.closePath();
-		
-		// Fill with peer's color
+
+		// Fill with peer's color 
 		this.context.fillStyle = cursor.color;
 		this.context.fill();
+
+		// Draw outline
+		this.context.strokeStyle = '#ffffff';
+		this.context.lineWidth = 1;
+		this.context.stroke();
 		
 		// Draw outline
 		this.context.strokeStyle = '#ffffff';
 		this.context.lineWidth = 1;
 		this.context.stroke();
 
-		// Draw peer ID/name
-		this.context.font = `12px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
-		this.context.fillStyle = cursor.color;
-		this.context.fillText(
-			`${cursor.name}`,
-			screenX + 15,
-			screenY + 15
-		);
-
 		// Draw name with background for better visibility
 		const name = cursor.name;
-		this.context.font = `12px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
+		this.context.font = `bold 12px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
 		const metrics = this.context.measureText(name);
 		
 		// Draw name background
-		this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
-		this.context.fillRect(
+		this.context.fillStyle = cursor.color;
+		this.context.roundRect(
 			screenX + 15,
-			screenY - 20,
+			screenY + 16,
 			metrics.width + 8,
-			20
+			20,
+			5
 		);
+		this.context.fill();
+		this.context.closePath();
 		
 		// Draw name text
-		this.context.fillStyle = cursor.color;
+		this.context.fillStyle = '#fff';
 		this.context.fillText(
 			name,
 			screenX + 19,
-			screenY - 5
+			screenY + 30
 		);
 	});
 }
