@@ -12,6 +12,8 @@ class P2PNetwork {
     this.pingInterval = 30000; // ms
     this.messageQueue = new Map(); // Buffer messages for peers with connection issues
     this.maxQueueSize = 100;
+    this.cursorColor = this.generateRandomColor();
+    this.userName = 'Dummy guy';
   }
 
   initialize() {
@@ -162,15 +164,18 @@ class P2PNetwork {
     
     // Process based on message type
     if (data.type === 'handshake') {
+      data.name = this.userName; // Include name in handshake
       this.handleHandshake(data, peerId);
-    } else if (data.type === 'network_info') {
-      this.handleNetworkInfo(data);
+    } else if (data.type === 'name_update') {
+      renderer.updatePeerName(peerId, data.name);
     } else if (data.type === 'ping') {
       this.sendToPeer(peerId, { type: 'pong', timestamp: Date.now() });
     } else if (data.type === 'pong') {
       // Just update the timestamp, already done above
     } else if (data.type === 'editor_update') {
       this.handleEditorUpdate(data, peerId);
+    } else if (data.type === 'cursor_position') {
+      renderer.updatePeerCursor(peerId, data.x, data.y, data.color, this.userName || data.peerId);
     } else {
       // Legacy support for old format
       this.doupdatestack = false;
@@ -199,6 +204,7 @@ class P2PNetwork {
   }
 
   handleEditorUpdate(data, sourcePeerId) {
+    console.log(`[p2p] received editor update from ${sourcePeerId}`, data);
     this.doupdatestack = false;
     
     // Update editor with the received data
@@ -426,6 +432,23 @@ class P2PNetwork {
     }
   }
 
+  generateRandomColor() {
+    // Generate pastel colors for better visibility
+    const hue = Math.floor(Math.random() * 360);
+    return `hsl(${hue}, 70%, 60%)`;
+  }
+
+  sendCursorPosition(x, y) {
+    this.broadcastToAll({
+      type: 'cursor_position',
+      x: x,
+      y: y,
+      color: this.cursorColor,
+      peerId: this.peer.id,
+      name: this.userName
+    });
+  }
+
   // Public API
   
   join() {
@@ -438,11 +461,22 @@ class P2PNetwork {
   }
 
   sendCurrentEditorState() {
+    console.log('[p2p] sending editor state')
     const components = JSON.stringify(renderer.logicDisplay.components);
     return this.broadcastToAll({
       type: 'editor_update',
       content: components,
       timestamp: Date.now()
+    });
+  }
+
+  setUserName(name) {
+    this.userName = name;
+    // Broadcast name change to all peers
+    this.broadcastToAll({
+      type: 'name_update',
+      peerId: this.peer.id,
+      name: name
     });
   }
 

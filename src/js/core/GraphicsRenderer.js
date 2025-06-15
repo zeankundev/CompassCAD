@@ -124,6 +124,9 @@ function GraphicsRenderer(displayName, width, height) {
 	this.tooltip = this.tooltipDefault;
 	this.filePath = ''
 
+	// Multiplayer UI
+	this.peerCursors = new Map();
+
 	this.keyboard = null;
 	this.mouse = null;
 	this.config = null;
@@ -223,6 +226,24 @@ GraphicsRenderer.prototype.lerp = function (start, end, time) {
 GraphicsRenderer.prototype.getLocal = async function (key) {
 	return await this.translator.getLocalizedString(key);
 }
+GraphicsRenderer.prototype.updatePeerCursor = function (peerId, x, y, color, name) {
+	this.peerCursors.set(peerId, {
+		x: x,
+		y: y,
+		color: color,
+		name: name,
+		lastUpdate: Date.now()
+	});
+}
+
+GraphicsRenderer.prototype.updatePeerName = function (peerId, name) {
+	const cursor = this.peerCursors.get(peerId);
+	if (cursor) {
+		cursor.name = name;
+		this.peerCursors.set(peerId, cursor);
+	}
+}
+
 GraphicsRenderer.prototype.execute = async function (e) {
 	const disableLerp = await this.config.getValueKey("disableLerp");
 	this.preferredFont = await this.config.getValueKey("preferredFont");
@@ -265,6 +286,7 @@ GraphicsRenderer.prototype.execute = async function (e) {
 
 	// Draw rules and tooltips
 	this.drawRules();
+	this.drawPeerCursors();
 	this.drawToolTip();
 
 	// Update Rich Presence only when the component count changes
@@ -384,6 +406,7 @@ GraphicsRenderer.prototype.saveState = function () {
 		console.log(this.undoStack);
 
 		if (doupdatestack) {
+			console.log('[renderer] doupdatestack true, sending editor state');
 			sendCurrentEditorState();
 		} else {
 			doupdatestack = true;
@@ -1006,6 +1029,69 @@ GraphicsRenderer.prototype.drawRules = function (e) {
 
 	// TODO Show rules!
 };
+
+GraphicsRenderer.prototype.drawPeerCursors = function () {
+	const now = Date.now();
+	const staleThreshold = 5000;
+	this.peerCursors.forEach((cursor, peerId) => {
+		if (now - cursor.lastUpdate > staleThreshold) {
+			this.peerCursors.delete(peerId);
+			return;
+		}
+
+		// Draw cursor pointer
+		this.context.beginPath();
+		const screenX = (cursor.x + this.cOutX) * this.zoom;
+		const screenY = (cursor.y + this.cOutY) * this.zoom;
+		
+		// Draw a custom cursor shape
+		this.context.beginPath();
+		this.context.moveTo(screenX, screenY);
+		this.context.lineTo(screenX + 12, screenY + 4);
+		this.context.lineTo(screenX + 6, screenY + 10);
+		this.context.closePath();
+		
+		// Fill with peer's color
+		this.context.fillStyle = cursor.color;
+		this.context.fill();
+		
+		// Draw outline
+		this.context.strokeStyle = '#ffffff';
+		this.context.lineWidth = 1;
+		this.context.stroke();
+
+		// Draw peer ID/name
+		this.context.font = `12px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
+		this.context.fillStyle = cursor.color;
+		this.context.fillText(
+			`${cursor.name}`,
+			screenX + 15,
+			screenY + 15
+		);
+
+		// Draw name with background for better visibility
+		const name = cursor.name;
+		this.context.font = `12px ${getComputedStyle(document.body).getPropertyValue('--main-font')}`;
+		const metrics = this.context.measureText(name);
+		
+		// Draw name background
+		this.context.fillStyle = 'rgba(0, 0, 0, 0.7)';
+		this.context.fillRect(
+			screenX + 15,
+			screenY - 20,
+			metrics.width + 8,
+			20
+		);
+		
+		// Draw name text
+		this.context.fillStyle = cursor.color;
+		this.context.fillText(
+			name,
+			screenX + 19,
+			screenY - 5
+		);
+	});
+}
 
 GraphicsRenderer.prototype.drawGrid = function (camXoff, camYoff) {
 	if (!this.enableLegacyGridStyle) {
@@ -1840,6 +1926,7 @@ GraphicsRenderer.prototype.getComponentHandles = function (component) {
 					y: component.y2,
 					id: 'end',
 					cursor: 'move'
+				
 				});
 				break;
 			case COMPONENT_TYPES.ARC:
@@ -2404,6 +2491,7 @@ GraphicsRenderer.prototype.isChanged = function () {
 	return this.temporaryObjectArray.length != this.logicDisplay.components.length
 }
 GraphicsRenderer.prototype.updateEditor = function (array) {
+	console.log('[p2p] updating editor with array', array)
 	let backup = JSON.stringify(this.logicDisplay.components)
 	this.logicDisplay.components = []
 	peerChange = true
@@ -2709,6 +2797,14 @@ var initCAD = function (gd) {
 			gd.gridPointer = true;
 
 		gd.performAction(e, gd.MOUSEACTION.MOVE);
+		
+		// Send cursor position to peers
+		if (typeof network !== 'undefined' && network.peer) {
+			network.sendCursorPosition(
+				gd.getCursorXLocal(),
+				gd.getCursorYLocal()
+			);
+		}
 	});
 
 	gd.cvn.mouseout(function (e) {
