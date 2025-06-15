@@ -1058,7 +1058,7 @@ GraphicsRenderer.prototype.drawPeerCursors = function () {
 				y: 10
 			},
 			{
-				x: 14,
+				x: 15,
 				y: 8
 			},
 			{
