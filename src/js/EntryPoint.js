@@ -8,7 +8,9 @@ $(document).ready(async() => {
     updateBattery()
     // detect if the device supports WebGL by default
     // fixme: WebGL not working in some instances
-    /* renderer.enableWebGL = checkForWebGL() */
+    const flags = await config.getFlags();
+    renderer.enableWebGL = flags.includes('enable-webgl') ? checkForWebGL() : false;
+    console.log(`[entry] WebGL enabled: ${renderer.enableWebGL}, raw: ${flags.includes('enable-webgl') ? checkForWebGL() : false}`);
     renderer.logicDisplay = renderer.logicDisplay || {};
     renderer.logicDisplay.components = renderer.logicDisplay.components || [];
     document.getElementById('snap-toggle').src = (renderer.enableSnap ? '../../assets/icons/snapped.svg' : '../../assets/icons/snap.svg');
@@ -36,6 +38,8 @@ $(document).ready(async() => {
     document.getElementById('language').onchange = () => {
         config.saveKey('lang', document.getElementById('language').value);
     };
+
+    initCAD(renderer);
 
     resizeWin = () => {
         // Get the device pixel ratio
@@ -75,9 +79,15 @@ $(document).ready(async() => {
             boundingRect.style.height = `${displayHeight}px`;
         }
     
-        const ctx = canvas.getContext('2d');
+        const ctx = renderer.context;
+        console.log(ctx)
         if (ctx) {
-            ctx.scale(dpr, dpr);
+            if (renderer.enableWebGL == false) {
+                ctx.scale(dpr, dpr);
+            } else {
+                renderer.displayWidth = window.innerWidth * dpr;
+                renderer.displayHeight = window.innerHeight * dpr;
+            }
         }
     };    
 
@@ -177,8 +187,6 @@ $(document).ready(async() => {
             }
         }
     });
-
-    initCAD(renderer)
     fs.readdir(remApp.getPath('userData') + '/plugins', (err, files) => {
         console.log('checking for plugins')
         if (err) {

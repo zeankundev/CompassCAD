@@ -18,6 +18,11 @@ const flags = [
         flag: 'enable-tutoring-mode',
         name: 'Enable tutoring mode',
         description: 'Enable tutoring mode, which CompassCAD provides tools to create tutorials for others'
+    },
+    {
+        flag: 'enable-webgl',
+        name: 'Enable WebGL (EXPERIMENTAL & UNSTABLE)',
+        description: 'Enable WebGL rendering, which may improve performance but is experimental and may cause bugs'
     }
 ]
 const updateFlagList = async () => {
