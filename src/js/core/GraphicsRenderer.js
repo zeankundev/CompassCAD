@@ -1912,7 +1912,13 @@ GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	const textWidth = this.context.measureText(displayText).width;
 	const boxWidth = textWidth + 20;
 	const boxX = (((component.x2 - component.x1) / 2 + component.x1) + this.cOutX) * this.zoom - (boxWidth / 2);
-	const boxY = ((component.y2 + this.cOutY) * this.zoom) + 7.5;
+	const componentYPositions = [
+		component.y1,
+		component.y2
+	];
+
+	const lowestY = Math.max(...componentYPositions);
+	const boxY = ((lowestY + this.cOutY) * this.zoom) + 7.5;
 
 	// Draw background
 	this.context.fillStyle = this.selectedColor;
