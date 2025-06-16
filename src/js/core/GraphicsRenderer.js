@@ -312,8 +312,43 @@ GraphicsRenderer.prototype.refreshSelectionTools = function () {
 		const selectedComponent = this.logicDisplay.components[this.selectedComponent];
 		if (selectedComponent.isActive()) {
 			const handles = this.getComponentHandles(selectedComponent);
+			console.log(`[renderer] handle len: ${handles.length}`);
+			switch (handles.length) {
+				case 2:
+					if (handles[0] && handles[1] && typeof handles[0].x === 'number' && typeof handles[0].y === 'number' 
+						&& typeof handles[1].x === 'number' && typeof handles[1].y === 'number') {
+						this.context.strokeStyle = this.selectedColor;
+						this.context.lineWidth = 2;
+						this.context.beginPath();
+						this.context.moveTo((handles[0].x + this.cOutX) * this.zoom, (handles[0].y + this.cOutY) * this.zoom);
+						this.context.lineTo((handles[1].x + this.cOutX) * this.zoom, (handles[1].y + this.cOutY) * this.zoom);
+						this.context.stroke();
+					}
+					break;
+				case 4:
+					if (handles[0] && handles[1] && handles[2] && handles[3] && 
+						typeof handles[0].x === 'number' && typeof handles[0].y === 'number' &&
+						typeof handles[1].x === 'number' && typeof handles[1].y === 'number' &&
+						typeof handles[2].x === 'number' && typeof handles[2].y === 'number' &&
+						typeof handles[3].x === 'number' && typeof handles[3].y === 'number') {
+						this.context.strokeStyle = this.selectedColor;
+						this.context.lineWidth = 2;
+						this.context.beginPath();
+						this.context.moveTo((handles[0].x + this.cOutX) * this.zoom, (handles[0].y + this.cOutY) * this.zoom);
+						this.context.lineTo((handles[1].x + this.cOutX) * this.zoom, (handles[1].y + this.cOutY) * this.zoom);
+						this.context.moveTo((handles[1].x + this.cOutX) * this.zoom, (handles[1].y + this.cOutY) * this.zoom);
+						this.context.lineTo((handles[3].x + this.cOutX) * this.zoom, (handles[3].y + this.cOutY) * this.zoom);
+						this.context.moveTo((handles[3].x + this.cOutX) * this.zoom, (handles[3].y + this.cOutY) * this.zoom);
+						this.context.lineTo((handles[2].x + this.cOutX) * this.zoom, (handles[2].y + this.cOutY) * this.zoom);
+						this.context.moveTo((handles[2].x + this.cOutX) * this.zoom, (handles[2].y + this.cOutY) * this.zoom);
+						this.context.lineTo((handles[0].x + this.cOutX) * this.zoom, (handles[0].y + this.cOutY) * this.zoom);
+						this.context.closePath();
+						this.context.stroke();
+					}
+				default:
+					break;
+			}
 			for (const handle of handles) {
-				// Draw handle point
 				this.drawPoint(handle.x, handle.y, '#fff', 2);
 			}
 		}
