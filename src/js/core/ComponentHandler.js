@@ -7,7 +7,8 @@ var COMPONENT_TYPES = {
     MEASURE : 6,
     LABEL : 7,
     SHAPE : 8, // TODO
-    PICTURE: 9
+    PICTURE: 9,
+    POLYGON: 10
 };
 
 /**
@@ -233,7 +234,7 @@ function Shape(x, y, name) {
     this.name = name || "Shape";
     this.x = 0;
     this.y = 0;
-    this.color = "#f0f";
+    this.color = "#ffffff";
     this.components = new Array();
 
     if ( x != undefined && y != undefined) {
@@ -261,6 +262,23 @@ function Picture(x, y, basedURL, name, opacity) {
 }
 Picture.prototype = new Component();
 Picture.prototype.constructor = Picture;
+
+function Polygon(vectors, x, y, name, color, opacity) {
+    Component.call(this);
+    
+    this.type = COMPONENT_TYPES.POLYGON;
+    this.name = name || "Polygon";
+    this.color = color || "#ffffff";
+    this.opacity = opacity !== undefined ? opacity : 100;
+    this.vectors = vectors || [];
+    this.x = x || 0;
+    this.y = y || 0;
+}
+Polygon.prototype = new Component();
+Polygon.prototype.constructor = Polygon;
+Polygon.prototype.addVector = function(x, y) {
+    this.vectors.push({x: x, y: y});
+}
 
 /**
 * Add a component to a shape
