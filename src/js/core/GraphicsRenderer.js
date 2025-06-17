@@ -1816,6 +1816,17 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 								component.x = localX;
 								component.y = localY;
 								break;
+							case COMPONENT_TYPES.POLYGON:
+								if (this.dragHandle && this.dragHandle.startsWith('handle-')) {
+									// Extract the index from the handle id (e.g., 'handle-0' -> 0)
+									const handleIndex = parseInt(this.dragHandle.split('-')[1]);
+									if (handleIndex >= 0 && handleIndex < component.vectors.length) {
+										// Update the vector at the specified index
+										component.vectors[handleIndex].x = localX;
+										component.vectors[handleIndex].y = localY;
+									}
+								}
+								break;
 						}
 						this.saveState();
 						// Update form every 6 frames for better performance
@@ -2139,6 +2150,17 @@ GraphicsRenderer.prototype.getComponentHandles = function (component) {
 					y: component.y,
 					id: 'miscellaneous',
 					cursor: 'move'
+				});
+				break;
+			case COMPONENT_TYPES.POLYGON:
+				handles.length = 0;
+				component.vectors.forEach((polygonHandle, index) => {
+					handles.push({
+						x: polygonHandle.x,
+						y: polygonHandle.y,
+						id: `handle-${index}`,
+						cursor: 'move'
+					});
 				});
 				break;
 		}
