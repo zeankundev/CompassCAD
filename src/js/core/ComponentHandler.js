@@ -263,7 +263,7 @@ function Picture(x, y, basedURL, name, opacity) {
 Picture.prototype = new Component();
 Picture.prototype.constructor = Picture;
 
-function Polygon(vectors, name, fillColor, strokeColor, opacity) {
+function Polygon(vectors, name, fillColor, strokeColor, opacity, enableStroke) {
     Component.call(this);
     
     this.type = COMPONENT_TYPES.POLYGON;
@@ -272,6 +272,7 @@ function Polygon(vectors, name, fillColor, strokeColor, opacity) {
     this.strokeColor = strokeColor || "#000000";
     this.opacity = opacity !== undefined ? opacity : 100;
     this.vectors = vectors || [];
+    this.enableStroke = enableStroke || true;
 }
 Polygon.prototype = new Component();
 Polygon.prototype.constructor = Polygon;

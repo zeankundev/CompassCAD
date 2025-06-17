@@ -569,7 +569,8 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.color,
 				component.strokeColor,
 				component.radius,
-				component.opacity
+				component.opacity,
+				component.enableStroke
 			)
 	}
 };
@@ -705,7 +706,8 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 					this.selectedColor,
 					'#ffffff',
 					this.selectedRadius,
-					100
+					100,
+					true
 				)
 			}
 	}
@@ -1019,7 +1021,7 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 	this.context.globalAlpha = 1;
 };
 
-GraphicsRenderer.prototype.drawPolygon = function(vectors, fillColor, strokeColor, radius, opacity) {
+GraphicsRenderer.prototype.drawPolygon = function(vectors, fillColor, strokeColor, radius, opacity, enableStroke) {
 	if (vectors.length < 2) return; // Not enough points to form a polygon
 
 	this.context.lineWidth = radius * this.zoom;
@@ -1038,7 +1040,7 @@ GraphicsRenderer.prototype.drawPolygon = function(vectors, fillColor, strokeColo
 	// Close the path to form a polygon
 	this.context.closePath();
 	this.context.fill();
-	this.context.stroke();
+	enableStroke ? this.context.stroke() : null; 
 }
 
 GraphicsRenderer.prototype.drawToolTip = function (e) {
