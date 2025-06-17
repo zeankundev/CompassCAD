@@ -185,6 +185,12 @@ const refreshHierarchy = () => {
                             targetX = -component.x1;
                             targetY = -component.y1;
                             break;
+                        case COMPONENT_TYPES.POLYGON:
+                            targetX = -component.vectors[0].x;
+                            targetY = -component.vectors[0].y;
+                            break;
+                        default:
+                            break;
                     }
                     const startX = renderer.camX;
                     const startY = renderer.camY;
