@@ -683,6 +683,22 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.selectedRadius,
 				100);
 			break;
+		case COMPONENT_TYPES.POLYGON:
+			if (this.temporaryVectors.length >= 0 && this.temporaryVectors.length < 2) {
+				this.drawPoint(
+					this.temporaryVectors[0].x,
+					this.temporaryVectors[0].y,
+					this.selectedColor,
+					this.selectedRadius,
+					100);
+			} else {
+				this.drawPolygon(
+					this.temporaryVectors,
+					this.selectedColor,
+					this.selectedRadius,
+					100
+				)
+			}
 	}
 };
 
@@ -993,6 +1009,28 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 
 	this.context.globalAlpha = 1;
 };
+
+GraphicsRenderer.prototype.drawPolygon = function(vectors, color, radius, opacity) {
+	if (vectors.length < 2) return; // Not enough points to form a polygon
+
+	this.context.lineWidth = radius * this.zoom;
+	this.context.fillStyle = color + num2hex(opacity);
+	this.context.strokeStyle = color + num2hex(opacity);
+	this.context.beginPath();
+
+	// Move to the first point
+	this.context.moveTo((vectors[0].x + this.cOutX) * this.zoom, (vectors[0].y + this.cOutY) * this.zoom);
+
+	// Draw lines to subsequent points
+	for (let i = 1; i < vectors.length; i++) {
+		this.context.lineTo((vectors[i].x + this.cOutX) * this.zoom, (vectors[i].y + this.cOutY) * this.zoom);
+	}
+
+	// Close the path to form a polygon
+	this.context.closePath();
+	this.context.fill();
+	this.context.stroke();
+}
 
 GraphicsRenderer.prototype.drawToolTip = function (e) {
 	// Shadow effect (black text offset by 5px to the right and bottom)
@@ -1566,7 +1604,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 				} else if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
 					this.temporaryPoints[0] = this.getCursorXLocal();
 					this.temporaryPoints[1] = this.getCursorYLocal();
-				} else if (this.temporaryComponentType == COMPONENT_TYPES.LINE) {
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.POLYGON) {
 					this.temporaryPoints[2] = this.getCursorXLocal();
 					this.temporaryPoints[3] = this.getCursorYLocal();
 				}
@@ -1574,19 +1612,20 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 				if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
 					firstVector.x = this.getCursorXLocal();
 					firstVector.y = this.getCursorYLocal();
-					this.temporaryComponentType = COMPONENT_TYPES.LINE;
+					this.temporaryComponentType = COMPONENT_TYPES.POLYGON;
 					this.temporaryVectors.push(firstVector);
 					this.temporaryVectorIndex++;
-				} else if (this.temporaryComponentType == COMPONENT_TYPES.LINE) {
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.POLYGON) {
 					let temporaryVector = {
 						x: this.getCursorXLocal(),
 						y: this.getCursorYLocal()
 					}
 					if (
 						this.temporaryVectors.length > 0 &&
-						temporaryVector.x == firstVector.x &&
-						temporaryVector.y == firstVector.y
+						temporaryVector.x == this.temporaryVectors[0].x &&
+						temporaryVector.y == this.temporaryVectors[0].y
 					) {
+						console.log('[renderer] closing polygon');
 						this.logicDisplay.addComponent(new Polygon(this.temporaryVectors));
 						this.temporaryComponentType = null;
 						this.saveState()
@@ -1597,11 +1636,6 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.temporaryVectorIndex++;
 						this.temporaryPoints[0] = this.temporaryVectors[this.temporaryVectorIndex - 1].x;
 						this.temporaryPoints[1] = this.temporaryVectors[this.temporaryVectorIndex - 1].y;
-						console.log(`[renderer] temporary index: ${this.temporaryVectorIndex}, index-1: ${this.temporaryVectorIndex - 1}`);
-						console.log(this.temporaryVectors);
-						console.log(`[renderer] temporary vector: ${temporaryVector.x}, ${temporaryVector.y}`);
-						console.log(`[renderer] temporary points: ${this.temporaryPoints[0]}, ${this.temporaryPoints[1]}`);
-						console.log('[renderer] pushed vector');
 					}
 				}
 			}
