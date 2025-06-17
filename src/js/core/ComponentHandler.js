@@ -263,16 +263,15 @@ function Picture(x, y, basedURL, name, opacity) {
 Picture.prototype = new Component();
 Picture.prototype.constructor = Picture;
 
-function Polygon(vectors, x, y, name, color, opacity) {
+function Polygon(vectors, name, fillColor, strokeColor, opacity) {
     Component.call(this);
     
     this.type = COMPONENT_TYPES.POLYGON;
     this.name = name || "Polygon";
-    this.color = color || "#ffffff";
+    this.color = fillColor || "#ffffff";
+    this.strokeColor = strokeColor || "#000000";
     this.opacity = opacity !== undefined ? opacity : 100;
     this.vectors = vectors || [];
-    this.x = x || 0;
-    this.y = y || 0;
 }
 Polygon.prototype = new Component();
 Polygon.prototype.constructor = Polygon;

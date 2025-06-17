@@ -563,6 +563,14 @@ GraphicsRenderer.prototype.drawComponent = function (component, moveByX, moveByY
 				component.opacity
 			);
 			break;
+		case COMPONENT_TYPES.POLYGON:
+			this.drawPolygon(
+				component.vectors,
+				component.color,
+				component.strokeColor,
+				component.radius,
+				component.opacity
+			)
 	}
 };
 
@@ -695,6 +703,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				this.drawPolygon(
 					this.temporaryVectors,
 					this.selectedColor,
+					'#ffffff',
 					this.selectedRadius,
 					100
 				)
@@ -1010,12 +1019,12 @@ GraphicsRenderer.prototype.renderImage = function (x, y, img, opacity) {
 	this.context.globalAlpha = 1;
 };
 
-GraphicsRenderer.prototype.drawPolygon = function(vectors, color, radius, opacity) {
+GraphicsRenderer.prototype.drawPolygon = function(vectors, fillColor, strokeColor, radius, opacity) {
 	if (vectors.length < 2) return; // Not enough points to form a polygon
 
 	this.context.lineWidth = radius * this.zoom;
-	this.context.fillStyle = color + num2hex(opacity);
-	this.context.strokeStyle = color + num2hex(opacity);
+	this.context.fillStyle = fillColor + num2hex(opacity);
+	this.context.strokeStyle = strokeColor + num2hex(opacity);
 	this.context.beginPath();
 
 	// Move to the first point
