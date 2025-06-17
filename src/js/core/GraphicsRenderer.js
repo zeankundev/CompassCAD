@@ -22,6 +22,7 @@ function GraphicsRenderer(displayName, width, height) {
 		ADDLABEL: 7,
 		ADDSHAPE: 8,
 		ADDPICTURE: 9,
+		ADDPOLYGON: 10,
 		DELETE: 20,
 		TRIM: 21,
 		NAVIGATE: 22,
@@ -70,6 +71,8 @@ function GraphicsRenderer(displayName, width, height) {
 	this.redoStack = []
 	this.temporaryObjectArray = []
 	this.lastArray = [];
+	this.temporaryVectors = [];
+	this.temporaryVectorIndex = 0;
 
 	this.displayWidth = width;
 	this.displayHeight = height;
@@ -1546,6 +1549,63 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					.catch(e => { })
 			}
 			break;
+		case this.MODES.ADDPOLYGON:
+			this.cvn.css('cursor', 'crosshair');
+			this.tooltip = await this.getLocal('addPolygon');
+			let firstVector = {
+				x: 0,
+				y: 0
+			}
+			// Polygons follow these structures
+			// Polygons follow these structures
+			// [{x:num,y:num},{x:num,y:num},...]
+			// If the next vector is the first one, it closes the polygon
+			if (action == this.MOUSEACTION.MOVE) {
+				if (this.temporaryComponentType == null) {
+					this.temporaryComponentType = COMPONENT_TYPES.POINT;
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
+					this.temporaryPoints[0] = this.getCursorXLocal();
+					this.temporaryPoints[1] = this.getCursorYLocal();
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.LINE) {
+					this.temporaryPoints[2] = this.getCursorXLocal();
+					this.temporaryPoints[3] = this.getCursorYLocal();
+				}
+			} else if (action == this.MOUSEACTION.DOWN) {
+				if (this.temporaryComponentType == COMPONENT_TYPES.POINT) {
+					firstVector.x = this.getCursorXLocal();
+					firstVector.y = this.getCursorYLocal();
+					this.temporaryComponentType = COMPONENT_TYPES.LINE;
+					this.temporaryVectors.push(firstVector);
+					this.temporaryVectorIndex++;
+				} else if (this.temporaryComponentType == COMPONENT_TYPES.LINE) {
+					let temporaryVector = {
+						x: this.getCursorXLocal(),
+						y: this.getCursorYLocal()
+					}
+					if (
+						this.temporaryVectors.length > 0 &&
+						temporaryVector.x == firstVector.x &&
+						temporaryVector.y == firstVector.y
+					) {
+						this.logicDisplay.addComponent(new Polygon(this.temporaryVectors));
+						this.temporaryComponentType = null;
+						this.saveState()
+						this.execute()
+						refreshHierarchy()
+					} else {
+						this.temporaryVectors.push(temporaryVector);
+						this.temporaryVectorIndex++;
+						this.temporaryPoints[0] = this.temporaryVectors[this.temporaryVectorIndex - 1].x;
+						this.temporaryPoints[1] = this.temporaryVectors[this.temporaryVectorIndex - 1].y;
+						console.log(`[renderer] temporary index: ${this.temporaryVectorIndex}, index-1: ${this.temporaryVectorIndex - 1}`);
+						console.log(this.temporaryVectors);
+						console.log(`[renderer] temporary vector: ${temporaryVector.x}, ${temporaryVector.y}`);
+						console.log(`[renderer] temporary points: ${this.temporaryPoints[0]}, ${this.temporaryPoints[1]}`);
+						console.log('[renderer] pushed vector');
+					}
+				}
+			}
+		break;
 		case this.MODES.NAVIGATE:
 			this.cvn.css('cursor', 'default');
 			this.tooltip = await this.getLocal('navigate');
