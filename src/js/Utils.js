@@ -681,7 +681,7 @@ const createFormForSelection = () => {
                 });
             } else if (typeof component[key] === 'string') {
                 input = document.createElement("input");
-                if (key === 'color') {
+                if (key === 'color' || key === 'strokeColor') {
                     input.type = "color";
                     console.log(`[form] ${key}: ${component[key]}`)
                     input.value = component[key] || '#ffffff';

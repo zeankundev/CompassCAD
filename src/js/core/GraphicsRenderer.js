@@ -1637,6 +1637,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						console.log('[renderer] closing polygon');
 						this.logicDisplay.addComponent(new Polygon(this.temporaryVectors));
 						this.temporaryComponentType = null;
+						this.temporaryVectors = [];
 						this.saveState()
 						this.execute()
 						refreshHierarchy()
@@ -2512,6 +2513,18 @@ GraphicsRenderer.prototype.calculateIntersection = function (index, x, y) {
 					pointType: minDelta === deltaCenter ? 'center' :
 						minDelta === deltaStart ? 'start' : 'end'
 				};
+			}
+			break;
+		case COMPONENT_TYPES.POLYGON:
+			for (let i = 0; i < component.vectors.length; i++) {
+				const vector = component.vectors[i];
+				const delta = this.getDistance(x, y, vector.x, vector.y);
+				if (delta <= tolerance) {
+					return {
+						distance: delta,
+						pointType: `vector-${i}`  // Track which vertex was selected
+					};
+				}
 			}
 			break;
 	}
