@@ -263,6 +263,7 @@ $(document).ready(async() => {
     applyStringOnHTML('addCircleToolbar', document.getElementById('add-circle'), 'title', '');
     applyStringOnHTML('addArcToolbar', document.getElementById('add-arc'), 'title', '');
     applyStringOnHTML('addRectangleToolbar', document.getElementById('add-rect'), 'title', '');
+    applyStringOnHTML('addPolygonToolbar', document.getElementById('add-polygon'), 'title', '')
     applyStringOnHTML('addLabelToolbar', document.getElementById('add-label'), 'title', '');
     applyStringOnHTML('addPictureToolbar', document.getElementById('add-picture'), 'title', '');
     applyStringOnHTML('addMeasureToolbar', document.getElementById('ruler'), 'title', '');
