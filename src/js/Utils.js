@@ -797,6 +797,7 @@ const tools = {
     'add-rect': { mode: 4, key: 'g' },
     'add-label': { mode: 7, key: 'h' },
     'add-picture': { mode: 9, key: 'l' },
+    'add-polygon': {mode: 10, key: 'j'},
     'ruler': { mode: 6, key: 'z' }
 };
 
@@ -805,6 +806,7 @@ const refreshToolSelection = (mode) => {
     Object.entries(tools).forEach(([id, tool]) => {
         const element = document.getElementById(id);
         if (element) {
+            console.log(tool.mode)
             if (tool.mode === mode) {
                 element.classList.add('active-tool');
             } else {

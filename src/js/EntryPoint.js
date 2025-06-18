@@ -98,6 +98,7 @@ $(document).ready(async() => {
         'add-arc': { mode: renderer.MODES.ADDARC, key: 'f' },
         'add-rect': { mode: renderer.MODES.ADDRECTANGLE, key: 'g' },
         'add-label': { mode: renderer.MODES.ADDLABEL, key: 'h' },
+        'add-polygon': {mode: renderer.MODES.ADDPOLYGON, key: 'j'},
         'add-picture': { mode: renderer.MODES.ADDPICTURE, key: 'l' },
         'ruler': { mode: renderer.MODES.ADDMEASURE, key: 'z' }
     };
