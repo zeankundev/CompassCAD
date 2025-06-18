@@ -918,26 +918,53 @@ GraphicsRenderer.prototype.drawLabel = async function (x, y, text, color, radius
 	var tmpText = "";
 	var arrText = this.logicDisplay.customSyntax(text).split(" ");
 
-	for (var i = 0; i < arrText.length; i++) {
-		tmpLength += arrText[i].length + 1;
-		tmpText += " " + arrText[i];
-
-		if (tmpLength > maxLength) {
-			this.context.fillText(
-				tmpText,
-				(this.cOutX + x - 5) * this.zoom,
-				(this.cOutY + y) * this.zoom);
-			y += 25 + localDiff;
-			tmpLength = 0;
-			tmpText = "";
+	let words = text.split(' ');
+	for (let word of words) {
+		// Handle line breaks within words
+		if (word.includes('\\n')) {
+			const parts = word.split('\\n');
+			for (let j = 0; j < parts.length; j++) {
+				if (j > 0) {
+					// Start new line for subsequent parts
+					this.context.fillText(
+						tmpText.trim(),
+						(this.cOutX + x + 5) * this.zoom, 
+						(this.cOutY + y) * this.zoom
+					);
+					y += 25 + localDiff;
+					tmpLength = 0;
+					tmpText = "";
+				}
+				tmpText += parts[j] + " ";
+				tmpLength += parts[j].length + 1;
+			}
+		} else {
+			// Add word if it fits on current line
+			if (tmpLength + word.length + 1 <= maxLength) {
+				tmpText += word + " ";
+				tmpLength += word.length + 1;
+			} else {
+				// Print current line and start new one
+				this.context.fillText(
+					tmpText.trim(),
+					(this.cOutX + x + 5) * this.zoom,
+					(this.cOutY + y) * this.zoom
+				);
+				y += 25 + localDiff;
+				tmpText = word + " ";
+				tmpLength = word.length + 1;
+			}
 		}
 	}
 
-	// Print the remainig text
-	this.context.fillText(
-		tmpText,
-		(this.cOutX + x - 5) * this.zoom,
-		(this.cOutY + y) * this.zoom);
+	// Print any remaining text
+	if (tmpText.trim().length > 0) {
+		this.context.fillText(
+			tmpText.trim(),
+			(this.cOutX + x + 5) * this.zoom,
+			(this.cOutY + y) * this.zoom
+		);
+	}
 };
 
 GraphicsRenderer.prototype.drawArc = function (x1, y1, x2, y2, x3, y3, color, radius, opacity) {
