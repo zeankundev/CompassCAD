@@ -219,6 +219,16 @@ LogicDisplay.prototype.importJSON = function(arrJSON, parent) {
 					arrJSON[i].name,
 					arrJSON[i].opacity));
 				break;
+			case COMPONENT_TYPES.POLYGON:
+				parent.push(new Polygon(
+					arrJSON[i].vectors,
+					arrJSON[i].name,
+					arrJSON[i].color,
+					arrJSON[i].strokeColor,
+					arrJSON[i].opacity,
+					arrJSON[i].enableStroke
+				))
+				break;
 			default:
 				parent.push(new Label(
 					0,

@@ -1643,6 +1643,24 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.saveState()
 						this.execute()
 						refreshHierarchy()
+					} else if (
+						this.temporaryVectors.length > 0 &&
+						((Math.abs(temporaryVector.x - this.temporaryVectors[0].x) < 10) && 
+						(Math.abs(temporaryVector.y - this.temporaryVectors[0].y) < 10))
+					) {
+						// If within 10 units of first point, add current vector and duplicate first point
+						this.temporaryVectors.push(temporaryVector);
+						this.temporaryVectors.push({
+							x: this.temporaryVectors[0].x,
+							y: this.temporaryVectors[0].y
+						});
+						// Create polygon and reset
+						this.logicDisplay.addComponent(new Polygon(this.temporaryVectors));
+						this.temporaryComponentType = null;
+						this.temporaryVectors = [];
+						this.saveState();
+						this.execute();
+						refreshHierarchy();
 					} else {
 						this.temporaryVectors.push(temporaryVector);
 						this.temporaryVectorIndex++;
