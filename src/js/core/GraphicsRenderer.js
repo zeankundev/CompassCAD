@@ -693,7 +693,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 				100);
 			break;
 		case COMPONENT_TYPES.POLYGON:
-			if (this.temporaryVectors.length >= 0 && this.temporaryVectors.length < 2) {
+			if (this.temporaryVectors.length >= 0 && this.temporaryVectors.length < 1) {
 				this.drawPoint(
 					this.temporaryVectors[0].x,
 					this.temporaryVectors[0].y,
@@ -702,7 +702,7 @@ GraphicsRenderer.prototype.drawTemporaryComponent = function (e) {
 					100);
 			} else {
 				this.drawPolygon(
-					this.temporaryVectors,
+					[...this.temporaryVectors, {x: this.getCursorXLocal(), y: this.getCursorYLocal()}],
 					this.selectedColor,
 					'#ffffff',
 					this.selectedRadius,
