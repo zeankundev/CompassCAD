@@ -1672,8 +1672,8 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						refreshHierarchy()
 					} else if (
 						this.temporaryVectors.length > 0 &&
-						((Math.abs(temporaryVector.x - this.temporaryVectors[0].x) < 10) && 
-						(Math.abs(temporaryVector.y - this.temporaryVectors[0].y) < 10))
+						((Math.abs(temporaryVector.x - this.temporaryVectors[0].x) < (this.pcbEditorMode ? 2 : 10)) && 
+						(Math.abs(temporaryVector.y - this.temporaryVectors[0].y) < (this.pcbEditorMode ? 2 : 10)))
 					) {
 						// If within 10 units of first point, add current vector and duplicate first point
 						this.temporaryVectors.push(temporaryVector);
