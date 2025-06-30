@@ -75,6 +75,6 @@
     "electron-builder": "^26.0.12",
     "electron-is-dev": "^3.0.1",
     "electron-reloader": "^1.2.3",
-    "node-abi": "4.9.0"
+    "node-abi": "4.11.0"
   }
 }
