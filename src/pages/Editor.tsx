@@ -373,7 +373,13 @@ const Editor = () => {
                     <p onClick={() => setExportDialog(false)}>&times;</p>
                 </div>
                 <div>
-                    <div className={`${styles['export-option']} ${styles.special}`} onClick={() => {toast('Copied link to clipboard')}}>
+                    <div className={`${styles['export-option']} ${styles.special}`} onClick={() => {
+                        if (renderer.current && renderer.current.logicDisplay) {
+                            const url = `/designname="Imported%20Design";${LZString.compressToEncodedURIComponent(JSON.stringify(renderer.current.logicDisplay.components))}`
+                            navigator.clipboard.writeText(window.location.href.replace('/action=new;', url));
+                        }
+                        toast('Copied link to clipboard');
+                    }}>
                         <img src={CopyLink} />
                         &nbsp;&nbsp;
                         <p>Copy Link</p>
