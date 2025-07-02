@@ -461,6 +461,13 @@ const Editor = () => {
                     keyCode={RendererTypes.KeyCodes.L}
                     func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
                 />
+                <ToolbarButton 
+                    svgImage={PicSymbol}
+                    title="Add Polygon (j)"
+                    isActive={tool == RendererTypes.NavigationTypes.AddPolygon}
+                    keyCode={RendererTypes.KeyCodes.J}
+                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPolygon)}
+                />
                 <ToolbarButton
                     svgImage={LabelSymbol}
                     title="Add Text (h)"

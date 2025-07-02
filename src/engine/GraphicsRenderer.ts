@@ -42,6 +42,7 @@ export class GraphicsRenderer {
     redoStack: string[];
     temporaryObjectArray: any[];
     temporaryVectors: VectorType[];
+    temporaryVectorIndex: number;
     displayWidth: number;
     displayHeight: number;
     offsetX: number;
@@ -128,6 +129,7 @@ export class GraphicsRenderer {
         this.undoStack = [];
         this.redoStack = [];
         this.temporaryObjectArray = [];
+        this.temporaryVectorIndex = 0;
         this.temporaryVectors = [];
         this.displayWidth = width;
         this.displayHeight = height;
@@ -929,7 +931,9 @@ export class GraphicsRenderer {
         }
         this.context!.closePath();
         this.context!.fill();
-        enableStroke ? this.context!.stroke() : undefined;
+        if (enableStroke) {
+            this.context!.stroke();
+        }
     }
     drawOrigin(cx: number, cy: number) {
         if (this.context) {
@@ -1226,6 +1230,15 @@ export class GraphicsRenderer {
                     };
                 }
                 break;
+            case componentTypes.polygon:
+                const polygonComponent = component as Polygon;
+                for (let i = 0; i < polygonComponent.vectors.length; i++) {
+                    const vector = polygonComponent.vectors[i];
+                    const delta = this.getDistance(x, y, vector.x, vector.y);
+                    if (delta <= tolerance) {
+                        return { distance: delta, pointType: 'vector-' + i };
+                    }
+                }
         }
         return null;
     }
@@ -1556,7 +1569,69 @@ export class GraphicsRenderer {
                 }
                 this.tooltip = "Add Picture (press esc to cancel)";
                 break;
-
+            case this.modes.AddPolygon:
+                this.displayRef!.style.cursor = 'crosshair';
+                this.tooltip = "Add Polygon";
+                let firstVec: VectorType = {
+                    x: 0,
+                    y: 0
+                }
+                if (action == this.mouseAction.Move) {
+                    if (this.temporaryComponentType === null) {
+                        this.temporaryComponentType = componentTypes.point;
+                    } else if (this.temporaryComponentType === componentTypes.point) {
+                        this.temporaryPoints[0] = this.getCursorXLocal();
+                        this.temporaryPoints[1] = this.getCursorYLocal();
+                    } else if (this.temporaryComponentType === componentTypes.polygon) {
+                        this.temporaryPoints[2] = this.getCursorXLocal();
+                        this.temporaryPoints[3] = this.getCursorYLocal();
+                    }
+                } else if (action === this.mouseAction.Down) {
+                    if (this.temporaryComponentType == componentTypes.point) {
+                        firstVec.x = this.getCursorXLocal();
+                        firstVec.y = this.getCursorYLocal();
+                        this.temporaryComponentType = componentTypes.polygon;
+                        this.temporaryVectors.push(firstVec);
+                        this.temporaryVectorIndex++;
+                    } else if (this.temporaryComponentType === componentTypes.polygon) {
+                        let tempVector: VectorType = {
+                            x: this.getCursorXLocal(),
+                            y: this.getCursorYLocal()
+                        }
+                        if (
+                            this.temporaryVectors.length > 0 &&
+                            tempVector.x === this.temporaryVectors[0].x &&
+                            tempVector.y === this.temporaryVectors[0].y
+                        ) {
+                            this.logicDisplay?.addComponent(new Polygon(this.temporaryVectors));
+                            this.temporaryComponentType = null;
+                            this.temporaryVectors = [];
+                            this.saveState();
+                            this.update();
+                        } else if (
+                            this.temporaryVectors.length > 0 &&
+                            ((Math.abs(tempVector.x - this.temporaryVectors[0].x) < 10) &&
+                            (Math.abs(tempVector.y - this.temporaryVectors[0].y) < 10))
+                        ) {
+                            this.temporaryVectors.push(tempVector);
+                            this.temporaryVectors.push({
+                                x: this.temporaryVectors[0].x,
+                                y: this.temporaryVectors[0].y
+                            });
+                            this.logicDisplay?.addComponent(new Polygon(this.temporaryVectors));
+                            this.temporaryComponentType = null;
+                            this.temporaryVectors = [];
+                            this.saveState();
+                            this.update();
+                        } else {
+                            this.temporaryVectors.push(tempVector);
+                            this.temporaryVectorIndex++;
+                            this.temporaryPoints[0] = this.temporaryVectors[this.temporaryVectorIndex - 1].x;
+                            this.temporaryPoints[1] = this.temporaryVectors[this.temporaryVectorIndex - 1].y;
+                        }
+                    }
+                }
+                break;
             case this.modes.Navigate:
                 this.displayRef!.style.cursor = 'default';
                 if (action === this.mouseAction.Down) {
@@ -1703,6 +1778,16 @@ export class GraphicsRenderer {
                                         const pointComponent = component as Point;
                                         pointComponent.x = localX;
                                         pointComponent.y = localY;
+                                        break;
+                                    case componentTypes.polygon:
+                                        const poly = component as Polygon;
+                                        if (this.dragHandle && this.dragHandle.startsWith('handle-')) {
+                                            const handleIndex = parseInt(this.dragHandle.split('-')[1]);
+                                            if (handleIndex >= 0 && handleIndex < poly.vectors.length) {
+                                                poly.vectors[handleIndex].x = localX;
+                                                poly.vectors[handleIndex].y = localY;
+                                            }
+                                        }
                                         break;
                                 }
                                 this.saveState();

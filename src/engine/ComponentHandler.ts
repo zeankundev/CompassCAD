@@ -201,7 +201,7 @@ export class Polygon extends Component {
     color: string;
     strokeColor: string;
     enableStroke: boolean;
-    constructor(vectors: VectorType[], name: string, fillColor: string, strokeColor: string, opacity: number, enableStroke: boolean) {
+    constructor(vectors: VectorType[], fillColor?: string, strokeColor?: string, enableStroke?: boolean) {
         super();
         this.type = componentTypes.polygon;
         this.color = fillColor || "#ffffff";
