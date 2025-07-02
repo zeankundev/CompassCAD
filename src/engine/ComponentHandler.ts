@@ -8,7 +8,8 @@ export const componentTypes = {
     measure: 6,
     label: 7,
     shape: 8,
-    picture: 9
+    picture: 9,
+    polygon: 10,
 }
 
 export class Component {
@@ -189,5 +190,23 @@ export class Picture extends Point {
         super(x, y);
         this.type = componentTypes.picture;
         this.pictureSource = pictureSource != undefined ? pictureSource : '';
+    }
+}
+interface VectorType {
+    x: number;
+    y: number;
+}
+export class Polygon extends Component {
+    vectors: VectorType[];
+    color: string;
+    strokeColor: string;
+    enableStroke: boolean;
+    constructor(vectors: VectorType[], name: string, fillColor: string, strokeColor: string, opacity: number, enableStroke: boolean) {
+        super();
+        this.type = componentTypes.polygon;
+        this.color = fillColor || "#ffffff";
+        this.strokeColor = strokeColor || "#000000";
+        this.vectors = vectors || [];
+        this.enableStroke = enableStroke || true;
     }
 }

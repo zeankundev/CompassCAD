@@ -1,5 +1,5 @@
 import { read } from "fs";
-import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Shape, Label, Arc, Picture } from "./ComponentHandler";
+import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Shape, Label, Arc, Picture, Polygon } from "./ComponentHandler";
 import { KeyboardHandler, MouseHandler } from "./InputHandler";
 import { LogicDisplay } from "./LogicDisplay";
 
@@ -16,6 +16,10 @@ interface HandleProperties {
     y: number;
     id: string,
     cursor: string
+}
+interface VectorType {
+    x: number;
+    y: number;
 }
 
 export class GraphicsRenderer {
@@ -37,6 +41,7 @@ export class GraphicsRenderer {
     undoStack: string[];
     redoStack: string[];
     temporaryObjectArray: any[];
+    temporaryVectors: VectorType[];
     displayWidth: number;
     displayHeight: number;
     offsetX: number;
@@ -93,6 +98,7 @@ export class GraphicsRenderer {
             AddLabel: 7,
             AddShape: 8,
             AddPicture: 9,
+            AddPolygon: 10,
             Delete: 20,
             Navigate: 22,
             Move: 23,
@@ -122,6 +128,7 @@ export class GraphicsRenderer {
         this.undoStack = [];
         this.redoStack = [];
         this.temporaryObjectArray = [];
+        this.temporaryVectors = [];
         this.displayWidth = width;
         this.displayHeight = height;
         this.offsetX = 0;
@@ -319,6 +326,19 @@ export class GraphicsRenderer {
                         cursor: 'move'
                     });
                     break;
+                case componentTypes.polygon:
+                    this.handles = [];
+                    this.handles.length = 0;
+                    const polygonComponent = component as Polygon;
+                    polygonComponent.vectors.forEach((polygonHandle, index) => {
+                        this.handles.push({
+                            x: polygonHandle.x,
+                            y: polygonHandle.y,
+                            id: `handle-${index}`,
+                            cursor: 'move'
+                        });
+                    });
+                    break;
             }
         }
         return this.handles;
@@ -507,6 +527,15 @@ export class GraphicsRenderer {
                     pic.pictureSource
                 );
                 break;
+            case componentTypes.polygon:
+                const polygon = component as Polygon;
+                this.drawPolygon(
+                    polygon.vectors,
+                    polygon.color,
+                    polygon.strokeColor,
+                    polygon.radius,
+                    polygon.enableStroke
+                )
         }
     }
     drawTemporaryComponent() {
@@ -606,6 +635,14 @@ export class GraphicsRenderer {
                     this.selectedColor,
                     this.selectedRadius);
                 break;
+            case componentTypes.polygon:
+                this.drawPolygon(
+                    [...this.temporaryVectors, {x: this.getCursorXLocal(), y: this.getCursorYLocal()}],
+                    this.selectedColor,
+                    '#ffffff',
+                    this.selectedRadius,
+                    true
+                )
         }
     }
     drawPoint(x: number, y: number, color: string, radius?: number) {
@@ -867,6 +904,32 @@ export class GraphicsRenderer {
         if (this.context) {
             this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
         }
+    }
+    drawPolygon(
+        vectors: VectorType[],
+        fillColor: string,
+        strokeColor: string,
+        radius: number,
+        enableStroke: boolean
+    ) {
+        if (vectors.length < 2) return;
+        this.context!.lineWidth = radius * this.zoom;
+        this.context!.fillStyle = fillColor;
+        this.context!.strokeStyle = strokeColor;
+        this.context!.beginPath();
+        this.context!.moveTo(
+            (vectors[0].x + this.cOutX) * this.zoom,
+            (vectors[0].y + this.cOutY) * this.zoom
+        );
+        for (let i = 1; i < vectors.length; i++) {
+            this.context!.lineTo(
+                (vectors[i].x + this.cOutX) * this.zoom,
+                (vectors[i].y + this.cOutY) * this.zoom
+            );
+        }
+        this.context!.closePath();
+        this.context!.fill();
+        enableStroke ? this.context!.stroke() : undefined;
     }
     drawOrigin(cx: number, cy: number) {
         if (this.context) {
