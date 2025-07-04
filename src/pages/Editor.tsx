@@ -105,34 +105,40 @@ const Editor = () => {
     }
     const takeSnapshot = async (data: Component[], name: string, type: DesignType): Promise<void> => {
         if (!id) return;
-        if (!virtualCanvas.current) {
-            console.log(`[editor] snapshot taken with metadata name: ${name}, type ${type}`)
-            virtualCanvas.current = document.createElement('canvas');
-            virtualCanvas!.current.width = 960;
-            virtualCanvas!.current.height = 480;
-            const virtualRenderer = new GraphicsRenderer(virtualCanvas.current, 960, 480);
-            virtualRenderer.start();
+        
+        console.log(`[editor] snapshot taken with metadata name: ${name}, type ${type}`)
+        console.log(`[editor] components data:`, data); // Debug log
+        
+        // Create a fresh canvas each time
+        const canvas = document.createElement('canvas');
+        canvas.width = 960;
+        canvas.height = 480;
+        
+        const virtualRenderer = new GraphicsRenderer(canvas, 960, 480);
+        virtualRenderer.start();
+        virtualRenderer.logicDisplay!.components = data;
+        
+        // Render multiple times to ensure everything is drawn
+        for (let i = 0; i < 10; i++) {
             virtualRenderer.update();
-            virtualRenderer.logicDisplay?.importJSON(data, virtualRenderer.logicDisplay!.components);
-            virtualRenderer.update();
-            const thumbnail = virtualCanvas.current?.toDataURL('image/png');
-            const entry: HistoryEntry = {
-                name: name.replace(/\.[^/.]+$/, ''),
-                date: new Date().toLocaleDateString('en-US',{ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
-                type: type,
-                preview: thumbnail,
-                data: LZString.compressToEncodedURIComponent(JSON.stringify(data))
-            }
-            let history: HistoryEntry[] = JSON.parse(localStorage.getItem('history') || '[]');
-            history.unshift(entry);
-            if (history.length > 20) history.pop();
-            localStorage.setItem('history', JSON.stringify(history));
-            // Return promise that resolves when everything is done
-            return Promise.resolve();
         }
+        
+        const thumbnail = canvas.toDataURL('image/png');
+        const entry: HistoryEntry = {
+            name: name.replace(/\.[^/.]+$/, ''),
+            date: new Date().toLocaleDateString('en-US',{ weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }),
+            type: type,
+            preview: thumbnail,
+            data: LZString.compressToEncodedURIComponent(JSON.stringify(data))
+        }
+        
+        let history: HistoryEntry[] = JSON.parse(localStorage.getItem('history') || '[]');
+        history.unshift(entry);
+        if (history.length > 20) history.pop();
+        localStorage.setItem('history', JSON.stringify(history));
+        await new Promise(resolve => setTimeout(resolve, 150));
     }
-    window.onunload = async (e) => {
-        e.preventDefault();
+    window.onunload = async () => {
         await takeSnapshot(
             renderer.current!.logicDisplay!.components,
             designName,
