@@ -11,16 +11,16 @@ import DownloadPage from './pages/Download';
 
 function App() {
     return (
-      <div className={styles.app}>
-          <Router>
+        <div className={styles.app}>
+            <Router>
                 <Switch>
                   <Route exact path='/' component={Home} />
                   <Route path='/download' component={DownloadPage} />
                   <Route path='/editor/:id' component={Editor} />
                   <Route path='/editor' component={EditorHome} />
                 </Switch>
-          </Router>
-      </div>
+            </Router>
+        </div>
     )
 }
 
