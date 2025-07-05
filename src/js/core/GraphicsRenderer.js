@@ -175,6 +175,7 @@ GraphicsRenderer.prototype.init = async function (e) {
 	if (this.enableWebGL) {
 		console.log('[renderer] using WebGL')
 		this.context = enableWebGLCanvas(this.cvn[0]);
+        this.context.start2D();
 	} else {
 		console.log('[renderer] using ctx2d')
 		this.context = /** @type {CanvasRenderingContext2D} */ (this.cvn[0].getContext('2d'));
@@ -304,6 +305,7 @@ GraphicsRenderer.prototype.execute = async function (e) {
 			this.context.fillText(keys, - this.displayWidth / 2 + 80, this.displayHeight / 2 - 50);
 		}
 	}
+    this.context.finish2D();
 };
 
 GraphicsRenderer.prototype.refreshSelectionTools = function () {
