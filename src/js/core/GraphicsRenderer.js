@@ -305,7 +305,9 @@ GraphicsRenderer.prototype.execute = async function (e) {
 			this.context.fillText(keys, - this.displayWidth / 2 + 80, this.displayHeight / 2 - 50);
 		}
 	}
-    this.context.finish2D();
+    if (this.enableWebGL) {
+        this.context.finish2D();
+    }
 };
 
 GraphicsRenderer.prototype.refreshSelectionTools = function () {
