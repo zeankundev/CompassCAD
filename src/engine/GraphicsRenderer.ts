@@ -974,7 +974,7 @@ export class GraphicsRenderer {
             this.drawShape(errorShape);
             return;
         }
-        const width = img.naturalHeight * this.zoom || 100;
+        const width = img.naturalWidth * this.zoom || 100;
         const height = img.naturalHeight * this.zoom || 100;
         if (this.context) {
             this.context.globalAlpha = opacity / 100;
