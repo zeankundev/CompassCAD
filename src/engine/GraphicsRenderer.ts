@@ -43,6 +43,7 @@ export class GraphicsRenderer {
     temporaryObjectArray: any[];
     temporaryVectors: VectorType[];
     temporaryVectorIndex: number;
+    imageCache: { [key: string]: any };
     displayWidth: number;
     displayHeight: number;
     offsetX: number;
@@ -131,6 +132,7 @@ export class GraphicsRenderer {
         this.temporaryObjectArray = [];
         this.temporaryVectorIndex = 0;
         this.temporaryVectors = [];
+        this.imageCache = {};
         this.displayWidth = width;
         this.displayHeight = height;
         this.offsetX = 0;
@@ -193,9 +195,16 @@ export class GraphicsRenderer {
             const selectedComponent: Component = this.logicDisplay?.components[this.selectedComponent];
             const handles = this.getComponentHandles(selectedComponent);
             for (const handle of handles) {
-                this.drawPoint(handle.x, handle.y, '#fff', 2);
+                this.drawPoint(handle.x, handle.y, '#fff', 2, 100);
             }
         }
+    }
+    _num2hex(value: number) {
+        const clampedNum = Math.max(0, Math.min(100, value));
+        const scaledValue = Math.round(clampedNum * 2.55);
+        let hexString = scaledValue.toString(16);
+        hexString = hexString.padStart(2, '0');
+        return hexString.toUpperCase();
     }
     drawComponentSize(component: Component) {
         if (!component || !component.type) return;
@@ -449,7 +458,8 @@ export class GraphicsRenderer {
                     p.x + moveByX,
                     p.y + moveByY,
                     p.color,
-                    p.radius
+                    p.radius,
+                    p.opacity
                 )
                 break;
             case componentTypes.line:
@@ -460,7 +470,8 @@ export class GraphicsRenderer {
                     l.x2 + moveByX,
                     l.y2 + moveByY,
                     l.color,
-                    l.radius
+                    l.radius,
+                    l.opacity
                 )
                 break;
             case componentTypes.circle:
@@ -471,7 +482,8 @@ export class GraphicsRenderer {
                     c.x2 + moveByX,
                     c.y2 + moveByY,
                     c.color,
-                    c.radius);
+                    c.radius,
+                    c.opacity);
                 break;
             case componentTypes.rectangle:
                 const r = component as Rectangle;
@@ -481,7 +493,8 @@ export class GraphicsRenderer {
                     r.x2 + moveByX,
                     r.y2 + moveByY,
                     r.color,
-                    r.radius);
+                    r.radius,
+                    r.opacity);
                 break;
             case componentTypes.measure:
                 const m = component as Measure;
@@ -491,7 +504,8 @@ export class GraphicsRenderer {
                     m.x2 + moveByX,
                     m.y2 + moveByY,
                     m.color,
-                    m.radius
+                    m.radius,
+                    m.opacity
                 )
                 break;
             case componentTypes.label:
@@ -501,7 +515,8 @@ export class GraphicsRenderer {
                     label.y + moveByY,
                     label.text,
                     label.color,
-                    label.fontSize
+                    label.fontSize,
+                    label.opacity
                 );
                 break;
             case componentTypes.arc:
@@ -514,7 +529,8 @@ export class GraphicsRenderer {
                     arc.x3 + moveByX,
                     arc.y3 + moveByY,
                     arc.color,
-                    arc.radius
+                    arc.radius,
+                    arc.opacity
                 );
                 break;
             case componentTypes.shape:
@@ -526,7 +542,8 @@ export class GraphicsRenderer {
                 this.drawPicture(
                     pic.x + moveByX,
                     pic.y + moveByY,
-                    pic.pictureSource
+                    pic.pictureSource,
+                    pic.opacity
                 );
                 break;
             case componentTypes.polygon:
@@ -536,6 +553,7 @@ export class GraphicsRenderer {
                     polygon.color,
                     polygon.strokeColor,
                     polygon.radius,
+                    polygon.opacity,
                     polygon.enableStroke
                 )
         }
@@ -547,7 +565,8 @@ export class GraphicsRenderer {
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.line:
                 this.drawLine(
@@ -556,7 +575,8 @@ export class GraphicsRenderer {
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.circle:
                 this.drawCircle(
@@ -565,14 +585,16 @@ export class GraphicsRenderer {
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 this.drawMeasure(
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.rectangle:
                 this.drawRectangle(
@@ -581,28 +603,32 @@ export class GraphicsRenderer {
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 this.drawMeasure(
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 this.drawMeasure(
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[1]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 this.drawMeasure(
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.measure:
                 this.drawMeasure(
@@ -611,7 +637,8 @@ export class GraphicsRenderer {
                     this.temporaryPoints[2]!,
                     this.temporaryPoints[3]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.arc:
                 console.log(`temporary points: ${this.temporaryPoints[0]}`)
@@ -623,7 +650,8 @@ export class GraphicsRenderer {
                     this.temporaryPoints[4]!,
                     this.temporaryPoints[5]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.shape:
                 if (this.temporaryShape) {
@@ -635,7 +663,8 @@ export class GraphicsRenderer {
                     this.temporaryPoints[0]!,
                     this.temporaryPoints[1]!,
                     this.selectedColor,
-                    this.selectedRadius);
+                    this.selectedRadius,
+                    100);
                 break;
             case componentTypes.polygon:
                 this.drawPolygon(
@@ -643,15 +672,16 @@ export class GraphicsRenderer {
                     this.selectedColor,
                     '#ffffff',
                     this.selectedRadius,
-                    true
+                    100,
+                    true,
                 )
         }
     }
-    drawPoint(x: number, y: number, color: string, radius?: number) {
+    drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
         if (this.context) {
             if (this.temporarySelectedComponent != null || this.mode == this.modes.Move) {
                 this.context.lineWidth = 2;
-                this.context.fillStyle = '#fff';
+                this.context.fillStyle = '#ffffff';
                 this.context.strokeStyle = this.selectedColor;
                 this.context.beginPath();
                 this.context.rect(
@@ -665,8 +695,8 @@ export class GraphicsRenderer {
                 this.context.stroke();
             } else {
                 this.context.lineWidth = 3 * this.zoom;
-                this.context.fillStyle = color;
-                this.context.strokeStyle = color;
+                this.context.fillStyle = color + this._num2hex(opacity);
+                this.context.strokeStyle = color + this._num2hex(opacity);
                 this.context.beginPath();
                 this.context.arc(
                     (x + this.cOutX) * this.zoom,
@@ -683,12 +713,13 @@ export class GraphicsRenderer {
         x2: number,
         y2: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
         if (this.context) {
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color;
-            this.context.strokeStyle = color;
+            this.context.fillStyle = color + this._num2hex(opacity);
+            this.context.strokeStyle = color + this._num2hex(opacity);
             this.context.lineCap = "round";
             this.context.beginPath();
             this.context.moveTo(
@@ -706,12 +737,13 @@ export class GraphicsRenderer {
         x2: number,
         y2: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
         if (this.context) {
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color;
-            this.context.strokeStyle = color;
+            this.context.fillStyle = color + this._num2hex(opacity);
+            this.context.strokeStyle = color + this._num2hex(opacity);
             this.context.beginPath();
             this.context.arc(
                 (x1 + this.cOutX) * this.zoom,
@@ -728,12 +760,13 @@ export class GraphicsRenderer {
         x2: number,
         y2: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
-        this.drawLine(x1, y1, x2, y1, color, radius);
-        this.drawLine(x2, y1, x2, y2, color, radius);
-        this.drawLine(x2, y2, x1, y2, color, radius);
-        this.drawLine(x1, y2, x1, y1, color, radius);
+        this.drawLine(x1, y1, x2, y1, color, radius, opacity);
+        this.drawLine(x2, y1, x2, y2, color, radius, opacity);
+        this.drawLine(x2, y2, x1, y2, color, radius, opacity);
+        this.drawLine(x1, y2, x1, y1, color, radius, opacity);
     }
     drawArrowhead(
         x: number,
@@ -742,16 +775,17 @@ export class GraphicsRenderer {
         length: number,
         offset: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
         var arrowX = x + length * Math.cos(angle);
         var arrowY = y + length * Math.sin(angle);
         var offsetX = offset * Math.cos(angle + Math.PI / 2);
         var offsetY = offset * Math.sin(angle + Math.PI / 2);
 
-        this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius);
-        this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius);
-        this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius);
+        this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius, opacity);
+        this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+        this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
     }
     drawMeasure(
         x1: number,
@@ -759,7 +793,8 @@ export class GraphicsRenderer {
         x2: number,
         y2: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
         let distance = this.getDistance(x1, y1, x2, y2) * this.unitFactor * this.unitConversionFactor;
         let angle = Math.atan2(y2 - y1, x2 - x1);
@@ -793,17 +828,17 @@ export class GraphicsRenderer {
             const halfGapX = (labelGap / 2) * Math.cos(angle);
             const halfGapY = (labelGap / 2) * Math.sin(angle);
 
-            this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius);
-            this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius);
+            this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius, opacity);
+            this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius, opacity);
         }
-        this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius);
-        this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius);
+        this.drawArrowhead(x1, y1, angle, arrowLength, arrowOffset, color, radius, opacity);
+        this.drawArrowhead(x2, y2, angle, -arrowLength, arrowOffset, color, radius, opacity);
         this.context?.save();
         this.context?.translate((midX * this.zoom) + this.cOutX * this.zoom, ((midY * this.zoom) + (textOffsetY * 2)) + this.cOutY * this.zoom);
         this.context?.rotate(angle);
         this.context!.textAlign = 'center';
         this.context!.textBaseline = isShortDistance ? 'top' : 'middle';
-        this.context!.fillStyle = color;
+        this.context!.fillStyle = color + this._num2hex(opacity!);
         this.context!.font = (this.fontSize * localZoom) + `px ${this.displayFont}, Consolas, DejaVu Sans Mono, monospace`;
         this.context?.fillText(distanceText, 0, localDiff);
         this.context?.restore();
@@ -813,10 +848,11 @@ export class GraphicsRenderer {
         y: number,
         text: string,
         color: string,
-        fontSize: number
+        fontSize: number,
+        opacity: number,
     ) {
         if (this.context) {
-            this.drawPoint(x, y, '#0ff', 2);
+            this.drawPoint(x, y, '#0ff', 2, opacity);
 
             var localZoom = this.zoom;
             var localDiff = 0;
@@ -827,7 +863,7 @@ export class GraphicsRenderer {
                 y += localDiff;
             }
 
-            this.context.fillStyle = color;
+            this.context.fillStyle = color + this._num2hex(opacity!);
             this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 
             var maxLength = 24; // 24 Characters per row
@@ -865,15 +901,16 @@ export class GraphicsRenderer {
         x3: number,
         y3: number,
         color: string,
-        radius: number
+        radius: number,
+        opacity: number
     ) {
         if (this.context) {
             var firstAngle = this.getAngle(x1, y1, x2, y2);
             var secondAngle = this.getAngle(x1, y1, x3, y3);
 
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color;
-            this.context.strokeStyle = color;
+            this.context.fillStyle = color + this._num2hex(opacity);
+            this.context.strokeStyle = color + this._num2hex(opacity);
             this.context.beginPath();
             this.context.arc(
                 (x1 + this.cOutX) * this.zoom,
@@ -885,26 +922,70 @@ export class GraphicsRenderer {
     }
     drawShape(shape: Shape) {
         this.drawAllComponents(shape.components, shape.x, shape.y);
-        this.drawPoint(shape.x, shape.y, shape.color, shape.radius);
+        this.drawPoint(shape.x, shape.y, shape.color, shape.radius, shape.opacity);
     }
     drawPicture(
         x: number,
         y: number,
-        basedURL: string
+        basedURL: string,
+        opacity: number
     ) {
-        this.drawPoint(x, y, '#0ff', 2);
-        const fallbackURL = '';
-        const imageURL = (!basedURL || basedURL.trim() === '') ? fallbackURL : basedURL;
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = imageURL;
-        const width = img.naturalWidth * this.zoom || 100;
-        const height = img.naturalHeight * this.zoom || 100;
-        img.onerror = () => {
-            img.src = fallbackURL
+        this.drawPoint(x, y, '#00ffff', 2, opacity);
+        if (!this.imageCache[basedURL]) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.src = basedURL;
+            img.onerror = () => {
+                this.imageCache[basedURL] = null;
+            };
+            img.onload = () => {
+                this.imageCache[basedURL] = img;
+                this.renderImage(x, y, img, opacity);
+            };
+        } else {
+            this.renderImage(x, y, this.imageCache[basedURL], opacity);
         }
+    }
+    renderImage(
+        x: number,
+        y: number,
+        img: HTMLImageElement,
+        opacity: number
+    ) {
+        if (img === null) {
+            const errorShape: Shape = {
+                components: [
+                    new Circle(0, 0, 10, 10, 2, '#ff0000', opacity),
+                    new Line(-7, -7, 7, 7, 2, '#ff0000', opacity),
+                    new Line(-7, 7, 7, -7, 2, '#ff0000', opacity),
+                    new Label(17, 6, "Image Error", this.fontSize, opacity)
+                ],
+                x: x,
+                y: y,
+                color: '#ff0000',
+                radius: 2,
+                opacity: opacity,
+                active: true,
+                type: componentTypes.shape,
+                addComponent: function (component: Component) {
+                    this.components.push(component);
+                }
+            }
+            this.drawShape(errorShape);
+            return;
+        }
+        const width = img.naturalHeight * this.zoom || 100;
+        const height = img.naturalHeight * this.zoom || 100;
         if (this.context) {
-            this.context.drawImage(img, (x + this.cOutX) * this.zoom, (y + this.cOutY) * this.zoom, width, height);
+            this.context.globalAlpha = opacity / 100;
+            this.context.drawImage(
+                img,
+                (x + this.cOutX) * this.zoom,
+                (y + this.cOutY) * this.zoom,
+                width,
+                height
+            );
+            this.context.globalAlpha = 1;
         }
     }
     drawPolygon(
@@ -912,12 +993,13 @@ export class GraphicsRenderer {
         fillColor: string,
         strokeColor: string,
         radius: number,
+        opacity: number,
         enableStroke: boolean
     ) {
         if (vectors.length < 2) return;
         this.context!.lineWidth = radius * this.zoom;
-        this.context!.fillStyle = fillColor;
-        this.context!.strokeStyle = strokeColor;
+        this.context!.fillStyle = fillColor + this._num2hex(opacity);
+        this.context!.strokeStyle = strokeColor + this._num2hex(opacity);
         this.context!.beginPath();
         this.context!.moveTo(
             (vectors[0].x + this.cOutX) * this.zoom,

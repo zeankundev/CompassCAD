@@ -26,7 +26,6 @@ export class LogicDisplay {
         this.components.push(new Point(100, -100));
         
         var p = new Point(100, 100);
-        p.setActive(false);
         this.components.push(p);
         
         this.components.push(new Measure(-100, 100, -200, 300));
