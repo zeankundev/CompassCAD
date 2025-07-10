@@ -10,6 +10,7 @@ import { getDeviceType } from '../components/GetDevice'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReusableFooter from '../components/ReusableFooter'
+import { GetLanguage, locales } from '../components/LanguageHandler'
 interface HomeButtonInterface {
     important?: boolean,
     onInteract?: () => void,
@@ -45,23 +46,23 @@ const Home = () => {
                 <div className={`${styles['hero-biggiewrapper']} ${crammed ? styles.mobile : ''}`}>
                     <div className={styles['hero-left']}>
                         <h1>
-                        Build your dreams without wasting time to learn complex tools. It's time to simplify your "dream building" design
+                        {locales[GetLanguage()].home.header}
                         </h1>
                         <p>
-                        Imagine if CAD went as simple as the power tools we use today like Notion or even Figma. Except that, we can redefine what "power tools" means for architecture design.
+                        {locales[GetLanguage()].home.descHero}
                         </p>
                         <br></br>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
                             <HomeButton important={true}>
                                 <img src={InvertedExportButton} width={24} style={{transform: 'rotate(180deg)'}} />
                                 &nbsp;
-                                Download for platform
+                                {locales[GetLanguage()].home.downloadButton}
                             </HomeButton>
                             <Link to='/editor'>
                                 <HomeButton>
                                     <img src={TryIt} width={24}/>
                                     &nbsp;
-                                    In-browser editor
+                                    {locales[GetLanguage()].home.inBrowserEditor}
                                 </HomeButton>
                             </Link>
                         </div>
@@ -71,20 +72,20 @@ const Home = () => {
                     </div>
                 </div>
                 <div>
-                    <h1>Blazingly fast CAD software. Free of charge, yet simple and minimalistic</h1>
-                    <p>Built from the hearts of broke developers who cannot afford a good computer and a CAD software, created for you to enjoy.</p>
+                    <h1>{locales[GetLanguage()].home.header1Sub}</h1>
+                    <p>{locales[GetLanguage()].home.paragraph1Sub}</p>
                     <br></br>
                     <div style={{display:'flex', justifyContent: 'center'}}>
                         <img src={CCADDesktopUI} style={{border: '1px solid #0080ff', borderRadius: '10px', boxShadow: '0px 0px 13px 3px rgba(0,128,255,0.25)', width: '90vw'}} />
                     </div>
-                    <small>*Only available for Windows and Linux.</small>
+                    <small>{locales[GetLanguage()].home.littleNote1}</small>
                     <br></br>
                     <br></br>
-                    <h1>No desktop version or it doesn't work? We always have the web version!</h1>
+                    <h1>{locales[GetLanguage()].home.header2Sub}</h1>
                     <div style={{display:'flex', justifyContent: 'center'}}>
                         <img src={CrossPlatformImage} style={{width: '90vw'}}/>
                     </div>
-                    <small>*Images may appear different than the actual software</small>
+                    <small>{locales[GetLanguage()].home.littleNote2}</small>
                 </div>
             </div>
             <ReusableFooter />
