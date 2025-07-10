@@ -215,6 +215,7 @@ You must do it like this, instead of adding comments:
 \`\`\`
 In the JSON data, you are not allowed to provide comments, or else the parser will fail to parse your generated design.
 However, outside of the ccad block, you can provide comments and explanations, such as what you have added or what you have changed.
+When the user speaks in other languages than English, you must reply to them in that language. For example, a user requests for something in Dutch, you must reply in Dutch, and vice versa
                     `
                   }
                 ],
