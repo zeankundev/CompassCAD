@@ -8,8 +8,12 @@ import Home from './pages/Home';
 import Editor from './pages/Editor';
 import EditorHome from './pages/EditorHome';
 import DownloadPage from './pages/Download';
+import { GetLanguage } from './components/LanguageHandler';
 
 function App() {
+    useEffect(() => {
+        document.documentElement.lang = GetLanguage();
+    }, [])
     return (
         <div className={styles.app}>
             <Router>
