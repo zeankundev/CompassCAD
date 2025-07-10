@@ -1975,6 +1975,13 @@ export class GraphicsRenderer {
             return;
 
         this.targetZoom = newZoom;
+        const viewportCenterX = this.displayWidth / 2;
+		const viewportCenterY = this.displayHeight / 2;
+		const cursorOffsetX = (this.mouse!.cursorXGlobal - this.offsetX - viewportCenterX) / this.zoom;
+		const cursorOffsetY = (this.mouse!.cursorYGlobal - this.offsetY - viewportCenterY) / this.zoom;
+        const zoomDiff = this.targetZoom - this.zoom;
+        this.camX -= cursorOffsetX * (zoomDiff / this.zoom);
+		this.camY -= cursorOffsetY * (zoomDiff / this.zoom);
     }
     clearGrid() {
         if (this.context) {
