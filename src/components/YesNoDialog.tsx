@@ -1,5 +1,6 @@
 import { useState } from "react";
 import style from '../styles/editor.module.css'
+import { getLocaleKey } from "./LanguageHandler";
 
 interface ModalProps {
     title?: string,
@@ -21,11 +22,11 @@ const YesNoDialog = (props: ModalProps) => {
                     <div 
                         className={style['dialog-button']}
                         onClick={props.onYes}
-                    >Yes</div>
+                    >{getLocaleKey('general.yes')}</div>
                     <div 
                         className={style['dialog-button']}
                         onClick={props.onNo}
-                    >No</div>
+                    >{getLocaleKey('general.no')}</div>
                 </div>
             </div>
         </div>

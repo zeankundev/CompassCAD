@@ -14,6 +14,7 @@ import { LZString } from '../components/LZString';
 import ReusableFooter from '../components/ReusableFooter';
 import { GoogleGenAI } from '@google/genai';
 import Markdown from 'react-markdown';
+import { getLocaleKey } from '../components/LanguageHandler';
 
 interface Message {
     role: 'user' | 'assistant';
@@ -105,12 +106,18 @@ const EditorHome = () => {
 
     const getCurrentTimeMessage = () => {
         const hour = new Date().getHours();
-        const timeSlot = timeMessages.find(({ range }) => 
-            range[0] <= hour && (range[1] > range[0] ? hour < range[1] : hour < 24 || hour < range[1])
-        );
-        if (!timeSlot) return 'Welcome to the editor!';
-        const randomIndex = Math.floor(Math.random() * timeSlot.messages.length);
-        return timeSlot.messages[randomIndex];
+        let period: typeof timeMessages[number]['time'] = 'morning';
+        if (hour >= 6 && hour < 10) period = 'morning';
+        else if (hour >= 10 && hour < 15) period = 'noon';
+        else if (hour >= 15 && hour < 18) period = 'afternoon';
+        else if (hour >= 18 && hour < 20) period = 'evening';
+        else if (hour >= 20 || hour < 3) period = 'night';
+        else if (hour >= 3 && hour < 6) period = 'dawn';
+
+        const keys = ['one', 'two', 'three'] as const;
+        const randomKey = keys[Math.floor(Math.random() * keys.length)];
+        // getLocaleKey expects a string key, e.g. 'randomMesg.morning.one'
+        return getLocaleKey(`editor.home.randomMesg.${period}.${randomKey}`);
     };
 
     const importDesign = () => {
@@ -318,7 +325,7 @@ When the user speaks in other languages than English, you must reply to them in 
                     rel="noreferrer"
                     className={styles['blueprint-design-link']}
                 >
-                    🔗 View/Edit this design in editor
+                    🔗 {getLocaleKey('editor.home.viewInEditor')}
                 </a>
             );
 
@@ -358,45 +365,45 @@ When the user speaks in other languages than English, you must reply to them in 
                     <div className={styles['editor-home-body']}>
                         <h2>{greeting}</h2>
                         <br></br>
-                        <h3>Quick Actions</h3>
+                        <h3>{getLocaleKey('editor.home.quickActions')}</h3>
                         <br></br>
                         <div className={styles['editor-quicktool']}>
                             <MiniButtonClickable 
                                 icon={NewSymbol}
                                 onPress={() => window.location.href = '/editor/action=new;'}
                             >
-                                Create New
+                                {getLocaleKey('editor.home.createNew')}
                             </MiniButtonClickable>
                             <MiniButtonClickable 
                                 icon={OpenSymbol}
                                 onPress={importDesign}
                             >
-                                Import existing
+                                {getLocaleKey('editor.home.importExisting')}
                             </MiniButtonClickable>
                             <MiniButtonClickable 
                                 icon={TrashSymbol}
                                 onPress={() => {
                                     setDialog(
                                         {
-                                            title: 'Clear History', 
+                                            title: getLocaleKey('editor.home.clearHistoryModal'), 
                                             onYes: () => {
                                                 localStorage.setItem('history', '[]');
                                                 refreshHistory();
                                                 setshowDialog(false);
                                             },
                                             onNo: () => setshowDialog(false),
-                                            children: <p>Are you sure you want to clear the entire history? <b>This action cannot be undone.</b></p>
+                                            children: <p>{getLocaleKey('editor.home.text1Sure')} <b>{getLocaleKey('editor.home.boldTextWarning')}</b></p>
                                         }
                                     );
                                     setshowDialog(true);}}
                             >
-                                Clear entire history
+                                {getLocaleKey('editor.home.clearEntireHistory')}
                             </MiniButtonClickable>
                             <MiniButtonClickable 
                                 icon={BluePrintSymbol}
                                 onPress={() => {setIsBluePrintMode(isBluePrintMode ? false : true)}}
                             >
-                                Ask Blueprint
+                                {getLocaleKey('editor.home.askBlueprint')}
                             </MiniButtonClickable>
                         </div>
                         <br></br>
@@ -423,7 +430,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                         <img src={BluePrintSymbol} width={24} style={{display: 'flex', alignSelf: 'flex-start'}}/>
                                         <div className={styles['blueprint-textarea']}>
                                             <textarea
-                                                placeholder='Ask or create with Blueprint AI'
+                                                placeholder={getLocaleKey('editor.home.blueprintPlaceholder')}
                                                 value={currentMessage}
                                                 onChange={(e) => setCurrentMessage(e.target.value)}
                                                 onKeyDown={(e) => {
@@ -433,7 +440,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                                     }
                                                 }}
                                             ></textarea>
-                                            <small>AI-generated content may be false or inaccurate. Powered by Google AI's Gemini</small>
+                                            <small>{getLocaleKey('editor.home.blueprintWarning')}</small>
                                         </div>
                                         <div className={styles['blueprint-button']} onClick={sendMessage}>
                                             {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} width={24} />}
@@ -444,7 +451,7 @@ When the user speaks in other languages than English, you must reply to them in 
                         )}
                         <br></br>
                         <div className={styles['editor-recents']}>
-                            <h3>Recents</h3>
+                            <h3>{getLocaleKey('editor.home.recents')}</h3>
                             <br></br>
                             {history.length > 0 ? (
                                 <div className={styles['editor-recents-container']}>
