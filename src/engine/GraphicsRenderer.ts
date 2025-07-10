@@ -936,23 +936,31 @@ export class GraphicsRenderer {
             img.crossOrigin = 'anonymous';
             img.src = basedURL;
             img.onerror = () => {
-                this.imageCache[basedURL] = null;
+                this.imageCache[basedURL] = 'ERROR'; // Use a specific error marker
             };
             img.onload = () => {
                 this.imageCache[basedURL] = img;
                 this.renderImage(x, y, img, opacity);
             };
         } else {
-            this.renderImage(x, y, this.imageCache[basedURL], opacity);
+            // Check if cached value is an error marker
+            if (this.imageCache[basedURL] === 'ERROR') {
+                this.renderImage(x, y, null, opacity); // Pass null to trigger error shape
+            } else {
+                this.renderImage(x, y, this.imageCache[basedURL], opacity);
+            }
         }
     }
+
     renderImage(
         x: number,
         y: number,
-        img: HTMLImageElement,
+        img: HTMLImageElement | null, // Update type to include null
         opacity: number
     ) {
-        if (img === null) {
+        console.warn(img);
+        // Check for both null and empty string, or use falsy check
+        if (!img || img === null) {
             const errorShape: Shape = {
                 components: [
                     new Circle(0, 0, 10, 10, 2, '#ff0000', opacity),
@@ -962,7 +970,7 @@ export class GraphicsRenderer {
                 ],
                 x: x,
                 y: y,
-                color: '#ff0000',
+                color: '#ffffff',
                 radius: 2,
                 opacity: opacity,
                 active: true,
