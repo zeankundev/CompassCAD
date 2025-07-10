@@ -2150,13 +2150,26 @@ export const InitializeInstance = (renderer: GraphicsRenderer) => {
     });
 
     renderer.displayRef!.addEventListener('mousedown', (e: MouseEvent) => {
-        renderer.mouse?.onMouseDown(e);
-        renderer.performAction(e, renderer.mouseAction.Down);
+        if (e.which == 2) {
+            renderer.camMoving = true;
+            renderer.xCNaught = renderer.getCursorXRaw();
+            renderer.yCNaught = renderer.getCursorYRaw();
+        } else {
+            renderer.mouse?.onMouseDown(e);
+            renderer.performAction(e, renderer.mouseAction.Down);
+        }
     });
 
     renderer.displayRef!.addEventListener('mouseup', (e: MouseEvent) => {
-        renderer.mouse?.onMouseUp(e);
-        renderer.performAction(e, renderer.mouseAction.Up);
+        if (e.which == 2) {
+            renderer.camMoving = false;
+            renderer.camX += renderer.getCursorXRaw() - renderer.xCNaught;
+            renderer.camY += renderer.getCursorYRaw() - renderer.yCNaught;
+            renderer.updateCamera();
+        } else {
+            renderer.mouse?.onMouseUp(e);
+            renderer.performAction(e, renderer.mouseAction.Up);
+        }
     });
 
     renderer.displayRef!.addEventListener('wheel', (e: WheelEvent) => {
