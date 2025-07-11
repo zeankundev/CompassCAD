@@ -3004,6 +3004,7 @@ var initCAD = function (gd) {
 				const types = clipboardItem.types;
 				
 				for (const type of types) {
+                    console.warn(type);
 					try {
 						if (type === 'text/plain') {
 							const textBlob = await clipboardItem.getType('text/plain');
@@ -3023,8 +3024,20 @@ var initCAD = function (gd) {
 							}
 						}
 						else if (type.startsWith('image/')) {
-							const imageBlob = await clipboardItem.getType(type);
-							const imageUrl = URL.createObjectURL(imageBlob);
+                            const imageBlob = await clipboardItem.getType(type);
+                            const arrayBuffer = await imageBlob.arrayBuffer();
+							// Convert ArrayBuffer to base64 safely
+							function arrayBufferToBase64(buffer) {
+								let binary = '';
+								const bytes = new Uint8Array(buffer);
+								const len = bytes.byteLength;
+								for (let i = 0; i < len; i++) {
+									binary += String.fromCharCode(bytes[i]);
+								}
+								return btoa(binary);
+							}
+							const base64String = arrayBufferToBase64(arrayBuffer);
+							const imageUrl = `data:${type};base64,${base64String}`;
 							gd.logicDisplay.addComponent(
 								new Picture(
 									gd.getCursorXLocal(),
