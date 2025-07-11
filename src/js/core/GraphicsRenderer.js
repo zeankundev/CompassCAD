@@ -2051,7 +2051,7 @@ GraphicsRenderer.prototype.deleteOnSelect = function () {
     if (this.mode === this.MODES.SELECT && this.selectedComponent != null) {
         this.handles = [];
         this.logicDisplay.components.splice(this.selectedComponent, 1);
-        this.unselectComponent();
+        this.selectedComponent = null;
         refreshHierarchy();
         clearForm();
         sendCurrentEditorState();
