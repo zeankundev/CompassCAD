@@ -2037,12 +2037,13 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						this.getCursorYRaw());
 				}
 			} else if (action == this.MOUSEACTION.DOWN) {
-				if (this.temporarySelectedComponent != null) {
-					this.logicDisplay.components[this.temporarySelectedComponent].setActive(false);
-				}
-				sendCurrentEditorState()
-				this.saveState()
-				this.execute()
+                if (this.temporarySelectedComponent != null) {
+                    this.logicDisplay.components.splice(this.temporarySelectedComponent, 1);
+                }
+                refreshHierarchy();
+				sendCurrentEditorState();
+				this.saveState();
+				this.execute();
 			}
 			this.tooltip = await this.getLocal('delete');
 			break;
