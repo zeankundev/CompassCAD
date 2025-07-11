@@ -430,33 +430,27 @@ GraphicsRenderer.prototype.paste = function (e) {
 }
 
 GraphicsRenderer.prototype.saveState = function () {
-	let hasChanged = false;
-	for (let i = 0; i < this.logicDisplay.components.length; i++) {
-		if (JSON.stringify(this.logicDisplay.components[i]) !== JSON.stringify(this.lastArray[i])) {
-			hasChanged = true;
-			break;
-		}
-	}
+    // Only save if components have changed since last save
+    const currentState = JSON.stringify(this.logicDisplay.components);
+    if (this.undoStack.length === 0 || this.undoStack[this.undoStack.length - 1] !== currentState) {
+        this.undoStack.push(currentState);
+        this.lastArray = [...this.logicDisplay.components];
+        if (this.undoStack.length > this.maximumStack) {
+            this.undoStack.shift();
+        }
 
-	if (hasChanged) {
-		this.undoStack.push(JSON.stringify(this.logicDisplay.components));
-		this.lastArray = [...this.logicDisplay.components];
-		if (this.undoStack.length > this.maximumStack) {
-			this.undoStack.shift();
-		}
+        console.log(this.undoStack);
 
-		console.log(this.undoStack);
+        if (doupdatestack) {
+            console.log('[renderer] doupdatestack true, sending editor state');
+            sendCurrentEditorState();
+        } else {
+            doupdatestack = true;
+        }
 
-		if (doupdatestack) {
-			console.log('[renderer] doupdatestack true, sending editor state');
-			sendCurrentEditorState();
-		} else {
-			doupdatestack = true;
-		}
-
-		// Clear the redo stack when a new action is performed
-		this.redoStack = [];
-	}
+        // Clear the redo stack when a new action is performed
+        this.redoStack = [];
+    }
 };
 
 GraphicsRenderer.prototype.returnLatexInstance = async function (latex) {
@@ -1742,12 +1736,12 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					if (frameCount % 6 === 0) {
 						// Use requestAnimationFrame for better performance
 						requestAnimationFrame(() => {
-							this.saveState();
 							// Defer form updates to next idle period
 							if ('requestIdleCallback' in window) {
 								requestIdleCallback(() => {
 									sendCurrentEditorState()
 									createFormForSelection()
+                                    this.saveState();
 								});
 							} else {
 								setTimeout(() => {
@@ -1765,6 +1759,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 						// If clicking the already selected component, unselect it
 						this.unselectComponent();
 						sendCurrentEditorState();
+                        this.saveState();
 						clearForm();
 					} else {
 						// Select the component under the cursor
@@ -2051,6 +2046,19 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 			this.tooltip = this.tooltipDefault;
 	}
 };
+GraphicsRenderer.prototype.deleteOnSelect = function () {
+    // Only allow deletion in SELECT mode and if a component is selected
+    if (this.mode === this.MODES.SELECT && this.selectedComponent != null) {
+        this.handles = [];
+        this.logicDisplay.components.splice(this.selectedComponent, 1);
+        this.unselectComponent();
+        refreshHierarchy();
+        clearForm();
+        sendCurrentEditorState();
+        this.saveState();
+        this.execute();
+    }
+};
 GraphicsRenderer.prototype.drawComponentSize = function (component) {
 	if (!component || !component.type) return;
 
@@ -2221,19 +2229,15 @@ GraphicsRenderer.prototype.getComponentHandles = function (component) {
 	return handles;
 };
 GraphicsRenderer.prototype.undo = function () {
-	if (this.undoStack.length > 0) {
-		// Remove the last state from the undoStack and push it to the redoStack
+	// Only allow undo if there is more than one state in the stack
+	if (this.undoStack.length > 1) {
+		// Move the current state to the redo stack
 		const state = this.undoStack.pop();
 		this.redoStack.push(state);
-		// Get the new last state from the undoStack (if any) to apply to the logicDisplay
-		const lastState = this.undoStack.length > 0 ? this.undoStack[this.undoStack.length - 1] : null;
-
-		if (lastState) {
-			this.logicDisplay.components = []
-			this.logicDisplay.importJSON(JSON.parse(lastState), this.logicDisplay.components);
-		} else
-			return
-
+		// The new current state is now the last in the undo stack
+		const lastState = this.undoStack[this.undoStack.length - 1];
+		this.logicDisplay.components = [];
+		this.logicDisplay.importJSON(JSON.parse(lastState), this.logicDisplay.components);
 		this.execute(); // Re-render the canvas
 	}
 };
@@ -2918,6 +2922,9 @@ var initCAD = function (gd) {
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.C, function (e) {
 		gd.copy()
 	}, { ctrl: true });
+    gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.DEL, function (e) {
+        gd.deleteOnSelect();
+    })
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.APOSTROPHE, async function (e) {
 		console.log('[bootstrapper] ctrl+apostrophe pressed, firing NOW')
 		const config = new ConfigHandler();
