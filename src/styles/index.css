@@ -106,6 +106,16 @@
     }
 }
 
+@keyframes slidedown {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    } to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
 @keyframes scale-down {
     from {
         transform: translate(-50%, -50%) scale(1.05); /* Start larger */
@@ -988,4 +998,11 @@ contextmenu {
     z-index: 99999999999999;
     background-color: var(--primary-transparent);
     border: 0.5px solid var(--outline);
+    padding: 10px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0px 0px 13px 0px rgba(0, 0, 0, 0.5);
+    user-select: none;
+    animation: slideup 0.2s ease;
+    transition: all 0.2s ease;
 }
