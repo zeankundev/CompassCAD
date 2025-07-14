@@ -299,6 +299,40 @@ function setContextMenuMode(mode) {
                 }
             ]
             break;
+        case 'selection':
+            data = [
+                {
+                    icon: 'cut',
+                    name: 'Cut (ctrl+x)',
+                    void: () => renderer.cut()
+                },
+                {
+                    icon: 'copy',
+                    name: 'Copy (ctrl+c)',
+                    void: () => renderer.copy()
+                },
+                {
+                    icon: 'paste',
+                    name: 'Paste (ctrl+v)',
+                    void: () => renderer.weirdPaste()
+                },
+                {
+                    icon: 'delete',
+                    name: 'Delete (del)',
+                    void: () => renderer.deleteOnSelect()
+                },
+                {
+                    icon: 'undo',
+                    name: 'Undo',
+                    void: () => renderer.undo()
+                },
+                {
+                    icon: 'redo',
+                    name: 'Redo',
+                    void: () => renderer.redo()
+                }
+            ]
+            break;
         default:
             data = []
             break;
@@ -307,6 +341,7 @@ function setContextMenuMode(mode) {
 }
 
 function assembleContextMenu(data) {
+    document.getElementById('context-menu').innerHTML = '';
     data.forEach((context) => {
         const div = document.createElement('div');
         div.className = 'contextmenu-selection';
