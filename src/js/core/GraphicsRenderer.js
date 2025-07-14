@@ -3111,8 +3111,8 @@ var initCAD = function (gd) {
             document.getElementById('context-menu').style.display = 'none';
 		} else {
             document.getElementById('context-menu').style.display = 'flex';
-            document.getElementById('context-menu').style.left = e.pageX + 'px';
-            document.getElementById('context-menu').style.top = e.pageY + 'px';
+            document.getElementById('context-menu').style.left = (e.pageX + 15) + 'px';
+            document.getElementById('context-menu').style.top = (e.pageY + 15) + 'px';
         }
 	});
 
