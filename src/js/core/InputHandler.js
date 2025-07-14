@@ -258,5 +258,5 @@ MouseHandler.prototype.onMouseUp = function(e) {
 	}
 };
 MouseHandler.prototype.onMouseLeave = function(e) {
-    this.updateCoords(0, 0);
+    // this.updateCoords(0, 0);
 }
