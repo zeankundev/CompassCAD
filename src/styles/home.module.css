@@ -1,3 +1,12 @@
+@keyframes slidein-from-bottom {
+    from {
+        transform: translateY(-10px);
+        opacity: 0;
+    } to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
 .home-container {
     color: var(--text);
 }
@@ -55,6 +64,7 @@
     right: 40px;
     margin-top: 10px;
     backdrop-filter: blur(10px);
+    animation: slidein-from-bottom 0.2s ease;
 }
 .language-dropdown-choice {
     display: flex;
