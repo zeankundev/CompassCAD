@@ -368,6 +368,7 @@ function assembleContextMenu(data) {
         div.onclick = () => {
             if (context.void != null) {
                 context.void();
+                document.getElementById('context-menu').style.display = 'none';
             } else {
                 console.warn('[contextmenu] no void assigned, ignoring');
             }
