@@ -3105,10 +3105,15 @@ var initCAD = function (gd) {
 			gd.camMoving = true;
 			gd.xCNaught = gd.getCursorXRaw();
 			gd.yCNaught = gd.getCursorYRaw();
-		} else {
+		} else if (e.which === 1) {
 			gd.mouse.onMouseDown(e);
 			gd.performAction(e, gd.MOUSEACTION.DOWN);
-		}
+            document.getElementById('context-menu').style.display = 'none';
+		} else {
+            document.getElementById('context-menu').style.display = 'flex';
+            document.getElementById('context-menu').style.left = e.pageX + 'px';
+            document.getElementById('context-menu').style.top = e.pageY + 'px';
+        }
 	});
 
 	gd.cvn.mouseup(function (e) {
@@ -3117,7 +3122,7 @@ var initCAD = function (gd) {
 			gd.camX += gd.getCursorXRaw() - gd.xCNaught;
 			gd.camY += gd.getCursorYRaw() - gd.yCNaught;
 			gd.updateCamera();
-		} else {
+		} else if (e.which === 1) {
 			gd.mouse.onMouseUp(e);
 			gd.performAction(e, gd.MOUSEACTION.UP);
 		}

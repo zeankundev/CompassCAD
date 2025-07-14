@@ -982,3 +982,10 @@ input[type=checkbox]:checked {
     flex-wrap: nowrap;
     margin-bottom: 5px;
 }
+contextmenu {
+    display: none;
+    position: absolute;
+    z-index: 99999999999999;
+    background-color: var(--primary-transparent);
+    border: 0.5px solid var(--outline);
+}
