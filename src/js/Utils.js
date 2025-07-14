@@ -310,7 +310,7 @@ function assembleContextMenu(data) {
     data.forEach((context) => {
         const div = document.createElement('div');
         div.className = 'contextmenu-selection';
-        div.innerHTML = `${context.name}`;
+        div.innerHTML = `<img src="../../assets/icons/contextmenu/${context.icon}.svg">&nbsp;${context.name}`;
         div.onclick = () => {
             if (context.void != null) {
                 context.void();
