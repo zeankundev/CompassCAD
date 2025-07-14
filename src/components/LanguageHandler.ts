@@ -1,5 +1,12 @@
+import React, { JSX } from 'react';
+
+export const supportedLanguages = ['en', 'nl'];
+export const SetLanguage = (lang: string) => {
+    const selectedLang = supportedLanguages.includes(lang) ? lang : 'en';
+    localStorage.setItem('language', selectedLang);
+}
 export const GetLanguage = () => {
-    const lang = navigator.language.split('-')[0];
+    const lang = localStorage.getItem('language') || navigator.language.split('-')[0];
     return locales[lang] ? lang : 'en';
 }
 export function getLocaleKey(path: string): string {

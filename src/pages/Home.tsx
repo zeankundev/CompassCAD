@@ -10,7 +10,7 @@ import { getDeviceType } from '../components/GetDevice'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReusableFooter from '../components/ReusableFooter'
-import { GetLanguage, getLocaleKey, locales } from '../components/LanguageHandler'
+import { GetLanguage, getLocaleKey, locales, SetLanguage } from '../components/LanguageHandler'
 interface HomeButtonInterface {
     important?: boolean,
     onInteract?: () => void,
@@ -36,6 +36,9 @@ const Home = () => {
             setCrammed(isCrammed());
             console.log(crammed)
         };
+        if (localStorage.getItem('language') == null) {
+            SetLanguage(navigator.language);
+        }
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);

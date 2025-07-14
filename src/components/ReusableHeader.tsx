@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import CompassCADLogo from '../assets/general/logo.svg'
 import styles from '../styles/home.module.css'
+import LanguageSwitcher from './LanguageSwitcher'
 const ReusableHeader = () => {
     return (
         <div className={styles.header}>
@@ -21,7 +22,10 @@ const ReusableHeader = () => {
                         <p>Sample link</p>
                     </div>
                 </div>
-                <div>
+                <div
+                    className={styles['header-rightside-group']}
+                >
+                    <LanguageSwitcher />
                     <p>b</p>
                 </div>
             </div>
