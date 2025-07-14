@@ -429,6 +429,67 @@ GraphicsRenderer.prototype.paste = function (e) {
 	}
 }
 
+GraphicsRenderer.prototype.weirdPaste = function () {
+    console.log(`[renderer] weird pasting, current pos: x:${this.getCursorXLocal()},y:${this.getCursorYLocal()}`)
+    navigator.clipboard.read().then(clipboardItems => {
+		clipboardItems.forEach(async clipboardItem => {
+			// Get available types from clipboard item
+			const types = clipboardItem.types;
+			
+			for (const type of types) {
+                console.warn(type);
+				try {
+					if (type === 'text/plain') {
+						const textBlob = await clipboardItem.getType('text/plain');
+						const text = await textBlob.text();
+						if (text.includes('active') || text.includes('type')) {
+							this.paste();
+							refreshHierarchy();
+						} else {
+							this.logicDisplay.addComponent(
+								new Label(
+									this.getCursorXLocal(),
+									this.getCursorYLocal(),
+									text
+								)
+							)
+							refreshHierarchy();
+						}
+					}
+					else if (type.startsWith('image/')) {
+                        const imageBlob = await clipboardItem.getType(type);
+                        const arrayBuffer = await imageBlob.arrayBuffer();
+						// Convert ArrayBuffer to base64 safely
+						function arrayBufferToBase64(buffer) {
+							let binary = '';
+							const bytes = new Uint8Array(buffer);
+							const len = bytes.byteLength;
+							for (let i = 0; i < len; i++) {
+								binary += String.fromCharCode(bytes[i]);
+							}
+							return btoa(binary);
+						}
+						const base64String = arrayBufferToBase64(arrayBuffer);
+						const imageUrl = `data:${type};base64,${base64String}`;
+						this.logicDisplay.addComponent(
+							new Picture(
+								this.getCursorXLocal(),
+								this.getCursorYLocal(), 
+								imageUrl
+							)
+						);
+						refreshHierarchy();
+					}
+				} catch (err) {
+					console.error('Error reading clipboard:', err);
+				}
+			}
+		});
+	}).catch(err => {
+		console.error('Failed to read clipboard contents:', err);
+	});
+}
+
 GraphicsRenderer.prototype.saveState = function () {
     // Only save if components have changed since last save
     const currentState = JSON.stringify(this.logicDisplay.components);
@@ -3006,63 +3067,7 @@ var initCAD = function (gd) {
 		console.log('[bootstrap] next spacing: ' + nextSpacing);
 	}, { ctrl: true })
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.V, function (e) {
-		navigator.clipboard.read().then(clipboardItems => {
-			clipboardItems.forEach(async clipboardItem => {
-				// Get available types from clipboard item
-				const types = clipboardItem.types;
-				
-				for (const type of types) {
-                    console.warn(type);
-					try {
-						if (type === 'text/plain') {
-							const textBlob = await clipboardItem.getType('text/plain');
-							const text = await textBlob.text();
-							if (text.includes('active') || text.includes('type')) {
-								gd.paste();
-								refreshHierarchy();
-							} else {
-								gd.logicDisplay.addComponent(
-									new Label(
-										gd.getCursorXLocal(),
-										gd.getCursorYLocal(),
-										text
-									)
-								)
-								refreshHierarchy();
-							}
-						}
-						else if (type.startsWith('image/')) {
-                            const imageBlob = await clipboardItem.getType(type);
-                            const arrayBuffer = await imageBlob.arrayBuffer();
-							// Convert ArrayBuffer to base64 safely
-							function arrayBufferToBase64(buffer) {
-								let binary = '';
-								const bytes = new Uint8Array(buffer);
-								const len = bytes.byteLength;
-								for (let i = 0; i < len; i++) {
-									binary += String.fromCharCode(bytes[i]);
-								}
-								return btoa(binary);
-							}
-							const base64String = arrayBufferToBase64(arrayBuffer);
-							const imageUrl = `data:${type};base64,${base64String}`;
-							gd.logicDisplay.addComponent(
-								new Picture(
-									gd.getCursorXLocal(),
-									gd.getCursorYLocal(), 
-									imageUrl
-								)
-							);
-							refreshHierarchy();
-						}
-					} catch (err) {
-						console.error('Error reading clipboard:', err);
-					}
-				}
-			});
-		}).catch(err => {
-			console.error('Failed to read clipboard contents:', err);
-		});
+		gd.weirdPaste();
 	}, { ctrl: true });
 	gd.keyboard.addKeyEvent(true, gd.keyboard.KEYS.X, function (e) {
 		gd.cut()

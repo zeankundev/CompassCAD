@@ -269,6 +269,58 @@ async function openSettings() {
     }
 }
 
+function setContextMenuMode(mode) {
+    let data = [];
+    /** 
+     * Datas follow these structures
+     * {
+     *    icon: string (shorthand, will be symlinked later),
+     *    name: string (the name)
+     *    fx: () => void
+     * }
+    **/
+    switch (mode) {
+        case 'default':
+            data = [
+                {
+                    icon: 'paste',
+                    name: 'Paste',
+                    void: () => renderer.weirdPaste()
+                },
+                {
+                    icon: 'undo',
+                    name: 'Undo',
+                    void: () => renderer.undo()
+                },
+                {
+                    icon: 'redo',
+                    name: 'Redo',
+                    void: () => renderer.redo()
+                }
+            ]
+            break;
+        default:
+            data = []
+            break;
+    }
+    assembleContextMenu(data);
+}
+
+function assembleContextMenu(data) {
+    data.forEach((context) => {
+        const div = document.createElement('div');
+        div.innerHTML = `${context.name}`;
+        div.onclick = () => {
+            if (context.void != null) {
+                context.void();
+            } else {
+                console.warn('[contextmenu] no void assigned, ignoring');
+            }
+        }
+        document.getElementById('context-menu').appendChild(div);
+    })
+}
+
 document.getElementById('remove-grid').onclick = async () => {
     const config = new ConfigHandler();
     await config.loadConfig();

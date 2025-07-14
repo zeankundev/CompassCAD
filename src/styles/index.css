@@ -994,6 +994,7 @@ input[type=checkbox]:checked {
 }
 contextmenu {
     display: none;
+    flex-direction: column;
     position: absolute;
     z-index: 99999999999999;
     background-color: var(--primary-transparent);
