@@ -135,34 +135,34 @@ export const locales : any = {
                 viewInEditor: "Bekijk/bewerk dit ontwerp in de editor",
                 randomMesg: {
                     morning: {
-                        one: "Hé daar? Al koffie gehad? Die eerste slok is pure magie! ☕",
-                        two: "Goedemorgen! Klaar om je dag te beginnen? Laat die creativiteit knallen! 🌄",
-                        three: "Morgen! Laten we kijken wat je gaat brainstormen! Tijd om te schitteren! 🤩"
+                        one: "Yo! Heb je al koffie gehad ofzo? ☕",
+                        two: "Morgen! Klaar om te beginnen? 🌄", 
+                        three: "Morgen! Laat zien wat je gaat brainstormen! 🤩"
                     },
                     noon: {
-                        one: "Begin je nu iets op dit moment? Perfecte timing! 🧐",
-                        two: "Lunchtijd! Heb trek in iets en werk hier! Fuel die hersenen! 😋",
-                        three: "Ik hoop dat je niet slaapt! Middagdipje overslaan! 😴"
+                        one: "Zit je nu te chillen ofzo? 🧐",
+                        two: "Eerst lunchen, dan terug hier! 😋",
+                        three: "Hopelijk lig je niet te slapen! 😴"
                     },
                     afternoon: {
-                        one: "Ben je nog wakker? Laten we ontwerpen! Tijd voor actie! 🗺️",
-                        two: "Houd die creativiteit stromen! Laat je inspiratie los! ✏️",
-                        three: "Perfecte tijd voor CAD-werk! Precisie is koning! 📐"
+                        one: "Ben je nog wakker? Kom op, designen! 🗺️",
+                        two: "Houd die creativiteit gaande man! ✏️",
+                        three: "Perfect moment voor CAD! 📐"
                     },
                     evening: {
-                        one: "Werk je nog steeds 's avonds? Echte doorzetter! 🧐",
-                        two: "Heb je nog iets last-minute? Spannend! ⌚",
-                        three: "Toch ben je nog steeds sterk. Ga zo door, held! 💪"
+                        one: "'s Avonds nog aan het werk? 🧐",
+                        two: "Heb je nog iets voor de deadline? ⌚",
+                        three: "Jij bent nog steeds bezig. Ga door. 💪"
                     },
                     night: {
-                        one: "Zou je niet moeten slapen? Nachtbraker! 🛌",
-                        two: "Per ongeluk nu gebrainstormd? Geniale timing! 😵‍💫",
-                        three: "Toch raakt je cafeïne nooit op. Onvermoeibaar! ☕"
+                        one: "Moet je niet slapen ofzo? 🛌",
+                        two: "Per ongeluk aan het brainstormen? 😵‍💫",
+                        three: "Damn, jouw cafeïne level zakt nooit he ☕"
                     },
                     dawn: {
-                        one: "Ik ga slapen, wacht even niet. Samen doorhalen! 😴",
-                        two: "Zo laat en je hebt nog ideeën? Indrukwekkend! 😮‍💨",
-                        three: "Hoop dat je niet aan het uitstellen bent! Pak die kans! 🥲"
+                        one: "Ik ga slapen, oh wacht toch niet 😴",
+                        two: "Ochtendgloren en jij hebt nog steeds ideeën? 😮‍💨",
+                        three: "Hopelijk zit je niet in de stress 🥲"
                     },
                 }
             }
