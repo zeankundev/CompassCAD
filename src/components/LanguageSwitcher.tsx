@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { GetLanguage, SetLanguage, supportedLanguages } from "./LanguageHandler";
+import { GetLanguage, locales, SetLanguage, supportedLanguages } from "./LanguageHandler";
 import styles from '../styles/home.module.css'
 import ReactCountryFlag from "react-country-flag";
 const LanguageSwitcher = () => {
@@ -13,7 +13,7 @@ const LanguageSwitcher = () => {
                 <ReactCountryFlag countryCode={
                     GetLanguage() === 'en' ? 'us' : GetLanguage()
                 } svg />
-                {GetLanguage().toUpperCase()}
+                {GetLanguage().toUpperCase()}&nbsp;{languagePicker ? '▴': '▾'}
             </div>
             {languagePicker && (
                 <div className={styles['language-switcher-dropdown']}>
@@ -26,7 +26,7 @@ const LanguageSwitcher = () => {
                             <ReactCountryFlag countryCode={
                                 language === 'en' ? 'us' : language
                             } svg />
-                            {language}
+                            {locales[language].name}
                         </div>
                     ))}
                 </div>

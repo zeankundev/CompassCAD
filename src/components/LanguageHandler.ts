@@ -37,6 +37,7 @@ export function getLocaleKey(path: string): string {
 }
 export const locales : any = {
     en: {
+        name: "English",
         general: {
             yes: "Yes",
             no: "No"
@@ -102,6 +103,7 @@ export const locales : any = {
         }
     },
     nl: {
+        name: "Nederlands",
         general: {
             yes: "Ja",
             no: "Nee"
