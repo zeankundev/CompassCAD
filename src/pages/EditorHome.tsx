@@ -294,6 +294,7 @@ When the user speaks in other languages than English, you must reply to them in 
 
     useEffect(() => {
         refreshHistory();
+        setDevice(getDeviceType());
     }, [])
 
     const parseMessageContent = (content: string) => {
@@ -475,12 +476,24 @@ When the user speaks in other languages than English, you must reply to them in 
                             ) : (
                                 <div className={styles['editor-recents-none']}>
                                     <img src={BluePrintIsFuckingSleeping} width={256}/>
-                                    <p>Well, you got nothing on your history list today. Make some drawings and your history will appear here.</p>
+                                    <p>{getLocaleKey('editor.home.nothingInHistory')}</p>
                                 </div>
                             )}
                             </div>
                     </div>
                     <ReusableFooter />
+                </div>
+            )}
+            {device == 'mobile' && (
+                <div className={styles['editor-home']}>
+                    <span>mobile in wip, sorry.</span>
+                    <h2>now what to do?</h2>
+                    <ul>
+                        <li>switch your phone to landscape mode</li>
+                        <li>use desktop mode if portrait (I am not sure lol)</li>
+                        <li>use your desktop :)</li>
+                    </ul>
+                    <span>if you did either that (except num 3), <b>refresh the page</b></span>
                 </div>
             )}
         </Fragment>

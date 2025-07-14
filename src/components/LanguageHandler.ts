@@ -67,6 +67,7 @@ export const locales : any = {
                 text1Sure: "Are you sure you want to clear the entire history? ",
                 boldTextWarning: "This action cannot be undone.",
                 viewInEditor: "View/Edit this design in editor",
+                nothingInHistory: "Well, you got nothing on your history list today. Make some drawings and your history will appear here.",
                 randomMesg: {
                     morning: {
                         one: "Hey there? Had some coffee? ☕",
@@ -133,6 +134,7 @@ export const locales : any = {
                 text1Sure: "Weet je zeker dat je de hele geschiedenis wilt wissen?",
                 boldTextWarning: "Deze actie kan niet ongedaan worden gemaakt.",
                 viewInEditor: "Bekijk/bewerk dit ontwerp in de editor",
+                nothingInHistory: "Je hebt niets in je geschiedenis list. Maken veel ontwerp en jouw geschiedenis hier verschijnen.",
                 randomMesg: {
                     morning: {
                         one: "Yo! Heb je al koffie gehad ofzo? ☕",
@@ -199,6 +201,7 @@ export const locales : any = {
                 text1Sure: "Yakin untuk menghapuskan seluruh riwayatmu? ",
                 boldTextWarning: "Aksi ini tidak bisa diundurkan!",
                 viewInEditor: "Lihat/sunting desain ini di editor",
+                nothingInHistory: "Kamu tidak mempunyai apa-apa di daftar riwayatmu. Buatlah desain dan riwayatmu akan muncul disini",
                 randomMesg: {
                     morning: {
                         one: "Hey! Lo udah ngopi belom? ☕",
