@@ -13,7 +13,7 @@ const LanguageSwitcher = () => {
                 <ReactCountryFlag countryCode={
                     GetLanguage() === 'en' ? 'us' : GetLanguage()
                 } svg />
-                {GetLanguage().toUpperCase()}&nbsp;{languagePicker ? '▴': '▾'}
+                {locales[GetLanguage()].name}&nbsp;{languagePicker ? '▴': '▾'}
             </div>
             {languagePicker && (
                 <div className={styles['language-switcher-dropdown']}>
