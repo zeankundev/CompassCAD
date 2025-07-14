@@ -333,6 +333,25 @@ function setContextMenuMode(mode) {
                 }
             ]
             break;
+        case 'compadd':
+            data = [
+                {
+                    icon: 'stop',
+                    name: 'Stop',
+                    void: () => renderer.setMode(renderer.MODES.SELECT)
+                },
+                {
+                    icon: 'undo',
+                    name: 'Undo',
+                    void: () => renderer.undo()
+                },
+                {
+                    icon: 'redo',
+                    name: 'Redo',
+                    void: () => renderer.redo()
+                }
+            ]
+            break;
         default:
             data = []
             break;

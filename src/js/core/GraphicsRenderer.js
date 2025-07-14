@@ -1426,6 +1426,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDPOINT:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addPoint');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1442,10 +1443,9 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 			}
 			break;
 		case this.MODES.ADDLINE:
-			if (e.which == 3)
-
-				this.cvn.css('cursor', 'crosshair');
+			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addLine');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1480,6 +1480,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDCIRCLE:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addCircle');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1510,6 +1511,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDARC:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addArc');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1551,6 +1553,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDRECTANGLE:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addRectangle');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1581,6 +1584,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDMEASURE:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addMeasure');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1611,6 +1615,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDLABEL:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addLabel');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1658,6 +1663,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDPICTURE:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addPicture');
+            setContextMenuMode('compadd');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.temporaryComponentType == null) {
 					this.temporaryComponentType = COMPONENT_TYPES.POINT;
@@ -1687,6 +1693,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.ADDPOLYGON:
 			this.cvn.css('cursor', 'crosshair');
 			this.tooltip = await this.getLocal('addPolygon');
+            setContextMenuMode('compadd');
 			let firstVector = {
 				x: 0,
 				y: 0
@@ -1759,6 +1766,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 		case this.MODES.NAVIGATE:
 			this.cvn.css('cursor', 'default');
 			this.tooltip = await this.getLocal('navigate');
+            setContextMenuMode('default');
 			if (action == this.MOUSEACTION.DOWN) {
 				this.camMoving = true;
 				this.xCNaught = this.getCursorXRaw();
@@ -1771,6 +1779,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 			break;
 		case this.MODES.MOVE:
 			this.cvn.css('cursor', 'default');
+            setContextMenuMode('default');
 			if (action == this.MOUSEACTION.MOVE) {
 				if (this.selectedComponent == null) {
 					// Cache cursor positions to avoid recalculation
@@ -1986,7 +1995,7 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 					if (component.type !== COMPONENT_TYPES.POINT &&
 						component.type !== COMPONENT_TYPES.LABEL &&
 						component.type !== COMPONENT_TYPES.PICTURE) {
-
+                        
 						const handles = this.getComponentHandles(component);
 						const handleSize = 5 / this.zoom;
 
@@ -2051,10 +2060,12 @@ GraphicsRenderer.prototype.performAction = async function (e, action) {
 
 				if (this.temporarySelectedComponent != null) {
 					if (this.selectedComponent === this.temporarySelectedComponent) {
+                        setContextMenuMode('default');
 						this.unselectComponent();
 						clearForm();
 						refreshHierarchy();
 					} else {
+                        setContextMenuMode('selection');
 						this.selectComponent(this.temporarySelectedComponent);
 						createFormForSelection();
 						refreshHierarchy();
@@ -2116,6 +2127,7 @@ GraphicsRenderer.prototype.deleteOnSelect = function () {
         refreshHierarchy();
         clearForm();
         sendCurrentEditorState();
+        setContextMenuMode('default');
         this.saveState();
         this.execute();
     }
@@ -2370,6 +2382,7 @@ GraphicsRenderer.prototype.moveComponent = function (index, x, y) {
 GraphicsRenderer.prototype.selectComponent = function (index) {
 	if (index != null) {
 		this.selectedComponent = index;
+        setContextMenuMode('selection');
 		if (this.mode === this.MODES.MOVE) {
 			this.previousColor = this.logicDisplay.components[index].color;
 			this.previousRadius = this.logicDisplay.components[index].radius;
@@ -2387,6 +2400,7 @@ GraphicsRenderer.prototype.unselectComponent = function (e) {
 			this.previousColor = null;
 			this.previousRadius = null;
 		}
+        setContextMenuMode('default');
 		this.selectedComponent = null;
 	}
 };
@@ -2423,6 +2437,7 @@ GraphicsRenderer.prototype.setMode = function (mode) {
 	else {
 		this.mode = mode;
 		refreshToolSelection(this.mode);
+        setContextMenuMode('default');
 	}
 };
 
