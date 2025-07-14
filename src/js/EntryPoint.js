@@ -41,6 +41,8 @@ $(document).ready(async() => {
 
     initCAD(renderer);
 
+    setContextMenuMode('default');
+
     resizeWin = () => {
         // Get the device pixel ratio
         const dpr = window.devicePixelRatio || 1;
