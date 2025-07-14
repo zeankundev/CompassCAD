@@ -2,9 +2,28 @@ import { Link } from 'react-router-dom'
 import CompassCADLogo from '../assets/general/logo.svg'
 import styles from '../styles/home.module.css'
 import LanguageSwitcher from './LanguageSwitcher'
+import { useState, useEffect } from 'react'
 const ReusableHeader = () => {
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 5) {
+                setScrolled(true);
+            } else {
+                setScrolled(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <div className={styles.header}>
+        <div className={`${styles.header} ${scrolled ? styles.scrolld : ''}`}>
             {!window.location.href.includes('localhost') && (
                 <div className={styles['header-beta']}>
                     <span>This version of CompassCAD Web is still in beta, so expect broken bugs</span>
@@ -26,7 +45,6 @@ const ReusableHeader = () => {
                     className={styles['header-rightside-group']}
                 >
                     <LanguageSwitcher />
-                    <p>b</p>
                 </div>
             </div>
         </div>
