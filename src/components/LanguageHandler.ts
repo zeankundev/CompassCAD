@@ -1,6 +1,6 @@
 import React, { JSX } from 'react';
 
-export const supportedLanguages = ['en', 'nl'];
+export const supportedLanguages = ['en', 'nl', 'id'];
 export const SetLanguage = (lang: string) => {
     const selectedLang = supportedLanguages.includes(lang) ? lang : 'en';
     localStorage.setItem('language', selectedLang);
@@ -163,6 +163,72 @@ export const locales : any = {
                         one: "Ik ga slapen, wacht even niet. Samen doorhalen! 😴",
                         two: "Zo laat en je hebt nog ideeën? Indrukwekkend! 😮‍💨",
                         three: "Hoop dat je niet aan het uitstellen bent! Pak die kans! 🥲"
+                    },
+                }
+            }
+        }
+    },
+    id: {
+        name: "Bahasa Indonesia",
+        general: {
+            yes: "Iya",
+            no: "Tidak"
+        },
+        home: {
+            header: "Buatlah mimpimu tanpa membuang waktu untuk belajar alat yang susah. Saatnya menyederhanakan desain \"bangunan impian\"",
+            descHero: "Bayangkan kalau CAD menjadi semudah alat canggih kita pakai seperti Notion atau Figma. Kecuali itu, kita bisa mengartikan ulang apa itu \"alat canggih\" untuk desain arsitektur sipil.",
+            downloadButton: "Unduh untuk",
+            inBrowserEditor: "Editor dalam browser",
+            header1Sub: "Software CAD yang betul-betulnya cepat. Gratis, tetapi mudah dan minimalis",
+            paragraph1Sub: "Dibuat dari hati seorang programmer biasa yang tidak bisa membeli komputer bagus dan software CAD, dibuat untukmu untuk dinikmati.",
+            littleNote1: "*Hanya ada di Windows dan Linux",
+            header2Sub: "Tidak ada versi desktop atau tidak bisa? Kita selalu punya versi web!",
+            littleNote2: "*Gambar tentu berbeda dari software sebenarnya"
+        },
+        editor: {
+            home: {
+                quickActions: "Aksi cepat",
+                createNew: "Buat baru",
+                importExisting: "Buka yang tersedia",
+                clearEntireHistory: "Hapus riwayat",
+                askBlueprint: "Tanya Blueprint",
+                recents: "Terbaru",
+                blueprintPlaceholder: "Tanya atau buat dengan Blueprint AI",
+                blueprintWarning: "Konten dibuat AI mungkin salah atau tidak akurat.",
+                clearHistoryModal: "Hapus riwayat",
+                text1Sure: "Yakin untuk menghapuskan seluruh riwayatmu? ",
+                boldTextWarning: "Aksi ini tidak bisa diundurkan!",
+                viewInEditor: "Lihat/sunting desain ini di editor",
+                randomMesg: {
+                    morning: {
+                        one: "Hey! Lo udah ngopi belom? ☕",
+                        two: "Pagi! Udah siap mulai hari? 🌄",
+                        three: "Pagi! Ayo liat lo brainstorm apa ini! 🤩"
+                    },
+                    noon: {
+                        one: "Lo lagi gabut ya? 🧐",
+                        two: "Maem siang dulu, baru balik kesini! 😋",
+                        three: "Semoga ga tidur! 😴"
+                    },
+                    afternoon: {
+                        one: "Masih bangun? Ayo desain! 🗺️",
+                        two: "Kreativitasnya dong, terusin! ✏️",
+                        three: "Waktunya perfect buat CAD! 📐"
+                    },
+                    evening: {
+                        one: "Malem malem masih kerja? 🧐",
+                        two: "Ada sesuatu sebelom deadline ga? ⌚",
+                        three: "Lo masih kuat aja. Terusin. 💪"
+                    },
+                    night: {
+                        one: "Bukannya lo harus tidur? 🛌",
+                        two: "Ga sengaja brainstorm? 😵‍💫",
+                        three: "Beuh, kafein lo ga pernah turun sama sekali ☕"
+                    },
+                    dawn: {
+                        one: "Gue mau tidur, eh gajadi 😴",
+                        two: "Dini hari/subuh dan lo aja masih ada ide? 😮‍💨",
+                        three: "Semoga ga ditekan deadline 🥲"
                     },
                 }
             }
