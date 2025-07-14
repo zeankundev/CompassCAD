@@ -39,6 +39,44 @@
     user-select: none;
     border: 0.5px solid var(--outline);
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+.language-switcher-preview img {
+    margin-right: 10px;
+}
+.language-switcher-dropdown {
+    background-color: var(--primary);
+    padding: 10px;
+    user-select: none;
+    border: 0.5px solid var(--outline);
+    border-radius: 10px;
+    position: absolute;
+    right: 40px;
+    margin-top: 10px;
+    backdrop-filter: blur(10px);
+}
+.language-dropdown-choice {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+.language-dropdown-choice.end {
+    margin-bottom: 0px;
+}
+.language-dropdown-choice.language-active:hover {
+    background-color: var(--tertiary);
+}
+.language-dropdown-choice:hover {
+    background-color: var(--secondary);
+}
+.language-dropdown-choice.language-active {
+    background-color: var(--secondary);
+}
+.language-dropdown-choice img {
+    margin-right: 10px;
 }
 .footer {
     margin-top: 50px;
