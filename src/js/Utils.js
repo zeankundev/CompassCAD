@@ -309,6 +309,7 @@ function setContextMenuMode(mode) {
 function assembleContextMenu(data) {
     data.forEach((context) => {
         const div = document.createElement('div');
+        div.className = 'contextmenu-selection';
         div.innerHTML = `${context.name}`;
         div.onclick = () => {
             if (context.void != null) {
