@@ -520,7 +520,10 @@ const Editor = () => {
                     <div className={styles['inspector-content']}>
                         {inspectorState == InspectorTabState.Inspector && (
                             renderer.current?.selectedComponent == null && (
-                                <div className={styles['inspector-nothing']}></div>
+                                <div className={styles['inspector-nothing']}>
+                                    <img src={Unselected} width={64} />
+                                    <span>Select a component then your component details should appear here.</span>
+                                </div>
                             )
                         )}
                     </div>

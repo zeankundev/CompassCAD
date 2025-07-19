@@ -305,6 +305,18 @@
 }
 .inspector-content {
     height: calc(100% - 40px);
+    display: flex;
+}
+.inspector-nothing {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.inspector-nothing span {
+    text-align: center;
+    color: #3a3a3a;
+    max-width: 80%;
 }
 .mobile-toolbar {
     position: absolute;
