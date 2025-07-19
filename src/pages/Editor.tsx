@@ -1,5 +1,5 @@
 // Imports: ignore why the imports will be too big :)
-import { useRef, useEffect, useState, Fragment } from "react";
+import React, { useRef, useEffect, useState, Fragment } from "react";
 import styles from '../styles/editor.module.css'
 import { GraphicsRenderer, InitializeInstance } from "../engine/GraphicsRenderer";
 import { getDeviceType, DeviceType } from "../components/GetDevice";
@@ -25,6 +25,8 @@ import UndoSymbol from '../assets/undo.svg'
 import RedoSymbol from '../assets/redo.svg'
 import ExportSymbol from '../assets/export.svg'
 import CopyLink from '../assets/copylink.svg'
+import CollapseRight from '../assets/collapse-right.svg'
+import Unselected from '../assets/unselected-state.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
@@ -35,6 +37,11 @@ export interface HistoryEntry {
     type: string;
     preview: string;
     data: string;
+}
+
+enum InspectorTabState {
+    Inspector,
+    Hierarchy
 }
 
 const Editor = () => {
@@ -52,6 +59,8 @@ const Editor = () => {
     const [exportDialog, setExportDialog] = useState(false);
     const [zoom, setZoom] = useState<number>(1);
     const [isLoading, setLoading] = useState<boolean>(true);
+    const [showInspector, setShowInspector] = useState<boolean>(true);
+    const [inspectorState, setInspectorState] = useState<InspectorTabState>(InspectorTabState.Inspector);
     useEffect(() => {
         if (canvas.current && !renderer.current) {
             setDevice(getDeviceType());
@@ -395,100 +404,128 @@ const Editor = () => {
         )}
         {/* Toolbar */}
         {device == 'desktop' && (
-            <div className={styles.toolbar}>
-                <ToolbarButton
-                    svgImage={Select}
-                    title="Select (q)"
-                    isActive={tool == RendererTypes.NavigationTypes.Select}
-                    keyCode={RendererTypes.KeyCodes.Q}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Select)}
-                />
-                <ToolbarButton
-                    svgImage={Navigate}
-                    title="Navigate (w)"
-                    isActive={tool == RendererTypes.NavigationTypes.Navigate}
-                    keyCode={RendererTypes.KeyCodes.W}
-                    alternativeKeyCode={RendererTypes.KeyCodes.ESC}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Navigate)}
-                />
-                <ToolbarButton
-                    svgImage={MoveSymbol}
-                    title="Move (e)"
-                    isActive={tool == RendererTypes.NavigationTypes.Move}
-                    keyCode={RendererTypes.KeyCodes.E}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Move)}
-                />
-                <ToolbarButton
-                    svgImage={DeleteSymbol}
-                    title="Delete (t)"
-                    isActive={tool == RendererTypes.NavigationTypes.Delete}
-                    keyCode={RendererTypes.KeyCodes.T}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Delete)}
-                />
-                <ToolbarButton
-                    svgImage={PointSymbol}
-                    title="Add Point (a)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddPoint}
-                    keyCode={RendererTypes.KeyCodes.A}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPoint)}
-                />
-                <ToolbarButton
-                    svgImage={LineSymbol}
-                    title="Add Line (s)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddLine}
-                    keyCode={RendererTypes.KeyCodes.S}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLine)}
-                />
-                <ToolbarButton
-                    svgImage={CircleSymbol}
-                    title="Add Circle (d)"
-                    keyCode={RendererTypes.KeyCodes.D}
-                    isActive={tool == RendererTypes.NavigationTypes.AddCircle}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddCircle)}
-                />
-                <ToolbarButton
-                    svgImage={ArcSymbol}
-                    title="Add Arc (f)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddArc}
-                    keyCode={RendererTypes.KeyCodes.F}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddArc)}
-                />
-                <ToolbarButton
-                    svgImage={RectSymbol}
-                    title="Add Rectangle (g)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddRectangle}
-                    keyCode={RendererTypes.KeyCodes.G}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddRectangle)}
-                />
-                <ToolbarButton
-                    svgImage={PicSymbol}
-                    title="Add Image (l)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddPicture}
-                    keyCode={RendererTypes.KeyCodes.L}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
-                />
-                <ToolbarButton 
-                    svgImage={PicSymbol}
-                    title="Add Polygon (j)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddPolygon}
-                    keyCode={RendererTypes.KeyCodes.J}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPolygon)}
-                />
-                <ToolbarButton
-                    svgImage={LabelSymbol}
-                    title="Add Text (h)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddLabel}
-                    keyCode={RendererTypes.KeyCodes.H}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLabel)}
-                />
-                <ToolbarButton
-                    svgImage={RulerSymbol}
-                    title="Measure (z)"
-                    isActive={tool == RendererTypes.NavigationTypes.AddMeasure}
-                    keyCode={RendererTypes.KeyCodes.Z}
-                    func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddMeasure)}
-                />
-            </div>
+            <React.Fragment>
+                <div className={styles.toolbar}>
+                    <ToolbarButton
+                        svgImage={Select}
+                        title="Select (q)"
+                        isActive={tool == RendererTypes.NavigationTypes.Select}
+                        keyCode={RendererTypes.KeyCodes.Q}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Select)}
+                    />
+                    <ToolbarButton
+                        svgImage={Navigate}
+                        title="Navigate (w)"
+                        isActive={tool == RendererTypes.NavigationTypes.Navigate}
+                        keyCode={RendererTypes.KeyCodes.W}
+                        alternativeKeyCode={RendererTypes.KeyCodes.ESC}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Navigate)}
+                    />
+                    <ToolbarButton
+                        svgImage={MoveSymbol}
+                        title="Move (e)"
+                        isActive={tool == RendererTypes.NavigationTypes.Move}
+                        keyCode={RendererTypes.KeyCodes.E}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Move)}
+                    />
+                    <ToolbarButton
+                        svgImage={DeleteSymbol}
+                        title="Delete (t)"
+                        isActive={tool == RendererTypes.NavigationTypes.Delete}
+                        keyCode={RendererTypes.KeyCodes.T}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Delete)}
+                    />
+                    <ToolbarButton
+                        svgImage={PointSymbol}
+                        title="Add Point (a)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddPoint}
+                        keyCode={RendererTypes.KeyCodes.A}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPoint)}
+                    />
+                    <ToolbarButton
+                        svgImage={LineSymbol}
+                        title="Add Line (s)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddLine}
+                        keyCode={RendererTypes.KeyCodes.S}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLine)}
+                    />
+                    <ToolbarButton
+                        svgImage={CircleSymbol}
+                        title="Add Circle (d)"
+                        keyCode={RendererTypes.KeyCodes.D}
+                        isActive={tool == RendererTypes.NavigationTypes.AddCircle}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddCircle)}
+                    />
+                    <ToolbarButton
+                        svgImage={ArcSymbol}
+                        title="Add Arc (f)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddArc}
+                        keyCode={RendererTypes.KeyCodes.F}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddArc)}
+                    />
+                    <ToolbarButton
+                        svgImage={RectSymbol}
+                        title="Add Rectangle (g)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddRectangle}
+                        keyCode={RendererTypes.KeyCodes.G}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddRectangle)}
+                    />
+                    <ToolbarButton
+                        svgImage={PicSymbol}
+                        title="Add Image (l)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddPicture}
+                        keyCode={RendererTypes.KeyCodes.L}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
+                    />
+                    <ToolbarButton 
+                        svgImage={PicSymbol}
+                        title="Add Polygon (j)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddPolygon}
+                        keyCode={RendererTypes.KeyCodes.J}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPolygon)}
+                    />
+                    <ToolbarButton
+                        svgImage={LabelSymbol}
+                        title="Add Text (h)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddLabel}
+                        keyCode={RendererTypes.KeyCodes.H}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLabel)}
+                    />
+                    <ToolbarButton
+                        svgImage={RulerSymbol}
+                        title="Measure (z)"
+                        isActive={tool == RendererTypes.NavigationTypes.AddMeasure}
+                        keyCode={RendererTypes.KeyCodes.Z}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddMeasure)}
+                    />
+                </div>
+                <div className={`${styles.inspector} ${showInspector ? '' : styles.hidden}`}>
+                    <div className={styles['inspector-header']}>
+                        {showInspector == false && (
+                            <button 
+                                title="Expand" 
+                                onClick={() => setShowInspector(true)}
+                            >
+                                <img width={20} src={CollapseRight} style={{transform: 'rotate(180deg)'}} />
+                            </button>
+                        )}
+                        <h2>Inspector</h2>
+                        <button 
+                            title="Collapse to Right" 
+                            onClick={() => setShowInspector(false)}
+                        >
+                            <img width={20} src={CollapseRight} />
+                        </button>
+                    </div>
+                    <div className={styles['inspector-content']}>
+                        {inspectorState == InspectorTabState.Inspector && (
+                            renderer.current?.selectedComponent == null && (
+                                <div className={styles['inspector-nothing']}></div>
+                            )
+                        )}
+                    </div>
+                </div>
+            </React.Fragment>
         )}
         {device == 'mobile' && (
             <div className={styles['mobile-toolbar']}>
