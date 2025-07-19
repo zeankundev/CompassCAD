@@ -2,10 +2,6 @@
     font-family: 'OneUISans';
     src: url('../OneUISans.ttf') format('truetype');
 }
-@font-face {
-    font-family: 'SECEmojis';
-    src: url('../SamsungColorEmoji.ttf') format('truetype');
-}
 :root {
     --primary-background: #1d1d1d;
     --primary: rgba(29, 29, 29, 0.85);
