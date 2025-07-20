@@ -2436,6 +2436,8 @@ GraphicsRenderer.prototype.setMode = function (mode) {
 		this.mode = this.MODES.NAVIGATE;
 	else {
 		this.mode = mode;
+        this.temporaryVectors = [];
+        this.temporaryVectorIndex = null;
 		refreshToolSelection(this.mode);
         setContextMenuMode('default');
 	}
