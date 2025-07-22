@@ -1,5 +1,7 @@
 const { ipcRenderer } = require('electron');
 let storedIndex = -1;
+let draggedIndex = null;
+const hierarchyList = document.getElementById('hierarchy-list');
 function callPrompt(message) {
     return new Promise((resolve, reject) => {
         const promptContainer = document.getElementById('prompt-container');
@@ -136,10 +138,96 @@ const openInspectorTab = (tabName) => {
     }
 }
 openInspectorTab('properties');
+const handleDragStart = (e) => {
+    // Ensure draggedIndex is set correctly from the element's dataset
+    draggedIndex = parseInt(e.target.dataset.index);
+    e.dataTransfer.effectAllowed = 'move';
+    e.target.classList.add('dragging');
+    console.log('[dragger] Drag started for index:', draggedIndex);
+};
+
+const handleDragOver = (e) => {
+    // console.log('[dragger] drag over now'); // Keep for debugging if needed
+    e.preventDefault(); // Crucial to allow dropping
+    e.dataTransfer.dropEffect = 'move';
+
+    const targetElement = e.target.closest('.hierarchy-element');
+
+    // Only proceed if there's a valid target element within the hierarchy list
+    // and it's not the element being dragged itself.
+    if (targetElement && targetElement !== e.target && targetElement.parentElement === hierarchyList) {
+        // Remove existing drag-over classes from all elements
+        Array.from(hierarchyList.children).forEach(child => child.classList.remove('drag-over'));
+
+        const targetIndex = parseInt(targetElement.dataset.index);
+        // Add visual feedback if the target is different from the dragged item's current position
+        if (targetIndex !== draggedIndex) {
+            targetElement.classList.add('drag-over');
+        }
+    } else {
+        // If not hovering over a valid target, remove all drag-over classes
+        Array.from(hierarchyList.children).forEach(child => child.classList.remove('drag-over'));
+    }
+};
+
+const handleDragLeave = (e) => {
+    const targetElement = e.target.closest('.hierarchy-element');
+    if (targetElement) {
+        targetElement.classList.remove('drag-over');
+    }
+};
+
+const handleDrop = (e) => {
+    console.log('[dragger] dropped');
+    e.preventDefault(); // Prevent default browser drop behavior
+
+    const targetElement = e.target.closest('.hierarchy-element');
+
+    // Remove all drag-over highlighting regardless of drop success
+    Array.from(hierarchyList.children).forEach(child => child.classList.remove('drag-over'));
+
+    // Check if a valid target element exists and a drag operation was active
+    if (targetElement && targetElement.parentElement === hierarchyList && draggedIndex !== null) {
+        const targetIndex = parseInt(targetElement.dataset.index);
+
+        // If dropping onto the same element, do nothing
+        if (targetIndex === draggedIndex) {
+            console.log('[dragger] Dropped on same element, no reorder.');
+            draggedIndex = null; // Reset draggedIndex even if no reorder happens
+            return;
+        }
+
+        console.log(`[dragger] Moving from index ${draggedIndex} to ${targetIndex}`);
+
+        // Perform the reordering in the components array
+        const [draggedComponent] = renderer.logicDisplay.components.splice(draggedIndex, 1);
+        renderer.logicDisplay.components.splice(targetIndex, 0, draggedComponent);
+
+        // Re-render the hierarchy to reflect the new order and updated indices
+        refreshHierarchy();
+
+        // Select the reordered component and refresh its form
+        renderer.selectComponent(targetIndex);
+        createFormForSelection();
+    } else {
+        console.log('[dragger] Drop was invalid (no target or dragged item not set).');
+    }
+
+    // Always reset draggedIndex after a drop attempt
+    draggedIndex = null;
+};
+
+const handleDragEnd = (e) => {
+    e.target.classList.remove('dragging');
+    // Ensure this also resets the global variable that stores the dragged item's index
+    draggedIndex = null;
+    // Clean up any lingering drag-over classes
+    Array.from(hierarchyList.children).forEach(child => child.classList.remove('drag-over'));
+    console.log('[dragger] Drag ended, draggedIndex reset to null.');
+};
 const refreshHierarchy = () => {
     const search = document.getElementById('hierarchy-search').value;
-    const hierarchy = document.getElementById('hierarchy-list');
-    hierarchy.innerHTML = '';
+    hierarchyList.innerHTML = '';
     let found = false;
     renderer.logicDisplay.components.forEach((component, index) => {
         if (component.name.toLowerCase().includes(search.toLowerCase())) {
@@ -147,6 +235,13 @@ const refreshHierarchy = () => {
             const element = document.createElement('div');
             element.className = `hierarchy-element ${renderer.selectedComponent == index ? 'selected' : ''}`;
             element.innerHTML = `<img src="../../assets/icons/components/${component.type}.svg">&nbsp;${component.name}`;
+            element.draggable = true;
+            element.dataset.index = index;
+            element.addEventListener('dragstart', handleDragStart);
+            element.addEventListener('dragover', handleDragOver);
+            element.addEventListener('dragleave', handleDragLeave);
+            element.addEventListener('drop', handleDrop);
+            element.addEventListener('dragend', handleDragEnd);
             element.onclick = () => {
                 renderer.mode = renderer.MODES.SELECT;
                 refreshToolSelection(renderer.MODES.SELECT);
@@ -215,7 +310,7 @@ const refreshHierarchy = () => {
                     requestAnimationFrame(animate);
                 }
             }
-            hierarchy.appendChild(element);
+            hierarchyList.appendChild(element);
         }
     });
 }
