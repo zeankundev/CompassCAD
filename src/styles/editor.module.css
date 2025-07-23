@@ -318,6 +318,28 @@
     color: #3a3a3a;
     max-width: 80%;
 }
+.inspector-dynamic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.input-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.input-container input[type="number"],
+.input-container input[type="text"] {
+    -webkit-appearance: none;
+    font-family: var(--font);
+    width: 25%;
+    border: none;
+    padding: 10px;
+    background-color: var(--secondary);
+    color: var(--text);
+    border-radius: 10px;
+}
 .mobile-toolbar {
     position: absolute;
     bottom: 20px;
