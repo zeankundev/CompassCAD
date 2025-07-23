@@ -89,24 +89,35 @@ const Editor = () => {
         };
     }, []);
     useEffect(() => {
-        let animationFrameId: number;
+        let animationFrameId: number | null = null; // Initialize with null
 
-        const checkComponent = () => {
+        const updateComponentState = () => {
             if (renderer.current?.logicDisplay && renderer.current.selectedComponent !== null) {
                 const currentComponent = renderer.current.logicDisplay.components[renderer.current.selectedComponent];
                 setComponent(currentComponent || null);
-                animationFrameId = requestAnimationFrame(checkComponent);
             } else {
                 setComponent(null);
             }
         };
 
-        checkComponent();
+        // Register the callback with the engine
+        if (renderer.current) {
+            renderer.current.onComponentChangeCallback = updateComponentState;
+        }
+
+        // Initial check when the component mounts or selectedComponent changes
+        updateComponentState();
 
         return () => {
-            cancelAnimationFrame(animationFrameId);
+            // Clean up the callback when the component unmounts
+            if (renderer.current) {
+                renderer.current.onComponentChangeCallback = null;
+            }
+            if (animationFrameId !== null) { // Only cancel if it was assigned
+                cancelAnimationFrame(animationFrameId);
+            }
         };
-    }, [renderer.current?.selectedComponent]);
+    }, [renderer.current]);
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
@@ -519,7 +530,7 @@ const Editor = () => {
                     </div>
                     <div className={styles['inspector-content']}>
                         {inspectorState == InspectorTabState.Inspector && (
-                            renderer.current?.selectedComponent == null && (
+                            component == null && (
                                 <div className={styles['inspector-nothing']}>
                                     <img src={Unselected} width={64} />
                                     <span>Select a component then your component details should appear here.</span>

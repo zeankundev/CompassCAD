@@ -1169,6 +1169,7 @@ export class GraphicsRenderer {
         }
     }
     selectComponent(index: number) {
+        this.selectedComponent = index;
         if (index != null) {
             this.selectedComponent = index;
             if (this.mode === this.modes.Move) {
@@ -1409,6 +1410,13 @@ export class GraphicsRenderer {
             // Update the display with the next state
             this.logicDisplay?.importJSON(JSON.parse(state != null ? state : '[]'), this.logicDisplay.components);
             this.update(); // Re-render the canvas
+        }
+    }
+    public onComponentChangeCallback: (() => void) | null = null;
+
+    private notifyComponentChange() {
+        if (this.onComponentChangeCallback) {
+            this.onComponentChangeCallback();
         }
     }
     performAction(e: MouseEvent, action: number) {
@@ -1794,7 +1802,7 @@ export class GraphicsRenderer {
                     } else {
                         // Get the selected component
                         const component = this.logicDisplay?.components[this.selectedComponent];
-                        
+
                         // If actively dragging a handle
                         if (this.dragHandle) {
                             // Get cursor position in world coordinates
@@ -1810,90 +1818,127 @@ export class GraphicsRenderer {
                             } else {
                                 // Allow free movement when snap is disabled
                                 localX = this.getCursorXLocal();
-                                localY = this.getCursorYLocal(); 
+                                localY = this.getCursorYLocal();
                             }
-                            
+
                             // Update component based on type
                             if (component) {
+                                let componentModified = false; // Flag to check if component was modified
                                 switch (component.type) {
                                     case componentTypes.line:
                                     case componentTypes.measure:
                                     case componentTypes.circle:
+                                        const lineComponent = component as Line;
                                         if (this.dragHandle === 'start') {
-                                            const lineComponent = component as Line;
-                                            lineComponent.x1 = localX;
-                                            lineComponent.y1 = localY;
+                                            if (lineComponent.x1 !== localX || lineComponent.y1 !== localY) {
+                                                lineComponent.x1 = localX;
+                                                lineComponent.y1 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'end') {
-                                            const lineComponent = component as Line;
-                                            lineComponent.x2 = localX; 
-                                            lineComponent.y2 = localY;
+                                            if (lineComponent.x2 !== localX || lineComponent.y2 !== localY) {
+                                                lineComponent.x2 = localX;
+                                                lineComponent.y2 = localY;
+                                                componentModified = true;
+                                            }
                                         }
                                         break;
                                     case componentTypes.rectangle:
                                         const rectComponent = component as Rectangle;
                                         if (this.dragHandle === 'start') {
                                             // NW resize
-                                            rectComponent.x1 = localX;
-                                            rectComponent.y1 = localY;
+                                            if (rectComponent.x1 !== localX || rectComponent.y1 !== localY) {
+                                                rectComponent.x1 = localX;
+                                                rectComponent.y1 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'top-right') {
-                                            // NE resize 
-                                            rectComponent.x2 = localX;
-                                            rectComponent.y1 = localY;
+                                            // NE resize
+                                            if (rectComponent.x2 !== localX || rectComponent.y1 !== localY) {
+                                                rectComponent.x2 = localX;
+                                                rectComponent.y1 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'bottom-left') {
                                             // SW resize
-                                            rectComponent.x1 = localX;
-                                            rectComponent.y2 = localY;
+                                            if (rectComponent.x1 !== localX || rectComponent.y2 !== localY) {
+                                                rectComponent.x1 = localX;
+                                                rectComponent.y2 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'bottom-right') {
                                             // SE resize
-                                            rectComponent.x2 = localX;
-                                            rectComponent.y2 = localY;
+                                            if (rectComponent.x2 !== localX || rectComponent.y2 !== localY) {
+                                                rectComponent.x2 = localX;
+                                                rectComponent.y2 = localY;
+                                                componentModified = true;
+                                            }
                                         }
                                         break;
                                     case componentTypes.arc:
                                         const arcComponent = component as Arc;
                                         if (this.dragHandle === 'start') {
-                                            arcComponent.x1 = localX;
-                                            arcComponent.y1 = localY;
+                                            if (arcComponent.x1 !== localX || arcComponent.y1 !== localY) {
+                                                arcComponent.x1 = localX;
+                                                arcComponent.y1 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'mid') {
-                                            arcComponent.x2 = localX;
-                                            arcComponent.y2 = localY;
+                                            if (arcComponent.x2 !== localX || arcComponent.y2 !== localY) {
+                                                arcComponent.x2 = localX;
+                                                arcComponent.y2 = localY;
+                                                componentModified = true;
+                                            }
                                         } else if (this.dragHandle === 'end') {
-                                            arcComponent.x3 = localX;
-                                            arcComponent.y3 = localY;
+                                            if (arcComponent.x3 !== localX || arcComponent.y3 !== localY) {
+                                                arcComponent.x3 = localX;
+                                                arcComponent.y3 = localY;
+                                                componentModified = true;
+                                            }
                                         }
                                         break;
                                     case componentTypes.point:
                                     case componentTypes.label:
                                     case componentTypes.picture:
                                         const pointComponent = component as Point;
-                                        pointComponent.x = localX;
-                                        pointComponent.y = localY;
+                                        if (pointComponent.x !== localX || pointComponent.y !== localY) {
+                                            pointComponent.x = localX;
+                                            pointComponent.y = localY;
+                                            componentModified = true;
+                                        }
                                         break;
                                     case componentTypes.polygon:
                                         const poly = component as Polygon;
                                         if (this.dragHandle && this.dragHandle.startsWith('handle-')) {
                                             const handleIndex = parseInt(this.dragHandle.split('-')[1]);
                                             if (handleIndex >= 0 && handleIndex < poly.vectors.length) {
-                                                poly.vectors[handleIndex].x = localX;
-                                                poly.vectors[handleIndex].y = localY;
+                                                if (poly.vectors[handleIndex].x !== localX || poly.vectors[handleIndex].y !== localY) {
+                                                    poly.vectors[handleIndex].x = localX;
+                                                    poly.vectors[handleIndex].y = localY;
+                                                    componentModified = true;
+                                                }
                                             }
                                         }
                                         break;
                                 }
-                                this.saveState();
+                                if (componentModified) {
+                                    this.saveState();
+                                    // Notify the client that the component has changed
+                                    this.notifyComponentChange();
+                                }
                             }
                         } else {
-                            // Enhanced handle detection
+                            // Enhanced handle detection (rest of this block remains the same)
                             const handleSize = 5 / this.zoom; // Consistent handle size in world units
                             const handles = component ? this.getComponentHandles(component) : [];
                             let isOverHandle = false;
-                            
+
                             for (const handle of handles) {
                                 // Calculate distance in world coordinates
                                 const dx = this.getCursorXLocal() - handle.x;
                                 const dy = this.getCursorYLocal() - handle.y;
                                 const distSquared = dx * dx + dy * dy;
-                                
+
                                 // Check if cursor is over handle using world coordinates
                                 if (distSquared < (handleSize * handleSize)) {
                                     this.displayRef!.style.cursor = handle.cursor;
@@ -1901,7 +1946,7 @@ export class GraphicsRenderer {
                                     break;
                                 }
                             }
-                            
+
                             if (!isOverHandle) {
                                 this.displayRef!.style.cursor = 'default';
                             }
@@ -1912,10 +1957,10 @@ export class GraphicsRenderer {
                     if (this.selectedComponent !== null) {
                         console.log('[renderer] selected component', this.selectedComponent)
                         const component = this.logicDisplay?.components[this.selectedComponent];
-                        if (component && component.type !== componentTypes.point && 
+                        if (component && component.type !== componentTypes.point &&
                             component.type !== componentTypes.label &&
                             component.type !== componentTypes.picture) {
-                            
+
                             const handles = component ? this.getComponentHandles(component) : [];
                             const handleSize = 5 / this.zoom;
 
@@ -1924,29 +1969,38 @@ export class GraphicsRenderer {
                                 const dx = this.getCursorXLocal() - handle.x;
                                 const dy = this.getCursorYLocal() - handle.y;
                                 const distSquared = dx * dx + dy * dy;
-                                
+
                                 if (distSquared < (handleSize * handleSize)) {
                                     this.dragHandle = handle.id;
+                                    // No need to notify here, as mouse.Move will handle updates
                                     return;
                                 }
                             }
                         }
                     }
-                    
+
                     if (this.temporarySelectedComponent != null) {
                         console.log('[renderer] selected component', this.temporarySelectedComponent)
                         if (this.selectedComponent === this.temporarySelectedComponent) {
                             this.unselectComponent();
                             this.handles = [];
                         } else {
+                            this.selectedComponent = this.temporarySelectedComponent;
                             this.selectComponent(this.temporarySelectedComponent);
                         }
+                        // In case a new component is selected or unselected
+                        this.notifyComponentChange();
                     } else {
-                        this.unselectComponent();
+                        if (this.selectedComponent !== null) { // Only unselect if something was selected
+                            this.unselectComponent();
+                            this.notifyComponentChange(); // Notify if selection is cleared
+                        }
                     }
                 } else if (action == this.mouseAction.Up) {
                     this.dragHandle = null;
                     this.displayRef!.style.cursor = 'default';
+                    // After releasing the drag, ensure the state is up-to-date
+                    this.notifyComponentChange();
                 }
 
                 if (this.selectedComponent !== null) {
@@ -1963,7 +2017,7 @@ export class GraphicsRenderer {
                 }
 
                 this.tooltip = "Select (click to select/deselect)";
-                break
+                break;
         }
     }
     setZoom(zoomFactor: number) {
