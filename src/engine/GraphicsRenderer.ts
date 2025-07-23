@@ -863,7 +863,7 @@ export class GraphicsRenderer {
                 y += localDiff;
             }
 
-            this.context.fillStyle = color + this._num2hex(opacity!);
+            this.context.fillStyle = color + this._num2hex(opacity);
             this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 
             var maxLength = 24; // 24 Characters per row

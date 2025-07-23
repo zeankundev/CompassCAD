@@ -40,6 +40,7 @@ import ExportSymbol from '../assets/export.svg'
 import CopyLink from '../assets/copylink.svg'
 import CollapseRight from '../assets/collapse-right.svg'
 import Unselected from '../assets/unselected-state.svg'
+import Check from '../assets/check.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
@@ -680,6 +681,16 @@ const Editor = () => {
                                                 type="number"
                                                 value={component.radius}
                                                 onChange={(e) => handleChange('radius', parseFloat(e.target.value))}
+                                            />
+                                        </div>
+                                    )}
+                                    {!(component instanceof Polygon) && (
+                                        <div className={styles['input-container']}>
+                                            <label>Color</label>
+                                            <input
+                                                type="color"
+                                                value={component.color}
+                                                onChange={(e) => handleChange('color', e.target.value)}
                                             />
                                         </div>
                                     )}
