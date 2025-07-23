@@ -191,11 +191,8 @@ const Editor = () => {
     const handleChange = (key: string, value: string | boolean | number): void => {
         setComponent((prevComponent) => {
             if (!prevComponent) return null;
-            const ComponentConstructor = prevComponent.constructor as new () => AnyComponent;
-            const newComponent = Object.assign(new ComponentConstructor(), prevComponent);
-            (newComponent as Record<string, any>)[key] = value;
             const updatedComponent = Object.create(Object.getPrototypeOf(prevComponent));
-            Object.assign(updatedComponent, prevComponent); 
+            Object.assign(updatedComponent, prevComponent);
             (updatedComponent as Record<string, any>)[key] = value;
             const finalComponent = updatedComponent as AnyComponent;
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
@@ -209,43 +206,48 @@ const Editor = () => {
     const handlePositionChange = (posKey: 'x' | 'y' | 'x1' | 'y1' | 'x2' | 'y2' | 'x3' | 'y3', value: string): void => {
         setComponent((prevComponent) => {
             if (!prevComponent) return null;
-            const newComponent = { ...prevComponent, [posKey]: parseFloat(value) } as AnyComponent;
+            const updatedComponent = Object.create(Object.getPrototypeOf(prevComponent));
+            Object.assign(updatedComponent, prevComponent);
+            (updatedComponent as Record<string, any>)[posKey] = parseFloat(value);
+            const finalComponent = updatedComponent as AnyComponent;
 
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
-                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = newComponent;
+                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = finalComponent;
                 renderer.current.saveState();
             }
-            return newComponent;
+            return finalComponent;
         });
     };
 
+    // handleSizeChange needs adjustment to correctly update x2/y2 based on width/height changes
     const handleSizeChange = (type: 'width' | 'height', value: string): void => {
         setComponent((prevComponent) => {
             if (!prevComponent) return null;
-            // Create a mutable copy to update x2/y2
-            const newComponent = { ...prevComponent } as AnyComponent;
+            const updatedComponent = Object.create(Object.getPrototypeOf(prevComponent));
+            Object.assign(updatedComponent, prevComponent); // Shallow copy all properties
+
             const parsedValue = parseFloat(value);
 
-            // Apply changes only if it's a Line-based component with x1/y1
-            if ('x1' in newComponent && 'y1' in newComponent) {
+            // This logic is crucial: it modifies x2 or y2 based on width/height
+            // This ensures the underlying component properties are correctly updated.
+            if ('x1' in updatedComponent && 'y1' in updatedComponent &&
+                typeof updatedComponent.x1 === 'number' && typeof updatedComponent.y1 === 'number' &&
+                typeof (updatedComponent as any).x2 === 'number' && typeof (updatedComponent as any).y2 === 'number'
+            ) {
                 if (type === 'width') {
-                    // Check if x1 and x2 exist and are numbers before calculating
-                    if (typeof newComponent.x1 === 'number' && typeof newComponent.x2 === 'number') {
-                        newComponent.x2 = newComponent.x1 + parsedValue;
-                    }
+                    (updatedComponent as any).x2 = updatedComponent.x1 + parsedValue;
                 } else if (type === 'height') {
-                    // Check if y1 and y2 exist and are numbers before calculating
-                    if (typeof newComponent.y1 === 'number' && typeof newComponent.y2 === 'number') {
-                        newComponent.y2 = newComponent.y1 + parsedValue;
-                    }
+                    (updatedComponent as any).y2 = updatedComponent.y1 + parsedValue;
                 }
             }
 
+            const finalComponent = updatedComponent as AnyComponent;
+
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
-                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = newComponent;
+                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = finalComponent;
                 renderer.current.saveState();
             }
-            return newComponent;
+            return finalComponent;
         });
     };
     const takeSnapshot = async (data: Component[], name: string, type: DesignType): Promise<void> => {
@@ -662,7 +664,7 @@ const Editor = () => {
                                 </div>
                             ) : (
                                 <div className={styles['inspector-dynamic-form']}>
-                                    {/* --- Explicitly Rendered Base Properties (from previous solution) --- */}
+                                    {/* Base Properties (Active, Type, Radius, Opacity) - Keep as they are likely fine */}
                                     <div className={styles['input-container']}>
                                         <label>Active</label>
                                         <input
@@ -671,15 +673,7 @@ const Editor = () => {
                                             onChange={(e) => handleChange('active', e.target.checked)}
                                         />
                                     </div>
-                                    <div className={styles['input-container']}>
-                                        <label>Color</label>
-                                        <input
-                                            type="color"
-                                            value={component.color}
-                                            onChange={(e) => handleChange('color', e.target.value)}
-                                        />
-                                    </div>
-                                    {'radius' in component && ( // Check if radius exists for base component, or derived like Polygon
+                                    {'radius' in component && (
                                         <div className={styles['input-container']}>
                                             <label>Radius</label>
                                             <input
@@ -694,121 +688,87 @@ const Editor = () => {
                                         <input
                                             type="range"
                                             min="0"
-                                            step="1"
                                             max="100"
                                             value={component.opacity}
                                             onChange={(e) => handleChange('opacity', parseInt(e.target.value))}
                                         />
                                     </div>
 
-                                    {/* --- Explicitly Rendered Type-Specific Properties (from previous solution) --- */}
+                                    {/* Consolidated Position & Size Inputs */}
 
-                                    {/* Point, Label, Picture, Shape (as base for a group of components) */}
+                                    {/* Position: For Point, Label, Picture, Shape (just x, y) */}
                                     {(component instanceof Point || component instanceof Label || component instanceof Picture || component instanceof Shape) && (
-                                        <>
-                                            <h3>Position</h3>
-                                            <div className={styles['input-container']}>
-                                                <label>X</label>
-                                                <input
-                                                    type="number"
-                                                    value={component.x ?? ''}
-                                                    onChange={(e) => handlePositionChange('x', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Y</label>
-                                                <input
-                                                    type="number"
-                                                    value={component.y ?? ''}
-                                                    onChange={(e) => handlePositionChange('y', e.target.value)}
-                                                />
-                                            </div>
-                                        </>
+                                        <div className={styles['input-group-row']}>
+                                            <label>Position</label>
+                                            <input
+                                                type="number"
+                                                value={component.x ?? ''}
+                                                onChange={(e) => handlePositionChange('x', e.target.value)}
+                                            />
+                                            <input
+                                                type="number"
+                                                value={component.y ?? ''}
+                                                onChange={(e) => handlePositionChange('y', e.target.value)}
+                                            />
+                                        </div>
                                     )}
 
-                                    {/* Line, Circle, Rectangle, Measure (which extend Line) */}
+                                    {/* Position & Size: For Line, Circle, Rectangle, Measure, Arc (x1, y1, width, height) */}
                                     {(component instanceof Line || component instanceof Circle || component instanceof Rectangle || component instanceof Measure) && (
                                         <>
-                                            <h3>Dimensions</h3>
-                                            <div className={styles['input-container']}>
-                                                <label>P1 X</label>
+                                            <div className={styles['input-group-row']}>
+                                                <label>Position</label>
                                                 <input
                                                     type="number"
                                                     value={component.x1 ?? ''}
                                                     onChange={(e) => handlePositionChange('x1', e.target.value)}
                                                 />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>P1 Y</label>
                                                 <input
                                                     type="number"
                                                     value={component.y1 ?? ''}
                                                     onChange={(e) => handlePositionChange('y1', e.target.value)}
                                                 />
                                             </div>
-                                            <div className={styles['input-container']}>
-                                                <label>P2 X</label>
+                                            <div className={styles['input-group-row']}>
+                                                <label>Size</label>
                                                 <input
                                                     type="number"
-                                                    value={component.x2 ?? ''}
-                                                    onChange={(e) => handlePositionChange('x2', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>P2 Y</label>
-                                                <input
-                                                    type="number"
-                                                    value={component.y2 ?? ''}
-                                                    onChange={(e) => handlePositionChange('y2', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Width</label>
-                                                <input
-                                                    type="number"
-                                                    // Ensure x1 and x2 are numbers before calculation
                                                     value={(typeof component.x2 === 'number' && typeof component.x1 === 'number') ? (component.x2 - component.x1) : ''}
                                                     onChange={(e) => handleSizeChange('width', e.target.value)}
+                                                    placeholder="Width"
                                                 />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Height</label>
                                                 <input
                                                     type="number"
-                                                    // Ensure y1 and y2 are numbers before calculation
                                                     value={(typeof component.y2 === 'number' && typeof component.y1 === 'number') ? (component.y2 - component.y1) : ''}
                                                     onChange={(e) => handleSizeChange('height', e.target.value)}
+                                                    placeholder="Height"
                                                 />
                                             </div>
                                         </>
                                     )}
 
+                                    {/* Arc Coverage: Specific for Arc (x3, y3) */}
                                     {component instanceof Arc && (
-                                        <>
-                                            <h3>Arc Coverage</h3>
-                                            <div className={styles['input-container']}>
-                                                <label>Coverage X (x3)</label>
-                                                <input
-                                                    type="number"
-                                                    value={component.x3 ?? ''}
-                                                    onChange={(e) => handlePositionChange('x3', e.target.value)}
-                                                />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Coverage Y (y3)</label>
-                                                <input
-                                                    type="number"
-                                                    value={component.y3 ?? ''}
-                                                    onChange={(e) => handlePositionChange('y3', e.target.value)}
-                                                />
-                                            </div>
-                                        </>
+                                        <div className={styles['input-group-row']}>
+                                            <label>Arc Coverage</label>
+                                            <input
+                                                type="number"
+                                                value={component.x3 ?? ''}
+                                                onChange={(e) => handlePositionChange('x3', e.target.value)}
+                                            />
+                                            <input
+                                                type="number"
+                                                value={component.y3 ?? ''}
+                                                onChange={(e) => handlePositionChange('y3', e.target.value)}
+                                            />
+                                        </div>
                                     )}
 
+                                    {/* Text Properties (Label) */}
                                     {component instanceof Label && (
                                         <>
-                                            <h3>Text Properties</h3>
-                                            <div className={styles['input-container']}>
+                                            <h3>Text Properties</h3> {/* Keep heading for logical grouping */}
+                                            <div className={styles['input-container']}> {/* Can be input-group-row if you want font size next to text */}
                                                 <label>Text</label>
                                                 <input
                                                     type="text"
@@ -827,6 +787,7 @@ const Editor = () => {
                                         </>
                                     )}
 
+                                    {/* Picture Properties (Picture) */}
                                     {component instanceof Picture && (
                                         <>
                                             <h3>Picture Properties</h3>
@@ -841,6 +802,7 @@ const Editor = () => {
                                         </>
                                     )}
 
+                                    {/* Polygon Properties (Polygon) */}
                                     {component instanceof Polygon && (
                                         <>
                                             <h3>Polygon Properties</h3>
@@ -868,67 +830,73 @@ const Editor = () => {
                                                     onChange={(e) => handleChange('enableStroke', e.target.checked)}
                                                 />
                                             </div>
+                                            <div className={styles['input-container']}>
+                                                <label>Vectors Count</label>
+                                                <span>{component.vectors.length}</span>
+                                            </div>
                                         </>
                                     )}
 
+                                    {/* Shape Properties (Shape) */}
                                     {component instanceof Shape && (
                                         <>
                                             <h3>Shape Group</h3>
                                             <div className={styles['input-container']}>
                                                 <label>Child Components</label>
                                                 <span>{component.components.length}</span>
-                                                {/* You would likely need a dedicated UI for managing nested components within a Shape */}
                                             </div>
                                         </>
                                     )}
 
                                     {/* --- Generic Dynamic Properties Loop --- */}
-                                    {Object.keys(component as Record<string, any>) // Assert component here
-                                        .filter(key => !getHandledKeys(component).has(key)) // Filter out already handled keys
-                                        .map(key => {
-                                            const value = (component as Record<string, any>)[key]; // Assert for value access
+                                    {/* Important: Update getHandledKeys to reflect the new structure,
+                                        especially for x, y, x1, y1, x2, y2, width, height, x3, y3.
+                                        If you move them to the consolidated groups, they should be
+                                        added to getHandledKeys. */}
+                                    {
+                                        Object.keys(component as Record<string, any>)
+                                            .filter(key => !getHandledKeys(component).has(key))
+                                            .map(key => {
+                                                const value = (component as Record<string, any>)[key];
+                                                let inputElement: React.ReactNode | null = null;
 
-                                            let inputElement: React.ReactNode | null = null; // Using React.ReactNode is good practice
+                                                if (typeof value === 'boolean') {
+                                                    inputElement = (
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={value}
+                                                            onChange={(e) => handleChange(key, e.target.checked)}
+                                                        />
+                                                    );
+                                                } else if (typeof value === 'string') {
+                                                    inputElement = (
+                                                        <input
+                                                            type={key.toLowerCase().includes('color') ? 'color' : 'text'}
+                                                            value={value || (key.toLowerCase().includes('color') ? '#ffffff' : '')}
+                                                            onChange={(e) => handleChange(key, e.target.value)}
+                                                        />
+                                                    );
+                                                } else if (typeof value === 'number') {
+                                                    inputElement = (
+                                                        <input
+                                                            type="number"
+                                                            value={value}
+                                                            onChange={(e) => handleChange(key, parseFloat(e.target.value))}
+                                                        />
+                                                    );
+                                                }
 
-                                            if (typeof value === 'boolean') {
-                                                inputElement = (
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={value}
-                                                        onChange={(e) => handleChange(key, e.target.checked)}
-                                                    />
+                                                if (!inputElement) {
+                                                    return null;
+                                                }
+
+                                                return (
+                                                    <div className={styles['input-container']} key={key}>
+                                                        <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+                                                        {inputElement}
+                                                    </div>
                                                 );
-                                            } else if (typeof value === 'string') {
-                                                inputElement = (
-                                                    <input
-                                                        type={key.toLowerCase().includes('color') ? 'color' : 'text'} // Robust check for color inputs
-                                                        value={value || (key.toLowerCase().includes('color') ? '#ffffff' : '')}
-                                                        onChange={(e) => handleChange(key, e.target.value)}
-                                                    />
-                                                );
-                                            } else if (typeof value === 'number') {
-                                                inputElement = (
-                                                    <input
-                                                        type="number"
-                                                        value={value}
-                                                        onChange={(e) => handleChange(key, parseFloat(e.target.value))}
-                                                    />
-                                                );
-                                            }
-                                            // Add more `else if` conditions here for other types if you want them dynamically rendered
-                                            // e.g., if (Array.isArray(value)) { ... }
-
-                                            if (!inputElement) {
-                                                return null; // Return null for keys that shouldn't be rendered dynamically
-                                            }
-
-                                            return (
-                                                <div className={styles['input-container']} key={key}>
-                                                    <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                                                    {inputElement}
-                                                </div>
-                                            );
-                                        })
+                                            })
                                     }
                                 </div>
                             )

@@ -324,13 +324,14 @@
     gap: 10px;
     margin-top: 10px;
 }
-.input-container {
+.input-container, .input-group-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 .input-container input[type="number"],
-.input-container input[type="text"] {
+.input-container input[type="text"],
+.input-group-row input[type="number"] {
     -webkit-appearance: none;
     font-family: var(--font);
     width: 25%;
