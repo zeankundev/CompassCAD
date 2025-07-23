@@ -191,20 +191,18 @@ const Editor = () => {
     const handleChange = (key: string, value: string | boolean | number): void => {
         setComponent((prevComponent) => {
             if (!prevComponent) return null;
-
-            // Type assertion: Treat prevComponent as a record where any string key can be accessed.
-            // This tells TypeScript that it's okay to use `key` as an index.
-            const updatedComponent = {
-                ...(prevComponent as Record<string, any>), // Assert prevComponent for dynamic access
-                [key]: value
-            } as AnyComponent; // Cast the result back to AnyComponent to maintain overall type
-
+            const ComponentConstructor = prevComponent.constructor as new () => AnyComponent;
+            const newComponent = Object.assign(new ComponentConstructor(), prevComponent);
+            (newComponent as Record<string, any>)[key] = value;
+            const updatedComponent = Object.create(Object.getPrototypeOf(prevComponent));
+            Object.assign(updatedComponent, prevComponent); 
+            (updatedComponent as Record<string, any>)[key] = value;
+            const finalComponent = updatedComponent as AnyComponent;
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
-                // Ensure the component in the renderer is also updated with the correct type
-                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = updatedComponent;
+                renderer.current.logicDisplay.components[renderer.current.selectedComponent] = finalComponent;
                 renderer.current.saveState();
             }
-            return updatedComponent;
+            return finalComponent;
         });
     };
 
@@ -869,11 +867,6 @@ const Editor = () => {
                                                     checked={component.enableStroke ?? true}
                                                     onChange={(e) => handleChange('enableStroke', e.target.checked)}
                                                 />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Vectors Count</label>
-                                                <span>{component.vectors.length}</span>
-                                                {/* For 'vectors', you'd likely want a more advanced editor or a button to open a modal */}
                                             </div>
                                         </>
                                     )}
