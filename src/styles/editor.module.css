@@ -24,6 +24,16 @@
     }
 }
 
+@keyframes slidein-from-top-special {
+    from {
+        transform: translateY(2.5px);
+        opacity: 0;
+    } to {
+        transform: translateY(0px);
+        opacity: 1;
+    }
+}
+
 @keyframes spin {
     0% {
         transform: rotate(0deg);
@@ -359,6 +369,21 @@
     background-color: var(--secondary);
     color: var(--text);
     border-radius: 10px;
+}
+.alternate-tooltip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px;
+    font-size: 9pt;
+    position: absolute;
+    z-index: 9999999;
+    box-shadow: 0px 0px 13px 1px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    animation: slidein-from-top-special 0.3s ease;
+    background-color: var(--secondary);
+    border: 0.5px solid var(--outline);
 }
 .mobile-toolbar {
     position: absolute;

@@ -60,6 +60,12 @@ enum InspectorTabState {
     Hierarchy
 }
 
+interface AlternateTipProps {
+    value: string;
+    x: number;
+    y: number;
+}
+
 const Editor = () => {
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
@@ -72,6 +78,8 @@ const Editor = () => {
     const [menu, setMenu] = useState<boolean>(false);
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
+    const [alternateTip, setAltTip] = useState<AlternateTipProps | null>();
+    const [showAlternateTip, setShowAlternateTip] = useState<boolean>(false);
     const [component, setComponent] = useState<AnyComponent | null>(null);
     const [exportDialog, setExportDialog] = useState(false);
     const [zoom, setZoom] = useState<number>(1);
@@ -427,7 +435,14 @@ const Editor = () => {
             </div>
         )}
         {device === 'desktop' && (
-            <div><ToastContainer /></div>
+            <>
+                <div><ToastContainer /></div>
+                {showAlternateTip && alternateTip && (
+                    <div className={styles['alternate-tooltip']} style={{left: alternateTip.x, top: alternateTip.y}}>
+                        {alternateTip.value}
+                    </div>
+                )} 
+            </>
         )}
         {device === 'mobile' && (
             <Fragment>
@@ -701,7 +716,32 @@ const Editor = () => {
                                             min="0"
                                             max="100"
                                             value={component.opacity}
-                                            onChange={(e) => handleChange('opacity', parseInt(e.target.value))}
+                                            onMouseDown={(e: React.MouseEvent<HTMLInputElement>) => {
+                                                setShowAlternateTip(true);
+                                                setAltTip({
+                                                    value: `${component.opacity}%`,
+                                                    x: e.clientX - 12.5,
+                                                    y: e.currentTarget.getBoundingClientRect().top - 30
+                                                })
+                                            }}
+                                            onMouseMove={(e: React.MouseEvent<HTMLInputElement>) => {
+                                                if (showAlternateTip) {
+                                                    setAltTip({
+                                                        value: `${component.opacity}%`,
+                                                        x: e.clientX - 12.5,
+                                                        y: e.currentTarget.getBoundingClientRect().top - 30
+                                                    });
+                                                }
+                                            }}
+                                            onMouseUp={() => {
+                                                setShowAlternateTip(false);
+                                                setAltTip({ value: '', x: 0, y: 0 });
+                                            }}
+                                            onChange={
+                                                (e) => {
+                                                    handleChange('opacity', parseInt(e.target.value));
+                                                }
+                                            }
                                         />
                                     </div>
 
