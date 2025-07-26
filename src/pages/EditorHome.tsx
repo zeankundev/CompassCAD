@@ -287,8 +287,17 @@ When the user speaks in other languages than English, you must reply to them in 
 
     const refreshHistory = () => {
         const storedHistory = localStorage.getItem('history');
+        console.log(storedHistory)
         if (storedHistory !== null) {
             setHistory(JSON.parse(storedHistory));
+            JSON.parse(storedHistory).forEach((entry: HistoryEntry, index: number) => {
+                console.log(`[home] detailed history entry (index num ${index + 1}):
+                name: ${entry.name}
+                date: ${entry.date}
+                type: ${entry.type}
+                data: ${LZString.decompressFromEncodedURIComponent(entry.data)}
+                `)
+            })
         }
     }
 

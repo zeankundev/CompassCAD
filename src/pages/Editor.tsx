@@ -313,7 +313,8 @@ const Editor = () => {
             if (params.length > 0) {
                 console.log('[editor] params len is > 0')
                 params.forEach(param => {
-                    if (param.startsWith('designname=')) {
+                    if (param.startsWith('designname=') && !hasRun.current) {
+                        hasRun.current = true;
                         const name = param.substring(11).replace(/^"|"$/g, '');
                         setDesignName(name);
                         nameInput.current!.value = name;
@@ -330,7 +331,6 @@ const Editor = () => {
                                 if (Array.isArray(parsedData) && parsedData.length === 0) {
                                     const errorMsg = '[editor] Error: Parsed data is an empty array. Forcing re-parse using trimmed data.';
                                     console.error(errorMsg);
-                                    // Force re-parse by trimming the decompressed string and trying again
                                     parsedData = JSON.parse(decompressed.trim());
                                     console.debug('[editor] Parsed data after re-parse:', parsedData);
                                     if (Array.isArray(parsedData) && parsedData.length === 0)
@@ -343,13 +343,12 @@ const Editor = () => {
                         } else {
                             parsedData = [];
                         }
-                        // Insert the components brutally without any mercy
+                        console.warn('[editor] using method A');
                         renderer.current!.logicDisplay?.importJSON(parsedData, renderer.current!.logicDisplay.components);
                         console.log(renderer.current!.logicDisplay!.components);
                         if (renderer.current!.logicDisplay!.components.length === 0) {
                             console.error('[editor] No components found in the design, initializing with an empty array');
                         }
-
                         setLoading(false);
                     }
                     if (param.startsWith('action=')) {
@@ -368,6 +367,7 @@ const Editor = () => {
                 });
             } else {
                 try {
+                    console.warn('[editor] using method B');
                     console.log('[editor] opening up URI-encoded design');
                     console.log('[editor] data:', LZString.decompressFromEncodedURIComponent(data));
                     renderer.current.logicDisplay?.importJSON(
