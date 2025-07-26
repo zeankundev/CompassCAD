@@ -11,7 +11,7 @@ const LanguageSwitcher = () => {
                 onClick={() => showLanguagePicker(!languagePicker)}
             >
                 <ReactCountryFlag countryCode={
-                    GetLanguage() === 'en' ? 'us' : GetLanguage()
+                    GetLanguage() === 'en' ? 'us' : (GetLanguage() === 'sv' ? 'se' : GetLanguage())
                 } svg />
                 {locales[GetLanguage()].name}&nbsp;{languagePicker ? '▴': '▾'}
             </div>
@@ -24,7 +24,7 @@ const LanguageSwitcher = () => {
                             onClick={() => {SetLanguage(language);showLanguagePicker(false);window.location.reload()}}
                         >
                             <ReactCountryFlag countryCode={
-                                language === 'en' ? 'us' : language
+                                language === 'en' ? 'us' : (language === 'sv' ? 'se' : language)
                             } svg />
                             {locales[language].name}
                         </div>

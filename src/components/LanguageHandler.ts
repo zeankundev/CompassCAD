@@ -1,6 +1,6 @@
 import React, { JSX } from 'react';
 
-export const supportedLanguages = ['en', 'nl', 'id'];
+export const supportedLanguages = ['en', 'nl', 'id', 'sv'].sort();
 export const SetLanguage = (lang: string) => {
     const selectedLang = supportedLanguages.includes(lang) ? lang : 'en';
     localStorage.setItem('language', selectedLang);
@@ -233,6 +233,73 @@ export const locales : any = {
                         two: "Dini hari/subuh dan lo aja masih ada ide? 😮‍💨",
                         three: "Semoga ga ditekan deadline 🥲"
                     },
+                }
+            }
+        }
+    },
+    sv: {
+        name: "Svenska",
+        general: {
+            yes: "Ja",
+            no: "Nej"
+        },
+        home: {
+            header: "Bygg dina drömmar utan att slösa tid på att lära dig komplexa verktyg. Det är dags att förenkla din \"drömbyggande\" design",
+            descHero: "Tänk om CAD var lika enkelt som de verktyg vi använder idag, som Notion eller till och med Figma. Förutom att vi kan omdefiniera vad \"kraftfulla verktyg\" betyder för arkitekturdesign",
+            downloadButton: "Ladda ner för plattform",
+            inBrowserEditor: "Redigerare i webbläsaren",
+            header1Sub: "Blixtsnabbt CAD-program. Gratis, men ändå enkelt och minimalistiskt",
+            paragraph1Sub: "Byggd från hjärtat av fattiga utvecklare som inte har råd med en bra dator och ett CAD-program, skapat för att du ska kunna njuta av det.",
+            littleNote1: "*Endast tillgängligt för Windows och Linux.",
+            header2Sub: "Ingen skrivbordsversion eller fungerar det inte? Vi har alltid webbversionen!",
+            littleNote2: "*Bilder kan se annorlunda ut än den faktiska programvaran"
+        },
+        editor: {
+            home: {
+                quickActions: "Snabba åtgärder",
+                createNew: "Skapa ny",
+                importExisting: "Importera befintlig",
+                clearEntireHistory: "Rensa hela historiken",
+                askBlueprint: "Fråga Blueprint",
+                recents: "Senaste",
+                blueprintPlaceholder: "Fråga eller skapa med Blueprint AI",
+                blueprintWarning: "AI-genererat innehåll kan vara felaktigt eller oprecist. Drivs av Google AI:s Gemini",
+                clearHistoryModal: "Rensa historik",
+                text1Sure: "Är du säker på att du vill rensa hela historiken? ",
+                boldTextWarning: "Denna åtgärd kan inte ångras.",
+                viewInEditor: "Visa/redigera denna design i redigeraren",
+                nothingInHistory: "Du har inget i din historiklista idag. Gör några ritningar så visas din historik här.",
+                randomMesg: {
+                    morning: {
+                        one: "Hallå där? Har du tagit en kopp kaffe? ☕",
+                        two: "God morgon! Redo att börja dagen? 🌄",
+                        three: "Morgon! Låt oss se vad du hittar på! 🤩"
+                    },
+                    noon: {
+                        one: "Börjar du något vid den här tiden? 🧐",
+                        two: "Lunchdags! Sugen på något och jobba här! 😋",
+                        three: "Jag hoppas du inte sover! 😴"
+                    },
+                    afternoon: {
+                        one: "Är du fortfarande uppe? Låt oss designa! 🗺️",
+                        two: "Låt kreativiteten flöda! ✏️",
+                        three: "Perfekt tid för CAD-arbete! 📐"
+                    },
+                    evening: {
+                        one: "Jobbar du fortfarande på kvällarna? 🧐",
+                        two: "Har du något i sista minuten? ⌚",
+                        three: "Ändå är du fortfarande stark. Fortsätt så 💪"
+                    },
+                    night: {
+                        one: "Ska du inte sova? 🛌",
+                        two: "Brainstormade du av misstag nu? 😵‍💫",
+                        three: "Ändå tar ditt koffein aldrig slut. ☕"
+                    },
+                    dawn: {
+                        one: "Jag ska sova, vänta, strunt samma. 😴",
+                        two: "Så sent och har du några idéer? 😮‍💨",
+                        three: "Hoppas du inte skjuter upp saker! 🥲"
+                    }
                 }
             }
         }
