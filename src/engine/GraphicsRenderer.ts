@@ -1006,8 +1006,9 @@ export class GraphicsRenderer {
     ) {
         if (vectors.length < 2) return;
         this.context!.lineWidth = radius * this.zoom;
-        this.context!.fillStyle = fillColor + this._num2hex(opacity);
-        this.context!.strokeStyle = strokeColor + this._num2hex(opacity);
+        this.context!.globalAlpha = opacity / 100;
+        this.context!.fillStyle = fillColor;
+        this.context!.strokeStyle = strokeColor;
         this.context!.beginPath();
         this.context!.moveTo(
             (vectors[0].x + this.cOutX) * this.zoom,
@@ -1024,6 +1025,7 @@ export class GraphicsRenderer {
         if (enableStroke) {
             this.context!.stroke();
         }
+        this.context!.globalAlpha = 1;
     }
     drawOrigin(cx: number, cy: number) {
         if (this.context) {

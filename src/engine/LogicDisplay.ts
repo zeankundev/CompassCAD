@@ -9,7 +9,9 @@ import {
     Shape,
     Line,
     Picture,
-    componentTypes 
+    componentTypes, 
+    Polygon,
+    Vector
 } from "./ComponentHandler";
 
 export class LogicDisplay {
@@ -141,6 +143,15 @@ export class LogicDisplay {
                         picture.y,
                         picture.pictureSource));
                     break;
+                case componentTypes.polygon:
+                    const polygon = arrJSON[i] as Polygon;
+                    parent.push(new Polygon(
+                        polygon.vectors.map(vector => new Vector(vector.x, vector.y)),
+                        polygon.color,
+                        polygon.strokeColor,
+                        polygon.opacity,
+                        polygon.enableStroke
+                    ))
             }
         }
     }

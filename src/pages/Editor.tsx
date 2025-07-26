@@ -344,7 +344,7 @@ const Editor = () => {
                             parsedData = [];
                         }
                         // Insert the components brutally without any mercy
-                        renderer.current!.logicDisplay!.components = parsedData;
+                        renderer.current!.logicDisplay?.importJSON(parsedData, renderer.current!.logicDisplay.components);
                         console.log(renderer.current!.logicDisplay!.components);
                         if (renderer.current!.logicDisplay!.components.length === 0) {
                             console.error('[editor] No components found in the design, initializing with an empty array');
@@ -386,7 +386,7 @@ const Editor = () => {
         else {
             console.log('[editor] ID len is 0, unsafe to proceed');
         }
-    }, [id, designName]);
+    }, [id, renderer.current]);
     useEffect(() => {
         let animationFrameId: number;
         
@@ -840,10 +840,6 @@ const Editor = () => {
                                                     checked={component.enableStroke ?? true}
                                                     onChange={(e) => handleChange('enableStroke', e.target.checked)}
                                                 />
-                                            </div>
-                                            <div className={styles['input-container']}>
-                                                <label>Vectors Count</label>
-                                                <span>{component.vectors.length}</span>
                                             </div>
                                         </>
                                     )}

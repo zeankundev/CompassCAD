@@ -210,6 +210,14 @@ interface VectorType {
     x: number;
     y: number;
 }
+export class Vector {
+    x: number;
+    y: number;
+    constructor(x: number, y: number) {
+        this.x = x != undefined ? x : 0;
+        this.y = y != undefined ? y : 0;
+    }
+}
 export class Polygon extends Component {
     vectors: VectorType[];
     color: string;
