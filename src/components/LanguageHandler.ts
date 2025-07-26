@@ -364,6 +364,36 @@ export const locales : any = {
                     addLabel: "Tambahkan Label",
                     addImage: "Tambahkan Gambar",
                     addPolygon: "Tambahkan Poligon",
+                },
+                inspector: {
+                    header: "Inspektor",
+                    collapseToRight: "Tutup ke kanan",
+                    expand: "Buka",
+                    nothing: "Pilih komponen, lalu detail komponen kamu akan ditampil disini.",
+                    general: {
+                        active: "Aktif",
+                        radius: "Radius",
+                        color: "Warna",
+                        opacity: "Opasitas",
+                        position: "Posisi",
+                        size: "Ukuran",
+                        coverage: "Koverasi Busur",
+                    },
+                    text: {
+                        heading: "Properti Teks",
+                        text: "Teks",
+                        fontSize: "Ukuran Font",
+                    },
+                    picture: {
+                        heading: "Properti Gambar",
+                        src: "Sumber",
+                    },
+                    polygon: {
+                        heading: "Properti Poligon",
+                        fillColor: "Warna Isi",
+                        strokeColor: "Warna Garis",
+                        enableStroke: "Aktifkan Garis",
+                    }
                 }
             }
         }
