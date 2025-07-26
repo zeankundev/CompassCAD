@@ -44,6 +44,7 @@ import Check from '../assets/check.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
+import { getLocaleKey } from "../components/LanguageHandler";
 
 export interface HistoryEntry {
     name: string;
@@ -74,7 +75,7 @@ const Editor = () => {
     const virtualCanvas = useRef<HTMLCanvasElement>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [tool, setTool] = useState<number>(RendererTypes.NavigationTypes.Navigate);
-    const [designName, setDesignName] = useState<string>('New Design');
+    const [designName, setDesignName] = useState<string>(getLocaleKey('editor.main.newDesign'));
     const [menu, setMenu] = useState<boolean>(false);
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
@@ -94,7 +95,7 @@ const Editor = () => {
             InitializeInstance(renderer.current);
             renderer.current.setMode(renderer.current.modes.Navigate);
             setLoading(false);
-            toast('Hey there! Just a heads up that this editor is still in beta, so expect broken buttons and non-functioning UI')
+            toast(getLocaleKey('editor.main.betaWarning'));
         }
     }, [])
     useEffect(() => {
@@ -430,8 +431,8 @@ const Editor = () => {
             <div className={styles.loader}>
                 <div className={styles.spinner}></div>
                 <br></br>
-                <h2>Loading CompassCAD...</h2>
-                <p>Just wait, you'll be ready in a sec.</p>
+                <h2>{getLocaleKey('editor.main.loading.heading')}</h2>
+                <p>{getLocaleKey('editor.main.loading.subHeading')}</p>
             </div>
         )}
         {device === 'desktop' && (
@@ -467,7 +468,7 @@ const Editor = () => {
                 <Fragment>
                     <HeaderButton 
                         svgImage={Back}
-                        title='Go back home'
+                        title={getLocaleKey('editor.main.header.goBackHome')}
                         func={() => window.location.href = '/editor'}
                         tabIndex={0}
                     />
@@ -495,7 +496,7 @@ const Editor = () => {
                     <div className={styles['header-left']}>
                         <HeaderButton 
                             svgImage={Back}
-                            title='Go back home'
+                            title={getLocaleKey('editor.main.header.goBackHome')}
                             func={() => window.location.href = '/editor'}
                             tabIndex={0}
                         />
@@ -512,13 +513,13 @@ const Editor = () => {
                         />
                         <HeaderButton 
                             svgImage={UndoSymbol}
-                            title='Undo'
+                            title={getLocaleKey('editor.main.header.undo')}
                             func={() => renderer.current?.undo()}
                             tabIndex={2}
                         />
                         <HeaderButton 
                             svgImage={RedoSymbol}
-                            title='Redo'
+                            title={getLocaleKey('editor.main.header.redo')}
                             func={() => renderer.current?.redo()}
                             tabIndex={3}
                         />
@@ -529,7 +530,7 @@ const Editor = () => {
                         <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}} tabIndex={4}>
                             <img src={ExportSymbol} width={20} />
                             &nbsp;
-                            <p>Share/Export</p>
+                            <p>{getLocaleKey('editor.main.header.share')}</p>
                         </div>
                     </div>
                 </div>
@@ -538,7 +539,7 @@ const Editor = () => {
         {exportDialog && (
             <div className={styles['export-dialog']}>
                 <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                    <h4>Share/Export Design</h4>
+                    <h4>{getLocaleKey('editor.main.header.shareModal.heading')}</h4>
                     <p onClick={() => setExportDialog(false)}>&times;</p>
                 </div>
                 <div>
@@ -551,7 +552,7 @@ const Editor = () => {
                     }}>
                         <img src={CopyLink} />
                         &nbsp;&nbsp;
-                        <p>Copy Link</p>
+                        <p>{getLocaleKey('editor.main.header.shareModal.copyLink')}</p>
                     </div>
                 </div>
             </div>
@@ -562,14 +563,14 @@ const Editor = () => {
                 <div className={styles.toolbar}>
                     <ToolbarButton
                         svgImage={Select}
-                        title="Select (q)"
+                        title={`${getLocaleKey('editor.main.essential.select')} (q)`}
                         isActive={tool == RendererTypes.NavigationTypes.Select}
                         keyCode={RendererTypes.KeyCodes.Q}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Select)}
                     />
                     <ToolbarButton
                         svgImage={Navigate}
-                        title="Navigate (w)"
+                        title={`${getLocaleKey('editor.main.essential.navigate')} (w)`}
                         isActive={tool == RendererTypes.NavigationTypes.Navigate}
                         keyCode={RendererTypes.KeyCodes.W}
                         alternativeKeyCode={RendererTypes.KeyCodes.ESC}
@@ -577,77 +578,77 @@ const Editor = () => {
                     />
                     <ToolbarButton
                         svgImage={MoveSymbol}
-                        title="Move (e)"
+                        title={`${getLocaleKey('editor.main.essential.move')} (e)`}
                         isActive={tool == RendererTypes.NavigationTypes.Move}
                         keyCode={RendererTypes.KeyCodes.E}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Move)}
                     />
                     <ToolbarButton
                         svgImage={DeleteSymbol}
-                        title="Delete (t)"
+                        title={`${getLocaleKey('editor.main.essential.delete')} (t)`}
                         isActive={tool == RendererTypes.NavigationTypes.Delete}
                         keyCode={RendererTypes.KeyCodes.T}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.Delete)}
                     />
                     <ToolbarButton
                         svgImage={PointSymbol}
-                        title="Add Point (a)"
+                        title={`${getLocaleKey('editor.main.essential.addPoint')} (a)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddPoint}
                         keyCode={RendererTypes.KeyCodes.A}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPoint)}
                     />
                     <ToolbarButton
                         svgImage={LineSymbol}
-                        title="Add Line (s)"
+                        title={`${getLocaleKey('editor.main.essential.addLine')} (s)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddLine}
                         keyCode={RendererTypes.KeyCodes.S}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLine)}
                     />
                     <ToolbarButton
                         svgImage={CircleSymbol}
-                        title="Add Circle (d)"
+                        title={`${getLocaleKey('editor.main.essential.addCircle')} (d)`}
                         keyCode={RendererTypes.KeyCodes.D}
                         isActive={tool == RendererTypes.NavigationTypes.AddCircle}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddCircle)}
                     />
                     <ToolbarButton
                         svgImage={ArcSymbol}
-                        title="Add Arc (f)"
+                        title={`${getLocaleKey('editor.main.essential.addArc')} (f)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddArc}
                         keyCode={RendererTypes.KeyCodes.F}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddArc)}
                     />
                     <ToolbarButton
                         svgImage={RectSymbol}
-                        title="Add Rectangle (g)"
+                        title={`${getLocaleKey('editor.main.essential.addRectangle')} (g)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddRectangle}
                         keyCode={RendererTypes.KeyCodes.G}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddRectangle)}
                     />
                     <ToolbarButton
                         svgImage={PicSymbol}
-                        title="Add Image (l)"
+                        title={`${getLocaleKey('editor.main.essential.addImage')} (l)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddPicture}
                         keyCode={RendererTypes.KeyCodes.L}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
                     />
                     <ToolbarButton 
                         svgImage={PicSymbol}
-                        title="Add Polygon (j)"
+                        title={`${getLocaleKey('editor.main.essential.addPolygon')} (j)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddPolygon}
                         keyCode={RendererTypes.KeyCodes.J}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPolygon)}
                     />
                     <ToolbarButton
                         svgImage={LabelSymbol}
-                        title="Add Text (h)"
+                        title={`${getLocaleKey('editor.main.essential.addLabel')} (h)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddLabel}
                         keyCode={RendererTypes.KeyCodes.H}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddLabel)}
                     />
                     <ToolbarButton
                         svgImage={RulerSymbol}
-                        title="Measure (z)"
+                        title={`${getLocaleKey('editor.main.essential.addMeasure')} (z)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddMeasure}
                         keyCode={RendererTypes.KeyCodes.Z}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddMeasure)}
@@ -657,15 +658,15 @@ const Editor = () => {
                     <div className={styles['inspector-header']}>
                         {showInspector == false && (
                             <button 
-                                title="Expand" 
+                                title={getLocaleKey('editor.main.inspector.expand')} 
                                 onClick={() => setShowInspector(true)}
                             >
                                 <img width={20} src={CollapseRight} style={{transform: 'rotate(180deg)'}} />
                             </button>
                         )}
-                        <h2>Inspector</h2>
+                        <h2>{getLocaleKey('editor.main.inspector.header')}</h2>
                         <button 
-                            title="Collapse to Right" 
+                            title={getLocaleKey('editor.main.inspector.collapseToRight')}
                             onClick={() => setShowInspector(false)}
                         >
                             <img width={20} src={CollapseRight} />
@@ -676,13 +677,13 @@ const Editor = () => {
                             component == null ? (
                                 <div className={styles['inspector-nothing']}>
                                     <img src={Unselected} width={64} />
-                                    <span>Select a component then your component details should appear here.</span>
+                                    <span>{getLocaleKey('editor.main.inspector.nothing')}</span>
                                 </div>
                             ) : (
                                 <div className={styles['inspector-dynamic-form']}>
                                     {/* Base Properties (Active, Type, Radius, Opacity) - Keep as they are likely fine */}
                                     <div className={styles['input-container']}>
-                                        <label>Active</label>
+                                        <label>{getLocaleKey('editor.main.inspector.general.active')}</label>
                                         <input
                                             type="checkbox"
                                             checked={component.active}
@@ -691,7 +692,7 @@ const Editor = () => {
                                     </div>
                                     {'radius' in component && (
                                         <div className={styles['input-container']}>
-                                            <label>Radius</label>
+                                            <label>{getLocaleKey('editor.main.inspector.general.radius')}</label>
                                             <input
                                                 type="number"
                                                 value={component.radius}
@@ -701,7 +702,7 @@ const Editor = () => {
                                     )}
                                     {!(component instanceof Polygon) && (
                                         <div className={styles['input-container']}>
-                                            <label>Color</label>
+                                            <label>{getLocaleKey('editor.main.inspector.general.color')}</label>
                                             <input
                                                 type="color"
                                                 value={component.color}
@@ -710,7 +711,7 @@ const Editor = () => {
                                         </div>
                                     )}
                                     <div className={styles['input-container']}>
-                                        <label>Opacity</label>
+                                        <label>{getLocaleKey('editor.main.inspector.general.opacity')}</label>
                                         <input
                                             type="range"
                                             min="0"
@@ -750,7 +751,7 @@ const Editor = () => {
                                     {/* Position: For Point, Label, Picture, Shape (just x, y) */}
                                     {(component instanceof Point || component instanceof Label || component instanceof Picture || component instanceof Shape) && (
                                         <div className={styles['input-group-row']}>
-                                            <label>Position</label>
+                                            <label>{getLocaleKey('editor.main.inspector.general.position')}</label>
                                             <input
                                                 type="number"
                                                 value={component.x ?? ''}
@@ -768,7 +769,7 @@ const Editor = () => {
                                     {(component instanceof Line || component instanceof Circle || component instanceof Rectangle || component instanceof Measure) && (
                                         <>
                                             <div className={styles['input-group-row']}>
-                                                <label>Position</label>
+                                                <label>{getLocaleKey('editor.main.inspector.general.position')}</label>
                                                 <input
                                                     type="number"
                                                     value={component.x1 ?? ''}
@@ -781,7 +782,7 @@ const Editor = () => {
                                                 />
                                             </div>
                                             <div className={styles['input-group-row']}>
-                                                <label>Size</label>
+                                                <label>{getLocaleKey('editor.main.inspector.general.size')}</label>
                                                 <input
                                                     type="number"
                                                     value={(typeof component.x2 === 'number' && typeof component.x1 === 'number') ? (component.x2 - component.x1) : ''}
@@ -801,7 +802,7 @@ const Editor = () => {
                                     {/* Arc Coverage: Specific for Arc (x3, y3) */}
                                     {component instanceof Arc && (
                                         <div className={styles['input-group-row']}>
-                                            <label>Arc Coverage</label>
+                                            <label>{getLocaleKey('editor.main.inspector.general.coverage')}</label>
                                             <input
                                                 type="number"
                                                 value={component.x3 ?? ''}
@@ -818,9 +819,9 @@ const Editor = () => {
                                     {/* Text Properties (Label) */}
                                     {component instanceof Label && (
                                         <>
-                                            <h3>Text Properties</h3> {/* Keep heading for logical grouping */}
+                                            <h3>{getLocaleKey('editor.main.inspector.text.heading')}</h3> {/* Keep heading for logical grouping */}
                                             <div className={styles['input-container']}> {/* Can be input-group-row if you want font size next to text */}
-                                                <label>Text</label>
+                                                <label>{getLocaleKey('editor.main.inspector.text.text')}</label>
                                                 <input
                                                     type="text"
                                                     value={component.text ?? ''}
@@ -828,7 +829,7 @@ const Editor = () => {
                                                 />
                                             </div>
                                             <div className={styles['input-container']}>
-                                                <label>Font Size</label>
+                                                <label>{getLocaleKey('editor.main.inspector.text.fontSize')}</label>
                                                 <input
                                                     type="number"
                                                     value={component.fontSize ?? ''}
@@ -841,9 +842,9 @@ const Editor = () => {
                                     {/* Picture Properties (Picture) */}
                                     {component instanceof Picture && (
                                         <>
-                                            <h3>Picture Properties</h3>
+                                            <h3>{getLocaleKey('editor.main.inspector.picture.heading')}</h3>
                                             <div className={styles['input-container']}>
-                                                <label>Source</label>
+                                                <label>{getLocaleKey('editor.main.inspector.picture.src')}</label>
                                                 <input
                                                     type="text"
                                                     value={component.pictureSource ?? ''}
@@ -856,9 +857,9 @@ const Editor = () => {
                                     {/* Polygon Properties (Polygon) */}
                                     {component instanceof Polygon && (
                                         <>
-                                            <h3>Polygon Properties</h3>
+                                            <h3>{getLocaleKey('editor.main.inspector.polygon.heading')}</h3>
                                             <div className={styles['input-container']}>
-                                                <label>Fill Color</label>
+                                                <label>{getLocaleKey('editor.main.inspector.polygon.fillColor')}</label>
                                                 <input
                                                     type="color"
                                                     value={component.color ?? '#ffffff'}
@@ -866,7 +867,7 @@ const Editor = () => {
                                                 />
                                             </div>
                                             <div className={styles['input-container']}>
-                                                <label>Stroke Color</label>
+                                                <label>{getLocaleKey('editor.main.inspector.polygon.strokeColor')}</label>
                                                 <input
                                                     type="color"
                                                     value={component.strokeColor ?? '#000000'}
@@ -874,7 +875,7 @@ const Editor = () => {
                                                 />
                                             </div>
                                             <div className={styles['input-container']}>
-                                                <label>Enable Stroke</label>
+                                                <label>{getLocaleKey('editor.main.inspector.polygon.enableStroke')}</label>
                                                 <input
                                                     type="checkbox"
                                                     checked={component.enableStroke ?? true}

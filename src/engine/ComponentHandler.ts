@@ -113,7 +113,7 @@ export class Measure extends Line {
         radius?: number,
         opacity?: number
     ) {
-        super(x1, y1, x2, y2, radius, '#ff3', opacity);
+        super(x1, y1, x2, y2, radius, '#ffff33', opacity);
         this.type = componentTypes.measure;
     }
 }
@@ -130,7 +130,7 @@ export class Label extends Point {
     ) {
         super(x, y);
         this.type = componentTypes.label;
-        this.color = '#eee';
+        this.color = '#eeeeee';
         this.text = text != undefined ? text : 'Sample text';
         this.fontSize = fontSize != undefined ? fontSize : 18;
         this.opacity = opacity != undefined ? opacity : 100;

@@ -1,4 +1,6 @@
+import { posix } from 'path';
 import React, { JSX } from 'react';
+import { text } from 'stream/consumers';
 
 export const supportedLanguages = ['en', 'nl', 'id', 'sv'].sort();
 export const SetLanguage = (lang: string) => {
@@ -100,6 +102,69 @@ export const locales : any = {
                         three: "Hope you're not procrastinating! 🥲"
                     },
                 }
+            },
+            main: {
+                newDesign: "New Design",
+                loading: {
+                    heading: "Loading CompassCAD...",
+                    subHeading: "Just wait, you'll be ready in a sec.",
+                },
+                betaWarning: "Hey there! Just a heads up that this editor is still in beta, so expect broken buttons and non-functioning UI",
+                header: {
+                    goBackHome: "Go back home",
+                    undo: "Undo",
+                    redo: "Redo",
+                    share: "Share/Export",
+                    shareModal: {
+                        heading: "Share/Export Design",
+                        copyLink: "Copy Link",
+                    }
+                },
+                essential: {
+                    select: "Select",
+                    navigate: "Navigate",
+                    move: "Move",
+                    delete: "Delete",
+                    addPoint: "Add Point",
+                    addLine: "Add Line",
+                    addRectangle: "Add Rectangle",
+                    addCircle: "Add Circle",
+                    addArc: "Add Arc",
+                    addMeasure: "Add Measure",
+                    addLabel: "Add Label",
+                    addImage: "Add Image",
+                    addPolygon: "Add Polygon",
+                },
+                inspector: {
+                    header: "Inspector",
+                    collapseToRight: "Collapse to right",
+                    expand: "Expand",
+                    nothing: "Select a component then your component details should appear here.",
+                    general: {
+                        active: "Active",
+                        radius: "Radius",
+                        color: "Color",
+                        opacity: "Opacity",
+                        position: "Position",
+                        size: "Size",
+                        coverage: "Arc Coverage",
+                    },
+                    text: {
+                        heading: "Text Properties",
+                        text: "Text",
+                        fontSize: "Font Size",
+                    },
+                    picture: {
+                        heading: "Picture Properties",
+                        src: "Source",
+                    },
+                    polygon: {
+                        heading: "Polygon Properties",
+                        fillColor: "Fill Color",
+                        strokeColor: "Stroke Color",
+                        enableStroke: "Enable Stroke",
+                    }
+                }
             }
         }
     },
@@ -166,6 +231,39 @@ export const locales : any = {
                         two: "Ochtendgloren en jij hebt nog steeds ideeën? 😮‍💨",
                         three: "Hopelijk zit je niet in de stress 🥲"
                     },
+                }
+            },
+            main: {
+                newDesign: "Nieuw ontwerp",
+                loading: {
+                    heading: "CompassCAD laden...",
+                    subHeading: "Even wachten, je bent zo klaar.",
+                },
+                betaWarning: "Hé! Even ter info: deze editor is nog in beta, dus verwacht kapotte knoppen en niet-werkende interface",
+                header: {
+                    goBackHome: "Terug naar home",
+                    undo: "Ongedaan maken",
+                    redo: "Opnieuw doen",
+                    share: "Delen/Exporteren",
+                    shareModal: {
+                        heading: "Ontwerp delen/exporteren",
+                        copyLink: "Link kopiëren",
+                    }
+                },
+                essential: {
+                    select: "Selecteren",
+                    navigate: "Navigeren",
+                    move: "Verplaatsen",
+                    delete: "Verwijderen",
+                    addPoint: "Punt toevoegen",
+                    addLine: "Lijn toevoegen",
+                    addRectangle: "Rechthoek toevoegen",
+                    addCircle: "Cirkel toevoegen",
+                    addArc: "Boog toevoegen",
+                    addMeasure: "Meten",
+                    addLabel: "Label toevoegen",
+                    addImage: "Afbeelding toevoegen",
+                    addPolygon: "Veelhoek toevoegen",
                 }
             }
         }
@@ -234,6 +332,39 @@ export const locales : any = {
                         three: "Semoga ga ditekan deadline 🥲"
                     },
                 }
+            },
+            main: {
+                newDesign: "Desain Baru",
+                loading: {
+                    heading: "Memuat CompassCAD...",
+                    subHeading: "Bentar lagi, nanti disiapin kok.",
+                },
+                betaWarning: "Hei! Cuma mau kasih tau kalau editor ini masih beta, jadi harap maklum kalau ada tombol yang rusak atau UI yang ga berfungsi",
+                header: {
+                    goBackHome: "Kembali",
+                    undo: "Urungkan",
+                    redo: "Ulangi",
+                    share: "Bagi/Ekspor",
+                    shareModal: {
+                        heading: "Bagi/Ekspor Desain",
+                        copyLink: "Salin link",
+                    }
+                },
+                essential: {
+                    select: "Pilih",
+                    navigate: "Navigasi",
+                    move: "Pindah",
+                    delete: "Hapus",
+                    addPoint: "Tambahkan Poin",
+                    addLine: "Tambahkan Garis",
+                    addRectangle: "Tambahkan Persegi",
+                    addCircle: "Tambahkan Lingkaran",
+                    addArc: "Tambahkan Busur",
+                    addMeasure: "Ukur",
+                    addLabel: "Tambahkan Label",
+                    addImage: "Tambahkan Gambar",
+                    addPolygon: "Tambahkan Poligon",
+                }
             }
         }
     },
@@ -299,6 +430,69 @@ export const locales : any = {
                         one: "Jag ska sova, vänta, strunt samma. 😴",
                         two: "Så sent och har du några idéer? 😮‍💨",
                         three: "Hoppas du inte skjuter upp saker! 🥲"
+                    }
+                }
+            },
+            main: {
+                loading: {
+                    heading: "Laddar CompassCAD...",
+                    subHeading: "Vänta bara, du är klar om en sekund."
+                },
+                betaWarning: "Hej! Bara ett tips om att den här redigeraren fortfarande är i beta, så förvänta dig trasiga knappar och ett icke-fungerande användargränssnitt.",
+                newDesign: "Ny Design",
+                header: {
+                    goBackHome: "Gå tillbaka hem",
+                    undo: "Ångra",
+                    redo: "Upprepa",
+                    share: "Dela/Exportera",
+                    shareModal: {
+                        heading: "Dela/Exportera Design",
+                        copyLink: "Kopiera Link",
+                    }
+                },
+                essential: {
+                    select: "Välja",
+                    navigate: "Navigera",
+                    move: "Flytta",
+                    delete: "Raderra",
+                    addPoint: "Lägg till Punkt",
+                    addLine: "Lägg till Linje",
+                    addRectangle: "Lägg till Rektangel",
+                    addCircle: "Lägg till Cirkel",
+                    addArc: "Lägg till Båge",
+                    addMeasure: "Mät",
+                    addLabel: "Lägg till Text",
+                    addImage: "Lägg till Bild",
+                    addPolygon: "Lägg till Polygon",
+                },
+                inspector: {
+                    header: "Inspektör",
+                    collapseToRight: "Kollapsa åt höger",
+                    expand: "Expandera",
+                    nothing: "Välj en komponent så ska dina komponentdetaljer visas här.",
+                    general: {
+                        active: "Aktiv",
+                        radius: "Radius",
+                        color: "Färg",
+                        opacity: "Opacitet",
+                        position: "Position",
+                        size: "Storlek",
+                        coverage: "Båge Täckning",
+                    },
+                    text: {
+                        heading: "Text Egenskaper",
+                        text: "Text",
+                        fontSize: "Fontstorlek",
+                    },
+                    picture: {
+                        heading: "Bild Egenskaper",
+                        src: "Källa",
+                    },
+                    polygon: {
+                        heading: "Polygon Egenskaper",
+                        fillColor: "Fyllningsfärg",
+                        strokeColor: "Streckfärg",
+                        enableStroke: "Aktivera Streck",
                     }
                 }
             }
