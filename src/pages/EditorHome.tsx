@@ -165,7 +165,7 @@ const EditorHome = () => {
     const [isLoading, setIsLoading] = useState(false);
     const sendButton = useRef<HTMLDivElement>(null);
 
-    console.log(`[home] api key: ${process.env.REACT_APP_BLUEPRINT_API_KEY || 'not set'}`);
+    // I'm fucked of sending the API key to the console, so I'll comment this line
 
     const genAI = new GoogleGenAI({apiKey: process.env.REACT_APP_BLUEPRINT_API_KEY || ''});
 
