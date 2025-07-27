@@ -45,6 +45,7 @@ import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
 import { getLocaleKey } from "../components/LanguageHandler";
+import { log } from "console";
 
 export interface HistoryEntry {
     name: string;
@@ -87,6 +88,8 @@ const Editor = () => {
     const [isLoading, setLoading] = useState<boolean>(true);
     const [showInspector, setShowInspector] = useState<boolean>(true);
     const [inspectorState, setInspectorState] = useState<InspectorTabState>(InspectorTabState.Inspector);
+    const [debugMode, setDebugMode] = useState<boolean>(false);
+    const [fromBlueprint, setFromBlueprint] = useState<boolean>(false);
     useEffect(() => {
         if (canvas.current && !renderer.current) {
             setDevice(getDeviceType());
@@ -303,6 +306,11 @@ const Editor = () => {
         );
         return undefined;
     }
+    const logOnDebug = (origin: string, message: string) => {
+        if (debugMode) {
+            console.log(`[DEBUG, origin: ${origin}] ${message}`);
+        }
+    }
     const hasRun = useRef(false);
     useEffect(() => {
         if (!renderer.current || !id) return;
@@ -316,54 +324,28 @@ const Editor = () => {
                 const parts = id.split(';');
                 params = parts[0].split(',');
                 data = parts.slice(1).join(';');
+                logOnDebug('editor', `parsed params: ${params}`);
             }
 
             // Handle parameters
             if (params.length > 0) {
                 console.log('[editor] params len is > 0')
                 params.forEach(param => {
-                    if (param.startsWith('designname=') && !hasRun.current) {
-                        hasRun.current = true;
-                        const name = param.substring(11).replace(/^"|"$/g, '');
-                        setDesignName(name);
-                        nameInput.current!.value = name;
-                        console.log('[editor] design name:', name);
-                        console.log('[editor] opening up URI-encoded design');
-                        let decompressed = LZString.decompressFromEncodedURIComponent(data);
-                        console.log('[editor] data:', decompressed);
-                        let parsedData: any;
-                        if (decompressed && decompressed !== '[]') {
-                            console.debug('[editor] Decompressed data:', decompressed);
-                            try {
-                                parsedData = JSON.parse(decompressed);
-                                console.debug('[editor] Initial parsed data:', parsedData);
-                                if (Array.isArray(parsedData) && parsedData.length === 0) {
-                                    const errorMsg = '[editor] Error: Parsed data is an empty array. Forcing re-parse using trimmed data.';
-                                    console.error(errorMsg);
-                                    parsedData = JSON.parse(decompressed.trim());
-                                    console.debug('[editor] Parsed data after re-parse:', parsedData);
-                                    if (Array.isArray(parsedData) && parsedData.length === 0)
-                                        throw new Error('[editor] Error: Re-parsed data is still an empty array.');
-                                }
-                            } catch (error) {
-                                console.error('[editor] Failed to parse decompressed data:', error);
-                                throw error;
-                            }
+                    if (param.startsWith('frombp=')) {
+                        const frombp = param.substring(7).toLowerCase();
+                        if (frombp === 'true') {
+                            setFromBlueprint(true);
+                            console.log('[editor] frombp is true, setting fromBlueprint to true');
                         } else {
-                            parsedData = [];
+                            setFromBlueprint(false);
+                            console.log('[editor] frombp is false, setting fromBlueprint to false');
                         }
-                        console.warn('[editor] using method A');
-                        renderer.current!.logicDisplay?.importJSON(parsedData, renderer.current!.logicDisplay.components);
-                        console.log(renderer.current!.logicDisplay!.components);
-                        if (renderer.current!.logicDisplay!.components.length === 0) {
-                            console.error('[editor] No components found in the design, initializing with an empty array');
-                        }
-                        setLoading(false);
                     }
                     if (param.startsWith('action=')) {
                         const actions = param.substring(7).split(',');
                         if (actions.includes('debug')) {
                             console.log('[editor] Debug mode enabled');
+                            setDebugMode(true);
                         }
                         if (actions.includes('new')) {
                             console.log('[editor] New design requested');
@@ -372,6 +354,90 @@ const Editor = () => {
                             setLoading(false);
                             return; // Skip data import for new designs
                         }
+                    }
+                    if (param.startsWith('designname=') && !hasRun.current) {
+                        hasRun.current = true;
+                        logOnDebug('editor', `designname param found: ${param}`);
+                        const name = param.substring(11).replace(/^"|"$/g, '');
+                        setDesignName(name);
+                        nameInput.current!.value = name;
+                        console.log('[editor] design name:', name);
+                        console.log('[editor] opening up URI-encoded design');
+                        
+                        // First try to decompress if it's compressed
+                        let decompressed = LZString.decompressFromEncodedURIComponent(data);
+                        logOnDebug('editor', `decompressed data (attempt): ${decompressed}`);
+                        
+                        // If decompression returns null, try using the raw data
+                        if (!decompressed) {
+                            logOnDebug('editor', 'Decompression returned null, trying direct parse');
+                            try {
+                                // Try parsing the raw data directly
+                                logOnDebug('editor', 'Attempting direct parse of data');
+                                const directParse = JSON.parse(decodeURIComponent(data));
+                                if (Array.isArray(directParse)) {
+                                    logOnDebug('editor', 'Direct parse successful, using parsed data');
+                                    decompressed = JSON.stringify(directParse);
+                                }
+                            } catch (e) {
+                                logOnDebug('editor', `Direct parse failed: ${e}`);
+                                const decoded = decodeURIComponent(data);
+                                decompressed = LZString.decompressFromEncodedURIComponent(decoded);
+                                logOnDebug('editor', `Decompressed from decoded data: ${decompressed}`);
+                            }
+                        }
+
+                        console.log('[editor] data:', decompressed);
+                        let parsedData: any = [];
+
+                        if (decompressed) {
+                            console.log('[editor] Decompressed data is valid, parsing JSON');
+                            try {
+                                console.log('[editor] Parsing decompressed data');
+                                if (typeof decompressed === 'string') {
+                                    console.log('[editor] Decompressed data is a string, parsing it');
+                                    parsedData = JSON.parse(decompressed);
+                                    console.log('[editor] typeof parsedData: ', typeof parsedData);
+                                    if (typeof parsedData === 'string') {
+                                        parsedData = JSON.parse(parsedData);
+                                        console.debug('[editor] Parsed data is a string, re-parsed to JSON', parsedData);
+                                    }
+                                } else {
+                                    parsedData = decompressed;
+                                }
+                                
+                                if (!Array.isArray(parsedData)) {
+                                    console.error('[editor] Parsed data is not an array, converting to array');
+                                    parsedData = [parsedData];
+                                }
+                                
+                                console.debug('[editor] Final parsed data:', parsedData);
+                                console.warn('[editor] using method A');
+                                if (renderer.current) {
+                                    console.log('[editor] reassuring data:', parsedData);
+                                    // Ensure parsedData is an array
+                                    const finalData = Array.isArray(parsedData) ? parsedData : [];
+                                    console.log(`[editor] performing final checks, isarray: ${Array.isArray(finalData)}, finalData: `, finalData);
+                                    console.log('[editor] fromBlueprint state:', fromBlueprint);
+                                    if (id.includes('frombp=true') || fromBlueprint) {
+                                        console.log('[editor] fromBlueprint is true, performing direct assignment');
+                                        renderer.current.logicDisplay!.components = Array.isArray(parsedData) ? parsedData : [parsedData];
+                                    } else {
+                                        console.log('[editor] fromBlueprint is false, using importJSON');
+                                        console.log(renderer.current.logicDisplay!.components);
+                                        renderer.current.logicDisplay?.importJSON(finalData, renderer.current.logicDisplay.components);
+                                    }
+                                    console.log(renderer.current.logicDisplay!.components);
+                                    if (renderer.current.logicDisplay!.components.length === 0) {
+                                        console.error('[editor] No components found in the design, initializing with an empty array');
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('[editor] Failed to parse decompressed data:', error);
+                                console.warn('[editor] Attempting to continue with empty array');
+                            }
+                        }
+                        setLoading(false);
                     }
                 });
             } else {
