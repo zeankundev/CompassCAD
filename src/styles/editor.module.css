@@ -604,6 +604,37 @@ body {
     cursor: pointer;
     margin-top: 10px;
 }
+.blueprint-intro {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+}
+.blueprint-intro .blueprint-suggestions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-evenly;
+    max-width: 50%;
+}
+.blueprint-intro .blueprint-suggestions div {
+    display: flex;
+    background-color: var(--primary);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    border: 0.5px solid var(--outline);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+.blueprint-intro .blueprint-suggestions div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 5px 10px 3px rgba(0, 0, 0, 0.5);
+}
 .blueprint-messages {
     display: flex;
     flex-direction: column;

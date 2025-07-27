@@ -2,7 +2,7 @@ import { DeviceType, getDeviceType } from '../components/GetDevice';
 import YesNoDialog from '../components/YesNoDialog';
 import styles from '../styles/editor.module.css'
 import CompassCADLogo from '../assets/logo.svg'
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { HistoryEntry } from './Editor';
 import NewSymbol from '../assets/newLogic.svg'
 import OpenSymbol from '../assets/openLogic.svg'
@@ -19,6 +19,11 @@ import { getLocaleKey } from '../components/LanguageHandler';
 interface Message {
     role: 'user' | 'assistant';
     content: string;
+}
+
+interface AISuggestions {
+    shorthand: string;
+    prompt: string;
 }
 
 interface MiniButtonClickableProps {
@@ -104,6 +109,13 @@ const EditorHome = () => {
         }
     ];
 
+    const defaultSuggestions: AISuggestions[] = [
+        { shorthand: '🏠 A house with 2 floors', prompt: 'Create me a house with 2 floors' },
+        { shorthand: '🚗 A simple car design', prompt: 'Create me a simple car design, including everything such as the car chassis and wheels' },
+        { shorthand: '🏢 A floor plan for a building', prompt: 'Create me a floor plan for a building, including rooms and furniture' },
+        { shorthand: '🛠️ A plan layout for a workshop', prompt: 'Create me a plan layout for a workshop, including workbenches and tools' },
+    ]
+
     const getCurrentTimeMessage = () => {
         const hour = new Date().getHours();
         let period: typeof timeMessages[number]['time'] = 'morning';
@@ -150,12 +162,14 @@ const EditorHome = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [currentMessage, setCurrentMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const sendButton = useRef<HTMLDivElement>(null);
 
     console.log(`[home] api key: ${process.env.REACT_APP_BLUEPRINT_API_KEY || 'not set'}`);
 
     const genAI = new GoogleGenAI({apiKey: process.env.REACT_APP_BLUEPRINT_API_KEY || ''});
 
     const sendMessage = async () => {
+        console.log('[home] sending message:', currentMessage);
         if (!currentMessage.trim()) return;
         
         setIsLoading(true);
@@ -420,6 +434,32 @@ When the user speaks in other languages than English, you must reply to them in 
                         {isBluePrintMode && (
                             <>
                                 <div className={styles['blueprint-container']}>
+                                    {messages.length === 0 && (
+                                        <div className={styles['blueprint-intro']}>
+                                            <h1>{getLocaleKey('editor.home.blueprintIntro')}</h1>
+                                            <span>{getLocaleKey('editor.home.blueprintDesc')}</span>
+                                            <h3>{getLocaleKey('editor.home.blueprintSuggestions')}</h3>
+                                            <br></br>
+                                            <div className={styles['blueprint-suggestions']}>
+                                                {defaultSuggestions.map((suggestion, index) => (
+                                                    <div 
+                                                        key={index} 
+                                                        className={styles['blueprint-suggestion']}
+                                                        onClick={() => {
+                                                            setCurrentMessage(suggestion.prompt);
+                                                            setTimeout(() => {
+                                                                if (sendButton.current) {
+                                                                    sendButton.current.click();
+                                                                }
+                                                            }, 50)
+                                                        }}
+                                                    >
+                                                        <span>{suggestion.shorthand}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                     {messages.length > 0 && (
                                         <div className={styles['blueprint-messages']}>
                                             {messages.map((message, index) => (
@@ -452,7 +492,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                             ></textarea>
                                             <small>{getLocaleKey('editor.home.blueprintWarning')}</small>
                                         </div>
-                                        <div className={styles['blueprint-button']} onClick={sendMessage}>
+                                        <div ref={sendButton} className={styles['blueprint-button']} onClick={sendMessage}>
                                             {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} width={24} />}
                                         </div>
                                     </div>
