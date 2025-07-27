@@ -66,6 +66,29 @@ export const locales : any = {
                 blueprintIntro: "Hey there! I'm Blueprint!",
                 blueprintDesc: "I can help you create designs based on your prompts. Just ask me anything!",
                 blueprintSuggestions: "Or try these suggestions:",
+                bpGenerated: "Blueprint-generated Design",
+                suggestions: {
+                    one: {
+                        shorthand: "🏠 A house with 2 floors",
+                        prompt: "Create me a house with 2 floors"
+                    },
+                    two: {
+                        shorthand: "🚗 A simple car design",
+                        prompt: "Create me a simple car design, including everything such as the car chassis and wheels"
+                    },
+                    three: {
+                        shorthand: "🏢 A floor plan for a building",
+                        prompt: "Create me a floor plan for a building, including rooms and furniture"
+                    },
+                    four: {
+                        shorthand: "🛠️ A plan layout for a workshop",
+                        prompt: "Create me a plan layout for a workshop, including workbenches and tools"
+                    },
+                    five: {
+                        shorthand: "🏰 A castle with a moat",
+                        prompt: "Create me a castle with a moat, including towers and walls"
+                    }
+                },
                 blueprintPlaceholder: "Ask or create with Blueprint AI",
                 blueprintWarning: "AI-generated content may be false or inaccurate. Powered by Google AI's Gemini",
                 clearHistoryModal: "Clear History",
@@ -426,6 +449,32 @@ export const locales : any = {
                 clearEntireHistory: "Rensa hela historiken",
                 askBlueprint: "Fråga Blueprint",
                 recents: "Senaste",
+                blueprintIntro: "Hej där! Jag är Blueprint!",
+                blueprintDesc: "Jag kan hjälpa dig att skapa designer baserat på dina frågor. Fråga mig bara vad som helst!",
+                blueprintSuggestions: "Eller prova dessa förslag:",
+                bpGenerated: "Blueprint-genererad design",
+                suggestions: {
+                    one: {
+                        shorthand: "🏠 Ett hus med 2 våningar",
+                        prompt: "Skapa ett hus med 2 våningar"
+                    },
+                    two: {
+                        shorthand: "🚗 En enkel bildesign",
+                        prompt: "Skapa en enkel bildesign, inklusive allt som bilchassi och hjul"
+                    },
+                    three: {
+                        shorthand: "🏢 En planlösning för en byggnad",
+                        prompt: "Skapa en planlösning för en byggnad, inklusive rum och möbler"
+                    },
+                    four: {
+                        shorthand: "🛠️ En planlösning för en verkstad",
+                        prompt: "Skapa en planlösning för en verkstad, inklusive arbetsbänkar och verktyg"
+                    },
+                    five: {
+                        shorthand: "🏰 Ett slott med vallgrav",
+                        prompt: "Skapa ett slott med vallgrav, inklusive torn och väggar"
+                    }
+                },
                 blueprintPlaceholder: "Fråga eller skapa med Blueprint AI",
                 blueprintWarning: "AI-genererat innehåll kan vara felaktigt eller oprecist. Drivs av Google AI:s Gemini",
                 clearHistoryModal: "Rensa historik",

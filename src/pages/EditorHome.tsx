@@ -110,10 +110,11 @@ const EditorHome = () => {
     ];
 
     const defaultSuggestions: AISuggestions[] = [
-        { shorthand: '🏠 A house with 2 floors', prompt: 'Create me a house with 2 floors' },
-        { shorthand: '🚗 A simple car design', prompt: 'Create me a simple car design, including everything such as the car chassis and wheels' },
-        { shorthand: '🏢 A floor plan for a building', prompt: 'Create me a floor plan for a building, including rooms and furniture' },
-        { shorthand: '🛠️ A plan layout for a workshop', prompt: 'Create me a plan layout for a workshop, including workbenches and tools' },
+        { shorthand: getLocaleKey('editor.home.suggestions.one.shorthand'), prompt: getLocaleKey('editor.home.suggestions.one.prompt') },
+        { shorthand: getLocaleKey('editor.home.suggestions.two.shorthand'), prompt: getLocaleKey('editor.home.suggestions.two.prompt') },
+        { shorthand: getLocaleKey('editor.home.suggestions.three.shorthand'), prompt: getLocaleKey('editor.home.suggestions.three.prompt') },
+        { shorthand: getLocaleKey('editor.home.suggestions.four.shorthand'), prompt: getLocaleKey('editor.home.suggestions.four.prompt') },
+        { shorthand: getLocaleKey('editor.home.suggestions.five.shorthand'), prompt: getLocaleKey('editor.home.suggestions.five.prompt') },
     ]
 
     const getCurrentTimeMessage = () => {
@@ -340,7 +341,7 @@ When the user speaks in other languages than English, you must reply to them in 
             // Handle CCAD code block and provide a link to open the design
             const designData = match[1].trim();
             const encodedData = LZString.compressToEncodedURIComponent(designData);
-            const designUrl = `/editor/designname="Blueprint-generated Design";${encodedData}`;
+            const designUrl = `/editor/frombp=true,designname="${getLocaleKey('editor.home.bpGenerated')}";${encodedData}`;
             parts.push(
                 <a 
                     key={`ccad-${match.index}`}
