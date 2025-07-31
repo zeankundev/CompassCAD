@@ -321,6 +321,32 @@ export const locales : any = {
                 recents: "Terbaru",
                 blueprintPlaceholder: "Tanya atau buat dengan Blueprint AI",
                 blueprintWarning: "Konten dibuat AI mungkin salah atau tidak akurat.",
+                blueprintIntro: "Hei! Aku Blueprint!",
+                blueprintDesc: "Aku bisa membantu kamu membuat desain berdasarkan pertanyaanmu. Tanya saja apa pun!",
+                blueprintSuggestions: "Atau coba saran ini:",
+                bpGenerated: "Desain dibuat Blueprint",
+                suggestions: {
+                    one: {
+                        shorthand: "🏠 Rumah dengan 2 lantai",
+                        prompt: "Buatkan aku rumah dengan 2 lantai"
+                    },
+                    two: {
+                        shorthand: "🚗 Desain mobil sederhana",
+                        prompt: "Buatlah aku desain mobil sederhana, termasuk semua seperti sasis mobil dan roda"
+                    },
+                    three: {
+                        shorthand: "🏢 Rencana lantai untuk bangunan",
+                        prompt: "Buatkan aku rencana lantai untuk bangunan, termasuk ruangan dan furnitur"
+                    },
+                    four: {
+                        shorthand: "🛠️ Rencana layout untuk bengkel",
+                        prompt: "Buatlah aku rencana layout untuk bengkel, termasuk meja kerja dan alat"
+                    },
+                    five: {
+                        shorthand: "🏰 Sebuah kasta dengan parit",
+                        prompt: "Buatlah aku sebuah kasta dengan parit, termasuk menara dan dinding"
+                    }
+                },
                 clearHistoryModal: "Hapus riwayat",
                 text1Sure: "Yakin untuk menghapuskan seluruh riwayatmu? ",
                 boldTextWarning: "Aksi ini tidak bisa diundurkan!",

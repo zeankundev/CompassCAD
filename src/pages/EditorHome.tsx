@@ -10,6 +10,7 @@ import TrashSymbol from '../assets/trash.svg'
 import BluePrintSymbol from '../assets/blueprint.svg'
 import SendSymbol from '../assets/send.svg'
 import BluePrintIsFuckingSleeping from '../assets/idle.svg'
+import MenuImg from '../assets/menu.svg'
 import { LZString } from '../components/LZString';
 import ReusableFooter from '../components/ReusableFooter';
 import { GoogleGenAI } from '@google/genai';
@@ -163,6 +164,7 @@ const EditorHome = () => {
     const [messages, setMessages] = useState<Message[]>([]);
     const [currentMessage, setCurrentMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [showMobileMenu, setShowMobileMenu] = useState<boolean>(false);
     const sendButton = useRef<HTMLDivElement>(null);
 
     // I'm fucked of sending the API key to the console, so I'll comment this line
@@ -196,6 +198,11 @@ When generating designs, output them in code blocks using the ccad language iden
 \`\`\`
 
 The design format is a JSON array of objects where each object represents a component with these types:
+All components will have the following as a requirement. You must add all of these before the component.
+{active: boolean, type: number, color: string, radius: number, opacity: number}
+By default, here are the default values:
+active: true (modify this if you want the component to be visible or not), type: 0, color: "#ffffff", radius: 2 (modify this if you want to modify its thickness), opacity: 100 (modify this if you want to modify its opacity, 0 is invisible, 100 is fully visible)
+The types of components are as follows:
 - point: {type: 1, x: number, y: number, color: string, radius: number}
 - line: {type: 2, x1: number, y1: number, x2: number, y2: number, color: string, radius: number}
 - circle: {type: 3, x1: number, y1: number, x2: number, y2: number, color: string, radius: number}
@@ -341,7 +348,7 @@ When the user speaks in other languages than English, you must reply to them in 
             // Handle CCAD code block and provide a link to open the design
             const designData = match[1].trim();
             const encodedData = LZString.compressToEncodedURIComponent(designData);
-            const designUrl = `/editor/frombp=true,designname="${getLocaleKey('editor.home.bpGenerated')}";${encodedData}`;
+            const designUrl = `/editor/designname="${getLocaleKey('editor.home.bpGenerated')}";${encodedData}`;
             parts.push(
                 <a 
                     key={`ccad-${match.index}`}
@@ -371,7 +378,7 @@ When the user speaks in other languages than English, you must reply to them in 
     };
 
     return (
-        <Fragment>
+        <>
             {device === 'desktop' && (
                 <div className={styles['editor-home']}>
                     {showDialog == true && (
@@ -536,17 +543,65 @@ When the user speaks in other languages than English, you must reply to them in 
             )}
             {device == 'mobile' && (
                 <div className={styles['editor-home']}>
-                    <span>mobile in wip, sorry.</span>
-                    <h2>now what to do?</h2>
-                    <ul>
-                        <li>switch your phone to landscape mode</li>
-                        <li>use desktop mode if portrait (I am not sure lol)</li>
-                        <li>use your desktop :)</li>
-                    </ul>
-                    <span>if you did either that (except num 3), <b>refresh the page</b></span>
+                    <div className={styles['editor-home-header']}>
+                        <img src={CompassCADLogo} height={24} />
+                    </div>
+                    <br></br>
+                    <h2>{greeting}</h2>
+                    {showMobileMenu === true && (
+                        <div className={styles['mobile-minimenu']}>
+                            <MiniButtonClickable 
+                                icon={NewSymbol}
+                                onPress={() => window.location.href = '/editor/action=new;'}
+                            >
+                                {getLocaleKey('editor.home.createNew')}
+                            </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={OpenSymbol}
+                                onPress={importDesign}
+                            >
+                                {getLocaleKey('editor.home.importExisting')}
+                            </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={TrashSymbol}
+                                onPress={() => {
+                                    setDialog(
+                                        {
+                                            title: getLocaleKey('editor.home.clearHistoryModal'), 
+                                            onYes: () => {
+                                                localStorage.setItem('history', '[]');
+                                                refreshHistory();
+                                                setshowDialog(false);
+                                            },
+                                            onNo: () => setshowDialog(false),
+                                            children: <p>{getLocaleKey('editor.home.text1Sure')} <b>{getLocaleKey('editor.home.boldTextWarning')}</b></p>
+                                        }
+                                    );
+                                    setshowDialog(true);
+                                    setShowMobileMenu(false);
+                                }}
+                            >
+                                {getLocaleKey('editor.home.clearEntireHistory')}
+                            </MiniButtonClickable>
+                            <MiniButtonClickable 
+                                icon={BluePrintSymbol}
+                                onPress={() => {setIsBluePrintMode(isBluePrintMode ? false : true); setShowMobileMenu(false);}}
+                            >
+                                {getLocaleKey('editor.home.askBlueprint')}
+                            </MiniButtonClickable>
+                        </div>
+                    )}
+                    <div 
+                        className={styles['mobile-snackmenu']} 
+                        onClick={() => setShowMobileMenu(!showMobileMenu)}
+                        onTouchStart={(e) => {navigator.vibrate(30); e.stopPropagation();}}
+                        onTouchEnd={(e) => {navigator.vibrate(30); e.stopPropagation();}}
+                    >
+                        <img src={MenuImg} />
+                    </div>
                 </div>
             )}
-        </Fragment>
+        </>
     )
 }
 export default EditorHome;
