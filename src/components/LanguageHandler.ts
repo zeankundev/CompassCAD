@@ -141,6 +141,7 @@ export const locales : any = {
                     undo: "Undo",
                     redo: "Redo",
                     share: "Share/Export",
+                    feedback: "Send Feedback",
                     shareModal: {
                         heading: "Share/Export Design",
                         copyLink: "Copy Link",
@@ -201,15 +202,15 @@ export const locales : any = {
             no: "Nee"
         },
         home: {
-            header: "Bouw je dromen zonder tijd te verspillen aan het leren van complexe tools. Het is tijd om het ontwerp van je \"droomgebouw\" te vereenvoudigen.",
-            descHero: "Stel je voor dat CAD net zo eenvoudig zou zijn als de krachtige tools die we vandaag de dag gebruiken, zoals Notion of zelfs Figma. Maar dan kunnen we opnieuw definiëren wat \"krachtige tools\" betekent voor architectuurontwerp.",
+            header: "Bouw je dromen zonder tijd te verspillen aan complexe tools. Het is tijd om het 'droombouw'-ontwerp te vereenvoudigen",
+            descHero: "Stel je voor dat CAD net zo eenvoudig was als de krachtige tools die we vandaag gebruiken, zoals Notion of zelfs Figma. Alleen kunnen we dan opnieuw definiëren wat 'krachtige tools' betekent voor architectuurontwerp",
             downloadButton: "Downloaden voor platform",
             inBrowserEditor: "In-browser editor",
-            header1Sub: "Razendsnelle CAD-software. Gratis, maar toch eenvoudig en minimalistisch.",
-            paragraph1Sub: "Gemaakt door de harten van arme ontwikkelaars die zich geen goede computer en CAD-software kunnen veroorloven. Speciaal voor jou gemaakt, zodat je ervan kunt genieten.",
+            header1Sub: "Razendsnelle CAD-software. Gratis, doch eenvoudig en minimalistisch",
+            paragraph1Sub: "Gebouwd vanuit het hart van blutte ontwikkelaars die zich geen goede computer en CAD-software kunnen veroorloven, speciaal voor jou gemaakt om van te genieten.",
             littleNote1: "*Alleen beschikbaar voor Windows en Linux.",
-            header2Sub: "Geen desktopversie of werkt het niet? Wij hebben altijd de webversie!",
-            littleNote2: "*Afbeeldingen kunnen er anders uitzien dan de daadwerkelijke software."
+            header2Sub: "Geen desktopversie of werkt het niet? We hebben altijd de webversie!",
+            littleNote2: "*Afbeeldingen kunnen afwijken van de daadwerkelijke software"
         },
         editor: {
             home: {
@@ -217,63 +218,90 @@ export const locales : any = {
                 createNew: "Nieuw maken",
                 importExisting: "Bestaand importeren",
                 clearEntireHistory: "Hele geschiedenis wissen",
-                askBlueprint: "Blueprint vragen",
-                recents: "Recenten",
-                blueprintPlaceholder: "Vraag of maak met Blueprint AI",
+                askBlueprint: "Vraag Blueprint",
+                recents: "Recent",
+                blueprintIntro: "Hallo! Ik ben Blueprint!",
+                blueprintDesc: "Ik kan je helpen ontwerpen te maken op basis van je prompts. Vraag me gerust alles!",
+                blueprintSuggestions: "Of probeer deze suggesties:",
+                bpGenerated: "Door Blueprint gegenereerd ontwerp",
+                suggestions: {
+                    one: {
+                        shorthand: "🏠 Een huis met 2 verdiepingen",
+                        prompt: "Maak een huis met 2 verdiepingen"
+                    },
+                    two: {
+                        shorthand: "🚗 Een eenvoudig auto-ontwerp",
+                        prompt: "Maak een eenvoudig auto-ontwerp, inclusief alles zoals het chassis en de wielen"
+                    },
+                    three: {
+                        shorthand: "🏢 Een plattegrond voor een gebouw",
+                        prompt: "Maak een plattegrond voor een gebouw, inclusief kamers en meubels"
+                    },
+                    four: {
+                        shorthand: "🛠️ Een indelingsplan voor een werkplaats",
+                        prompt: "Maak een indelingsplan voor een werkplaats, inclusief werkbanken en gereedschap"
+                    },
+                    five: {
+                        shorthand: "🏰 Een kasteel met een slotgracht",
+                        prompt: "Maak een kasteel met een slotgracht, inclusief torens en muren"
+                    }
+                },
+                blueprintPlaceholder: "Vraag of creëer met Blueprint AI",
                 blueprintWarning: "AI-gegenereerde inhoud kan onjuist of onnauwkeurig zijn. Aangedreven door Google AI's Gemini",
                 clearHistoryModal: "Geschiedenis wissen",
                 text1Sure: "Weet je zeker dat je de hele geschiedenis wilt wissen?",
                 boldTextWarning: "Deze actie kan niet ongedaan worden gemaakt.",
                 viewInEditor: "Bekijk/bewerk dit ontwerp in de editor",
-                nothingInHistory: "Je hebt niets in je geschiedenis list. Maken veel ontwerp en jouw geschiedenis hier verschijnen.",
+                nothingInHistory: "Je hebt vandaag niets in je geschiedenislijst staan. Maak wat tekeningen en je geschiedenis verschijnt hier.",
                 randomMesg: {
                     morning: {
-                        one: "Yo! Heb je al koffie gehad ofzo? ☕",
-                        two: "Morgen! Klaar om te beginnen? 🌄", 
-                        three: "Morgen! Laat zien wat je gaat brainstormen! 🤩"
+                        one: "Hé! Al koffie gehad? ☕",
+                        two: "Goedemorgen! Klaar om je dag te beginnen? 🌄",
+                        three: "Morgen! Laten we eens zien wat je gaat brainstormen! 🤩"
                     },
                     noon: {
-                        one: "Zit je nu te chillen ofzo? 🧐",
-                        two: "Eerst lunchen, dan terug hier! 😋",
-                        three: "Hopelijk lig je niet te slapen! 😴"
+                        one: "Nu al iets beginnen? 🧐",
+                        two: "Lunchtijd! Zin in iets lekkers en werken hier! 😋",
+                        three: "Ik hoop dat je niet slaapt! 😴"
                     },
                     afternoon: {
-                        one: "Ben je nog wakker? Kom op, designen! 🗺️",
-                        two: "Houd die creativiteit gaande man! ✏️",
-                        three: "Perfect moment voor CAD! 📐"
+                        one: "Nog steeds wakker? Laten we ontwerpen! 🗺️",
+                        two: "Houd de creativiteit gaande! ✏️",
+                        three: "Perfecte tijd voor CAD-werk! 📐"
                     },
                     evening: {
                         one: "'s Avonds nog aan het werk? 🧐",
-                        two: "Heb je nog iets voor de deadline? ⌚",
-                        three: "Jij bent nog steeds bezig. Ga door. 💪"
+                        two: "Iets last minute? ⌚",
+                        three: "Toch ben je nog sterk. Ga zo door 💪"
                     },
                     night: {
-                        one: "Moet je niet slapen ofzo? 🛌",
-                        two: "Per ongeluk aan het brainstormen? 😵‍💫",
-                        three: "Damn, jouw cafeïne level zakt nooit he ☕"
+                        one: "Hoort u niet te slapen? 🛌",
+                        two: "Per ongeluk nu gebrainstormd? 😵‍💫",
+                        three: "Toch raakt je cafeïne nooit op. ☕"
                     },
                     dawn: {
-                        one: "Ik ga slapen, oh wacht toch niet 😴",
-                        two: "Ochtendgloren en jij hebt nog steeds ideeën? 😮‍💨",
-                        three: "Hopelijk zit je niet in de stress 🥲"
-                    },
+                        one: "Ik ga slapen, wacht nee toch niet. 😴",
+                        two: "Zo laat en heb je nog ideeën? 😮‍💨",
+                        three: "Ik hoop dat je niet aan het uitstellen bent! 🥲"
+                    }
                 }
             },
             main: {
                 newDesign: "Nieuw ontwerp",
                 loading: {
                     heading: "CompassCAD laden...",
-                    subHeading: "Even wachten, je bent zo klaar.",
+                    subHeading: "Even wachten, je bent zo klaar."
                 },
-                betaWarning: "Hé! Even ter info: deze editor is nog in beta, dus verwacht kapotte knoppen en niet-werkende interface",
+                betaWarning: "Hé! Even een waarschuwing: deze editor is nog in beta, dus verwacht kapotte knoppen en niet-werkende UI",
                 header: {
-                    goBackHome: "Terug naar home",
+                    goBackHome: "Terug naar start",
                     undo: "Ongedaan maken",
                     redo: "Opnieuw doen",
                     share: "Delen/Exporteren",
+                    feedback: "Feedback sturen",
                     shareModal: {
                         heading: "Ontwerp delen/exporteren",
-                        copyLink: "Link kopiëren",
+                        copyLink: "Link kopiëren"
                     }
                 },
                 essential: {
@@ -286,10 +314,40 @@ export const locales : any = {
                     addRectangle: "Rechthoek toevoegen",
                     addCircle: "Cirkel toevoegen",
                     addArc: "Boog toevoegen",
-                    addMeasure: "Meten",
+                    addMeasure: "Maat toevoegen",
                     addLabel: "Label toevoegen",
                     addImage: "Afbeelding toevoegen",
-                    addPolygon: "Veelhoek toevoegen",
+                    addPolygon: "Veelhoek toevoegen"
+                },
+                inspector: {
+                    header: "Inspector",
+                    collapseToRight: "Invouwen naar rechts",
+                    expand: "Uitvouwen",
+                    nothing: "Selecteer een component; de details van je component verschijnen dan hier.",
+                    general: {
+                        active: "Actief",
+                        radius: "Straal",
+                        color: "Kleur",
+                        opacity: "Doorzichtigheid",
+                        position: "Positie",
+                        size: "Grootte",
+                        coverage: "Boogdekking"
+                    },
+                    text: {
+                        heading: "Teksteigenschappen",
+                        text: "Tekst",
+                        fontSize: "Lettergrootte"
+                    },
+                    picture: {
+                        heading: "Afbeeldingseigenschappen",
+                        src: "Bron"
+                    },
+                    polygon: {
+                        heading: "Veelhoek Eigenschappen",
+                        fillColor: "Vulkleur",
+                        strokeColor: "Lijnkleur",
+                        enableStroke: "Lijn inschakelen"
+                    }
                 }
             }
         }
@@ -397,6 +455,7 @@ export const locales : any = {
                     undo: "Urungkan",
                     redo: "Ulangi",
                     share: "Bagi/Ekspor",
+                    feedback: "Kirim Umpan Balik",
                     shareModal: {
                         heading: "Bagi/Ekspor Desain",
                         copyLink: "Salin link",
@@ -553,6 +612,7 @@ export const locales : any = {
                     undo: "Ångra",
                     redo: "Upprepa",
                     share: "Dela/Exportera",
+                    feedback: "Skicka Feedback",
                     shareModal: {
                         heading: "Dela/Exportera Design",
                         copyLink: "Kopiera Link",

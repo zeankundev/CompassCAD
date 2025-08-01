@@ -41,6 +41,7 @@ import CopyLink from '../assets/copylink.svg'
 import CollapseRight from '../assets/collapse-right.svg'
 import Unselected from '../assets/unselected-state.svg'
 import Check from '../assets/check.svg'
+import FeedbackIcon from '../assets/feedback.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
@@ -591,6 +592,13 @@ const Editor = () => {
                         />
                         &nbsp;
                         <p>{zoom.toFixed(3)}x</p>
+                        &nbsp;&nbsp;
+                        <HeaderButton 
+                            svgImage={FeedbackIcon}
+                            title={getLocaleKey('editor.main.header.feedback')}
+                            func={() => window.open('https://form.typeform.com/to/sbjWyFKu', '_blank')}
+                            tabIndex={4}
+                        />
                     </div>
                     <div className={styles['header-right']}>
                         <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}} tabIndex={4}>
