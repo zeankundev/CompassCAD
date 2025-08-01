@@ -9,6 +9,8 @@ import Editor from './pages/Editor';
 import EditorHome from './pages/EditorHome';
 import DownloadPage from './pages/Download';
 import { GetLanguage } from './components/LanguageHandler';
+import { CommunitySignIn } from './pages/CommunitySignIn';
+import { CommunityHome } from './pages/CommunityHome';
 
 function App() {
     useEffect(() => {
@@ -18,10 +20,12 @@ function App() {
         <div className={styles.app}>
             <Router>
                 <Switch>
-                  <Route exact path='/' component={Home} />
-                  <Route path='/download' component={DownloadPage} />
-                  <Route path='/editor/:id' component={Editor} />
-                  <Route path='/editor' component={EditorHome} />
+                    <Route exact path='/' component={Home} />
+                    <Route path='/download' component={DownloadPage} />
+                    <Route path='/editor/:id' component={Editor} />
+                    <Route path='/editor' component={EditorHome} />
+                    <Route path='/community/signin' component={CommunitySignIn} />
+                    <Route exact path='/community' component={CommunityHome} />
                 </Switch>
             </Router>
         </div>
