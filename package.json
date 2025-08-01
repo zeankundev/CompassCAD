@@ -14,6 +14,7 @@
     "@types/react-dom": "^19.1.2",
     "@types/react-router-dom": "^5.3.3",
     "firebase": "^12.0.0",
+    "md5": "^2.3.0",
     "react": "^19.1.0",
     "react-country-flag": "^3.1.0",
     "react-dom": "^19.1.0",
@@ -48,5 +49,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/md5": "^2.3.5"
   }
 }

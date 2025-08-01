@@ -1,0 +1,23 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users collection rules
+    match /users/{userId} {
+      // Allow reading only if the user is authenticated and is requesting their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Allow creating a new user document
+      allow create: if request.auth != null &&                  // User must be authenticated
+                       request.auth.uid == userId &&             // Document ID must match authenticated user's UID
+                       request.resource.data.email == request.auth.token.email && // Email matches authenticated user's email
+                       request.resource.data.displayName == request.auth.token.name && // DisplayName matches authenticated user's name
+                       request.resource.data.photoURL == request.auth.token.picture && // PhotoURL matches authenticated user's picture
+                       request.resource.data.keys().hasAll(['email', 'displayName', 'photoURL', 'createdAt']) && // Ensure required fields are present
+                       request.resource.data.createdAt == request.time; // createdAt is set by serverTimestamp
+
+      // Disallow updating or deleting user documents after creation for security.
+      // If you need users to update their profile, you would modify this rule.
+      allow update, delete: if false;
+    }
+  }
+}
