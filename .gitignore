@@ -19,6 +19,9 @@
 .env.test.local
 .env.production.local
 
+# Firebase secrecy
+src/components/FirebaseConfig.ts
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -212,6 +212,7 @@ The types of components are as follows:
 - label: {type: 7, x: number, y: number, text: string, fontSize: number, color: string}
 - shape: {type: 8, x: number, y: number, components: Component[]}
 - picture: {type: 9, x: number, y: number, pictureSource: string}
+For the colors, avoid using RGBA, RGB, or 3-character hex codes. Instead, you must use 6-character hex codes, such as "#ffffff" for white, "#000000" for black, etc.
 
 Example of a simple design with a point and line:
 \`\`\`ccad
