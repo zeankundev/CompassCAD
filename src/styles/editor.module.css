@@ -466,6 +466,13 @@ body::-webkit-scrollbar-thumb:hover {
     flex-wrap: wrap;
     gap: 20px;
 }
+.editor-recents-container-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    overflow-y: scroll;
+}
 .editor-recents-entry {
     background-color: var(--secondary);
     border: 0.5px solid var(--outline);
@@ -479,7 +486,8 @@ body::-webkit-scrollbar-thumb:hover {
     box-shadow: 0px 0px 15px 5px rgba(0, 0, 0, 0.5);
 }
 .editor-recents-entry img {
-    width: 360px;
+    width: fit-content;
+    height: 186px;
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
 }

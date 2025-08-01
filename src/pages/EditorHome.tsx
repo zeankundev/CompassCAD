@@ -549,6 +549,32 @@ When the user speaks in other languages than English, you must reply to them in 
                     </div>
                     <br></br>
                     <h2>{greeting}</h2>
+                    <br></br>
+                    {history.length > 0 ? (
+                        <div className={styles['editor-recents-container-mobile']}>
+                            {history.map((data: HistoryEntry, index: number) => (
+                                <div 
+                                    className={styles['editor-recents-entry']}
+                                    key={index}
+                                    onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
+                                    title={`${data.name} on ${data.date}`}
+                                >
+                                    <img src={data.preview} />
+                                    <div className={styles['editor-recents-details']}>
+                                        <div className={styles['recents-details-title']}>
+                                            <h4>{data.name.length > 16 ? data.name.substring(0, 16) + '...' : data.name}</h4>
+                                            <span>{data.date}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className={styles['editor-recents-none']}>
+                            <img src={BluePrintIsFuckingSleeping} width={256}/>
+                            <p>{getLocaleKey('editor.home.nothingInHistory')}</p>
+                        </div>
+                    )}
                     {showMobileMenu === true && (
                         <div className={styles['mobile-minimenu']}>
                             <MiniButtonClickable 
