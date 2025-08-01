@@ -11,6 +11,7 @@ import BluePrintSymbol from '../assets/blueprint.svg'
 import SendSymbol from '../assets/send.svg'
 import BluePrintIsFuckingSleeping from '../assets/idle.svg'
 import MenuImg from '../assets/menu.svg'
+import Back from '../assets/back.svg'
 import { LZString } from '../components/LZString';
 import ReusableFooter from '../components/ReusableFooter';
 import { GoogleGenAI } from '@google/genai';
@@ -617,6 +618,72 @@ When the user speaks in other languages than English, you must reply to them in 
                                 {getLocaleKey('editor.home.askBlueprint')}
                             </MiniButtonClickable>
                         </div>
+                    )}
+                    {(isBluePrintMode && device === 'mobile') && (
+                        <>
+                            <div className={styles['blueprint-view-mobile']}>
+                                <div className={styles['blueprint-nav']}>
+                                    <div className={styles['blueprint-nav-btn']} onClick={() => setIsBluePrintMode(false)}>
+                                        <img src={Back} width={24} />
+                                    </div>
+                                </div>
+                                <div className={styles['blueprint-message-container-mobile']}>
+                                    {messages.length === 0 && (
+                                        <div className={styles['blueprint-intro-mobile']}>
+                                            <h1>{getLocaleKey('editor.home.blueprintIntro')}</h1>
+                                            <br></br>
+                                            <div className={styles['blueprint-suggestions']}>
+                                                {defaultSuggestions.map((suggestion, index) => (
+                                                    <div 
+                                                        key={index} 
+                                                        className={styles['blueprint-suggestion-mobile']}
+                                                        onClick={() => {
+                                                            setCurrentMessage(suggestion.prompt);
+                                                            setTimeout(() => {
+                                                                if (sendButton.current) {
+                                                                    sendButton.current.click();
+                                                                }
+                                                            }, 50)
+                                                        }}
+                                                    >
+                                                        <span>{suggestion.shorthand}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {messages.length > 0 && (
+                                        <div className={styles['blueprint-messages-mobile']}>
+                                            {messages.map((message, index) => (
+                                                <div key={index} className={`${styles.message} ${message.role === 'user' ? styles.user : ''}`}>
+                                                    <img 
+                                                        src={message.role === 'user' ? BluePrintIsFuckingSleeping : BluePrintSymbol} 
+                                                        alt={message.role}
+                                                    />
+                                                    <div className={styles['message-content']}>
+                                                        {parseMessageContent(message.content)}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    {messages.length > 0 && <br></br>}
+                                </div>
+                                <div className={styles['blueprint-messageinput-mobile']}>
+                                    <div>
+                                        <textarea 
+                                            placeholder={getLocaleKey('editor.home.blueprintPlaceholder')} 
+                                            value={currentMessage}
+                                            onChange={(e) => setCurrentMessage(e.target.value)}
+                                        />
+                                        <span>{getLocaleKey('editor.home.blueprintWarning')}</span>
+                                    </div>
+                                    <div className={styles['blueprint-button']} onClick={sendMessage} ref={sendButton}>
+                                        {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} width={24} />}
+                                    </div>
+                                </div>
+                            </div>
+                        </>
                     )}
                     <div 
                         className={styles['mobile-snackmenu']} 

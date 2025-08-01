@@ -52,6 +52,15 @@
         transform: scale(1);
     }
 }
+@keyframes zoomin {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    } to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
 
 .editor {
     width: 100%;
@@ -733,4 +742,110 @@ body {
     backdrop-filter: blur(10px);
     animation: slidein-from-top-special 0.2s ease;
     box-shadow: 0px 0px 13px 1px rgba(0, 0, 0, 0.5);
+}
+.blueprint-view-mobile {
+    position: fixed;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #2e2e2e;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    animation: zoomin 0.3s ease;
+}
+.blueprint-nav {
+    padding: 10px;
+    display: flex;
+    align-self: flex-start;
+}
+.blueprint-nav-btn {
+    padding: 10px;
+}
+.blueprint-messageinput-mobile {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--primary-background);
+    border-top: 0.5px solid var(--outline);
+    position: fixed;
+    bottom: 0;
+}
+.blueprint-messageinput-mobile textarea {
+    -webkit-appearance: none;
+    background-color: var(--primary-background);
+    color: var(--text);
+    font-family: var(--font);
+    resize: none;
+    border: none;
+    height: 100%;
+    display: flex;
+    outline: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+}
+.blueprint-messageinput-mobile div span {
+    font-size: 9pt;
+}
+.blueprint-message-container-mobile {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: scroll;
+    display: flex;
+    flex: 1;
+}
+.blueprint-intro-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+.blueprint-intro-mobile .blueprint-suggestions {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: space-evenly;
+}
+.blueprint-intro-mobile .blueprint-suggestions div {
+    display: flex;
+    background-color: var(--primary);
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    border: 0.5px solid var(--outline);
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+}
+.blueprint-messages-mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.blueprint-messages-mobile .message {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-radius: 20px;
+    justify-content: flex-start;
+    animation: slidein-from-bottom-special 0.2s ease;
+}
+.blueprint-messages-mobile .message.user {
+    align-self: flex-end;
+    background-color: var(--primary);
+    flex-direction: row-reverse;
+}
+.blueprint-messages-mobile .message:not(.user) {
+    background-color: var(--secondary);
+    flex-direction: row;
+}
+.blueprint-messages-mobile .message:not(.user) img {
+    margin-right: 10px;
+}
+.blueprint-messages-mobile .message.user img {
+    margin-left: 10px;
 }
