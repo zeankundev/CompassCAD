@@ -30,6 +30,14 @@ export const signInWithEmailPassword = (email: string, password: string) => {
 // Initialize Firestore
 const db = getFirestore(app);
 
+export interface User {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  createdAt: Date
+}
+
 export const createUserIfNotExists = async (userData: { uid: string, email: string, displayName: string, photoURL: string }) => {
     try {
         const userRef = firestoreDoc(db, 'users', userData.uid);
@@ -49,6 +57,7 @@ export const createUserIfNotExists = async (userData: { uid: string, email: stri
         throw error;
     }
 }
+
 export const getAccessToken = () => {
     const cookies = document.cookie.split('; ');
     const accessTokenCookie = cookies.find(cookie => cookie.startsWith('accessToken='));
@@ -57,16 +66,30 @@ export const getAccessToken = () => {
     }
     return null;
 }
+
 export const getUID = (accessToken: string) => {
-    const payload = JSON.parse(atob(accessToken.split('.')[1]));
-    return payload.uid;
-}
-export const getUser = async (uid: string) => {
+    // This assumes your accessToken is a JWT and the user_id is in the payload.
+    // Be cautious: Decoding JWTs client-side doesn't verify their authenticity.
+    // For critical operations, always verify tokens on a trusted backend.
     try {
+        const payload = JSON.parse(atob(accessToken.split('.')[1]));
+        console.log('Payload:', payload);
+        return payload.user_id;
+    } catch (error) {
+        console.error("Error decoding access token:", error);
+        return null;
+    }
+}
+
+export const getUser = async (uid: string): Promise<User | null> => {
+    try {
+        console.log('Fetching user with UID:', uid);
         const userRef = firestoreDoc(db, 'users', uid);
         const userDoc = await getDoc(userRef);
+
         if (userDoc.exists()) {
-            return userDoc.data();
+            // Combine the document ID (uid) with the document data
+            return { uid: userDoc.id, ...(userDoc.data() as Omit<User, 'uid'>) };
         } else {
             console.log("No such user!");
             return null;
