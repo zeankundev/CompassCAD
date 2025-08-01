@@ -792,10 +792,9 @@ body {
 }
 .blueprint-message-container-mobile {
     padding: 20px;
-    max-height: 70vh;
+    max-height: calc(71vh - var(--bottom-input-height, 0px));
     overflow-y: scroll;
     display: flex;
-    flex: 1;
 }
 .blueprint-intro-mobile {
     display: flex;
