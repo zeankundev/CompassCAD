@@ -792,15 +792,13 @@ body {
 }
 .blueprint-message-container-mobile {
     padding: 20px;
-    max-height: calc(71vh - var(--bottom-input-height, 0px));
+    max-height: 70vh;
     overflow-y: scroll;
-    display: flex;
 }
 .blueprint-intro-mobile {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    flex: 1;
+    justify-content: center;
 }
 .blueprint-intro-mobile .blueprint-suggestions {
     display: flex;
@@ -827,7 +825,7 @@ body {
 }
 .blueprint-messages-mobile .message {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     padding: 10px;
     border-radius: 20px;
     justify-content: flex-start;
