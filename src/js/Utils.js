@@ -162,6 +162,7 @@ const handleDragOver = (e) => {
         const targetIndex = parseInt(targetElement.dataset.index);
         // Add visual feedback if the target is different from the dragged item's current position
         if (targetIndex !== draggedIndex) {
+            console.log('[dragger] i\'m adding a class!')
             targetElement.classList.add('drag-over');
         }
     } else {
