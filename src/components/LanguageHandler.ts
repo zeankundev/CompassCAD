@@ -53,7 +53,10 @@ export const locales : any = {
             paragraph1Sub: "Built from the hearts of broke developers who cannot afford a good computer and a CAD software, created for you to enjoy.",
             littleNote1: "*Only available for Windows and Linux.",
             header2Sub: "No desktop version or it doesn't work? We always have the web version!",
-            littleNote2: "*Images may appear different than the actual software"
+            littleNote2: "*Images may appear different than the actual software",
+            header3Sub: "Love Indonesia? CompassCAD is 100% fully made in Indonesia!",
+            paragraph3Sub: "You're not just directly supporting the developers, you are also supporting Indonesia, without realizing!",
+            littleNote3: "*Images of CompassCAD doesn't represent the final product. Bangga Buatan Indonesia is a trademark by the Ministry of Tourism and Creative Economy of the Republic of Indonesia (Kemenparekraf)"
         },
         editor: {
             home: {
@@ -367,7 +370,10 @@ export const locales : any = {
             paragraph1Sub: "Dibuat dari hati seorang programmer biasa yang tidak bisa membeli komputer bagus dan software CAD, dibuat untukmu untuk dinikmati.",
             littleNote1: "*Hanya ada di Windows dan Linux",
             header2Sub: "Tidak ada versi desktop atau tidak bisa? Kita selalu punya versi web!",
-            littleNote2: "*Gambar tentu berbeda dari software sebenarnya"
+            littleNote2: "*Gambar tentu berbeda dari software sebenarnya",
+            header3Sub: "Suka tanah air? CompassCAD itu 100% dibuat di Indonesia!",
+            paragraph3Sub: "Kamu tidak hanya mendukung developer, kamu juga mendukung Indonesia, tanpa sadar!",
+            littleNote3: "Gambar CompassCAD tidak menunjukkan produk final. Bangga Buatan Indonesia adalah merek dagang milik Kementerian Pariwisata dan Ekonomi Kreatif Republik Indonesia (Kemenparekraf)"
         },
         editor: {
             home: {
@@ -524,7 +530,10 @@ export const locales : any = {
             paragraph1Sub: "Byggd från hjärtat av fattiga utvecklare som inte har råd med en bra dator och ett CAD-program, skapat för att du ska kunna njuta av det.",
             littleNote1: "*Endast tillgängligt för Windows och Linux.",
             header2Sub: "Ingen skrivbordsversion eller fungerar det inte? Vi har alltid webbversionen!",
-            littleNote2: "*Bilder kan se annorlunda ut än den faktiska programvaran"
+            littleNote2: "*Bilder kan se annorlunda ut än den faktiska programvaran",
+            header3Sub: "Älskar du Indonesien? CompassCAD är 100 % tillverkat i Indonesien!",
+            paragraph3Sub: "Du stöder inte bara utvecklarna direkt, du stöder även Indonesien, utan att inse det!",
+            littleNote3: "*Bilder från CompassCAD representerar inte slutprodukten. Bangga Buatan Indonesia är ett varumärke som tillhör Republiken Indonesiens ministerium för turism och kreativ ekonomi (Kemenparekraf)"
         },
         editor: {
             home: {

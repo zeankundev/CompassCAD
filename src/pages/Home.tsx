@@ -5,6 +5,7 @@ import TryIt from '../assets/general/try.svg'
 import InvertedExportButton from '../assets/export.svg'
 import CCADDesktopUI from '../assets/general/desktopui.svg'
 import CrossPlatformImage from '../assets/general/browserandphone.svg'
+import MIIImage from '../assets/general/madeinindo.svg'
 import '../styles/theme.css'
 import { getDeviceType } from '../components/GetDevice'
 import { useState, useEffect } from 'react'
@@ -89,6 +90,14 @@ const Home = () => {
                         <img src={CrossPlatformImage} style={{width: '90vw'}}/>
                     </div>
                     <small>{getLocaleKey('home.littleNote2')}</small>
+                    <br></br>
+                    <br></br>
+                    <h1>{getLocaleKey('home.header3Sub')}</h1>
+                    <p>{getLocaleKey('home.paragraph3Sub')}</p>
+                    <div style={{display:'flex', justifyContent: 'center'}}>
+                        <img src={MIIImage} style={{width: '80vw'}}/>
+                    </div>
+                    <small>{getLocaleKey('home.littleNote3')}</small>
                 </div>
             </div>
             <ReusableFooter />
