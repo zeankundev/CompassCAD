@@ -20,7 +20,9 @@ export interface SVGExporterSettings {
     font: string,
     advanced?: {
         defaultArrowLength?: number,
-        arrowOffset?: number
+        arrowOffset?: number,
+        baseArrowPadding?: number,
+        maxLength?: number
     }
 }
 
@@ -39,7 +41,9 @@ export class SVGExporter {
             font: 'monospace',
             advanced: {
                 defaultArrowLength: 25,
-                arrowOffset: 25
+                arrowOffset: 25,
+                baseArrowPadding: 20,
+                maxLength: 24
             }
         }
     }
@@ -316,14 +320,91 @@ export class SVGExporter {
         let angle: number = Math.atan2(y2 - y1, x2 - x1);
         const distanceText = distance.toFixed(2) + this.renderer.unitMeasure;
         this.context.save();
-        this.context.__ctx.font = `${this.renderer.fontSize} ${this.settings.font || 'monospace'}`;
+        this.context.__ctx.font = `${this.renderer.fontSize}px ${this.settings.font || 'monospace'}`;
         const textWidth = this.context.measureText(distanceText).width;
         this.context.restore();
         let defaultArrowLength = this.settings.advanced?.defaultArrowLength || 25;
         let arrowOffset = this.settings.advanced?.arrowOffset || 5;
         let arrowLength = defaultArrowLength;
+        const minDistanceForFullArrow = defaultArrowLength * 2 / 100;
+        if (distance < minDistanceForFullArrow) {
+            arrowLength = (distance / minDistanceForFullArrow) * defaultArrowLength;
+        }
+        const isShortDistance = distance < minDistanceForFullArrow * 2;
+        const midX = (x1 + x2) / 2;
+        const midY = (y1 + y2) / 2;
+        const textOffsetY = isShortDistance ? (750/100) : 0;
+        if (!isShortDistance) {
+            const basePadding: number = this.settings.advanced?.baseArrowPadding || 20;
+            const adaptivePadding: number = basePadding;
+            const labelGap: number = (textWidth + adaptivePadding);
+            const halfGapX: number = (labelGap / 2) * Math.cos(angle);
+            const halfGapY: number = (labelGap / 2) * Math.sin(angle);
+            this.drawLine(x1, y1, midX - halfGapX, midY - halfGapY, color, radius, opacity);
+            this.drawLine(midX + halfGapX, midY + halfGapY, x2, y2, color, radius, opacity);
+            const drawArrowhead = (x: number, y: number, angle: number, length: number, offset: number) => {
+                const arrowX = x + length * Math.cos(angle);
+                const arrowY = y + length * Math.sin(angle);
+                const offsetX = offset * Math.cos(angle + Math.PI / 2);
+                const offsetY = offset * Math.sin(angle + Math.PI / 2);
+                this.drawLine(x, y, arrowX + offsetX, arrowY + offsetY, color, radius, opacity);
+                this.drawLine(x, y, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+                this.drawLine(arrowX + offsetX, arrowY + offsetY, arrowX - offsetX, arrowY - offsetY, color, radius, opacity);
+            }
+            drawArrowhead(x1, y1, angle, arrowLength, arrowOffset);
+            drawArrowhead(x2, y2, angle + Math.PI, arrowLength, arrowOffset);
+            this.context.save();
+            this.context.translate(midX, midY + (textOffsetY + 2));
+            this.context.rotate(angle);
+            this.context.__ctx.textAlign = 'center';
+            this.context.__ctx.textBaseline = isShortDistance ? 'top': 'middle';
+            this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+            this.context.__ctx.font = `${this.renderer.fontSize}px ${this.settings.font}`
+        }
     }
-    drawLabel(x: number, y: number, text: string, color: string, radius: number, fontSize: number, opacity: number) {}
-    drawArc(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string, radius: number, opacity: number) {}
-    drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {}
+    drawLabel(x: number, y: number, text: string, color: string, radius: number, fontSize: number, opacity: number) {
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.font = `${fontSize}px ${this.settings.font}`;
+        let maxLength: number = this.settings.advanced?.maxLength || 24;
+        let tempLength: number = 0;
+        let tempText: string = "";
+        let textArray: string[] = text.split(" ");
+        textArray.forEach((text) => {
+            tempLength += text.length + 1;
+            tempText += " " + text;
+            if (tempLength > maxLength) {
+                this.context.fillText(
+                    tempText,
+                    (x - 5),
+                    y
+                );
+                y += 25;
+                tempLength = 0;
+                tempText = "";
+            }
+        });
+        this.context.fillText(
+            tempText,
+            (x - 5),
+            y
+        )
+    }
+    drawArc(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string, radius: number, opacity: number) {
+        let firstAngle: number = this.renderer.getAngle(x1, y1, x2, y2);
+        let secondAngle: number = this.renderer.getAngle(x1, y1, x3, y3);
+        this.context.__ctx.lineWidth = radius;
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.beginPath();
+        this.context.arc(
+            x1,
+            y1,
+            this.renderer.getDistance(x1, y1, x2, y2),
+            firstAngle, secondAngle, false
+        );
+        this.context.stroke();
+    }
+    drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {
+        if (vectors.length < 2) return;
+    }
 }
