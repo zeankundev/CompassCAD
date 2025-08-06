@@ -7,19 +7,27 @@ let lastTime = performance.now();
 let frameCount = 0;
 let fps = 0;
 
-interface GenericDefiner {
+export interface GenericDefiner {
     [key: string]: number;
 }
 
-interface HandleProperties {
+export interface HandleProperties {
     x: number;
     y: number;
     id: string,
     cursor: string
 }
-interface VectorType {
+export interface VectorType {
     x: number;
     y: number;
+}
+
+export const _num2hex = (value: number) => {
+    const clampedNum = Math.max(0, Math.min(100, value));
+    const scaledValue = Math.round(clampedNum * 2.55);
+    let hexString = scaledValue.toString(16);
+    hexString = hexString.padStart(2, '0');
+    return hexString.toUpperCase();
 }
 
 export class GraphicsRenderer {
@@ -198,13 +206,6 @@ export class GraphicsRenderer {
                 this.drawPoint(handle.x, handle.y, '#fff', 2, 100);
             }
         }
-    }
-    _num2hex(value: number) {
-        const clampedNum = Math.max(0, Math.min(100, value));
-        const scaledValue = Math.round(clampedNum * 2.55);
-        let hexString = scaledValue.toString(16);
-        hexString = hexString.padStart(2, '0');
-        return hexString.toUpperCase();
     }
     drawComponentSize(component: Component) {
         if (!component || !component.type) return;
@@ -695,8 +696,8 @@ export class GraphicsRenderer {
                 this.context.stroke();
             } else {
                 this.context.lineWidth = 3 * this.zoom;
-                this.context.fillStyle = color + this._num2hex(opacity);
-                this.context.strokeStyle = color + this._num2hex(opacity);
+                this.context.fillStyle = color + _num2hex(opacity);
+                this.context.strokeStyle = color + _num2hex(opacity);
                 this.context.beginPath();
                 this.context.arc(
                     (x + this.cOutX) * this.zoom,
@@ -718,8 +719,8 @@ export class GraphicsRenderer {
     ) {
         if (this.context) {
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color + this._num2hex(opacity);
-            this.context.strokeStyle = color + this._num2hex(opacity);
+            this.context.fillStyle = color + _num2hex(opacity);
+            this.context.strokeStyle = color + _num2hex(opacity);
             this.context.lineCap = "round";
             this.context.beginPath();
             this.context.moveTo(
@@ -742,8 +743,8 @@ export class GraphicsRenderer {
     ) {
         if (this.context) {
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color + this._num2hex(opacity);
-            this.context.strokeStyle = color + this._num2hex(opacity);
+            this.context.fillStyle = color + _num2hex(opacity);
+            this.context.strokeStyle = color + _num2hex(opacity);
             this.context.beginPath();
             this.context.arc(
                 (x1 + this.cOutX) * this.zoom,
@@ -838,7 +839,7 @@ export class GraphicsRenderer {
         this.context?.rotate(angle);
         this.context!.textAlign = 'center';
         this.context!.textBaseline = isShortDistance ? 'top' : 'middle';
-        this.context!.fillStyle = color + this._num2hex(opacity!);
+        this.context!.fillStyle = color + _num2hex(opacity!);
         this.context!.font = (this.fontSize * localZoom) + `px ${this.displayFont}, Consolas, DejaVu Sans Mono, monospace`;
         this.context?.fillText(distanceText, 0, localDiff);
         this.context?.restore();
@@ -863,7 +864,7 @@ export class GraphicsRenderer {
                 y += localDiff;
             }
 
-            this.context.fillStyle = color + this._num2hex(opacity);
+            this.context.fillStyle = color + _num2hex(opacity);
             this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
 
             var maxLength = 24; // 24 Characters per row
@@ -909,8 +910,8 @@ export class GraphicsRenderer {
             var secondAngle = this.getAngle(x1, y1, x3, y3);
 
             this.context.lineWidth = radius * this.zoom;
-            this.context.fillStyle = color + this._num2hex(opacity);
-            this.context.strokeStyle = color + this._num2hex(opacity);
+            this.context.fillStyle = color + _num2hex(opacity);
+            this.context.strokeStyle = color + _num2hex(opacity);
             this.context.beginPath();
             this.context.arc(
                 (x1 + this.cOutX) * this.zoom,

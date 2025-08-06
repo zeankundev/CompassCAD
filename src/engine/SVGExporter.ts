@@ -1,0 +1,329 @@
+import context2svg from 'canvas-to-svg/dist/CanvasToSvg'
+import { _num2hex, GraphicsRenderer, VectorType } from './GraphicsRenderer'
+import { 
+    componentTypes, 
+    Component, 
+    Point,
+    Line,
+    Circle,
+    Rectangle,
+    Measure,
+    Label,
+    Arc,
+    Polygon
+} from './ComponentHandler';
+
+export interface SVGExporterSettings {
+    padding: number,
+    monochrome: boolean,
+    signature: string,
+    font: string,
+    advanced?: {
+        defaultArrowLength?: number,
+        arrowOffset?: number
+    }
+}
+
+export class SVGExporter {
+    context: context2svg.CanvasToSvg
+    renderer: GraphicsRenderer;
+    settings: SVGExporterSettings
+
+    constructor(renderer: GraphicsRenderer, settings?: SVGExporterSettings) {
+        this.context = new context2svg.CanvasToSvg(1920, 1080);
+        this.renderer = renderer;
+        this.settings = settings || {
+            padding: 60,
+            monochrome: true,
+            signature: '',
+            font: 'monospace',
+            advanced: {
+                defaultArrowLength: 25,
+                arrowOffset: 25
+            }
+        }
+    }
+    _calculateOrigin(components: Component[]): VectorType {
+        let minX: number = Infinity, minY: number = Infinity;
+        components.forEach((component) => {
+            if (!component.active) return;
+            switch (component.type) {
+                case componentTypes.point:
+                    const point = component as Point;
+                    minX = Math.min(minX, point.x);
+                    minY = Math.min(minY, point.y);
+                    break;
+                case componentTypes.line:
+                    const line = component as Line;
+                    minX = Math.min(minX, line.x1, line.x2);
+                    minY = Math.min(minY, line.y1, line.y2);
+                    break;
+                case componentTypes.circle:
+                    const circle = component as Circle;
+                    minX = Math.min(minX, circle.x1, circle.x2);
+                    minY = Math.min(minY, circle.y1, circle.y2);
+                    break;
+                case componentTypes.rectangle:
+                    const rect = component as Rectangle;
+                    minX = Math.min(minX, rect.x1, rect.x2);
+                    minY = Math.min(minY, rect.y1, rect.y2);
+                    break;
+                case componentTypes.measure:
+                    const measure = component as Measure;
+                    minX = Math.min(minX, measure.x1, measure.x2);
+                    minY = Math.min(minY, measure.y1, measure.y2);
+                    break;
+                case componentTypes.label:
+                    const label = component as Label;
+                    minX = Math.min(minX, label.x);
+                    minY = Math.min(minY, label.y);
+                    break;
+                case componentTypes.arc:
+                    const arc = component as Arc;
+                    minX = Math.min(minX, arc.x1, arc.x2, arc.x3);
+                    minY = Math.min(minY, arc.y1, arc.y2, arc.y3);
+                    break;
+                case componentTypes.polygon:
+                    const poly = component as Polygon;
+                    poly.vectors.forEach(vector => {
+                        minX = Math.min(minX, vector.x);
+                        minY = Math.min(minY, vector.y);
+                    });
+                    break;
+            }
+        })
+        if (minX === Infinity || minY === Infinity) {
+            return {x: 0, y: 0};
+        }
+        return {x: minX, y: minY};
+    }
+    _calculateDimensions(components: Component[]) : {width: number, height: number, origin: VectorType} {
+        let minX: number = Infinity, minY: number = Infinity;
+        let maxX: number = -Infinity, maxY: number = -Infinity;
+        components.forEach((component) => {
+            if (!component.active) return;
+            switch (component.type) {
+                case componentTypes.point:
+                case componentTypes.label:
+                    const point = component as Point
+                    minX = Math.min(minX, point.x);
+                    minY = Math.min(minY, point.y);
+                    maxX = Math.max(maxX, point.x);
+                    maxY = Math.max(maxY, point.y);
+                    break;
+                case componentTypes.line:
+                case componentTypes.rectangle:
+                case componentTypes.measure:
+                    const line = component as Line;
+                    minX = Math.min(minX, line.x1, line.x2);
+                    minY = Math.min(minY, line.y1, line.y2);
+                    maxX = Math.max(maxX, line.x1, line.x2);
+                    maxY = Math.max(maxY, line.y1, line.y2);
+                    break;
+                case componentTypes.circle:
+                    const circle = component as Circle;
+                    minX = Math.min(minX, circle.x1 - component.radius);
+                    minY = Math.min(minY, circle.y1 - component.radius);
+                    maxX = Math.max(maxX, circle.x1 + component.radius);
+                    maxY = Math.max(maxY, circle.y1 + component.radius);
+                    break;
+                case componentTypes.arc:
+                    const arc = component as Arc;
+                    minX = Math.min(minX, arc.x1, arc.x2, arc.x3);
+                    minY = Math.min(minY, arc.y1, arc.y2, arc.y3);
+                    maxX = Math.max(maxX, arc.x1, arc.x2, arc.x3);
+                    maxY = Math.max(maxY, arc.y1, arc.y2, arc.y3);
+                    break;
+                case componentTypes.polygon:
+                    const poly = component as Polygon;
+                    poly.vectors.forEach((vector) => {
+                        minX = Math.min(minX, vector.x);
+                        minY = Math.min(minY, vector.y);
+                        maxX = Math.max(maxX, vector.x);
+                        maxY = Math.max(maxX, vector.y)
+                    });
+                    break;
+            }
+        });
+        let width: number = maxX - minX;
+        let height: number = maxY - minY;
+        return {width: width, height: height, origin: {x: minX, y: minY}};
+    }
+    _drawAllComponents(components: Component[], offset: VectorType) {
+        let dimensions = this._calculateDimensions(components);
+        let width: number = dimensions.width;
+        let height: number = dimensions.height;
+        let origin: VectorType = dimensions.origin;
+        let padding: number = this.settings.padding || 60;
+        this.context = new context2svg.CanvasToSvg(width + 2 * padding, height + 2 * padding);
+        let refinedX: number = -origin.x + padding;
+        let refinedY: number = -origin.y + padding;
+        components.forEach((component) => {
+            if (!component.active) return;
+            this._drawComponent(component, {x: offset.x, y: offset.y})
+        })
+    }
+    _drawComponent(component: Component, offset: VectorType) {
+        switch (component.type) {
+            case componentTypes.point:
+                const p = component as Point;
+                this.drawPoint(
+                    p.x + offset.x,
+                    p.y + offset.y,
+                    p.color,
+                    p.radius,
+                    p.opacity
+                )
+                break;
+            case componentTypes.line:
+                const line = component as Line;
+                this.drawLine(
+                    line.x1 + offset.x,
+                    line.y1 + offset.y,
+                    line.x2 + offset.x,
+                    line.y2 + offset.y,
+                    line.color,
+                    line.radius,
+                    line.opacity
+                );
+                break;
+            case componentTypes.circle:
+                const circle = component as Circle;
+                this.drawCircle(
+                    circle.x1 + offset.x,
+                    circle.y1 + offset.y,
+                    circle.x2 + offset.x,
+                    circle.y2 + offset.y,
+                    circle.color,
+                    circle.radius,
+                    circle.opacity
+                );
+                break;
+            case componentTypes.rectangle:
+                const rect = component as Rectangle;
+                this.drawRectangle(
+                    rect.x1 + offset.x,
+                    rect.y1 + offset.y,
+                    rect.x2 + offset.x,
+                    rect.y2 + offset.y,
+                    rect.color,
+                    rect.radius,
+                    rect.opacity
+                );
+                break;
+            case componentTypes.measure:
+                const measure = component as Measure;
+                this.drawMeasure(
+                    measure.x1 + offset.x,
+                    measure.y1 + offset.y,
+                    measure.x2 + offset.x,
+                    measure.y2 + offset.y,
+                    measure.color,
+                    measure.radius,
+                    measure.opacity
+                );
+                break;
+            case componentTypes.label:
+                const label = component as Label;
+                this.drawLabel(
+                    label.x + offset.x,
+                    label.y + offset.y,
+                    label.text,
+                    label.color,
+                    label.radius,
+                    label.fontSize,
+                    label.opacity
+                )
+                break;
+            case componentTypes.arc:
+                const arc = component as Arc;
+                this.drawArc(
+                    arc.x1 + offset.x,
+                    arc.y1 + offset.y,
+                    arc.x2 + offset.x,
+                    arc.y2 + offset.y,
+                    arc.x3 + offset.x,
+                    arc.y3 + offset.y,
+                    arc.color,
+                    arc.radius,
+                    arc.opacity
+                );
+                break;
+            case componentTypes.polygon:
+                const poly = component as Polygon;
+                this.drawPolygon(
+                    poly.vectors,
+                    poly.color,
+                    poly.strokeColor,
+                    poly.radius,
+                    poly.opacity,
+                    poly.enableStroke
+                )
+                break;
+        }
+    }
+    drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
+        this.context.__ctx.lineWidth = radius;
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.beginPath();
+        this.context.arc(
+            x, 
+            y,
+            2, 0, Math.PI * 2, false
+        );
+        this.context.closePath();
+        this.context.stroke();
+    }
+    drawLine(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
+        this.context.__ctx.lineWidth = radius;
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.lineCap = 'round';
+        this.context.beginPath();
+        this.context.moveTo(
+            x1,
+            y1
+        );
+        this.context.lineTo(
+            x2,
+            y2
+        );
+        this.context.stroke();
+    }
+    drawCircle(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
+                this.context.__ctx.lineWidth = radius;
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.beginPath();
+        this.context.arc(
+            x1,
+            y1,
+            this.renderer.getDistance(x1, y1, x2, y2),
+            0, Math.PI * 2, false
+        );
+        this.context.closePath();
+        this.context.stroke();
+    }
+    drawRectangle(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
+        this.drawLine(x1, y1, x2, y1, color, radius, opacity);
+        this.drawLine(x2, y1, x2, y2, color, radius, opacity);
+        this.drawLine(x2, y2, x1, y2, color, radius, opacity);
+        this.drawLine(x1, y2, x1, y1, color, radius, opacity);
+    }
+    drawMeasure(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
+        let distance: number = this.renderer.getDistance(x1, y1, x2, y2) * this.renderer.unitFactor * this.renderer.unitConversionFactor;
+        let angle: number = Math.atan2(y2 - y1, x2 - x1);
+        const distanceText = distance.toFixed(2) + this.renderer.unitMeasure;
+        this.context.save();
+        this.context.__ctx.font = `${this.renderer.fontSize} ${this.settings.font || 'monospace'}`;
+        const textWidth = this.context.measureText(distanceText).width;
+        this.context.restore();
+        let defaultArrowLength = this.settings.advanced?.defaultArrowLength || 25;
+        let arrowOffset = this.settings.advanced?.arrowOffset || 5;
+        let arrowLength = defaultArrowLength;
+    }
+    drawLabel(x: number, y: number, text: string, color: string, radius: number, fontSize: number, opacity: number) {}
+    drawArc(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string, radius: number, opacity: number) {}
+    drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {}
+}
