@@ -46,6 +46,7 @@ import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
 import { getLocaleKey } from "../components/LanguageHandler";
+import { exportSVG, SVGExporterSettings } from "../engine/SVGExporter";
 
 export interface HistoryEntry {
     name: string;
@@ -68,6 +69,8 @@ interface AlternateTipProps {
     y: number;
 }
 
+type ExportPages = 'main' | 'svg';
+
 const Editor = () => {
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
@@ -84,6 +87,20 @@ const Editor = () => {
     const [showAlternateTip, setShowAlternateTip] = useState<boolean>(false);
     const [component, setComponent] = useState<AnyComponent | null>(null);
     const [exportDialog, setExportDialog] = useState(false);
+    const [exportPage, setExportPage] = useState<ExportPages>('main');
+    const [previewImage, setPreviewImage] = useState<string>('');
+    const [svgExportState, setSvgExportState] = useState<SVGExporterSettings>({
+        padding: 60,
+        monochrome: true,
+        signature: 'Generated using CompassCAD Web (react branch)',
+        font: 'monospace',
+        advanced: {
+            defaultArrowLength: 25,
+            arrowOffset: 25,
+            baseArrowPadding: 20,
+            maxLength: 24
+        }
+    });
     const [zoom, setZoom] = useState<number>(1);
     const [isLoading, setLoading] = useState<boolean>(true);
     const [showInspector, setShowInspector] = useState<boolean>(true);
@@ -215,7 +232,6 @@ const Editor = () => {
             return finalComponent;
         });
     };
-
     const handlePositionChange = (posKey: 'x' | 'y' | 'x1' | 'y1' | 'x2' | 'y2' | 'x3' | 'y3', value: string): void => {
         setComponent((prevComponent) => {
             if (!prevComponent) return null;
@@ -231,7 +247,6 @@ const Editor = () => {
             return finalComponent;
         });
     };
-
     // handleSizeChange needs adjustment to correctly update x2/y2 based on width/height changes
     const handleSizeChange = (type: 'width' | 'height', value: string): void => {
         setComponent((prevComponent) => {
@@ -297,6 +312,11 @@ const Editor = () => {
         if (history.length > 20) history.pop();
         localStorage.setItem('history', JSON.stringify(history));
         await new Promise(resolve => setTimeout(resolve, 150));
+    }
+    const previewSVG = () => {
+        const svgContext = exportSVG(renderer.current!, svgExportState);
+        const b64 = btoa(svgContext);
+        setPreviewImage(`data:image/svg+xml;base64,${b64}`)
     }
     window.onunload = async () => {
         await takeSnapshot(
@@ -600,7 +620,7 @@ const Editor = () => {
                         />
                     </div>
                     <div className={styles['header-right']}>
-                        <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); console.log(exportDialog)}} tabIndex={4}>
+                        <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); setExportPage('main')}} tabIndex={4}>
                             <img src={ExportSymbol} width={20} />
                             &nbsp;
                             <p>{getLocaleKey('editor.main.header.share')}</p>
@@ -611,31 +631,99 @@ const Editor = () => {
         </div>
         {exportDialog && (
             <div className={styles['export-dialog']}>
-                <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
-                    <h4>{getLocaleKey('editor.main.header.shareModal.heading')}</h4>
-                    <p onClick={() => setExportDialog(false)}>&times;</p>
-                </div>
-                <div>
-                    <div className={`${styles['export-option']} ${styles.special}`} onClick={() => {
-                        if (renderer.current && renderer.current.logicDisplay) {
-                            const url = `/designname="Imported%20Design";${LZString.compressToEncodedURIComponent(JSON.stringify(renderer.current.logicDisplay.components))}`
-                            navigator.clipboard.writeText(window.location.href.replace('/action=new;', url));
-                        }
-                        toast('Copied link to clipboard');
-                    }}>
-                        <img src={CopyLink} />
-                        &nbsp;&nbsp;
-                        <p>{getLocaleKey('editor.main.header.shareModal.copyLink')}</p>
-                    </div>
-                    <div className={styles['export-options-container']}>
-                        <div className={styles['export-option-sub']}>
-                            <div className={styles['export-option-sub-button']}>
-                                <img src={Export} width={24} />
-                            </div>
-                            <span>Export as SVG</span>
+                {exportPage == 'main' && (
+                    <>
+                        <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                            <h4>{getLocaleKey('editor.main.header.shareModal.heading')}</h4>
+                            <p onClick={() => setExportDialog(false)} className={styles['export-topactionbutton']}>&times;</p>
                         </div>
-                    </div>
-                </div>
+                        <div>
+                            <div className={`${styles['export-option']} ${styles.special}`} onClick={() => {
+                                if (renderer.current && renderer.current.logicDisplay) {
+                                    const url = `/designname="Imported%20Design";${LZString.compressToEncodedURIComponent(JSON.stringify(renderer.current.logicDisplay.components))}`
+                                    navigator.clipboard.writeText(window.location.href.replace('/action=new;', url));
+                                }
+                                toast('Copied link to clipboard');
+                            }}>
+                                <img src={CopyLink} />
+                                &nbsp;&nbsp;
+                                <p>{getLocaleKey('editor.main.header.shareModal.copyLink')}</p>
+                            </div>
+                            <div className={styles['export-options-container']}>
+                                <div className={styles['export-option-sub']}>
+                                    <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
+                                        <img src={Export} width={24} />
+                                    </div>
+                                    <span>Export as SVG</span>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )}
+                {exportPage == 'svg' && (
+                    <>
+                        <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                            <p onClick={() => setExportPage('main')} className={styles['export-topactionbutton']}>〈</p>
+                            <h4>Export as SVG</h4>
+                            <p onClick={() => setExportDialog(false)} className={styles['export-topactionbutton']}>&times;</p>
+                        </div>
+                        <br></br>
+                        <h5>Preview</h5>
+                        <div className={styles['export-image-preview']}>
+                            {previewImage == '' ? (
+                                <div className={styles['export-image-nothing-preview']}>
+                                    <span>You have nothing on preview right now!</span>
+                                </div>
+                            ): (
+                                <>
+                                <img className={styles['image-preview-actual']} src={previewImage} width={768} />
+                                </>
+                            )}
+                        </div>
+                        <br></br>
+                        <h5>Settings</h5>
+                        <div className={styles['settings-subfield']}>
+                            <span>Padding</span>
+                            <div className={styles['settings-input-field']}>
+                                <input 
+                                    type="number"
+                                    defaultValue={svgExportState.padding}
+                                    onChange={(e) => {
+                                        setSvgExportState({...svgExportState ,padding: parseInt(e.target.value)});
+                                    }} 
+                                    style={{width: '20%'}}
+                                />
+                                <span>px</span>
+                            </div>
+                        </div>
+                        <div className={styles['settings-subfield']}>
+                            <span>Monochrome</span>
+                            <div className={styles['settings-input-field']}>
+                                <input 
+                                    type="checkbox"
+                                    defaultChecked={svgExportState.monochrome}
+                                    onChange={(e) => {
+                                        setSvgExportState({...svgExportState ,monochrome: e.target.checked});
+                                    }} 
+                                />
+                            </div>
+                        </div>
+                        <div className={styles['settings-subfield']}>
+                            <span>Font</span>
+                            <div className={styles['settings-input-field']}>
+                                <input 
+                                    type="text"
+                                    defaultValue={svgExportState.font}
+                                    onChange={(e) => {
+                                        setSvgExportState({...svgExportState ,font: e.target.value});
+                                    }} 
+                                    style={{width: '60%', fontFamily: svgExportState.font}}
+                                />
+                            </div>
+                        </div>
+                        <button onClick={previewSVG}>Preview</button>
+                    </>
+                )}
             </div>
         )}
         {/* Toolbar */}

@@ -1,4 +1,4 @@
-import context2svg from 'canvas-to-svg/dist/CanvasToSvg'
+import CanvasToSvg from 'canvas-to-svg'
 import { _num2hex, GraphicsRenderer, VectorType } from './GraphicsRenderer'
 import { 
     componentTypes, 
@@ -27,12 +27,12 @@ export interface SVGExporterSettings {
 }
 
 export class SVGExporter {
-    context: context2svg.CanvasToSvg
+    context: CanvasToSvg
     renderer: GraphicsRenderer;
     settings: SVGExporterSettings
 
     constructor(renderer: GraphicsRenderer, settings?: SVGExporterSettings) {
-        this.context = new context2svg.CanvasToSvg(1920, 1080);
+        this.context = new CanvasToSvg(1920, 1080);
         this.renderer = renderer;
         this.settings = settings || {
             padding: 60,
@@ -159,7 +159,7 @@ export class SVGExporter {
         let height: number = dimensions.height;
         let origin: VectorType = dimensions.origin;
         let padding: number = this.settings.padding || 60;
-        this.context = new context2svg.CanvasToSvg(width + 2 * padding, height + 2 * padding);
+        this.context = new CanvasToSvg(width + 2 * padding, height + 2 * padding);
         let refinedX: number = -origin.x + padding;
         let refinedY: number = -origin.y + padding;
         components.forEach((component) => {
@@ -427,7 +427,7 @@ export class SVGExporter {
     }
     returnSVG() {
         this._drawAllComponents(this.renderer.logicDisplay!.components, {x:15,y:5});
-        return this.context.getSerializedSvg(true);
+        return `<!-- ${this.settings.signature || ''} -->` + this.context.getSerializedSvg(true);
     }
 }
 
