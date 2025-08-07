@@ -659,7 +659,7 @@ const Editor = () => {
                                     <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
                                         <img src={Export} width={24} />
                                     </div>
-                                    <span>Export as SVG</span>
+                                    <span>{getLocaleKey('editor.main.header.shareModal.exportAsSvg')}</span>
                                 </div>
                             </div>
                         </div>
@@ -669,15 +669,15 @@ const Editor = () => {
                     <>
                         <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
                             <p onClick={() => setExportPage('main')} className={styles['export-topactionbutton']}>〈</p>
-                            <h4>Export as SVG</h4>
+                            <h4>{getLocaleKey('editor.main.header.shareModal.exportAsSvg')}</h4>
                             <p onClick={() => setExportDialog(false)} className={styles['export-topactionbutton']}>&times;</p>
                         </div>
                         <br></br>
-                        <h5>Preview</h5>
+                        <h5>{getLocaleKey('editor.main.header.shareModal.preview')}</h5>
                         <div className={styles['export-image-preview']}>
                             {previewImage == '' ? (
                                 <div className={styles['export-image-nothing-preview']}>
-                                    <span>You have nothing on preview right now!</span>
+                                    <span>{getLocaleKey('editor.main.header.shareModal.nothingOnPreview')}</span>
                                 </div>
                             ): (
                                 <>
@@ -685,11 +685,11 @@ const Editor = () => {
                                 </>
                             )}
                         </div>
-                        <small className={styles['small-text']}>*Preview may look stretched than usual</small>
+                        <small className={styles['small-text']}>*{getLocaleKey('editor.main.header.shareModal.previewDifferent')}</small>
                         <br></br>
-                        <h5>Settings</h5>
+                        <h5>{getLocaleKey('editor.main.header.shareModal.settings')}</h5>
                         <div className={styles['settings-subfield']}>
-                            <span>Padding</span>
+                            <span>{getLocaleKey('editor.main.header.shareModal.padding')}</span>
                             <div className={styles['settings-input-field']}>
                                 <input 
                                     type="number"
@@ -703,7 +703,7 @@ const Editor = () => {
                             </div>
                         </div>
                         <div className={styles['settings-subfield']}>
-                            <span>Monochrome</span>
+                            <span>{getLocaleKey('editor.main.header.shareModal.monochrome')}</span>
                             <div className={styles['settings-input-field']}>
                                 <input 
                                     type="checkbox"
@@ -715,7 +715,7 @@ const Editor = () => {
                             </div>
                         </div>
                         <div className={styles['settings-subfield']}>
-                            <span>Font</span>
+                            <span>{getLocaleKey('editor.main.header.shareModal.font')}</span>
                             <div className={styles['settings-input-field']}>
                                 <input 
                                     type="text"
@@ -731,11 +731,11 @@ const Editor = () => {
                             <div
                                 className={`${styles['export-option-subbutton']}`} 
                                 onClick={previewSVG}
-                            ><img src={Preview} />&nbsp;Preview</div>
+                            ><img src={Preview} />&nbsp;{getLocaleKey('editor.main.header.shareModal.preview')}</div>
                             <div
                                 className={`${styles['export-option-subbutton']} ${styles.special}`} 
                                 onClick={previewSVG}
-                            ><img src={Export} />&nbsp;<b>Export</b></div>
+                            ><img src={Export} />&nbsp;<b>{getLocaleKey('editor.main.header.shareModal.export')}</b></div>
                         </div>
                     </>
                 )}

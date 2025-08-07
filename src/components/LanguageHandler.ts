@@ -148,6 +148,15 @@ export const locales : any = {
                     shareModal: {
                         heading: "Share/Export Design",
                         copyLink: "Copy Link",
+                        exportAsSvg: "Export as SVG",
+                        preview: "Preview",
+                        previewDifferent: "Preview may look stretched than usual",
+                        settings: "Settings",
+                        padding: "Padding",
+                        monochrome: "Monochrome",
+                        font: "Font",
+                        export: "Export",
+                        nothingOnPreview: "You have nothing on preview right now!"
                     }
                 },
                 essential: {
@@ -465,6 +474,15 @@ export const locales : any = {
                     shareModal: {
                         heading: "Bagi/Ekspor Desain",
                         copyLink: "Salin link",
+                        exportAsSvg: "Ekspor sebagai SVG",
+                        preview: "Pratinjau",
+                        previewDifferent: "Pratinjau bisa menampil lebih lebar",
+                        settings: "Pengaturan",
+                        padding: "Padding",
+                        monochrome: "Monokrom",
+                        font: "Font",
+                        export: "Ekspor",
+                        nothingOnPreview: "Kamu tidak memiliki apa-apa dalam pratinjau!"
                     }
                 },
                 essential: {
@@ -625,6 +643,15 @@ export const locales : any = {
                     shareModal: {
                         heading: "Dela/Exportera Design",
                         copyLink: "Kopiera Link",
+                        exportAsSvg: "Exportera som SVG",
+                        preview: "Förhands",
+                        previewDifferent: "Förhandsgranskningen kan se utdragen ut än vanligt",
+                        settings: "Inställningar",
+                        padding: "Stoppning",
+                        monochrome: "Svartvit",
+                        font: "Font",
+                        export: "Exportera",
+                        nothingOnPreview: "Du har inget i förhandsgranskningen just nu!"
                     }
                 },
                 essential: {
