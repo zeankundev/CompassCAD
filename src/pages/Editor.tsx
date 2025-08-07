@@ -40,13 +40,12 @@ import ExportSymbol from '../assets/export.svg'
 import CopyLink from '../assets/copylink.svg'
 import CollapseRight from '../assets/collapse-right.svg'
 import Unselected from '../assets/unselected-state.svg'
-import Check from '../assets/check.svg'
+import Export from '../assets/export.svg'
 import FeedbackIcon from '../assets/feedback.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
 import { getLocaleKey } from "../components/LanguageHandler";
-import { log } from "console";
 
 export interface HistoryEntry {
     name: string;
@@ -628,12 +627,20 @@ const Editor = () => {
                         &nbsp;&nbsp;
                         <p>{getLocaleKey('editor.main.header.shareModal.copyLink')}</p>
                     </div>
+                    <div className={styles['export-options-container']}>
+                        <div className={styles['export-option-sub']}>
+                            <div className={styles['export-option-sub-button']}>
+                                <img src={Export} width={24} />
+                            </div>
+                            <span>Export as SVG</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         )}
         {/* Toolbar */}
         {device == 'desktop' && (
-            <React.Fragment>
+            <>
                 <div className={styles.toolbar}>
                     <ToolbarButton
                         svgImage={Select}
@@ -1025,7 +1032,7 @@ const Editor = () => {
                         )}
                     </div>
                 </div>
-            </React.Fragment>
+            </>
         )}
         {device == 'mobile' && (
             <div className={styles['mobile-toolbar']}>

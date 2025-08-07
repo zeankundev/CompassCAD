@@ -183,6 +183,34 @@
 .export-option.special {
     background: linear-gradient(45deg,rgba(0, 163, 255, 1) 0%, rgba(0, 67, 105, 1) 100%);
 }
+.export-options-container {
+    margin-top: 10px;
+}
+.export-option-sub {
+    display: flex;
+    flex-direction: column;
+    max-width: fit-content;
+    align-items: center;
+}
+.export-option-sub span {
+    font-size: 8pt;
+    margin-top: 5px;
+    text-align: center;
+    max-width: 50px;
+}
+.export-option-sub-button {
+    border-radius: 50%;
+    border: 0.5px solid var(--outline);
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.export-option-sub-button:hover {
+    background-color: var(--secondary);
+}
 .mobile-menu {
     z-index: 9999999;
     position: absolute;
