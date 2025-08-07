@@ -185,6 +185,8 @@
 }
 .export-options-container {
     margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 .export-option-sub {
     display: flex;
