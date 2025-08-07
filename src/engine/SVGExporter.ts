@@ -406,5 +406,33 @@ export class SVGExporter {
     }
     drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {
         if (vectors.length < 2) return;
+        this.context.__ctx.lineWidth = radius;
+        this.context.__ctx.globalAlpha = opacity;
+        this.context.__ctx.fillStyle = this.settings.monochrome ? '#ffffff' : color;
+        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' : strokeColor;
+        this.context.beginPath();
+        this.context.moveTo(
+            vectors[0].x,
+            vectors[0].y
+        );
+        vectors.forEach((vector) => {
+            this.context.lineTo(
+                vector.x,
+                vector.y
+            )
+        });
+        this.context.closePath();
+        this.context.fill();
+        if (enableStroke) this.context.stroke();
     }
+    returnSVG() {
+        this._drawAllComponents(this.renderer.logicDisplay!.components, {x:15,y:5});
+        return this.context.getSerializedSvg(true);
+    }
+}
+
+// A little shorthand for returning SVG
+export const exportSVG = (renderer: GraphicsRenderer, settings?: SVGExporterSettings) => {
+    const exporter = new SVGExporter(renderer, settings);
+    return exporter.returnSVG();
 }
