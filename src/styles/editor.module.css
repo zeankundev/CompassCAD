@@ -202,6 +202,28 @@ input[type="checkbox"]:checked {
 .export-option.special {
     background: linear-gradient(45deg,rgba(0, 163, 255, 1) 0%, rgba(0, 67, 105, 1) 100%);
 }
+.export-option-subbutton {
+    background-color: var(--secondary);
+    display: flex;
+    max-width: fit-content;
+    justify-content: center;
+    align-items: center;
+    padding: 7px;
+    border-radius: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.export-option-subbutton:hover {
+    background-color: var(--tertiary);
+}
+.export-option-subbutton.special {
+    background: linear-gradient(45deg,rgba(0, 163, 255, 1) 0%, rgba(0, 67, 105, 1) 100%);
+}
+.export-suboption-bottom {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
 .export-options-container {
     margin-top: 10px;
     display: flex;

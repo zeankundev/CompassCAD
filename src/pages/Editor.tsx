@@ -41,6 +41,7 @@ import CopyLink from '../assets/copylink.svg'
 import CollapseRight from '../assets/collapse-right.svg'
 import Unselected from '../assets/unselected-state.svg'
 import Export from '../assets/export.svg'
+import Preview from '../assets/preview.svg'
 import FeedbackIcon from '../assets/feedback.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
@@ -316,7 +317,11 @@ const Editor = () => {
     const previewSVG = () => {
         const svgContext = exportSVG(renderer.current!, svgExportState);
         const b64 = btoa(svgContext);
-        setPreviewImage(`data:image/svg+xml;base64,${b64}`)
+        if (previewImage.includes(b64)) {
+            toast('Chill down, no worries! It\'s still the same as before!')
+        } else {
+            setPreviewImage(`data:image/svg+xml;base64,${b64}`);
+        }
     }
     window.onunload = async () => {
         await takeSnapshot(
@@ -722,7 +727,16 @@ const Editor = () => {
                                 />
                             </div>
                         </div>
-                        <button onClick={previewSVG}>Preview</button>
+                        <div className={styles['export-suboption-bottom']}>
+                            <div
+                                className={`${styles['export-option-subbutton']}`} 
+                                onClick={previewSVG}
+                            ><img src={Preview} />&nbsp;Preview</div>
+                            <div
+                                className={`${styles['export-option-subbutton']} ${styles.special}`} 
+                                onClick={previewSVG}
+                            ><img src={Export} />&nbsp;<b>Export</b></div>
+                        </div>
                     </>
                 )}
             </div>
