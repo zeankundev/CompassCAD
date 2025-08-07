@@ -680,6 +680,7 @@ const Editor = () => {
                                 </>
                             )}
                         </div>
+                        <small className={styles['small-text']}>*Preview may look stretched than usual</small>
                         <br></br>
                         <h5>Settings</h5>
                         <div className={styles['settings-subfield']}>

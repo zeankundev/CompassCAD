@@ -258,6 +258,12 @@ input[type="checkbox"]:checked {
     color: var(--outline);
     font-size: 9pt;
 }
+.small-text {
+    color: var(--outline);
+    margin-top: 5px;
+    font-size: 8pt;
+    margin-bottom: 10px;
+}
 .image-preview-actual {
     background-color: #ffffff;
     display: flex;
