@@ -323,6 +323,16 @@ const Editor = () => {
             setPreviewImage(`data:image/svg+xml;base64,${b64}`);
         }
     }
+    const saveSVG = () => {
+        const svgContext = exportSVG(renderer.current!, svgExportState);
+        const blob = new Blob([svgContext], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${designName}.svg`
+        a.click();
+        URL.revokeObjectURL(url);
+    }
     window.onunload = async () => {
         await takeSnapshot(
             renderer.current!.logicDisplay!.components,
@@ -734,7 +744,7 @@ const Editor = () => {
                             ><img src={Preview} />&nbsp;{getLocaleKey('editor.main.header.shareModal.preview')}</div>
                             <div
                                 className={`${styles['export-option-subbutton']} ${styles.special}`} 
-                                onClick={previewSVG}
+                                onClick={saveSVG}
                             ><img src={Export} />&nbsp;<b>{getLocaleKey('editor.main.header.shareModal.export')}</b></div>
                         </div>
                     </>
