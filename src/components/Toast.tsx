@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import style from '../App.module.css';
 import '../styles/theme.css'
 
@@ -18,19 +18,36 @@ let showToast: (message: string) => void;
 
 export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose, id }) => {
     const [isPaused, setIsPaused] = useState(false);
-    let remainingTime = duration;
-    let startTime: number;
+    const [isExiting, setIsExiting] = useState(false);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    const startExitTimer = () => {
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = setTimeout(() => {
+            setIsExiting(true);
+            // Wait for the exit animation to finish before calling onClose
+            setTimeout(onClose, 300); // Assuming a 500ms exit animation
+        }, duration);
+    };
 
     useEffect(() => {
         if (!isPaused && message) {
-            startTime = Date.now();
-            const timeout = setTimeout(onClose, remainingTime);
-            return () => clearTimeout(timeout);
+            startExitTimer();
+        } else if (isPaused) {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
         }
-    }, [message, isPaused]);
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, [message, isPaused, duration]);
 
     const handleMouseEnter = () => {
-        startTime = Date.now();
         setIsPaused(true);
     };
 
@@ -40,7 +57,7 @@ export const Toast: React.FC<ToastProps> = ({ message, duration = 3000, onClose,
 
     return (
         <div
-            className={style.toast}
+            className={`${style.toast} ${isExiting ? style['toast-exit'] : ''}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
