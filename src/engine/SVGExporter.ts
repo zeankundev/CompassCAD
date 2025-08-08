@@ -99,6 +99,7 @@ export class SVGExporter {
         if (minX === Infinity || minY === Infinity) {
             return {x: 0, y: 0};
         }
+        console.log('[export] minimal vectorx: ' + minX + ',vectory: ' + minY);
         return {x: minX, y: minY};
     }
     _calculateDimensions(components: Component[]) : {width: number, height: number, origin: VectorType} {
@@ -154,17 +155,17 @@ export class SVGExporter {
         return {width: width, height: height, origin: {x: minX, y: minY}};
     }
     _drawAllComponents(components: Component[], offset: VectorType) {
-        let dimensions = this._calculateDimensions(components);
-        let width: number = dimensions.width;
-        let height: number = dimensions.height;
-        let origin: VectorType = dimensions.origin;
-        let padding: number = this.settings.padding || 60;
-        this.context = new CanvasToSvg(width + 2 * padding, height + 2 * padding);
-        let refinedX: number = -origin.x + padding;
-        let refinedY: number = -origin.y + padding;
+        const origin: VectorType = this._calculateOrigin(components);
+        const dimensions = this._calculateDimensions(components);
+        const { width, height } = dimensions;
+        const padding: number = this.settings.padding || 60;
+        const newWidth = width + 2 * padding;
+        const newHeight = height + 2 * padding;
+        this.context = new CanvasToSvg(newWidth, newHeight);
+        const offsetThingie: VectorType = { x: -origin.x + padding, y: -origin.y + padding };
         components.forEach((component) => {
             if (!component.active) return;
-            this._drawComponent(component, {x: offset.x, y: offset.y})
+            this._drawComponent(component, offsetThingie)
         })
     }
     _drawComponent(component: Component, offset: VectorType) {
