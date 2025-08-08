@@ -258,6 +258,7 @@ export class SVGExporter {
                 const poly = component as Polygon;
                 this.drawPolygon(
                     poly.vectors,
+                    offset,
                     poly.color,
                     poly.strokeColor,
                     poly.radius,
@@ -405,21 +406,22 @@ export class SVGExporter {
         );
         this.context.stroke();
     }
-    drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {
+    drawPolygon(vectors: VectorType[], offset: VectorType, color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {
         if (vectors.length < 2) return;
         this.context.lineWidth = radius;
         this.context.globalAlpha = opacity;
         this.context.fillStyle = this.settings.monochrome ? '#ffffff' : color;
         this.context.strokeStyle = this.settings.monochrome ? '#000000' : strokeColor;
         this.context.beginPath();
+        console.log(vectors)
         this.context.moveTo(
-            vectors[0].x,
-            vectors[0].y
+            vectors[0].x + offset.x,
+            vectors[0].y + offset.y
         );
         vectors.forEach((vector) => {
             this.context.lineTo(
-                vector.x,
-                vector.y
+                vector.x + offset.x,
+                vector.y + offset.y
             )
         });
         this.context.closePath();
