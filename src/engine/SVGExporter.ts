@@ -268,9 +268,9 @@ export class SVGExporter {
         }
     }
     drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
-        this.context.__ctx.lineWidth = radius;
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.lineWidth = radius;
+        this.context.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
         this.context.beginPath();
         this.context.arc(
             x, 
@@ -281,10 +281,10 @@ export class SVGExporter {
         this.context.stroke();
     }
     drawLine(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
-        this.context.__ctx.lineWidth = radius;
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.lineCap = 'round';
+        this.context.lineWidth = radius;
+        this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.lineCap = 'round';
         this.context.beginPath();
         this.context.moveTo(
             x1,
@@ -297,9 +297,9 @@ export class SVGExporter {
         this.context.stroke();
     }
     drawCircle(x1: number, y1: number, x2: number, y2: number, color: string, radius: number, opacity: number) {
-                this.context.__ctx.lineWidth = radius;
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.lineWidth = radius;
+        this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
         this.context.beginPath();
         this.context.arc(
             x1,
@@ -321,7 +321,7 @@ export class SVGExporter {
         let angle: number = Math.atan2(y2 - y1, x2 - x1);
         const distanceText = distance.toFixed(2) + this.renderer.unitMeasure;
         this.context.save();
-        this.context.__ctx.font = `${this.renderer.fontSize}px ${this.settings.font || 'monospace'}`;
+        this.context.font = `${this.renderer.fontSize}px ${this.settings.font || 'monospace'}`;
         const textWidth = this.context.measureText(distanceText).width;
         this.context.restore();
         let defaultArrowLength = this.settings.advanced?.defaultArrowLength || 25;
@@ -357,15 +357,15 @@ export class SVGExporter {
             this.context.save();
             this.context.translate(midX, midY + (textOffsetY + 2));
             this.context.rotate(angle);
-            this.context.__ctx.textAlign = 'center';
-            this.context.__ctx.textBaseline = isShortDistance ? 'top': 'middle';
-            this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-            this.context.__ctx.font = `${this.renderer.fontSize}px ${this.settings.font}`
+            this.context.textAlign = 'center';
+            this.context.textBaseline = isShortDistance ? 'top': 'middle';
+            this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+            this.context.font = `${this.renderer.fontSize}px ${this.settings.font}`
         }
     }
     drawLabel(x: number, y: number, text: string, color: string, radius: number, fontSize: number, opacity: number) {
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.font = `${fontSize}px ${this.settings.font}`;
+        this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.font = `${fontSize}px ${this.settings.font}`;
         let maxLength: number = this.settings.advanced?.maxLength || 24;
         let tempLength: number = 0;
         let tempText: string = "";
@@ -393,9 +393,9 @@ export class SVGExporter {
     drawArc(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number, color: string, radius: number, opacity: number) {
         let firstAngle: number = this.renderer.getAngle(x1, y1, x2, y2);
         let secondAngle: number = this.renderer.getAngle(x1, y1, x3, y3);
-        this.context.__ctx.lineWidth = radius;
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
-        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.lineWidth = radius;
+        this.context.fillStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
+        this.context.strokeStyle = this.settings.monochrome ? '#000000' + _num2hex(opacity) : color + _num2hex(opacity);
         this.context.beginPath();
         this.context.arc(
             x1,
@@ -407,10 +407,10 @@ export class SVGExporter {
     }
     drawPolygon(vectors: VectorType[], color: string, strokeColor: string, radius: number, opacity: number, enableStroke: boolean) {
         if (vectors.length < 2) return;
-        this.context.__ctx.lineWidth = radius;
-        this.context.__ctx.globalAlpha = opacity;
-        this.context.__ctx.fillStyle = this.settings.monochrome ? '#ffffff' : color;
-        this.context.__ctx.strokeStyle = this.settings.monochrome ? '#000000' : strokeColor;
+        this.context.lineWidth = radius;
+        this.context.globalAlpha = opacity;
+        this.context.fillStyle = this.settings.monochrome ? '#ffffff' : color;
+        this.context.strokeStyle = this.settings.monochrome ? '#000000' : strokeColor;
         this.context.beginPath();
         this.context.moveTo(
             vectors[0].x,
