@@ -123,7 +123,7 @@ export class GraphicsRenderer {
         this.mode = this.modes.Navigate;
         this.previousColor = null;
         this.previousRadius = null;
-        this.displayFont = 'Monospace';
+        this.displayFont = 'Geist Mono';
         this.temporarySelectedComponent = null;
         this.selectedComponent = null;
         this.temporaryComponentType = null;
@@ -362,7 +362,7 @@ export class GraphicsRenderer {
         return Math.floor(this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
     }
     getCursorXLocal(): number {
-        const baseGridSpacing = this.gridSpacing / 2;
+        const baseGridSpacing = this.gridSpacing;
         const rawXLocal = (this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2) / this.zoom - this.camX;
 
         if (!this.snap) {
@@ -373,7 +373,7 @@ export class GraphicsRenderer {
     }
 
     getCursorYLocal(): number {
-        const baseGridSpacing = this.gridSpacing / 2;
+        const baseGridSpacing = this.gridSpacing;
         const rawYLocal = (this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2) / this.zoom - this.camY;
 
         if (!this.snap) {
@@ -386,7 +386,7 @@ export class GraphicsRenderer {
     getCursorXInFrame(): number {
         const screenX = this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2;
         const worldX = (screenX / this.zoom) - this.cOutX;
-        const gridSize = this.gridSpacing / 2;
+        const gridSize = this.gridSpacing;
         const snappedX = Math.round(worldX / gridSize) * gridSize;
         return (snappedX + this.cOutX) * this.zoom;
     }
@@ -394,7 +394,7 @@ export class GraphicsRenderer {
     getCursorYInFrame(): number {
         const screenY = this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2;
         const worldY = (screenY / this.zoom) - this.cOutY;
-        const gridSize = this.gridSpacing / 2;
+        const gridSize = this.gridSpacing;
         const snappedY = Math.round(worldY / gridSize) * gridSize;
         return (snappedY + this.cOutY) * this.zoom;
     }
@@ -1103,9 +1103,9 @@ export class GraphicsRenderer {
         }
         else {
             if (this.zoom < 1) {
-                densityDivisor = 1.5
+                densityDivisor = 2
             } else {
-                densityDivisor = 0.5;
+                densityDivisor = 1;
             }
         }
         const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
@@ -1813,7 +1813,7 @@ export class GraphicsRenderer {
                             if (this.snap) {
                                 // Use uniform grid snapping regardless of grid spacing
                                 const snapToUniformGrid = (value: number) => {
-                                    const baseGridSize = this.gridSpacing / 2;
+                                    const baseGridSize = this.gridSpacing;
                                     return Math.round(value / baseGridSize) * baseGridSize;
                                 };
                                 localX = snapToUniformGrid(this.getCursorXLocal());
