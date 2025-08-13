@@ -247,7 +247,7 @@ input[type="checkbox"]:checked {
     font-size: 8pt;
     margin-top: 5px;
     text-align: center;
-    max-width: 50px;
+    max-width: 53px;
 }
 .export-option-sub-button {
     border-radius: 50%;

@@ -43,6 +43,7 @@ import Unselected from '../assets/unselected-state.svg'
 import Export from '../assets/export.svg'
 import Preview from '../assets/preview.svg'
 import Embed from '../assets/embed.svg'
+import ExportToCCADIcon from '../assets/ccadfile.svg'
 import FeedbackIcon from '../assets/feedback.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
@@ -672,6 +673,14 @@ const Editor = () => {
                                             <img src={Export} width={24} />
                                         </div>
                                         <span>{getLocaleKey('editor.main.header.shareModal.exportAsSvg')}</span>
+                                    </div>
+                                </div>
+                                <div className={styles['export-options-container']}>
+                                    <div className={styles['export-option-sub']}>
+                                        <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
+                                            <img src={ExportToCCADIcon} width={24} />
+                                        </div>
+                                        <span>{getLocaleKey('editor.main.header.shareModal.exportAsCcad')}</span>
                                     </div>
                                 </div>
                                 <div className={styles['export-options-container']}>
