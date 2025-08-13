@@ -1,0 +1,15 @@
+.embed-container {
+    color: var(--text);
+    max-height: fit-content !important;
+    display: flex;
+    flex: 1;
+}
+.embed-watermark {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    -webkit-user-drag: none;
+}
