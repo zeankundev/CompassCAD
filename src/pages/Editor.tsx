@@ -42,6 +42,7 @@ import CollapseRight from '../assets/collapse-right.svg'
 import Unselected from '../assets/unselected-state.svg'
 import Export from '../assets/export.svg'
 import Preview from '../assets/preview.svg'
+import Embed from '../assets/embed.svg'
 import FeedbackIcon from '../assets/feedback.svg'
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
@@ -70,7 +71,7 @@ interface AlternateTipProps {
     y: number;
 }
 
-type ExportPages = 'main' | 'svg';
+type ExportPages = 'main' | 'svg' | 'embed';
 
 const Editor = () => {
     const { id } = useParams<{id: string}>();
@@ -664,12 +665,22 @@ const Editor = () => {
                                 &nbsp;&nbsp;
                                 <p>{getLocaleKey('editor.main.header.shareModal.copyLink')}</p>
                             </div>
-                            <div className={styles['export-options-container']}>
-                                <div className={styles['export-option-sub']}>
-                                    <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
-                                        <img src={Export} width={24} />
+                            <div className={styles['export-options-parent-container']}>
+                                <div className={styles['export-options-container']}>
+                                    <div className={styles['export-option-sub']}>
+                                        <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
+                                            <img src={Export} width={24} />
+                                        </div>
+                                        <span>{getLocaleKey('editor.main.header.shareModal.exportAsSvg')}</span>
                                     </div>
-                                    <span>{getLocaleKey('editor.main.header.shareModal.exportAsSvg')}</span>
+                                </div>
+                                <div className={styles['export-options-container']}>
+                                    <div className={styles['export-option-sub']}>
+                                        <div className={styles['export-option-sub-button']} onClick={() => setExportPage('embed')}>
+                                            <img src={Embed} width={24} />
+                                        </div>
+                                        <span>{getLocaleKey('editor.main.header.shareModal.embedToSite')}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -747,6 +758,27 @@ const Editor = () => {
                                 onClick={saveSVG}
                             ><img src={Export} />&nbsp;<b>{getLocaleKey('editor.main.header.shareModal.export')}</b></div>
                         </div>
+                    </>
+                )}
+                {exportPage == 'embed' && (
+                    <>
+                        <div style={{display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between"}}>
+                            <p onClick={() => setExportPage('main')} className={styles['export-topactionbutton']}>〈</p>
+                            <h4>{getLocaleKey('editor.main.header.shareModal.embedToSite')}</h4>
+                            <p onClick={() => setExportDialog(false)} className={styles['export-topactionbutton']}>&times;</p>
+                        </div>
+                        <br></br>
+                        <span>Copy this and paste it on your website code</span>
+                        <textarea readOnly={true} className={styles['export-embed-copiable']}>
+                            {`<iframe src="${window.location.origin}/embed/${id.substring(11).split(';')[1].trim()}"></iframe>`}
+                        </textarea>
+                        <br></br>
+                        <h5>{getLocaleKey('editor.main.header.shareModal.preview')}</h5>
+                        <iframe 
+                            src={`${window.location.origin}/embed/${id.substring(11).split(';')[1].trim()}`}
+                            width={246}
+                            height={150}
+                        />
                     </>
                 )}
             </div>

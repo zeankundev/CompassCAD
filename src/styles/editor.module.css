@@ -186,6 +186,14 @@ input[type="checkbox"]:checked {
     box-shadow: 0px 0px 13px 1px rgba(0, 0, 0, 0.5);
     animation: slidein-from-bottom-special 0.2s ease;
 }
+.export-dialog iframe {
+    border: 0.5px solid var(--outline);
+    border-radius: 10px;
+}
+.export-options-parent-container {
+    display: flex;
+    justify-content: space-between;
+}
 .export-option {
     background-color: var(--secondary);
     display: flex;
@@ -279,6 +287,19 @@ input[type="checkbox"]:checked {
 .export-image-preview .export-image-nothing-preview span {
     color: var(--outline);
     font-size: 9pt;
+}
+.export-embed-copiable {
+    resize: none;
+    -webkit-appearance: none;
+    background-color: var(--secondary);
+    color: var(--text);
+    border: none;
+    width: calc(100% - 20px);
+    border-radius: 10px;
+    height: 100px;
+    font-family: 'Geist Mono', monospace;
+    margin-top: 10px;
+    padding: 10px;
 }
 .small-text {
     color: var(--outline);
@@ -551,41 +572,41 @@ input[type="checkbox"]:checked {
     color: var(--text);
     padding: 20px;
 }
-body::-webkit-scrollbar {
+*::-webkit-scrollbar {
     width: 16px;
     padding: 5px;
 }
-body::-webkit-scrollbar-button:single-button {
+*::-webkit-scrollbar-button:single-button {
     background-size: 8px;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-body::-webkit-scrollbar-button:single-button:vertical:decrement {
+*::-webkit-scrollbar-button:single-button:vertical:decrement {
     background-image: url('../assets/arrow-up.svg');
     height: 16px;
     width: 16px;
     background-position: center 4px;
 }
 
-body::-webkit-scrollbar-button:single-button:vertical:increment {
+*::-webkit-scrollbar-button:single-button:vertical:increment {
     height: 16px;
     width: 16px;
     background-position: center 2px;
     background-image: url('../assets/arrow-down.svg');
 }
-body::-webkit-scrollbar-track {
+*::-webkit-scrollbar-track {
     background: var(--primary);
 }
 
-body::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-thumb {
     background-color: var(--secondary);
     background-clip: padding-box;
     border-radius: 6px;
     border: 2px solid transparent;
 }
 
-body::-webkit-scrollbar-thumb:hover {
+*::-webkit-scrollbar-thumb:hover {
     background-color: var(--outline);
 }
 .editor-recents-container {

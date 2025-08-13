@@ -14,6 +14,7 @@ const Embeddable = () => {
         InitializeInstance(renderer.current);
         if (id != null) {
             const decompressed = LZString.decompressFromEncodedURIComponent(id);
+            console.log(decompressed)
             const data = JSON.parse(decompressed || '[]');
             if (Array.isArray(data)) {
                 renderer.current.logicDisplay?.importJSON(data, renderer.current.logicDisplay.components)
