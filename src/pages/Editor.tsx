@@ -107,6 +107,7 @@ const Editor = () => {
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
     const [hierarchySearch, setHierarchySearch] = useState<string>('');
+    const [searchedComponentArray, setSearchedComponentArray] = useState<Component[]>([]);
     const [alternateTip, setAltTip] = useState<AlternateTipProps | null>();
     const [showAlternateTip, setShowAlternateTip] = useState<boolean>(false);
     const [component, setComponent] = useState<AnyComponent | null>(null);
@@ -1190,9 +1191,9 @@ const Editor = () => {
                             <div>
                                 <input type="text" onChange={(e) => setHierarchySearch(e.target.value)}/>
                                 {componentArray.length > 0 ? (
-                                    componentArray
-                                    .filter(compo => compo.name == hierarchySearch)
-                                    .length
+                                    componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((component, index) => (
+                                        <div key={index}>{component.name}</div>
+                                    ))
                                 ) : (
                                     <div>No components found.</div> // Or null, or whatever you want to show
                                 )}
