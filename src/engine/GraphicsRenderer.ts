@@ -964,7 +964,6 @@ export class GraphicsRenderer {
         img: HTMLImageElement | null, // Update type to include null
         opacity: number
     ) {
-        console.warn(img);
         // Check for both null and empty string, or use falsy check
         if (!img || img === null) {
             const errorShape: Shape = {

@@ -95,7 +95,7 @@ const TabButtons = (props: TabButtonProps) => {
 
 const Editor = () => {
     const { id } = useParams<{id: string}>();
-    const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3', 'name'];
+    const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
     const virtualCanvas = useRef<HTMLCanvasElement>(null);
@@ -106,6 +106,7 @@ const Editor = () => {
     const [menu, setMenu] = useState<boolean>(false);
     const nameInput = useRef<HTMLInputElement>(null);
     const [tooltip, setTooltip] = useState('');
+    const [hierarchySearch, setHierarchySearch] = useState<string>('');
     const [alternateTip, setAltTip] = useState<AlternateTipProps | null>();
     const [showAlternateTip, setShowAlternateTip] = useState<boolean>(false);
     const [component, setComponent] = useState<AnyComponent | null>(null);
@@ -250,6 +251,7 @@ const Editor = () => {
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
                 renderer.current.logicDisplay.components[renderer.current.selectedComponent] = finalComponent;
                 renderer.current.saveState();
+                console.log(`[editor] setting key as ${key} with value ${value}`)
                 setComponentArray(renderer.current.logicDisplay.components);
             }
             return finalComponent;
@@ -982,7 +984,7 @@ const Editor = () => {
                                             <input
                                                 type="text"
                                                 value={component.name}
-                                                onChange={(e) => handleChange('name', parseFloat(e.target.value))}
+                                                onChange={(e) => handleChange('name', e.target.value)}
                                             />
                                         </div>
                                     )}
@@ -1185,16 +1187,16 @@ const Editor = () => {
                             )
                         )}
                         {inspectorState == InspectorTabState.Hierarchy && (
-                            <>
-                            <span>Hierarchy</span>
-                            {componentArray.length > 0 ? (
-                                componentArray.map((component, index) => (
-                                    <div key={index}>{component.name}</div>
-                                ))
-                            ) : (
-                                <span>No components found</span>
-                            )}
-                            </>
+                            <div>
+                                <input type="text" onChange={(e) => setHierarchySearch(e.target.value)}/>
+                                {componentArray.length > 0 ? (
+                                    componentArray
+                                    .filter(compo => compo.name == hierarchySearch)
+                                    .length
+                                ) : (
+                                    <div>No components found.</div> // Or null, or whatever you want to show
+                                )}
+                            </div>
                         )}
                     </div>
                     <div className={styles['inspector-tabs']}>
