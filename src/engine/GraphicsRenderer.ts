@@ -407,12 +407,17 @@ export class GraphicsRenderer {
         }
     }
     saveState() {
+        console.log('[renderer] saving state')
         this.undoStack.push(JSON.stringify(this.logicDisplay?.components));
         console.log(this.undoStack)
         if (this.undoStack.length > this.maximumStack) {
             this.undoStack.shift();
         }
         this.redoStack = [];
+        if (this.onComponentArrayChanged) {
+            console.log('[renderer] array changed defined, firing')
+            this.onComponentArrayChanged();
+        }
     }
     getDistance(
         x1: number,
@@ -865,7 +870,7 @@ export class GraphicsRenderer {
             }
 
             this.context.fillStyle = color + _num2hex(opacity);
-            this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace`;
+            this.context.font = (fontSize * localZoom) + `px ${this.displayFont}, monospace, 'SECEmojis'`;
 
             var maxLength = 24; // 24 Characters per row
             var tmpLength = 0;
@@ -1389,6 +1394,10 @@ export class GraphicsRenderer {
             if (lastState) {
                 this.logicDisplay!.components = []
                 this.logicDisplay?.importJSON(JSON.parse(lastState), this.logicDisplay.components);
+                if (this.onComponentArrayChanged) {
+                    console.log('[renderer] array changed defined, firing')
+                    this.onComponentArrayChanged();
+                }
             } else
                 return
 
@@ -1412,10 +1421,16 @@ export class GraphicsRenderer {
 
             // Update the display with the next state
             this.logicDisplay?.importJSON(JSON.parse(state != null ? state : '[]'), this.logicDisplay.components);
+            if (this.onComponentArrayChanged) {
+                console.log('[renderer] array changed defined, firing')
+                this.onComponentArrayChanged();
+            }
             this.update(); // Re-render the canvas
         }
     }
     public onComponentChangeCallback: (() => void) | null = null;
+
+    public onComponentArrayChanged: (() => void) | null = null;
 
     private notifyComponentChange() {
         if (this.onComponentChangeCallback) {

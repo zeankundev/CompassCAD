@@ -181,6 +181,8 @@ export const locales : any = {
                     collapseToRight: "Collapse to right",
                     expand: "Expand",
                     nothing: "Select a component then your component details should appear here.",
+                    properties: "Properties",
+                    hierarchy: "Hierarchy",
                     general: {
                         active: "Active",
                         radius: "Radius",
@@ -509,6 +511,8 @@ export const locales : any = {
                     collapseToRight: "Tutup ke kanan",
                     expand: "Buka",
                     nothing: "Pilih komponen, lalu detail komponen kamu akan ditampil disini.",
+                    properties: "Properti",
+                    hierarchy: "Hierarki",
                     general: {
                         active: "Aktif",
                         radius: "Radius",
@@ -680,6 +684,8 @@ export const locales : any = {
                     collapseToRight: "Kollapsa åt höger",
                     expand: "Expandera",
                     nothing: "Välj en komponent så ska dina komponentdetaljer visas här.",
+                    properties: "Egenskaper",
+                    hierarchy: "Hierarki",
                     general: {
                         active: "Aktiv",
                         radius: "Radius",

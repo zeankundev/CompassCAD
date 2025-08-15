@@ -59,6 +59,8 @@ export interface HistoryEntry {
     data: string;
 }
 
+type Filetypes = 'ccad' | 'qcad';
+
 type AnyComponent = Point | Line | Circle | Rectangle | Measure | Label | Arc | Shape | Picture | Polygon;
 
 enum InspectorTabState {
@@ -74,6 +76,23 @@ interface AlternateTipProps {
 
 type ExportPages = 'main' | 'svg' | 'embed';
 
+interface TabButtonProps {
+    state: InspectorTabState,
+    ref: InspectorTabState,
+    children?: React.ReactNode,
+    onClick?: () => void
+}
+
+const TabButtons = (props: TabButtonProps) => {
+    return (
+        <>
+            <button className={`${styles['tab-button']}${props.ref === props.state ? ' ' + styles['active']: ''}`} onClick={props.onClick}>
+                {props.children}
+            </button>
+        </>
+    )
+}
+
 const Editor = () => {
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
@@ -81,6 +100,7 @@ const Editor = () => {
     const renderer = useRef<GraphicsRenderer | null>(null);
     const virtualCanvas = useRef<HTMLCanvasElement>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
+    const [componentArray, setComponentArray] = useState<Component[]>([]);
     const [tool, setTool] = useState<number>(RendererTypes.NavigationTypes.Navigate);
     const [designName, setDesignName] = useState<string>(getLocaleKey('editor.main.newDesign'));
     const [menu, setMenu] = useState<boolean>(false);
@@ -151,13 +171,7 @@ const Editor = () => {
         };
 
         if (renderer.current) {
-            // Assuming your renderer has an event emitter or callback for selection changes
-            // Or, if you're directly polling, ensure this logic runs when selectedComponent changes.
-            // This is a placeholder; adjust based on your actual renderer's event system.
-            // For example, if your renderer is a class, it might have an `onSelectionChange` property
-            // or you might have a dedicated listener setup.
             renderer.current.onComponentChangeCallback = handleSelectionChange;
-            // Also call it once to set initial state if a component is already selected on mount
             handleSelectionChange();
         }
 
@@ -168,6 +182,11 @@ const Editor = () => {
             }
         };
     }, [renderer.current?.selectedComponent]);
+    useEffect(() => {
+        if (renderer.current) {
+            renderer.current.onComponentArrayChanged = () => {setComponentArray(renderer.current!.logicDisplay!.components); console.log('[editor] useEffect -> renderer.current -> changed array', componentArray);}
+        }
+    })
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
@@ -332,6 +351,26 @@ const Editor = () => {
         const a = document.createElement('a');
         a.href = url;
         a.download = `${designName}.svg`
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+    const saveCCAD = (type?: Filetypes) => {
+        const content = JSON.stringify(renderer.current!.logicDisplay?.components);
+        const blob = new Blob([content], {type: 'text/plain'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        switch (type) {
+            case 'ccad':
+                a.download = `${designName}.ccad`
+                break;
+            case 'qcad':
+                a.download = `${designName}.qrocad`
+                break;
+            default:
+                a.download = `${designName}.ccad`
+                break;
+        }
         a.click();
         URL.revokeObjectURL(url);
     }
@@ -677,7 +716,7 @@ const Editor = () => {
                                 </div>
                                 <div className={styles['export-options-container']}>
                                     <div className={styles['export-option-sub']}>
-                                        <div className={styles['export-option-sub-button']} onClick={() => setExportPage('svg')}>
+                                        <div className={styles['export-option-sub-button']} onClick={() => saveCCAD('ccad')}>
                                             <img src={ExportToCCADIcon} width={24} />
                                         </div>
                                         <span>{getLocaleKey('editor.main.header.shareModal.exportAsCcad')}</span>
@@ -1184,6 +1223,34 @@ const Editor = () => {
                                 </div>
                             )
                         )}
+                        {inspectorState == InspectorTabState.Hierarchy && (
+                            <>
+                            <span>Hierarchy</span>
+                            {componentArray.length > 0 ? (
+                                componentArray.map((component, index) => (
+                                    <div key={index}>{component.color}</div>
+                                ))
+                            ) : (
+                                <span>No components found</span>
+                            )}
+                            </>
+                        )}
+                    </div>
+                    <div className={styles['inspector-tabs']}>
+                        <TabButtons 
+                            state={InspectorTabState.Inspector} 
+                            ref={inspectorState}
+                            onClick={() => setInspectorState(InspectorTabState.Inspector)}
+                        >
+                            {getLocaleKey('editor.main.inspector.properties')}
+                        </TabButtons>
+                        <TabButtons 
+                            state={InspectorTabState.Hierarchy} 
+                            ref={inspectorState}
+                            onClick={() => setInspectorState(InspectorTabState.Hierarchy)}
+                        >
+                            {getLocaleKey('editor.main.inspector.hierarchy')}
+                        </TabButtons>
                     </div>
                 </div>
             </>
