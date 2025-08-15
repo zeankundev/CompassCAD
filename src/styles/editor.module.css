@@ -535,12 +535,17 @@ input[type="checkbox"]:checked {
 .input-group-row input[type="number"] {
     -webkit-appearance: none;
     font-family: var(--font);
-    width: 25%;
+    width: 40%;
     border: none;
     padding: 10px;
     background-color: var(--secondary);
     color: var(--text);
     border-radius: 10px;
+}
+.input-container input[type="number"]:focus,
+.input-container input[type="text"]:focus,
+.input-group-row input[type="number"]:focus {
+    outline: 4px solid var(--theme);
 }
 .alternate-tooltip {
     display: flex;
