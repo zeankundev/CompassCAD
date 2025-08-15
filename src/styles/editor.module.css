@@ -73,6 +73,10 @@ input[type="checkbox"] {
 input[type="checkbox"]:active {
     transform: scale(0.9);
 }
+*:focus {
+    outline: 4px solid var(--theme) !important;
+    transition: all 0.2s ease !important;
+}
 input[type="checkbox"]:checked {
     background-color: var(--theme);
     background-image: url('../assets/check.svg');
@@ -545,6 +549,7 @@ input[type="checkbox"]:checked {
 .input-container input[type="number"]:focus,
 .input-container input[type="text"]:focus,
 .input-group-row input[type="number"]:focus {
+    transition: all 0.2s ease;
     outline: 4px solid var(--theme);
 }
 .alternate-tooltip {
