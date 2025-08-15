@@ -980,6 +980,7 @@ export class GraphicsRenderer {
                 radius: 2,
                 opacity: opacity,
                 active: true,
+                name: 'Error shape shit',
                 type: componentTypes.shape,
                 addComponent: function (component: Component) {
                     this.components.push(component);

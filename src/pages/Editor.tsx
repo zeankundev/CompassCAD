@@ -502,6 +502,7 @@ const Editor = () => {
                                         console.log('[editor] fromBlueprint is false, using importJSON');
                                         console.log(renderer.current.logicDisplay!.components);
                                         renderer.current.logicDisplay?.importJSON(finalData, renderer.current.logicDisplay.components);
+                                        setComponentArray(renderer.current!.logicDisplay!.components)
                                     }
                                     console.log(renderer.current.logicDisplay!.components);
                                     if (renderer.current.logicDisplay!.components.length === 0) {
@@ -1228,7 +1229,7 @@ const Editor = () => {
                             <span>Hierarchy</span>
                             {componentArray.length > 0 ? (
                                 componentArray.map((component, index) => (
-                                    <div key={index}>{component.color}</div>
+                                    <div key={index}>{component.name}</div>
                                 ))
                             ) : (
                                 <span>No components found</span>

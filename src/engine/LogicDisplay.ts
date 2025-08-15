@@ -69,66 +69,84 @@ export class LogicDisplay {
             switch (arrJSON[i].type) {
                 case componentTypes.point:
                     const point = arrJSON[i] as Point;
-                    parent.push(new Point(point.x, point.y));
+                    parent.push(new Point(point.x, point.y, point.opacity, point.name));
                     break;
                 case componentTypes.line:
                     const line = arrJSON[i] as Line;
                     parent.push(new Line(
-                            line.x1,
-                            line.y1,
-                            line.x2,
-                            line.y2,
-                            line.radius,
-                            line.color
-                        ));
+                        line.x1,
+                        line.y1,
+                        line.x2,
+                        line.y2,
+                        line.radius,
+                        line.color,
+                        line.opacity,
+                        line.name
+                    ));
                     break;
                 case componentTypes.rectangle:
                     const rect = arrJSON[i] as Rectangle;
                     parent.push(new Rectangle(
-                            rect.x1,
-                            rect.y1,
-                            rect.x2,
-                            rect.y2,
-                            rect.radius,
-                            rect.color));
+                        rect.x1,
+                        rect.y1,
+                        rect.x2,
+                        rect.y2,
+                        rect.radius,
+                        rect.color,
+                        rect.opacity,
+                        rect.name
+                    ));
                     break;
                 case componentTypes.circle:
                     const circle = arrJSON[i] as Circle;
                     parent.push(new Circle(
-                            circle.x1,
-                            circle.y1,
-                            circle.x2,
-                            circle.y2,
-                            circle.radius,
-                            circle.color));
+                        circle.x1,
+                        circle.y1,
+                        circle.x2,
+                        circle.y2,
+                        circle.radius,
+                        circle.color,
+                        circle.opacity,
+                        circle.name
+                    ));
                     break;
                 case componentTypes.arc:
                     const arc = arrJSON[i] as Arc;
                     parent.push(new Arc(
-                            arc.x1,
-                            arc.y1,
-                            arc.x2,
-                            arc.y2,
-                            arc.x3,
-                            arc.y3,
-                            arc.radius,
-                            arc.color));
+                        arc.x1,
+                        arc.y1,
+                        arc.x2,
+                        arc.y2,
+                        arc.x3,
+                        arc.y3,
+                        arc.radius,
+                        arc.color,
+                        arc.opacity,
+                        arc.name
+                    ));
                     break;
                 case componentTypes.measure:
                     const measure = arrJSON[i] as Measure;
                     parent.push(new Measure(
-                            measure.x1,
-                            measure.y1,
-                            measure.x2,
-                            measure.y2,));
+                        measure.x1,
+                        measure.y1,
+                        measure.x2,
+                        measure.y2,
+                        measure.radius,
+                        measure.opacity,
+                        measure.name
+                    ));
                     break;
                 case componentTypes.label:
                     const label = arrJSON[i] as Label;
                     parent.push(new Label(
-                            label.x,
-                            label.y,
-                            label.text,
-                            label.fontSize));
+                        label.x,
+                        label.y,
+                        label.text,
+                        label.fontSize,
+                        label.opacity,
+                        label.name
+                    ));
                     break;
                 case componentTypes.shape:
                     const shape = arrJSON[i] as Shape;
@@ -141,7 +159,10 @@ export class LogicDisplay {
                     parent.push(new Picture(
                         picture.x,
                         picture.y,
-                        picture.pictureSource));
+                        picture.pictureSource,
+                        picture.opacity,
+                        picture.name
+                    ));
                     break;
                 case componentTypes.polygon:
                     const polygon = arrJSON[i] as Polygon;
@@ -150,7 +171,8 @@ export class LogicDisplay {
                         polygon.color,
                         polygon.strokeColor,
                         polygon.opacity,
-                        polygon.enableStroke
+                        polygon.enableStroke,
+                        polygon.name
                     ))
             }
         }
