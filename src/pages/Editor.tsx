@@ -95,7 +95,7 @@ const TabButtons = (props: TabButtonProps) => {
 
 const Editor = () => {
     const { id } = useParams<{id: string}>();
-    const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
+    const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3', 'name'];
     const canvas = useRef<HTMLCanvasElement>(null);
     const renderer = useRef<GraphicsRenderer | null>(null);
     const virtualCanvas = useRef<HTMLCanvasElement>(null);
@@ -250,6 +250,7 @@ const Editor = () => {
             if (renderer.current && renderer.current.logicDisplay && renderer.current.selectedComponent !== null) {
                 renderer.current.logicDisplay.components[renderer.current.selectedComponent] = finalComponent;
                 renderer.current.saveState();
+                setComponentArray(renderer.current.logicDisplay.components);
             }
             return finalComponent;
         });
@@ -975,6 +976,16 @@ const Editor = () => {
                                             />
                                         </div>
                                     )}
+                                    {'name' in component && (
+                                        <div className={styles['input-container']}>
+                                            <label>{getLocaleKey('editor.main.inspector.general.name')}</label>
+                                            <input
+                                                type="text"
+                                                value={component.name}
+                                                onChange={(e) => handleChange('name', parseFloat(e.target.value))}
+                                            />
+                                        </div>
+                                    )}
                                     {!(component instanceof Polygon) && (
                                         <div className={styles['input-container']}>
                                             <label>{getLocaleKey('editor.main.inspector.general.color')}</label>
@@ -1170,57 +1181,6 @@ const Editor = () => {
                                             </div>
                                         </>
                                     )}
-
-                                    {/* --- Generic Dynamic Properties Loop --- */}
-                                    {/* Important: Update getHandledKeys to reflect the new structure,
-                                        especially for x, y, x1, y1, x2, y2, width, height, x3, y3.
-                                        If you move them to the consolidated groups, they should be
-                                        added to getHandledKeys. */}
-                                    {
-                                        Object.keys(component as Record<string, any>)
-                                            .filter(key => !getHandledKeys(component).has(key))
-                                            .map(key => {
-                                                const value = (component as Record<string, any>)[key];
-                                                let inputElement: React.ReactNode | null = null;
-
-                                                if (typeof value === 'boolean') {
-                                                    inputElement = (
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={value}
-                                                            onChange={(e) => handleChange(key, e.target.checked)}
-                                                        />
-                                                    );
-                                                } else if (typeof value === 'string') {
-                                                    inputElement = (
-                                                        <input
-                                                            type={key.toLowerCase().includes('color') ? 'color' : 'text'}
-                                                            value={value || (key.toLowerCase().includes('color') ? '#ffffff' : '')}
-                                                            onChange={(e) => handleChange(key, e.target.value)}
-                                                        />
-                                                    );
-                                                } else if (typeof value === 'number') {
-                                                    inputElement = (
-                                                        <input
-                                                            type="number"
-                                                            value={value}
-                                                            onChange={(e) => handleChange(key, parseFloat(e.target.value))}
-                                                        />
-                                                    );
-                                                }
-
-                                                if (!inputElement) {
-                                                    return null;
-                                                }
-
-                                                return (
-                                                    <div className={styles['input-container']} key={key}>
-                                                        <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
-                                                        {inputElement}
-                                                    </div>
-                                                );
-                                            })
-                                    }
                                 </div>
                             )
                         )}
