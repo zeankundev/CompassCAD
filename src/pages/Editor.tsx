@@ -407,7 +407,6 @@ const Editor = () => {
         }
     }
     const lerpToComponentOrigin = (index: number) => {
-        setInspectorState(InspectorTabState.Inspector);
         const component: Component = renderer.current!.logicDisplay!.components[index];
         let destination: VectorType = {x: 0, y: 0};
         switch (component.type) {
