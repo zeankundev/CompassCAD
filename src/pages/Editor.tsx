@@ -32,6 +32,7 @@ import CircleSymbol from '../assets/circle.svg'
 import ArcSymbol from '../assets/arc.svg'
 import RectSymbol from '../assets/rectangle.svg'
 import PicSymbol from '../assets/image.svg'
+import PolySymbol from '../assets/polygon.svg'
 import LabelSymbol from '../assets/text.svg'
 import RulerSymbol from '../assets/measure.svg'
 import UndoSymbol from '../assets/undo.svg'
@@ -105,7 +106,7 @@ const Editor = () => {
         LabelSymbol,
         PicSymbol,
         PicSymbol,
-        PicSymbol
+        PolySymbol
     ]
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
@@ -977,7 +978,7 @@ const Editor = () => {
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPicture)}
                     />
                     <ToolbarButton 
-                        svgImage={PicSymbol}
+                        svgImage={PolySymbol}
                         title={`${getLocaleKey('editor.main.essential.addPolygon')} (j)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddPolygon}
                         keyCode={RendererTypes.KeyCodes.J}
@@ -1254,7 +1255,9 @@ const Editor = () => {
                         )}
                         {inspectorState == InspectorTabState.Hierarchy && (
                             <div>
-                                <input type="text" className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
+                                <div className={styles['searchfield-flexbox']}>
+                                    <input type="text" className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
+                                </div>
                                 {componentArray.length > 0 ? (
                                     <div className={styles['component-hierarchy-container']}>
                                         {componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((comp, index) => (
