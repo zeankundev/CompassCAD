@@ -1,5 +1,5 @@
 import { read } from "fs";
-import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Shape, Label, Arc, Picture, Polygon } from "./ComponentHandler";
+import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Shape, Label, Arc, Picture, Polygon, BoundBox } from "./ComponentHandler";
 import { KeyboardHandler, MouseHandler } from "./InputHandler";
 import { LogicDisplay } from "./LogicDisplay";
 
@@ -109,6 +109,7 @@ export class GraphicsRenderer {
             AddShape: 8,
             AddPicture: 9,
             AddPolygon: 10,
+            AddBoundbox: 11,
             Delete: 20,
             Navigate: 22,
             Move: 23,
@@ -212,6 +213,7 @@ export class GraphicsRenderer {
         let displayText = '';
         switch (component.type) {
             case componentTypes.rectangle:
+            case componentTypes.boundBox:
             case componentTypes.line:
                 const line = component as Line;
                 displayText = `${Number(Math.abs(line.x2 - line.x1).toFixed(2))}×${Number(Math.abs(line.y2 - line.y1).toFixed(2))}`;
@@ -258,6 +260,7 @@ export class GraphicsRenderer {
         if (this.selectedComponent != null) {
             switch (component.type) {
                 case componentTypes.rectangle:
+                case componentTypes.boundBox:
                     this.handles = []
                     const rect = component as Rectangle;
                     this.handles.push({
@@ -562,6 +565,18 @@ export class GraphicsRenderer {
                     polygon.opacity,
                     polygon.enableStroke
                 )
+                break;
+            case componentTypes.boundBox:
+                const boundbox = component as BoundBox;
+                this.drawRectangle(
+                    boundbox.x1,
+                    boundbox.y1,
+                    boundbox.x2,
+                    boundbox.y2,
+                    '#e9e9e9',
+                    2,
+                    50
+                )
         }
     }
     drawTemporaryComponent() {
@@ -681,6 +696,7 @@ export class GraphicsRenderer {
                     100,
                     true,
                 )
+                break;
         }
     }
     drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
@@ -1152,6 +1168,7 @@ export class GraphicsRenderer {
                 case componentTypes.line:
                 case componentTypes.circle:
                 case componentTypes.rectangle:
+                case componentTypes.boundBox:
                 case componentTypes.measure:
                     const twoPointComponent = component as Line | Circle | Rectangle | Measure;
                     const dx2 = x - twoPointComponent.x1;
@@ -1292,6 +1309,7 @@ export class GraphicsRenderer {
                 break;
 
             case componentTypes.rectangle:
+            case componentTypes.boundBox:
                 const rectComponent = component as Rectangle;
                 // Check all 4 corners of rectangle
                 const nw = this.getDistance(x, y, rectComponent.x1, rectComponent.y1);
@@ -1588,7 +1606,33 @@ export class GraphicsRenderer {
                 }
                 this.tooltip = "Add rectangle (press esc to cancel)";
                 break;
-
+            case this.modes.AddBoundbox:
+                this.displayRef!.style.cursor = 'crosshair';
+                if (action === this.mouseAction.Move) {
+                    if (this.temporaryComponentType === null) {
+                        this.temporaryComponentType = componentTypes.point;
+                    } else if (this.temporaryComponentType === componentTypes.point) {
+                        this.temporaryPoints[0] = this.getCursorXLocal();
+                        this.temporaryPoints[1] = this.getCursorYLocal();
+                    } else if (this.temporaryComponentType === componentTypes.rectangle) {
+                        this.temporaryPoints[2] = this.getCursorXLocal();
+                        this.temporaryPoints[3] = this.getCursorYLocal();
+                    }
+                } else if (action === this.mouseAction.Down) {
+                    if (this.temporaryComponentType === componentTypes.point) {
+                        this.temporaryComponentType = componentTypes.rectangle;
+                        this.temporaryPoints[2] = this.getCursorXLocal();
+                        this.temporaryPoints[3] = this.getCursorYLocal();
+                    } else if (this.temporaryComponentType === componentTypes.rectangle) {
+                        this.logicDisplay?.addComponent(new BoundBox(
+                            this.temporaryPoints[0]!,
+                            this.temporaryPoints[1]!,
+                            this.temporaryPoints[2]!,
+                            this.temporaryPoints[3]!
+                        ))
+                    }
+                }
+                break;
             case this.modes.AddMeasure:
                 this.displayRef!.style.cursor = 'crosshair';
                 if (action === this.mouseAction.Move) {
@@ -1863,6 +1907,7 @@ export class GraphicsRenderer {
                                         }
                                         break;
                                     case componentTypes.rectangle:
+                                    case componentTypes.boundBox:
                                         const rectComponent = component as Rectangle;
                                         if (this.dragHandle === 'start') {
                                             // NW resize

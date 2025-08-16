@@ -10,7 +10,8 @@ import {
     Measure,
     Label,
     Arc,
-    Polygon
+    Polygon,
+    BoundBox
 } from './ComponentHandler';
 
 export interface SVGExporterSettings {
@@ -94,6 +95,11 @@ export class SVGExporter {
                         minY = Math.min(minY, vector.y);
                     });
                     break;
+                case componentTypes.boundBox:
+                    const boundbox = component as BoundBox;
+                    minX = Math.min(minX, boundbox.x1, boundbox.x2);
+                    minY = Math.min(minY, boundbox.y1, boundbox.y2);
+                    break;
             }
         })
         if (minX === Infinity || minY === Infinity) {
@@ -119,6 +125,7 @@ export class SVGExporter {
                 case componentTypes.line:
                 case componentTypes.rectangle:
                 case componentTypes.measure:
+                case componentTypes.boundBox:
                     const line = component as Line;
                     minX = Math.min(minX, line.x1, line.x2);
                     minY = Math.min(minY, line.y1, line.y2);
@@ -265,6 +272,8 @@ export class SVGExporter {
                     poly.opacity,
                     poly.enableStroke
                 )
+                break;
+            default:
                 break;
         }
     }

@@ -10,6 +10,7 @@ export const componentTypes = {
     shape: 8,
     picture: 9,
     polygon: 10,
+    boundBox: 11
 }
 
 export class Component {
@@ -251,5 +252,18 @@ export class Polygon extends Component {
         this.enableStroke = enableStroke || true;
         this.opacity = opacity != undefined ? opacity : 100;
         this.name = name != undefined ? name : 'Polygon';
+    }
+}
+export class BoundBox extends Rectangle {
+    constructor(
+        x1: number, 
+        y1: number, 
+        x2: number, 
+        y2: number,
+        name?: string
+    ) {
+        super(x1, y1, x2, y2, 2, '#FFFFFF', 100);
+        this.type = componentTypes.boundBox;
+        this.name = name != undefined ? name : 'Boundbox';
     }
 }

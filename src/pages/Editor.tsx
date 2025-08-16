@@ -15,7 +15,8 @@ import {
     Shape,
     Picture,
     Polygon,
-    componentTypes
+    componentTypes,
+    BoundBox
 } from "../engine/ComponentHandler";
 import RendererTypes from '../components/RendererTypes'
 import HeaderButton from "../components/HeaderButtons";
@@ -33,6 +34,7 @@ import ArcSymbol from '../assets/arc.svg'
 import RectSymbol from '../assets/rectangle.svg'
 import PicSymbol from '../assets/image.svg'
 import PolySymbol from '../assets/polygon.svg'
+import BoundboxSymbol from '../assets/boundbox.svg'
 import LabelSymbol from '../assets/text.svg'
 import RulerSymbol from '../assets/measure.svg'
 import UndoSymbol from '../assets/undo.svg'
@@ -106,7 +108,8 @@ const Editor = () => {
         LabelSymbol,
         PicSymbol,
         PicSymbol,
-        PolySymbol
+        PolySymbol,
+        BoundboxSymbol
     ]
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
@@ -985,6 +988,13 @@ const Editor = () => {
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddPolygon)}
                     />
                     <ToolbarButton
+                        svgImage={BoundboxSymbol}
+                        title={`${getLocaleKey('editor.main.essential.addRectangle')} (x)`}
+                        isActive={tool == RendererTypes.NavigationTypes.AddBoundbox}
+                        keyCode={RendererTypes.KeyCodes.X}
+                        func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddBoundbox)}
+                    />
+                    <ToolbarButton
                         svgImage={LabelSymbol}
                         title={`${getLocaleKey('editor.main.essential.addLabel')} (h)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddLabel}
@@ -1121,7 +1131,7 @@ const Editor = () => {
                                     )}
 
                                     {/* Position & Size: For Line, Circle, Rectangle, Measure, Arc (x1, y1, width, height) */}
-                                    {(component instanceof Line || component instanceof Circle || component instanceof Rectangle || component instanceof Measure) && (
+                                    {(component instanceof Line || component instanceof Circle || component instanceof Rectangle || component instanceof Measure || component instanceof BoundBox) && (
                                         <>
                                             <div className={styles['input-group-row']}>
                                                 <label>{getLocaleKey('editor.main.inspector.general.position')}</label>

@@ -11,6 +11,7 @@ export default {
         AddShape: 8,
         AddPicture: 9,
         AddPolygon: 10,
+        AddBoundbox: 11,
         Delete: 20,
         Navigate: 22,
         Move: 23,
