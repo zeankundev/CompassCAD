@@ -120,7 +120,7 @@ export class GraphicsRenderer {
             Up: 2
         }
         this.readonly = false;
-        this.mode = this.modes.Navigate;
+        this.mode = this.modes.Select;
         this.previousColor = null;
         this.previousRadius = null;
         this.displayFont = 'Geist Mono';

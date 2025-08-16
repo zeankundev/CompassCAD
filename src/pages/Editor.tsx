@@ -1,7 +1,7 @@
 // Imports: ignore why the imports will be too big :)
 import React, { useRef, useEffect, useState, Fragment } from "react";
 import styles from '../styles/editor.module.css'
-import { GraphicsRenderer, InitializeInstance } from "../engine/GraphicsRenderer";
+import { GraphicsRenderer, InitializeInstance, VectorType } from "../engine/GraphicsRenderer";
 import { getDeviceType, DeviceType } from "../components/GetDevice";
 import {
     Component,
@@ -114,7 +114,7 @@ const Editor = () => {
     const virtualCanvas = useRef<HTMLCanvasElement>(null);
     const [device, setDevice] = useState<DeviceType>('desktop');
     const [componentArray, setComponentArray] = useState<Component[]>([]);
-    const [tool, setTool] = useState<number>(RendererTypes.NavigationTypes.Navigate);
+    const [tool, setTool] = useState<number>(RendererTypes.NavigationTypes.Select);
     const [designName, setDesignName] = useState<string>(getLocaleKey('editor.main.newDesign'));
     const [menu, setMenu] = useState<boolean>(false);
     const nameInput = useRef<HTMLInputElement>(null);
@@ -151,11 +151,13 @@ const Editor = () => {
             document.body.style.overflowY = 'hidden';
             renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
             InitializeInstance(renderer.current);
-            renderer.current.setMode(renderer.current.modes.Navigate);
-            setLoading(false);
+            renderer.current.setMode(renderer.current.modes.Select);
             toast(getLocaleKey('editor.main.betaWarning'));
         }
-    }, [])
+    }, []);
+    window.addEventListener('DOMContentLoaded', () => {
+        setLoading(false);
+    })
     useEffect(() => {
         let animationFrameId: number;
         
@@ -403,6 +405,58 @@ const Editor = () => {
         if (debugMode) {
             console.log(`[DEBUG, origin: ${origin}] ${message}`);
         }
+    }
+    const lerpToComponentOrigin = (index: number) => {
+        setInspectorState(InspectorTabState.Hierarchy);
+        const component: Component = renderer.current!.logicDisplay!.components[index];
+        let destination: VectorType = {x: 0, y: 0};
+        switch (component.type) {
+            case componentTypes.point:
+            case componentTypes.picture:
+            case componentTypes.shape:
+            case componentTypes.label:
+                const dummyPoint = component as Point;
+                destination.x = -dummyPoint.x;
+                destination.y = -dummyPoint.y;
+                break;
+            case componentTypes.rectangle:
+            case componentTypes.line:
+            case componentTypes.measure:
+                const dummyRect = component as Line;
+                destination.x = -((dummyRect.x1 + dummyRect.x2) / 2);
+                destination.y = -((dummyRect.y1 + dummyRect.y2) / 2);
+                break;
+            case componentTypes.circle:
+            case componentTypes.arc:
+                const dummyCircle = component as Circle;
+                destination.x = -dummyCircle.x1;
+                destination.y = -dummyCircle.y1;
+                break;
+            case componentTypes.polygon:
+                const dummyPolygon = component as Polygon;
+                destination.x = -dummyPolygon.vectors[0].x;
+                destination.y = -dummyPolygon.vectors[0].y;
+                break;
+            default:
+                break;
+        }
+        const initialCameraPosition: VectorType = {x: renderer.current!.camX, y: renderer.current!.camY};
+        let startTime: number = 0;
+        const duration: number = 500;
+
+        const animate = (currentTime: number) => {
+            if (!startTime) startTime = currentTime;
+            const elapsed = currentTime - startTime;
+            const progress = 1 - Math.pow(1 - Math.min(elapsed / duration, 1), 2);
+            const initialZoom = renderer.current!.targetZoom;
+            renderer.current!.camX = initialCameraPosition.x + (destination.x - initialCameraPosition.x) * progress;
+            renderer.current!.camY = initialCameraPosition.y + (destination.y - initialCameraPosition.y) * progress;
+            renderer.current!.targetZoom = initialZoom + (1 - initialZoom) * progress;
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        }
+        requestAnimationFrame(animate);
     }
     const hasRun = useRef(false);
     useEffect(() => {
@@ -1206,7 +1260,7 @@ const Editor = () => {
                                 {componentArray.length > 0 ? (
                                     <div className={styles['component-hierarchy-container']}>
                                         {componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((comp, index) => (
-                                            <div key={index} onClick={() => {renderer.current!.selectComponent(index)}} className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}>
+                                            <div key={index} onClick={() => {renderer.current!.selectComponent(index); renderer.current?.setMode(RendererTypes.NavigationTypes.Select)}} onDoubleClick={() => lerpToComponentOrigin(index)} className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}>
                                                 <img src={componentImages[comp.type]} />&nbsp;{comp.name}
                                             </div>
                                         ))}
