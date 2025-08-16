@@ -1256,7 +1256,7 @@ const Editor = () => {
                         {inspectorState == InspectorTabState.Hierarchy && (
                             <div>
                                 <div className={styles['searchfield-flexbox']}>
-                                    <input type="text" className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
+                                    <input type="text" defaultValue={hierarchySearch} className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
                                 </div>
                                 {componentArray.length > 0 ? (
                                     <div className={styles['component-hierarchy-container']}>
