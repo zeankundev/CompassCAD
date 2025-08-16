@@ -175,6 +175,7 @@ export const locales : any = {
                     addLabel: "Add Label",
                     addImage: "Add Image",
                     addPolygon: "Add Polygon",
+                    addBoundbox: "Add Boundbox",
                 },
                 inspector: {
                     header: "Inspector",
@@ -507,6 +508,7 @@ export const locales : any = {
                     addLabel: "Tambahkan Label",
                     addImage: "Tambahkan Gambar",
                     addPolygon: "Tambahkan Poligon",
+                    addBoundbox: "Tambahkan kotak batas",
                 },
                 inspector: {
                     header: "Inspektor",
@@ -676,6 +678,7 @@ export const locales : any = {
                     addPoint: "Lägg till Punkt",
                     addLine: "Lägg till Linje",
                     addRectangle: "Lägg till Rektangel",
+                    addBoundbox: "Lägg till avgränsningsruta",
                     addCircle: "Lägg till Cirkel",
                     addArc: "Lägg till Båge",
                     addMeasure: "Mät",

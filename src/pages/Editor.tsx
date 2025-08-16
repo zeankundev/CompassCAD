@@ -989,7 +989,7 @@ const Editor = () => {
                     />
                     <ToolbarButton
                         svgImage={BoundboxSymbol}
-                        title={`${getLocaleKey('editor.main.essential.addRectangle')} (x)`}
+                        title={`${getLocaleKey('editor.main.essential.addBoundbox')} (x)`}
                         isActive={tool == RendererTypes.NavigationTypes.AddBoundbox}
                         keyCode={RendererTypes.KeyCodes.X}
                         func={() => renderer.current?.setMode(RendererTypes.NavigationTypes.AddBoundbox)}
