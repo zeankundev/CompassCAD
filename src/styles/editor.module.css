@@ -521,7 +521,7 @@ input[type="checkbox"]:checked {
     -webkit-appearance: none;
     border: none;
     padding: 10px;
-    width: calc(100% - 17px);
+    width: calc(100% - 20px);
     border-radius: 10px;
     background-color: var(--secondary);
     color: var(--text);
@@ -532,7 +532,7 @@ input[type="checkbox"]:checked {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 101.5%;
+    width: 100%;
     margin-top: 10px;
 }
 .component-hierarchy-child {
