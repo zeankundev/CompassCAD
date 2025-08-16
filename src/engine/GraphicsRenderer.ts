@@ -685,7 +685,7 @@ export class GraphicsRenderer {
     }
     drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
         if (this.context) {
-            if (this.temporarySelectedComponent != null || this.mode == this.modes.Move) {
+            if (this.selectedComponent != null || this.mode == this.modes.Move) {
                 this.context.lineWidth = 2;
                 this.context.fillStyle = '#ffffff';
                 this.context.strokeStyle = this.selectedColor;
