@@ -1721,6 +1721,7 @@ export class GraphicsRenderer {
                         ) {
                             this.logicDisplay?.addComponent(new Polygon(this.temporaryVectors));
                             this.temporaryComponentType = null;
+                            this.temporaryVectorIndex = 0;
                             this.temporaryVectors = [];
                             this.saveState();
                             this.update();

@@ -73,7 +73,7 @@ input[type="checkbox"] {
 input[type="checkbox"]:active {
     transform: scale(0.9);
 }
-*:focus:not(button):not(div) {
+*:focus:not(button):not(div):not(input[type="range"]) {
     outline: 4px solid var(--theme) !important;
     transition: all 0.2s ease !important;
 }
@@ -513,6 +513,36 @@ input[type="checkbox"]:checked {
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
+}
+.hierarchy-textinput {
+    -webkit-appearance: none;
+    border: none;
+    padding: 10px;
+    width: calc(100% - 17px);
+    border-radius: 10px;
+    background-color: var(--secondary);
+    color: var(--text);
+    font-family: var(--font);
+    margin-top: 10px;
+}
+.component-hierarchy-container {
+    display: flex;
+    width: 101.5%;
+    margin-top: 10px;
+}
+.component-hierarchy-child {
+    background-color: rgba(255, 255, 255, 0.035);
+    display: flex;
+    flex: 1;
+    padding: 10px;
+    border-radius: 10px;
+    user-select: none;
+}
+.component-hierarchy-child:hover {
+    background-color: var(--secondary);
+}
+.component-hierarchy-child.fkinselected {
+    background-color: var(--tertiary);
 }
 .tab-button {
     -webkit-appearance: none;

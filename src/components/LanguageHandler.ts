@@ -183,6 +183,7 @@ export const locales : any = {
                     nothing: "Select a component then your component details should appear here.",
                     properties: "Properties",
                     hierarchy: "Hierarchy",
+                    searchInHiearchy: "Search in Hierarchy",
                     general: {
                         active: "Active",
                         radius: "Radius",
@@ -514,6 +515,7 @@ export const locales : any = {
                     nothing: "Pilih komponen, lalu detail komponen kamu akan ditampil disini.",
                     properties: "Properti",
                     hierarchy: "Hierarki",
+                    searchInHiearchy: "Cari di Hierarki",
                     general: {
                         active: "Aktif",
                         radius: "Radius",
@@ -688,6 +690,7 @@ export const locales : any = {
                     nothing: "Välj en komponent så ska dina komponentdetaljer visas här.",
                     properties: "Egenskaper",
                     hierarchy: "Hierarki",
+                    searchInHiearchy: "Sök i Hierarki",
                     general: {
                         active: "Aktiv",
                         radius: "Radius",

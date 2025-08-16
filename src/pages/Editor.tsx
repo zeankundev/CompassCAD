@@ -94,6 +94,19 @@ const TabButtons = (props: TabButtonProps) => {
 }
 
 const Editor = () => {
+    const componentImages: string[] = [
+        '',
+        PointSymbol,
+        LineSymbol,
+        CircleSymbol,
+        RectSymbol,
+        ArcSymbol,
+        RulerSymbol,
+        LabelSymbol,
+        PicSymbol,
+        PicSymbol,
+        PicSymbol
+    ]
     const { id } = useParams<{id: string}>();
     const ignoredKeys = ['type', 'y1', 'y2', 'x2', 'y3'];
     const canvas = useRef<HTMLCanvasElement>(null);
@@ -1189,11 +1202,15 @@ const Editor = () => {
                         )}
                         {inspectorState == InspectorTabState.Hierarchy && (
                             <div>
-                                <input type="text" onChange={(e) => setHierarchySearch(e.target.value)}/>
+                                <input type="text" className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
                                 {componentArray.length > 0 ? (
-                                    componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((component, index) => (
-                                        <div key={index}>{component.name}</div>
-                                    ))
+                                    <div className={styles['component-hierarchy-container']}>
+                                        {componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((comp, index) => (
+                                            <div key={index} className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}>
+                                                <img src={componentImages[comp.type]} />&nbsp;{comp.name}
+                                            </div>
+                                        ))}
+                                    </div>
                                 ) : (
                                     <div>No components found.</div> // Or null, or whatever you want to show
                                 )}
