@@ -152,12 +152,10 @@ const Editor = () => {
             renderer.current = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
             InitializeInstance(renderer.current);
             renderer.current.setMode(renderer.current.modes.Select);
+            setLoading(false);
             toast(getLocaleKey('editor.main.betaWarning'));
         }
-    }, []);
-    window.addEventListener('DOMContentLoaded', () => {
-        setLoading(false);
-    })
+    }, [])
     useEffect(() => {
         let animationFrameId: number;
         
@@ -407,6 +405,7 @@ const Editor = () => {
         }
     }
     const lerpToComponentOrigin = (index: number) => {
+        setInspectorState(InspectorTabState.Hierarchy);
         const component: Component = renderer.current!.logicDisplay!.components[index];
         let destination: VectorType = {x: 0, y: 0};
         switch (component.type) {
@@ -1259,7 +1258,15 @@ const Editor = () => {
                                 {componentArray.length > 0 ? (
                                     <div className={styles['component-hierarchy-container']}>
                                         {componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((comp, index) => (
-                                            <div key={index} onClick={() => {renderer.current!.selectComponent(index); renderer.current?.setMode(RendererTypes.NavigationTypes.Select)}} onDoubleClick={() => {lerpToComponentOrigin(index)}} className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}>
+                                            <div 
+                                                key={index} 
+                                                onClick={() => {
+                                                    renderer.current!.setMode(RendererTypes.NavigationTypes.Select);
+                                                    renderer.current!.selectComponent(index);
+                                                }} 
+                                                onDoubleClick={() => lerpToComponentOrigin(index)} 
+                                                className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}
+                                            >
                                                 <img src={componentImages[comp.type]} />&nbsp;{comp.name}
                                             </div>
                                         ))}
