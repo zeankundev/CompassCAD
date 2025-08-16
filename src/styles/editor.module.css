@@ -529,6 +529,7 @@ input[type="checkbox"]:checked {
     border-radius: 10px;
     display: flex;
     flex: 1;
+    width: 100%;
     background-color: var(--secondary);
     color: var(--text);
     font-family: var(--font);
