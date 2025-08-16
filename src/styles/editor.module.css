@@ -485,7 +485,7 @@ input[type="checkbox"]:checked {
     align-items: center;
 }
 .inspector-content {
-    height: calc(100% - 75px);
+    height: calc(100% - 85px);
     display: flex;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -496,6 +496,9 @@ input[type="checkbox"]:checked {
 .inspector-tabs {
     display: flex;
     gap: 10px;
+    align-self: flex-end;
+    flex-wrap: nowrap;
+    margin-top: 10px;
 }
 .inspector-nothing {
     display: flex;
@@ -527,6 +530,8 @@ input[type="checkbox"]:checked {
 }
 .component-hierarchy-container {
     display: flex;
+    flex-direction: column;
+    gap: 10px;
     width: 101.5%;
     margin-top: 10px;
 }
@@ -542,7 +547,7 @@ input[type="checkbox"]:checked {
     background-color: var(--secondary);
 }
 .component-hierarchy-child.fkinselected {
-    background-color: var(--tertiary);
+    background-color: var(--theme);
 }
 .tab-button {
     -webkit-appearance: none;
