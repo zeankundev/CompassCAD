@@ -69,6 +69,7 @@ export class GraphicsRenderer {
     yCNaught: number;
     cOutX: number;
     cOutY: number;
+    recordingMode: boolean;
     showGrid: boolean;
     showOrigin: boolean;
     showRules: boolean;
@@ -170,6 +171,7 @@ export class GraphicsRenderer {
         this.unitFactor = 1;
         this.unitConversionFactor = 1 / 100;
         this.snap = true;
+        this.recordingMode = false;
         this.snapTolerance = 10;
         this.fontSize = 18;
         this.maximumStack = 50;
@@ -698,6 +700,44 @@ export class GraphicsRenderer {
                 )
                 break;
         }
+    }
+    drawUserCursor(x: number, y: number) {
+        const mouseShapeVectors: VectorType[] = [
+            {
+                x: 0,
+                y: 0
+            },
+            {
+                x: 4,
+                y: 16
+            },
+            {
+                x: 8,
+                y: 10
+            },
+            {
+                x: 15,
+                y: 8
+            },
+            {
+                x: 0,
+                y: 0
+            }
+        ];
+        this.context?.beginPath();
+        this.context?.moveTo(x + mouseShapeVectors[0].x, y + mouseShapeVectors[0].y);
+        mouseShapeVectors.forEach((point, index) => {
+            if (index > 0) {
+            this.context?.lineTo(x + point.x, y + point.y);
+        }
+    });
+    this.context?.closePath();
+    this.context!.fillStyle = '#0080ff';
+    this.context?.fill();
+
+    this.context!.strokeStyle = '#e9e9e9';
+    this.context!.lineWidth = 1;
+    this.context?.stroke();
     }
     drawPoint(x: number, y: number, color: string, radius: number, opacity: number) {
         if (this.context) {
@@ -2138,6 +2178,9 @@ export class GraphicsRenderer {
             this.drawTemporaryComponent();
         this.drawRules();
         this.refreshSelectionTools();
+        if (this.recordingMode) {
+            this.drawUserCursor(this.getCursorXRaw(), this.getCursorYRaw());
+        }
     }
 }
 export const InitializeInstance = (renderer: GraphicsRenderer) => {

@@ -211,6 +211,7 @@ const Editor = () => {
                     URL.revokeObjectURL(url);
                 }
                 mediaRec.current = recorder;
+                renderer.current!.recordingMode = true;
                 recorder.start();
                 setRecordingTime(0);
                 intervalRef.current = setInterval(() => {
@@ -230,6 +231,7 @@ const Editor = () => {
                 streamRef.current.getTracks().forEach(track => track.stop());
                 streamRef.current = null;
             }
+            renderer.current!.recordingMode = false;
             clearInterval(intervalRef.current!);
             setIsRecording(false);
             new Audio(RecEndSound).play().catch(e => {});
