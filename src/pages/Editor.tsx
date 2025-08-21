@@ -592,6 +592,15 @@ const Editor = () => {
                             return; // Skip data import for new designs
                         }
                     }
+                    if (param.startsWith('debugflags=')) {
+                        const flags = param.substring(11).split(':');
+                        if (flags.includes('recmode')) {
+                            renderer.current!.recordingMode = true;
+                        }
+                        if (flags.includes('fuckingshit')) {
+                            console.error('fucking shit')
+                        }
+                    }
                     if (param.startsWith('designname=') && !hasRun.current) {
                         hasRun.current = true;
                         logOnDebug('editor', `designname param found: ${param}`);
