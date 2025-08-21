@@ -841,7 +841,7 @@ const Editor = () => {
                         &nbsp;&nbsp;
                         <HeaderButton 
                             svgImage={RecordIcon}
-                            title={getLocaleKey('editor.main.header.feedback')}
+                            title={getLocaleKey('editor.main.header.record')}
                             func={() => setShowRecorderPopup(!showRecorderPopup)}
                             tabIndex={4}
                         />
