@@ -48,6 +48,14 @@ import Preview from '../assets/preview.svg'
 import Embed from '../assets/embed.svg'
 import ExportToCCADIcon from '../assets/ccadfile.svg'
 import FeedbackIcon from '../assets/feedback.svg'
+import DraggableHandler from '../assets/draggablehandle.svg'
+// Just for recoding and not to make the code a whole fucking mess
+import RecordIcon from '../assets/record-icon.svg'
+import RecordAlt from '../assets/recording/recalt.svg'
+import StopRec from '../assets/recording/stoprec.svg'
+import MicOn from '../assets/recording/micon.svg'
+import MicOff from '../assets/recording/micoff.svg'
+// --------
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
 import { toast, ToastContainer } from "../components/Toast";
@@ -127,6 +135,12 @@ const Editor = () => {
     const [searchedComponentArray, setSearchedComponentArray] = useState<Component[]>([]);
     const [alternateTip, setAltTip] = useState<AlternateTipProps | null>();
     const [showAlternateTip, setShowAlternateTip] = useState<boolean>(false);
+    const [showRecorderPopup, setShowRecorderPopup] = useState<boolean>(false);
+    const [isDraggableDown, setIsDraggableDown] = useState<boolean>(false);
+    const [recorderPopupLocation, setRecorderPopUpLocation] = useState<VectorType>({x: 240, y: 120})
+    const [isRecording, setIsRecording] = useState<boolean>(false);
+    const [useMic, setUseMic] = useState<boolean>(false);
+    const [recordingTime, setRecordingTime] = useState<number>(0);
     const [component, setComponent] = useState<AnyComponent | null>(null);
     const [exportDialog, setExportDialog] = useState(false);
     const [exportPage, setExportPage] = useState<ExportPages>('main');
@@ -149,6 +163,25 @@ const Editor = () => {
     const [inspectorState, setInspectorState] = useState<InspectorTabState>(InspectorTabState.Inspector);
     const [debugMode, setDebugMode] = useState<boolean>(false);
     const [fromBlueprint, setFromBlueprint] = useState<boolean>(false);
+    const dragRef = useRef({
+        initialMouseX: 0,
+        initialMouseY: 0,
+        initialPopupX: 0,
+        initialPopupY: 0,
+    });
+    const num2hour = (seconds: number): string => {
+        const minute = Math.floor(seconds / 60);
+        const sec = seconds % 60;
+        const formattedSeconds = sec < 10 ? '0' + sec : sec;
+        return `${minute}:${formattedSeconds}`
+    }
+    const toggleRecordingState = () => {
+        if (!isRecording) {
+            setIsRecording(true);
+        } else {
+            setIsRecording(false);
+        }
+    }
     useEffect(() => {
         if (canvas.current && !renderer.current) {
             setDevice(getDeviceType());
@@ -743,6 +776,12 @@ const Editor = () => {
                         <p>{zoom.toFixed(3)}x</p>
                         &nbsp;&nbsp;
                         <HeaderButton 
+                            svgImage={RecordIcon}
+                            title={getLocaleKey('editor.main.header.feedback')}
+                            func={() => setShowRecorderPopup(!showRecorderPopup)}
+                            tabIndex={4}
+                        />
+                        <HeaderButton 
                             svgImage={FeedbackIcon}
                             title={getLocaleKey('editor.main.header.feedback')}
                             func={() => window.open('https://form.typeform.com/to/sbjWyFKu', '_blank')}
@@ -903,6 +942,55 @@ const Editor = () => {
                         />
                     </>
                 )}
+            </div>
+        )}
+        {showRecorderPopup && (
+            <div className={styles['recorder-popup']} style={{left: recorderPopupLocation.x, top: recorderPopupLocation.y}}>
+                <div 
+                    className={styles['draggable-modal']}
+                    style={{
+                        cursor: isDraggableDown ? 'grabbing': 'grab'
+                    }}
+                    onMouseDown={(e) => {
+                        setIsDraggableDown(true);
+                        dragRef.current = {
+                            initialMouseX: e.clientX,
+                            initialMouseY: e.clientY,
+                            initialPopupX: recorderPopupLocation.x,
+                            initialPopupY: recorderPopupLocation.y
+                        }
+                    }}
+                    onMouseUp={() => setIsDraggableDown(false)}
+                    onMouseMove={(e) => {
+                        if (isDraggableDown) {
+                            const dX = e.clientX - dragRef.current.initialMouseX;
+                            const dY = e.clientY - dragRef.current.initialMouseY;
+                            setRecorderPopUpLocation({
+                                x: dragRef.current.initialPopupX + dX,
+                                y: dragRef.current.initialPopupY + dY
+                            })
+                        }
+                    }}
+                >
+                    <img src={DraggableHandler} />
+                </div>
+                <div className={styles['recorder-content']}>
+                    <div 
+                        className={styles['draggable-childbutton']}
+                        onClick={toggleRecordingState}
+                        title={getLocaleKey(`editor.main.header.recordPopup.${isRecording ? 'stop' : 'start'}Recording`)}
+                    >
+                        <img src={isRecording ? StopRec : RecordAlt} />
+                    </div>
+                    <div 
+                        className={styles['draggable-childbutton']}
+                        onClick={() => setUseMic(!useMic)}
+                        title={getLocaleKey(`editor.main.header.recordPopup.mic${useMic ? 'Off' : 'On'}`)}
+                    >
+                        <img src={useMic ? MicOn : MicOff} />
+                    </div>
+                    <span>{num2hour(recordingTime)}</span>
+                </div>
             </div>
         )}
         {/* Toolbar */}

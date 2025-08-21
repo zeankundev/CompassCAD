@@ -158,6 +158,7 @@ input[type="checkbox"]:checked {
 .desktop-header .header-right {
     padding: 5px;
     padding: 7px;
+    display: flex;
 }
 .share-button {
     display: flex;
@@ -1060,4 +1061,40 @@ body {
 }
 .blueprint-messages-mobile .message.user img {
     margin-left: 10px;
+}
+.recorder-popup {
+    position: absolute;
+    z-index: 9999999;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary);
+    border: 0.5px solid var(--outline);
+    box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    animation: slidein-from-bottom-special 0.2s ease;
+}
+.recorder-content {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+.recorder-content .draggable-childbutton {
+    padding: 5px;
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+}
+.recorder-content .draggable-childbutton:hover {
+    background-color: var(--secondary);
+}
+.draggable-modal {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+.draggable-modal img {
+    -webkit-user-drag: none;
 }

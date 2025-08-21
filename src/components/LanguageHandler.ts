@@ -145,6 +145,13 @@ export const locales : any = {
                     redo: "Redo",
                     share: "Share/Export",
                     feedback: "Send Feedback",
+                    record: "Record Video",
+                    recordPopup: {
+                        startRecording: "Start Recording",
+                        stopRecording: "Stop Recording",
+                        micOff: "Turn on microphone",
+                        micOn: "Turn off microphone"
+                    },
                     shareModal: {
                         heading: "Share/Export Design",
                         copyLink: "Copy Link",
@@ -478,6 +485,13 @@ export const locales : any = {
                     redo: "Ulangi",
                     share: "Bagi/Ekspor",
                     feedback: "Kirim Umpan Balik",
+                    record: "Rekam Video",
+                    recordPopup: {
+                        startRecording: "Mulai merekam",
+                        stopRecording: "Hentikan rekaman",
+                        micOff: "Hidupkan mikrofon",
+                        micOn: "Matikan mikrofon"
+                    },
                     shareModal: {
                         heading: "Bagi/Ekspor Desain",
                         copyLink: "Salin link",
@@ -654,6 +668,13 @@ export const locales : any = {
                     redo: "Upprepa",
                     share: "Dela/Exportera",
                     feedback: "Skicka Feedback",
+                    record: "Spela in Video",
+                    recordPopup: {
+                        startRecording: "Starta Inspelningen",
+                        stopRecording: "Stoppa Inspelningen",
+                        micOff: "Slå på mikrofonen",
+                        micOn: "Slå av mikrofonen"
+                    },
                     shareModal: {
                         heading: "Dela/Exportera Design",
                         copyLink: "Kopiera Link",
