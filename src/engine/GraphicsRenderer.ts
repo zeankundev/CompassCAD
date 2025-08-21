@@ -2179,7 +2179,7 @@ export class GraphicsRenderer {
         this.drawRules();
         this.refreshSelectionTools();
         if (this.recordingMode) {
-            this.drawUserCursor(this.getCursorXRaw(), this.getCursorYRaw());
+            this.drawUserCursor((this.getCursorXRaw() + this.camX) * this.zoom, (this.getCursorYRaw() + this.camY) * this.zoom);
         }
     }
 }
