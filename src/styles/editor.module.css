@@ -1080,6 +1080,9 @@ body {
     align-items: center;
     gap: 10px
 }
+.recorder-content span {
+    padding-right: 5px;
+}
 .recorder-content .draggable-childbutton {
     padding: 5px;
     width: 24px;
