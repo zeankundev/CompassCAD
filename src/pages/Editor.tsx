@@ -55,6 +55,8 @@ import RecordAlt from '../assets/recording/recalt.svg'
 import StopRec from '../assets/recording/stoprec.svg'
 import MicOn from '../assets/recording/micon.svg'
 import MicOff from '../assets/recording/micoff.svg'
+import RecStartSound from '../assets/audio/recstart.mp3'
+import RecEndSound from '../assets/audio/recend.mp3'
 // --------
 import { useParams } from "react-router-dom";
 import { LZString } from "../components/LZString";
@@ -169,17 +171,68 @@ const Editor = () => {
         initialPopupX: 0,
         initialPopupY: 0,
     });
+    const intervalRef = useRef<NodeJS.Timer | null>(null);
+    const mediaRec = useRef<MediaRecorder | null>(null);
+    const chunkRef = useRef<Blob[]>([]);
+    const streamRef = useRef<MediaStream | null>(null);
     const num2hour = (seconds: number): string => {
         const minute = Math.floor(seconds / 60);
         const sec = seconds % 60;
         const formattedSeconds = sec < 10 ? '0' + sec : sec;
         return `${minute}:${formattedSeconds}`
     }
-    const toggleRecordingState = () => {
+    const toggleRecordingState = async () => {
+        let interval;
         if (!isRecording) {
-            setIsRecording(true);
+            try {
+                const canv = canvas.current;
+                if (!canv) return;
+                const canvasStream = canv.captureStream();
+                const micStream = useMic ? await navigator.mediaDevices.getUserMedia({ audio: true }) : null;
+                const combined = new MediaStream();
+                combined.addTrack(canvasStream.getVideoTracks()[0]);
+                if (useMic && micStream) 
+                    combined.addTrack(micStream?.getAudioTracks()[0]);
+                streamRef.current = combined;
+                chunkRef.current = [];
+                const recorder = new MediaRecorder(combined, { mimeType: 'video/mp4' });
+                recorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) {
+                        chunkRef.current.push(e.data)
+                    }
+                };
+                recorder.onstop = () => {
+                    const blob = new Blob(chunkRef.current, { type: 'video/mp4' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `${designName.replace(' ', '-')}-${new Date().getHours()}-${new Date().getMinutes()}-${new Date().getSeconds()}.mp4`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                }
+                mediaRec.current = recorder;
+                recorder.start();
+                setRecordingTime(0);
+                intervalRef.current = setInterval(() => {
+                    setRecordingTime(recordingTime => recordingTime + 1);
+                }, 1000)
+                setIsRecording(true);
+                new Audio(RecStartSound).play().catch(e => {});
+            } catch (e) {
+                console.error(e);
+            } 
         } else {
+            if (mediaRec.current) {
+                mediaRec.current.stop();
+                mediaRec.current = null;
+            }
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
+                streamRef.current = null;
+            }
+            clearInterval(intervalRef.current!);
             setIsRecording(false);
+            new Audio(RecEndSound).play().catch(e => {});
         }
     }
     useEffect(() => {
@@ -990,6 +1043,9 @@ const Editor = () => {
                         <img src={useMic ? MicOn : MicOff} />
                     </div>
                     <span>{num2hour(recordingTime)}</span>
+                    {isRecording && (
+                        <div className={styles['recorder-status-blink']}></div>
+                    )}
                 </div>
             </div>
         )}

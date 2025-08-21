@@ -1098,3 +1098,23 @@ body {
 .draggable-modal img {
     -webkit-user-drag: none;
 }
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.recorder-status-blink {
+    width: 16px;
+    height: 16px;
+    background-color: #ff2323;
+    margin-right: 5px;
+    border-radius: 50%;
+    animation: blink 1s ease;
+    animation-iteration-count: infinite;
+}
