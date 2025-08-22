@@ -1,6 +1,47 @@
 @font-face {
-    font-family: 'OneUISans';
-    src: url('../OneUISans.ttf') format('truetype');
+    font-family: 'CircularSp';
+    font-weight: 400;
+    src: url('../fonts/CircularStd-Book.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 500;
+    src: url('../fonts/CircularStd-Medium.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 700;
+    src: url('../fonts/CircularStd-Bold.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 900;
+    src: url('../fonts/CircularStd-Black.ttf');
+}
+
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 400;
+    font-style: italic;
+    src: url('../fonts/CircularStd-BookItalic.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 500;
+    font-style: italic;
+    src: url('../fonts/CircularStd-MediumItalic.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 700;
+    font-style: italic;
+    src: url('../fonts/CircularStd-BoldItalic.ttf');
+}
+@font-face {
+    font-family: 'CircularSp';
+    font-weight: 900;
+    font-style: italic;
+    src: url('../fonts/CircularStd-BlackItalic.ttf');
 }
 @font-face {
     font-family: 'SECEmojis';
@@ -13,7 +54,7 @@
     --tertiary: #3f3f3f;
     --outline: #636363;
     --secondary-disabled: rgba(80, 80, 80, 0.3);
-    --font: 'OneUISans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --font: 'CircularSp', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     --text: #efefef;
     --theme: #0080ff;
 }
