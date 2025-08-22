@@ -557,6 +557,8 @@ input[type="checkbox"]:checked {
     border-radius: 10px;
     user-select: none;
     align-items: center;
+    max-height: fit-content;
+    margin-right: 10px;
 }
 .component-hierarchy-child:hover {
     background-color: var(--secondary);
