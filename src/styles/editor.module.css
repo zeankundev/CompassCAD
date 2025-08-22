@@ -520,8 +520,11 @@ input[type="checkbox"]:checked {
 }
 .searchfield-flexbox {
     display: flex;
+}
+.hierarchy-flexbox {
+    display: flex;
     flex: 1;
-    align-items: stretch;
+    flex-direction: column;
 }
 .hierarchy-textinput {
     -webkit-appearance: none;
@@ -535,6 +538,7 @@ input[type="checkbox"]:checked {
     color: var(--text);
     font-family: var(--font);
     margin-top: 10px;
+    max-height: fit-content;
 }
 .component-hierarchy-container {
     display: flex;
@@ -550,6 +554,7 @@ input[type="checkbox"]:checked {
     padding: 10px;
     border-radius: 10px;
     user-select: none;
+    align-items: center;
 }
 .component-hierarchy-child:hover {
     background-color: var(--secondary);
