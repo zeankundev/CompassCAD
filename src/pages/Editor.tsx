@@ -221,6 +221,7 @@ const Editor = () => {
                 new Audio(RecStartSound).play().catch(e => {});
             } catch (e) {
                 console.error(e);
+                toast('There was an error while recording.');
             } 
         } else {
             if (mediaRec.current) {
@@ -1049,7 +1050,7 @@ const Editor = () => {
                     <div 
                         className={styles['draggable-childbutton']}
                         onClick={() => setUseMic(!useMic)}
-                        title={getLocaleKey(`editor.main.header.recordPopup.mic${useMic ? 'Off' : 'On'}`)}
+                        title={getLocaleKey(`editor.main.header.recordPopup.mic${useMic ? 'On' : 'Off'}`)}
                     >
                         <img src={useMic ? MicOn : MicOff} />
                     </div>

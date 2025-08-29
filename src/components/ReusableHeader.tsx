@@ -24,7 +24,7 @@ const ReusableHeader = () => {
 
     return (
         <div className={`${styles.header} ${scrolled ? styles.scrolld : ''}`}>
-            {!window.location.href.includes('localhost') && (
+            {!(window.location.href.split(':')[2].length >= 4) && (
                 <div className={styles['header-beta']}>
                     <span>This version of CompassCAD Web is still in beta, so expect broken bugs</span>
                 </div>

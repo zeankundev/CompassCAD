@@ -73,10 +73,10 @@ input[type="checkbox"] {
 input[type="checkbox"]:active {
     transform: scale(0.9);
 }
-*:focus:not(button):not(div):not(input[type="range"]) {
+/*:focus:not(button):not(div):not(input[type="range"]) {
     outline: 4px solid var(--theme) !important;
     transition: all 0.2s ease !important;
-}
+}*/
 input[type="checkbox"]:checked {
     background-color: var(--theme);
     background-image: url('../assets/check.svg');
