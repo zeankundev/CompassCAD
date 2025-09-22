@@ -956,10 +956,10 @@ electron-reloader@^1.2.3:
     electron-is-dev "^1.2.0"
     find-up "^5.0.0"
 
-electron@^35.7.2:
-  version "35.7.2"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-35.7.2.tgz#82a254fe0dde937963cd122127dc16bac224dd82"
-  integrity sha512-MfAgKOs8OQJFEixUNRvuAzQQa0CciX9618JK6n7+U4aaHGS0PExoeL7bOwrI4L1rG3tH2gwcihI6tkxsSXX0iA==
+electron@^38.1.2:
+  version "38.1.2"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-38.1.2.tgz#3509999a1b635fb92e99a8e5eaf239110a9a7734"
+  integrity sha512-WXUcN3W8h8NTTZViA3KNX0rV2YBU0X0mEUM3ubupXTDY4QtIN7tmiqYVOKSKpR2LckTmBWGuEeY4D6xVoffwKQ==
   dependencies:
     "@electron/get" "^2.0.0"
     "@types/node" "^22.7.7"
