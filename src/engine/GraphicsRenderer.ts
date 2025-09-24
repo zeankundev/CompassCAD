@@ -2,6 +2,13 @@ import { read } from "fs";
 import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Shape, Label, Arc, Picture, Polygon, BoundBox } from "./ComponentHandler";
 import { KeyboardHandler, MouseHandler } from "./InputHandler";
 import { LogicDisplay } from "./LogicDisplay";
+import DefaultCursor from '../assets/cursors/normal.svg'
+import CrosshairCursor from '../assets/cursors/crosshair.svg'
+import MoveCursor from '../assets/cursors/move.svg'
+import NavigateDragCursor from '../assets/cursors/navigate-drag.svg'
+import NavigateIdleCursor from '../assets/cursors/navigate-idle.svg'
+import Nwse1 from '../assets/cursors/nwse-1.svg'
+import Nwse2 from '../assets/cursors/nwse-2.svg'
 
 let lastTime = performance.now();
 let frameCount = 0;
@@ -193,7 +200,7 @@ export class GraphicsRenderer {
         this.temporaryObjectArray = [];
         this.keyboard = new KeyboardHandler();
         this.mouse = new MouseHandler();
-        this.displayRef!.style.cursor = 'crosshair';
+        this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
         const context = this.displayRef?.getContext('2d');
         if (!context) {
             throw new Error('Failed to get 2D context');
@@ -269,25 +276,25 @@ export class GraphicsRenderer {
                         x: rect.x1,
                         y: rect.y1,
                         id: 'start',
-                        cursor: 'nw-resize'
+                        cursor: Nwse1
                     })
                     this.handles.push({
                         x: rect.x2,
                         y: rect.y1,
                         id: 'top-right',
-                        cursor: 'ne-resize'
+                        cursor: Nwse2
                     })
                     this.handles.push({
                         x: rect.x2,
                         y: rect.y2,
                         id: 'bottom-right',
-                        cursor: 'se-resize'
+                        cursor: Nwse1
                     })
                     this.handles.push({
                         x: rect.x1,
                         y: rect.y2,
                         id: 'bottom-left',
-                        cursor: 'sw-resize'
+                        cursor: Nwse2
                     })
                     break;
                 case componentTypes.line:
@@ -299,13 +306,13 @@ export class GraphicsRenderer {
                         x: lineComponent.x1,
                         y: lineComponent.y1,
                         id: 'start',
-                        cursor: 'move'
+                        cursor: MoveCursor
                     });
                     this.handles.push({
                         x: lineComponent.x2,
                         y: lineComponent.y2,
                         id: 'end',
-                        cursor: 'move'
+                        cursor: MoveCursor
                     });
                     break;
                 case componentTypes.arc:
@@ -315,19 +322,19 @@ export class GraphicsRenderer {
                         x: arcComponent.x1,
                         y: arcComponent.y1,
                         id: 'start',
-                        cursor: 'nw-resize'
+                        cursor: Nwse1
                     });
                     this.handles.push({
                         x: arcComponent.x2,
                         y: arcComponent.y2,
                         id: 'mid',
-                        cursor: 'se-resize'
+                        cursor: Nwse2
                     });
                     this.handles.push({
                         x: arcComponent.x3,
                         y: arcComponent.y3,
                         id: 'end',
-                        cursor: 'move'
+                        cursor: MoveCursor
                     });
                     break;
                 case componentTypes.point:
@@ -340,7 +347,7 @@ export class GraphicsRenderer {
                         x: singlePointComponent.x,
                         y: singlePointComponent.y,
                         id: 'miscellaneous',
-                        cursor: 'move'
+                        cursor: MoveCursor
                     });
                     break;
                 case componentTypes.polygon:
@@ -352,7 +359,7 @@ export class GraphicsRenderer {
                             x: polygonHandle.x,
                             y: polygonHandle.y,
                             id: `handle-${index}`,
-                            cursor: 'move'
+                            cursor: MoveCursor
                         });
                     });
                     break;
@@ -391,6 +398,13 @@ export class GraphicsRenderer {
     getCursorXInFrame(): number {
         const screenX = this.mouse!.cursorXGlobal - this.offsetX - this.displayWidth / 2;
         const worldX = (screenX / this.zoom) - this.cOutX;
+
+        if (!this.snap) {
+            // If snapping is off, return the raw value converted to frame coordinates.
+            return (worldX + this.cOutX) * this.zoom;
+        }
+
+        // If snapping is on, perform the snapping calculation as before.
         const gridSize = this.gridSpacing;
         const snappedX = Math.round(worldX / gridSize) * gridSize;
         return (snappedX + this.cOutX) * this.zoom;
@@ -399,6 +413,13 @@ export class GraphicsRenderer {
     getCursorYInFrame(): number {
         const screenY = this.mouse!.cursorYGlobal - this.offsetY - this.displayHeight / 2;
         const worldY = (screenY / this.zoom) - this.cOutY;
+
+        if (!this.snap) {
+            // If snapping is off, return the raw value converted to frame coordinates.
+            return (worldY + this.cOutY) * this.zoom;
+        }
+
+        // If snapping is on, perform the snapping calculation as before.
         const gridSize = this.gridSpacing;
         const snappedY = Math.round(worldY / gridSize) * gridSize;
         return (snappedY + this.cOutY) * this.zoom;
@@ -1498,7 +1519,7 @@ export class GraphicsRenderer {
     performAction(e: MouseEvent, action: number) {
         switch (this.mode) {
             case this.modes.AddPoint:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1516,7 +1537,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddLine:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1548,7 +1569,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddCircle:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1578,7 +1599,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddArc:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1618,7 +1639,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddRectangle:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1647,7 +1668,7 @@ export class GraphicsRenderer {
                 this.tooltip = "Add rectangle (press esc to cancel)";
                 break;
             case this.modes.AddBoundbox:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1674,7 +1695,7 @@ export class GraphicsRenderer {
                 }
                 break;
             case this.modes.AddMeasure:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1704,7 +1725,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddLabel:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1729,7 +1750,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddShape:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.shape;
@@ -1747,7 +1768,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.AddPicture:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 if (action === this.mouseAction.Move) {
                     if (this.temporaryComponentType === null) {
                         this.temporaryComponentType = componentTypes.point;
@@ -1770,7 +1791,7 @@ export class GraphicsRenderer {
                 this.tooltip = "Add Picture (press esc to cancel)";
                 break;
             case this.modes.AddPolygon:
-                this.displayRef!.style.cursor = 'crosshair';
+                this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
                 this.tooltip = "Add Polygon";
                 let firstVec: VectorType = {
                     x: 0,
@@ -1834,21 +1855,28 @@ export class GraphicsRenderer {
                 }
                 break;
             case this.modes.Navigate:
-                this.displayRef!.style.cursor = 'default';
+                this.displayRef!.style.cursor = `url("${NavigateIdleCursor}") 16 16, default`;
                 if (action === this.mouseAction.Down) {
                     this.camMoving = true;
                     this.xCNaught = this.getCursorXRaw();
                     this.yCNaught = this.getCursorYRaw();
+                    this.displayRef!.style.cursor = `url("${NavigateDragCursor}") 16 16, default`;
                 } else if (action === this.mouseAction.Up) {
                     this.camMoving = false;
                     this.camX += this.getCursorXRaw() - this.xCNaught;
                     this.camY += this.getCursorYRaw() - this.yCNaught;
+                    this.displayRef!.style.cursor = `url("${NavigateIdleCursor}") 16 16, default`;
+                } else if (action === this.mouseAction.Move) {
+                    if (this.camMoving)
+                        this.displayRef!.style.cursor = `url("${NavigateDragCursor}") 16 16, default`;
+                    else
+                        this.displayRef!.style.cursor = `url("${NavigateIdleCursor}") 16 16, default`;
                 }
                 this.tooltip = "Navigate";
                 break;
 
             case this.modes.Move:
-                this.displayRef!.style.cursor = 'default';
+                this.displayRef!.style.cursor = `url("${DefaultCursor}") 6 6, default`;
                 if (action === this.mouseAction.Move) {
                     if (this.selectedComponent === null) {
                         this.temporarySelectedComponent = this.findIntersectionWith(
@@ -1877,7 +1905,7 @@ export class GraphicsRenderer {
                 break;
 
             case this.modes.Delete:
-                this.displayRef!.style.cursor = 'default';
+                this.displayRef!.style.cursor = `url("${DefaultCursor}") 6 6, default`;
                 if (action === this.mouseAction.Move) {
                     if (this.selectedComponent === null) {
                         this.temporarySelectedComponent = this.findIntersectionWith(
@@ -1894,7 +1922,7 @@ export class GraphicsRenderer {
                 this.tooltip = "Delete (click a node point to delete, esc to cancel)";
                 break;
             case this.modes.Select:
-                this.displayRef!.style.cursor = 'default';
+                this.displayRef!.style.cursor = `url("${DefaultCursor}") 6 6, default`;
                 if (action == this.mouseAction.Move) {
                     console.log('[renderer] moused moved during select')
                     if (this.selectedComponent == null) {
@@ -2045,14 +2073,14 @@ export class GraphicsRenderer {
 
                                 // Check if cursor is over handle using world coordinates
                                 if (distSquared < (handleSize * handleSize)) {
-                                    this.displayRef!.style.cursor = handle.cursor;
+                                    this.displayRef!.style.cursor = `url("${handle.cursor}") 16 16, default`;
                                     isOverHandle = true;
                                     break;
                                 }
                             }
 
                             if (!isOverHandle) {
-                                this.displayRef!.style.cursor = 'default';
+                                this.displayRef!.style.cursor = `url("${DefaultCursor}") 6 6, default`;
                             }
                         }
                     }
@@ -2102,7 +2130,7 @@ export class GraphicsRenderer {
                     }
                 } else if (action == this.mouseAction.Up) {
                     this.dragHandle = null;
-                    this.displayRef!.style.cursor = 'default';
+                    this.displayRef!.style.cursor = 'url("../") 0 0, default';
                     // After releasing the drag, ensure the state is up-to-date
                     this.notifyComponentChange();
                 }
