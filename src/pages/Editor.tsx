@@ -927,14 +927,16 @@ const Editor = () => {
                                         <span>{getLocaleKey('editor.main.header.shareModal.exportAsCcad')}</span>
                                     </div>
                                 </div>
-                                <div className={styles['export-options-container']}>
-                                    <div className={styles['export-option-sub']}>
-                                        <div className={styles['export-option-sub-button']} onClick={() => setExportPage('embed')}>
-                                            <img src={Embed} width={24} />
+                                {id.split(';')[1] && (
+                                    <div className={styles['export-options-container']}>
+                                        <div className={styles['export-option-sub']}>
+                                            <div className={styles['export-option-sub-button']} onClick={() => setExportPage('embed')}>
+                                                <img src={Embed} width={24} />
+                                            </div>
+                                            <span>{getLocaleKey('editor.main.header.shareModal.embedToSite')}</span>
                                         </div>
-                                        <span>{getLocaleKey('editor.main.header.shareModal.embedToSite')}</span>
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </>
