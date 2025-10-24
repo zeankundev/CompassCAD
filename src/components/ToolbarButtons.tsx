@@ -31,6 +31,7 @@ const ToolbarButton = (props: HeaderButton) => {
         >
             <img 
                 src={props.svgImage} 
+                alt='Toolbar button'
             />
         </div>
     )

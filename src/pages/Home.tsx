@@ -58,13 +58,13 @@ const Home = () => {
                         <br></br>
                         <div style={{display: 'flex', flexDirection: 'row'}}>
                             <HomeButton important={true}>
-                                <img src={InvertedExportButton} width={24} style={{transform: 'rotate(180deg)'}} />
+                                <img src={InvertedExportButton} alt='Download button' width={24} style={{transform: 'rotate(180deg)'}} />
                                 &nbsp;
                                 {getLocaleKey('home.downloadButton')}
                             </HomeButton>
                             <Link to='/editor'>
                                 <HomeButton>
-                                    <img src={TryIt} width={24}/>
+                                    <img src={TryIt} alt='Tryit Icon' width={24}/>
                                     &nbsp;
                                     {getLocaleKey('home.inBrowserEditor')}
                                 </HomeButton>
@@ -72,7 +72,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className={`${styles['hero-right']} ${crammed ? styles.crammed : ''}`}>
-                        <img src={Illustration1} height={crammed ? 360 : 510}/>
+                        <img src={Illustration1} alt='Architect dreaming' height={crammed ? 360 : 510}/>
                     </div>
                 </div>
                 <div>
@@ -80,14 +80,14 @@ const Home = () => {
                     <p>{getLocaleKey('home.paragraph1Sub')}</p>
                     <br></br>
                     <div style={{display:'flex', justifyContent: 'center'}}>
-                        <img src={CCADDesktopUI} style={{border: '1px solid #0080ff', borderRadius: '10px', boxShadow: '0px 0px 13px 3px rgba(0,128,255,0.25)', width: '90vw'}} />
+                        <img src={CCADDesktopUI} alt='Snippet of CompassCAD Desktop UI' style={{border: '1px solid #0080ff', borderRadius: '10px', boxShadow: '0px 0px 13px 3px rgba(0,128,255,0.25)', width: '90vw'}} />
                     </div>
                     <small>{getLocaleKey('home.littleNote1')}</small>
                     <br></br>
                     <br></br>
                     <h1>{getLocaleKey('home.header2Sub')}</h1>
                     <div style={{display:'flex', justifyContent: 'center'}}>
-                        <img src={CrossPlatformImage} style={{width: '90vw'}}/>
+                        <img src={CrossPlatformImage} alt='Mac Safari browser and iPhone' style={{width: '90vw'}}/>
                     </div>
                     <small>{getLocaleKey('home.littleNote2')}</small>
                     <br></br>
@@ -95,7 +95,7 @@ const Home = () => {
                     <h1>{getLocaleKey('home.header3Sub')}</h1>
                     <p>{getLocaleKey('home.paragraph3Sub')}</p>
                     <div style={{display:'flex', justifyContent: 'center'}}>
-                        <img src={MIIImage} style={{width: '80vw'}}/>
+                        <img src={MIIImage} alt='Mac Safar browser and iPhone with Bangga Buatan Indonesia logo' style={{width: '80vw'}}/>
                     </div>
                     <small>{getLocaleKey('home.littleNote3')}</small>
                 </div>

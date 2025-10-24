@@ -24,7 +24,7 @@ const ReusableHeader = () => {
 
     return (
         <div className={`${styles.header} ${scrolled ? styles.scrolld : ''}`}>
-            {!(window.location.href.split(':')[2].length >= 4) && (
+            {window.location.href.split(':')[1] && (
                 <div className={styles['header-beta']}>
                     <span>This version of CompassCAD Web is still in beta, so expect broken bugs</span>
                 </div>
@@ -35,7 +35,7 @@ const ReusableHeader = () => {
                     aria-label='leftside-group'
                 >
                     <Link to='/'>
-                        <img src={CompassCADLogo} height={24}/>
+                        <img src={CompassCADLogo} alt='CompassCAD Logo' height={24}/>
                     </Link>
                     <div aria-label='leftside-links' className={styles['header-leftside-links']}>
                         <p>Sample link</p>

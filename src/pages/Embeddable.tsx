@@ -25,7 +25,7 @@ const Embeddable = () => {
         <div className={styles['embed-container']}>
             <div className={styles['embed-watermark']}>
                 <span>made with</span>
-                <img src={CompassCADLogo} width={128} />
+                <img src={CompassCADLogo} alt="CompassCAD Logo" width={128} />
             </div>
             <canvas
                 ref={canvas}

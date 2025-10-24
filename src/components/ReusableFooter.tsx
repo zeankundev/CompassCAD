@@ -5,11 +5,11 @@ const ReusableFooter = () => {
     return (
         <div className={styles.footer}>
             <div>
-                <img src={CompassCADLogo} height={24}/>
+                <img src={CompassCADLogo} alt='CompassCAD Logo' height={24}/>
                 <br></br>
                 <small style={{marginBottom: '10px'}}>another project by</small>
                 <br></br>
-                <img src={ZeanKunLogo} height={24}/>
+                <img src={ZeanKunLogo} alt='zeankun logo' height={24}/>
                 <p>&copy; {new Date().getFullYear()} zeankun.dev. all rights reserved</p>
             </div>
             <div style={{display: 'flex', flexDirection: 'column'}}>

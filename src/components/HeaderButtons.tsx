@@ -18,6 +18,7 @@ const HeaderButton = (props: HeaderButton) => {
                 src={props.svgImage} 
                 width={24}
                 height={24}
+                alt='Header buttons'
             />
         </div>
     )

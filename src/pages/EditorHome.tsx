@@ -45,7 +45,7 @@ const MiniButtonClickable = (props: MiniButtonClickableProps) => {
     return (
         <Fragment>
             <div className={styles['clickable-button-mini']} onClick={props.onPress}>
-                <img src={props.icon} />
+                <img src={props.icon} alt='Mini clickable button' />
                 <div className={styles['clickable-button-mini-child']}>
                     {props.children}
                 </div>
@@ -393,7 +393,7 @@ When the user speaks in other languages than English, you must reply to them in 
                         </YesNoDialog>
                     )}
                     <div className={styles['editor-home-header']}>
-                        <img src={CompassCADLogo} height={24} />
+                        <img src={CompassCADLogo} alt='CompassCAD Logo' height={24} />
                     </div>
                     <br></br>
                     <div className={styles['editor-home-body']}>
@@ -487,7 +487,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                     )}
                                     {messages.length > 0 && <br></br>}
                                     <div className={styles['blueprint-childcontainer']}>
-                                        <img src={BluePrintSymbol} width={24} style={{display: 'flex', alignSelf: 'flex-start'}}/>
+                                        <img src={BluePrintSymbol} alt='Blueprint' width={24} style={{display: 'flex', alignSelf: 'flex-start'}}/>
                                         <div className={styles['blueprint-textarea']}>
                                             <textarea
                                                 placeholder={getLocaleKey('editor.home.blueprintPlaceholder')}
@@ -503,7 +503,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                             <small>{getLocaleKey('editor.home.blueprintWarning')}</small>
                                         </div>
                                         <div ref={sendButton} className={styles['blueprint-button']} onClick={sendMessage}>
-                                            {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} width={24} />}
+                                            {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} alt='Send' width={24} />}
                                         </div>
                                     </div>
                                 </div>
@@ -522,7 +522,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                             onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
                                             title={`${data.name} on ${data.date}`}
                                         >
-                                            <img src={data.preview} />
+                                            <img src={data.preview} alt='Data preview' />
                                             <div className={styles['editor-recents-details']}>
                                                 <div className={styles['recents-details-title']}>
                                                     <h4>{data.name.length > 16 ? data.name.substring(0, 16) + '...' : data.name}</h4>
@@ -534,7 +534,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                 </div>
                             ) : (
                                 <div className={styles['editor-recents-none']}>
-                                    <img src={BluePrintIsFuckingSleeping} width={256}/>
+                                    <img src={BluePrintIsFuckingSleeping} alt='Sleepy Blueprint' width={256}/>
                                     <p>{getLocaleKey('editor.home.nothingInHistory')}</p>
                                 </div>
                             )}
@@ -546,7 +546,7 @@ When the user speaks in other languages than English, you must reply to them in 
             {device == 'mobile' && (
                 <div className={styles['editor-home']}>
                     <div className={styles['editor-home-header']}>
-                        <img src={CompassCADLogo} height={24} />
+                        <img src={CompassCADLogo} alt='CompassCAD Logo' height={24} />
                     </div>
                     <br></br>
                     <h2>{greeting}</h2>
@@ -560,7 +560,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                     onClick={() => window.location.href = `/editor/designname="${data.name}";${data.data}`}
                                     title={`${data.name} on ${data.date}`}
                                 >
-                                    <img src={data.preview} />
+                                    <img src={data.preview} alt='Preview' />
                                     <div className={styles['editor-recents-details']}>
                                         <div className={styles['recents-details-title']}>
                                             <h4>{data.name.length > 16 ? data.name.substring(0, 16) + '...' : data.name}</h4>
@@ -572,7 +572,7 @@ When the user speaks in other languages than English, you must reply to them in 
                         </div>
                     ) : (
                         <div className={styles['editor-recents-none']}>
-                            <img src={BluePrintIsFuckingSleeping} width={256}/>
+                            <img src={BluePrintIsFuckingSleeping} alt='Sleepy Blueprint' width={256}/>
                             <p>{getLocaleKey('editor.home.nothingInHistory')}</p>
                         </div>
                     )}
@@ -624,7 +624,7 @@ When the user speaks in other languages than English, you must reply to them in 
                             <div className={styles['blueprint-view-mobile']}>
                                 <div className={styles['blueprint-nav']}>
                                     <div className={styles['blueprint-nav-btn']} onClick={() => setIsBluePrintMode(false)}>
-                                        <img src={Back} width={24} />
+                                        <img src={Back} alt='Back' width={24} />
                                     </div>
                                 </div>
                                 <div className={styles['blueprint-message-container-mobile']}>
@@ -679,7 +679,7 @@ When the user speaks in other languages than English, you must reply to them in 
                                         <span>{getLocaleKey('editor.home.blueprintWarning')}</span>
                                     </div>
                                     <div className={styles['blueprint-button']} onClick={sendMessage} ref={sendButton}>
-                                        {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} width={24} />}
+                                        {isLoading ? <span className={styles['spinner2']}></span> : <img src={SendSymbol} alt='Send' width={24} />}
                                     </div>
                                 </div>
                             </div>
@@ -691,7 +691,7 @@ When the user speaks in other languages than English, you must reply to them in 
                         onTouchStart={(e) => {navigator.vibrate(30); e.stopPropagation();}}
                         onTouchEnd={(e) => {navigator.vibrate(30); e.stopPropagation();}}
                     >
-                        <img src={MenuImg} />
+                        <img src={MenuImg} alt='Hamburger icon' />
                     </div>
                 </div>
             )}

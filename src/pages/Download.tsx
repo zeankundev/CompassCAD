@@ -53,7 +53,7 @@ const DownloadPage = () => {
                         <br></br>
                     </div>
                     <div className={`${styles['hero-right']} ${crammed ? styles.crammed : ''}`}>
-                        <img src={Illustration1} height={crammed ? 360 : 510}/>
+                        <img src={Illustration1} alt='Godsend' height={crammed ? 360 : 510}/>
                     </div>
                 </div>
                 <div>
