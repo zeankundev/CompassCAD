@@ -875,7 +875,7 @@ const Editor = () => {
                     </div>
                     <div className={styles['header-right']}>
                         <div className={styles['share-button']} onClick={() => {setExportDialog(exportDialog ? false : true); setExportPage('main')}} tabIndex={4}>
-                            <img src={ExportSymbol} width={20} />
+                            <img src={ExportSymbol} alt="Export symbol" width={20} />
                             &nbsp;
                             <p>{getLocaleKey('editor.main.header.share')}</p>
                         </div>
@@ -1194,7 +1194,7 @@ const Editor = () => {
                                 title={getLocaleKey('editor.main.inspector.expand')} 
                                 onClick={() => setShowInspector(true)}
                             >
-                                <img width={20} src={CollapseRight} style={{transform: 'rotate(180deg)'}} />
+                                <img width={20} src={CollapseRight} alt="Expand Inspector" style={{transform: 'rotate(180deg)'}} />
                             </button>
                         )}
                         <h2>{getLocaleKey('editor.main.inspector.header')}</h2>
@@ -1202,14 +1202,14 @@ const Editor = () => {
                             title={getLocaleKey('editor.main.inspector.collapseToRight')}
                             onClick={() => setShowInspector(false)}
                         >
-                            <img width={20} src={CollapseRight} />
+                            <img width={20} src={CollapseRight} alt="Collapse Inspector"/>
                         </button>
                     </div>
                     <div className={styles['inspector-content']}>
                         {inspectorState == InspectorTabState.Inspector && (
                             component == null ? (
                                 <div className={styles['inspector-nothing']}>
-                                    <img src={Unselected} width={64} />
+                                    <img src={Unselected} alt="Just nothing" width={64} />
                                     <span>{getLocaleKey('editor.main.inspector.nothing')}</span>
                                 </div>
                             ) : (
