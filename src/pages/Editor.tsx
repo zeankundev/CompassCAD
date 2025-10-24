@@ -1,5 +1,5 @@
 // Imports: ignore why the imports will be too big :)
-import React, { useRef, useEffect, useState, Fragment } from "react";
+import React, { useRef, useEffect, useState, Fragment, useMemo } from "react";
 import styles from '../styles/editor.module.css'
 import { GraphicsRenderer, InitializeInstance, VectorType } from "../engine/GraphicsRenderer";
 import { getDeviceType, DeviceType } from "../components/GetDevice";
@@ -291,10 +291,28 @@ const Editor = () => {
         };
     }, [renderer.current?.selectedComponent]);
     useEffect(() => {
-        if (renderer.current) {
-            renderer.current.onComponentArrayChanged = () => {setComponentArray(renderer.current!.logicDisplay!.components); console.log('[editor] useEffect -> renderer.current -> changed array', componentArray);}
+        // Ensure renderer.current exists
+        const currentRenderer = renderer.current;
+
+        if (currentRenderer) {
+            // Define the callback function
+            const handleComponentArrayChange = () => {
+                // Create a new copy to trigger React's state update
+                setComponentArray([...currentRenderer.logicDisplay!.components]);
+            };
+
+            // Assign the callback
+            currentRenderer.onComponentArrayChanged = handleComponentArrayChange;
+
+            // Return a cleanup function
+            // This removes the listener when the component unmounts
+            return () => {
+                if (currentRenderer) {
+                    currentRenderer.onComponentArrayChanged = null;
+                }
+            };
         }
-    })
+    }, [renderer.current]); // Only re-run this effect if renderer.current changes
     enum DesignType {
         CCAD = 'ccad',
         QROCAD = 'qrocad',
@@ -731,6 +749,15 @@ const Editor = () => {
             setTool(renderer.current.mode);
         }
     }, [tool, renderer.current?.mode]);
+    const filteredComponents = useMemo(() => {
+        return componentArray
+            .map((comp, i) => {
+                return {comp: comp, originalIndex: i}
+            })
+            .filter(item => {
+                return item.comp.name.toLowerCase().includes(hierarchySearch.toLowerCase())
+            })
+    }, [componentArray, hierarchySearch]);
     window.addEventListener('resize', () => {
         renderer.current!.displayWidth = window.innerWidth;
         renderer.current!.displayHeight = window.innerHeight;
@@ -1424,19 +1451,19 @@ const Editor = () => {
                                 <div className={styles['searchfield-flexbox']}>
                                     <input type="text" defaultValue={hierarchySearch} className={styles['hierarchy-textinput']} onChange={(e) => setHierarchySearch(e.target.value)} placeholder={getLocaleKey('editor.main.inspector.searchInHiearchy')}/>
                                 </div>
-                                {componentArray.length > 0 ? (
+                                {filteredComponents.length > 0 ? (
                                     <div className={styles['component-hierarchy-container']}>
-                                        {componentArray.filter(filteredComponentArray => filteredComponentArray.name.toLowerCase().includes(hierarchySearch.toLowerCase())).map((comp, index) => (
+                                        {filteredComponents.map((item, index) => (
                                             <div 
                                                 key={index} 
                                                 onClick={() => {
                                                     renderer.current!.setMode(RendererTypes.NavigationTypes.Select);
-                                                    renderer.current!.selectComponent(index);
+                                                    renderer.current!.selectComponent(item.originalIndex);
                                                 }} 
-                                                onDoubleClick={() => lerpToComponentOrigin(index)} 
-                                                className={`${styles['component-hierarchy-child']}${component === componentArray[index] ? ' ' + styles['fkinselected'] : ''}`}
+                                                onDoubleClick={() => lerpToComponentOrigin(item.originalIndex)} 
+                                                className={`${styles['component-hierarchy-child']}${component === componentArray[item.originalIndex] ? ' ' + styles['fkinselected'] : ''}`}
                                             >
-                                                <img src={componentImages[comp.type]} />&nbsp;{comp.name}
+                                                <img src={componentImages[item.comp.type]} />&nbsp;{item.comp.name}
                                             </div>
                                         ))}
                                     </div>
