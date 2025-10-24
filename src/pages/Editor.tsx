@@ -811,7 +811,6 @@ const Editor = () => {
                         svgImage={Back}
                         title={getLocaleKey('editor.main.header.goBackHome')}
                         func={() => window.location.href = '/editor'}
-                        tabIndex={0}
                     />
                     <input 
                         className={styles['design-name']} 
@@ -828,7 +827,6 @@ const Editor = () => {
                         svgImage={MenuImg}
                         title='Menu'
                         func={() => setMenu(menu ? false : true)}
-                        tabIndex={2}
                     />
                 </Fragment>
             )}
@@ -839,7 +837,6 @@ const Editor = () => {
                             svgImage={Back}
                             title={getLocaleKey('editor.main.header.goBackHome')}
                             func={() => window.location.href = '/editor'}
-                            tabIndex={0}
                         />
                         <input 
                             className={styles['design-name']} 
@@ -856,13 +853,11 @@ const Editor = () => {
                             svgImage={UndoSymbol}
                             title={getLocaleKey('editor.main.header.undo')}
                             func={() => renderer.current?.undo()}
-                            tabIndex={2}
                         />
                         <HeaderButton 
                             svgImage={RedoSymbol}
                             title={getLocaleKey('editor.main.header.redo')}
                             func={() => renderer.current?.redo()}
-                            tabIndex={3}
                         />
                         &nbsp;
                         <p>{zoom.toFixed(3)}x</p>
@@ -871,13 +866,11 @@ const Editor = () => {
                             svgImage={RecordIcon}
                             title={getLocaleKey('editor.main.header.record')}
                             func={() => setShowRecorderPopup(!showRecorderPopup)}
-                            tabIndex={4}
                         />
                         <HeaderButton 
                             svgImage={FeedbackIcon}
                             title={getLocaleKey('editor.main.header.feedback')}
                             func={() => window.open('https://form.typeform.com/to/sbjWyFKu', '_blank')}
-                            tabIndex={4}
                         />
                     </div>
                     <div className={styles['header-right']}>
