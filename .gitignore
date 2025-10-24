@@ -27,3 +27,4 @@ yarn-debug.log*
 yarn-error.log*
 pglite-debug.log*
 hosting.*
+firebase-debug.log*
