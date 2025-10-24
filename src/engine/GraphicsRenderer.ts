@@ -243,7 +243,7 @@ export class GraphicsRenderer {
                 return;
         }
         if (this.context) {
-            this.context.font = `18px 'CircularSp', sans-serif`;
+            this.context.font = `18px 'Radio Canada Big', sans-serif`;
             const textWidth = this.context.measureText(displayText).width;
             const boxWidth = textWidth + 20;
             const dummyLine = component as Line;
