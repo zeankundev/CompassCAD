@@ -12,7 +12,7 @@ const LanguageSwitcher = () => {
             >
                 <ReactCountryFlag countryCode={
                     GetLanguage() === 'en' ? 'us' : (GetLanguage() === 'sv' ? 'se' : GetLanguage())
-                } svg />
+                } svg alt={`${GetLanguage} flag`} />
                 {locales[GetLanguage()].name}&nbsp;{languagePicker ? '▴': '▾'}
             </div>
             {languagePicker && (
